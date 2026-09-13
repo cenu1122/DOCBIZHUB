@@ -13,6 +13,8 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #22c55e;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
         }
         
         * {
@@ -181,16 +183,35 @@
         }
         .admin-notification-panel h3 {
             color: #22c55e;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 1.3rem;
         }
         .request-item {
             background: #0f172a;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-left: 4px solid #4f46e5;
             font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-delete {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-delete:hover {
+            background-color: var(--danger-hover);
         }
 
         /* Modal za zahtjev */
@@ -255,7 +276,7 @@
         <p>Automatizujte pozive, prodaju i podršku uz naprednu AI sekretaricu.</p>
     </header>
 
-    <!-- Ovdje se dinamički prikazuje obavijest za admina -->
+    <!-- Admin Panel sa notifikacijama i opcijom brisanja -->
     <div id="adminPanel" style="display: none;" class="admin-notification-panel">
         <h3>🔔 Admin Notifikacija: Primljeni Zahtjevi za AI Asistenta</h3>
         <div id="adminRequestsList"></div>
@@ -330,25 +351,29 @@
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
-    // Provjera administratora i prikaz notifikacija pri učitavanju
+    // Prikaz notifikacija i opcije brisanja za administratora
     document.addEventListener('DOMContentLoaded', () => {
-        // Simuliramo provjeru ulogovanog korisnika (možeš prilagoditi prema svom sistemu prijave, npr. localStorage.getItem('currentUser'))
-        // Za testiranje, ukoliko u localStorage postaviš trenutni email na admin@gnail.com:
-        const currentUserEmail = localStorage.getItem('logged_user_email') || 'admin@gnail.com'; // Ovdje postavi svoju provjeru
+        const currentUserEmail = localStorage.getItem('logged_user_email') || 'admin@gnail.com';
 
         if (currentUserEmail === 'admin@gnail.com') {
-            const adminPanel = document.getElementById('adminPanel');
-            const requestsList = document.getElementById('adminRequestsList');
+            prikaziZahtjeveAdminu();
+        }
+    });
+
+    function prikaziZahtjeveAdminu() {
+        const adminPanel = document.getElementById('adminPanel');
+        const requestsList = document.getElementById('adminRequestsList');
+        
+        const savedRequests = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
+        
+        if (savedRequests.length > 0) {
+            adminPanel.style.display = 'block';
+            requestsList.innerHTML = '';
             
-            const savedRequests = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
-            
-            if (savedRequests.length > 0) {
-                adminPanel.style.display = 'block';
-                requestsList.innerHTML = '';
-                
-                savedRequests.forEach((req, index) => {
-                    requestsList.innerHTML += `
-                        <div class="request-item">
+            savedRequests.forEach((req, index) => {
+                requestsList.innerHTML += `
+                    <div class="request-item">
+                        <div>
                             <strong>#${index + 1} Zahtjev</strong><br>
                             👤 <b>Ime:</b> ${req.ime}<br>
                             🏢 <b>Firma:</b> ${req.firma || 'Nije navedeno'}<br>
@@ -356,14 +381,26 @@
                             📧 <b>Email:</b> ${req.email}<br>
                             ⏱️ <b>Datum:</b> ${new Date(req.datum).toLocaleString()}
                         </div>
-                    `;
-                });
-            } else {
-                adminPanel.style.display = 'block';
-                requestsList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Trenutno nema novih zahtjeva za aktivaciju.</p>';
-            }
+                        <button class="btn-delete" onclick="obrisiZahtjev(${index})">🗑️ Obriši</button>
+                    </div>
+                `;
+            });
+        } else {
+            adminPanel.style.display = 'block';
+            requestsList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Trenutno nema novih zahtjeva za aktivaciju.</p>';
         }
-    });
+    }
+
+    // Funkcija za brisanje pojedinačnog zahtjeva
+    function obrisiZahtjev(index) {
+        let savedRequests = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
+        
+        if (confirm('Da li ste sigurni da želite obrisati ovaj obrađeni zahtjev?')) {
+            savedRequests.splice(index, 1); // Ukloni iz niza
+            localStorage.setItem('AI_ZAHTJEVI', JSON.stringify(savedRequests));
+            prikaziZahtjeveAdminu(); // Osvježi prikaz
+        }
+    }
 
     function otvoriZahtjevModal() {
         document.getElementById('zahtjevModal').classList.add('active');
@@ -392,12 +429,10 @@
             datum: new Date().toISOString()
         };
 
-        // 1. Snimanje u browser (localStorage)
         let postojeciZahtjevi = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
         postojeciZahtjevi.push(zahtjevData);
         localStorage.setItem('AI_ZAHTJEVI', JSON.stringify(postojeciZahtjevi));
 
-        // 2. Automatsko generisanje JSON fajla za download
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(zahtjevData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
@@ -406,11 +441,9 @@
         downloadAnchor.click();
         downloadAnchor.remove();
 
-        alert('Uspješno ste poslali zahtjev! Podaci su sačuvani u pretraživaču i preuzet je JSON fajl.');
+        alert('Uspješno ste poslali zahtjev! Podaci su sačuvani u pretraživaču.');
         zatvoriZahtjevModal();
-        
-        // Osvježi stranicu ako je admin u pitanju da odmah vidi notifikaciju
-        location.reload();
+        prikaziZahtjeveAdminu();
     }
 </script>
 
