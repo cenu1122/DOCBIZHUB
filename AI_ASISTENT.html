@@ -170,6 +170,35 @@
             background-color: var(--primary-hover);
         }
 
+        /* Modal za zahtjev */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%; max-width: 500px;
+            padding: 30px; border-radius: 16px;
+            border: 1px solid #334155;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .modal-content h2 { color: var(--text-main); margin-bottom: 5px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.9rem; color: var(--text-muted); }
+        .form-group input {
+            padding: 10px; border-radius: 8px; border: 1px solid #334155;
+            background: #0f172a; color: white; font-size: 1rem;
+        }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-close { background: #64748b; }
+
         .usage-note {
             background-color: var(--card-bg);
             border-left: 4px solid var(--accent);
@@ -197,7 +226,6 @@
 <div class="container">
     <header>
         <div class="translate-wrapper">
-            <!-- Ovdje se generiše filtrirana lista jezika -->
             <div id="google_translate_element"></div>
         </div>
         <h1>AI Glasovni Asistent za Vaše Poslovanje</h1>
@@ -205,7 +233,6 @@
     </header>
 
     <div class="pricing-grid">
-        <!-- Jedinstveni paket od 15$ -->
         <div class="card">
             <div class="badge">SVE UKLJUČENO</div>
             <h3>AI Sekretarica</h3>
@@ -217,7 +244,7 @@
                 <li>Baza podataka, snimci i transkripti poziva</li>
                 <li>Napredna detekcija sekretarice (AMD)</li>
             </ul>
-            <a href="#kontakt" class="btn">Aktivirajte Asistenta</a>
+            <button class="btn" onclick="otvoriZahtjevModal()">Aktivirajte Asistenta</button>
         </div>
     </div>
 
@@ -231,7 +258,36 @@
     </footer>
 </div>
 
-<!-- Globalna konfiguracija za Google Translate prije učitavanja skripte -->
+<!-- Modal Forma za Zahtjev -->
+<div class="modal-overlay" id="zahtjevModal">
+    <div class="modal-content">
+        <h2>Zahtjev za AI Asistenta</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Unesite podatke da podnesete zahtjev za aktivaciju.</p>
+        
+        <div class="form-group">
+            <label>Ime i prezime:</label>
+            <input type="text" id="zIme" placeholder="Vaše ime">
+        </div>
+        <div class="form-group">
+            <label>Naziv firme:</label>
+            <input type="text" id="zFirma" placeholder="Naziv vaše firme">
+        </div>
+        <div class="form-group">
+            <label>Telefon za pozive:</label>
+            <input type="text" id="zTelefon" placeholder="+387...">
+        </div>
+        <div class="form-group">
+            <label>Email adresa:</label>
+            <input type="email" id="zEmail" placeholder="vas@email.com">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn" onclick="snimiZahtjev()">Pošalji i Sačuvaj</button>
+            <button class="btn btn-close" onclick="zatvoriZahtjevModal()">Otkaži</button>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -243,6 +299,53 @@
     }
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+    function otvoriZahtjevModal() {
+        document.getElementById('zahtjevModal').classList.add('active');
+    }
+
+    function zatvoriZahtjevModal() {
+        document.getElementById('zahtjevModal').classList.remove('active');
+    }
+
+    function snimiZahtjev() {
+        const ime = document.getElementById('zIme').value;
+        const firma = document.getElementById('zFirma').value;
+        const telefon = document.getElementById('zTelefon').value;
+        const email = document.getElementById('zEmail').value;
+
+        if(!ime || !telefon) {
+            alert('Molimo unesite barem ime i telefon!');
+            return;
+        }
+
+        const zahtjevData = {
+            ime,
+            firma,
+            telefon,
+            email,
+            datum: new Date().toISOString()
+        };
+
+        // 1. Snimanje u browser (localStorage)
+        let postojeciZahtjevi = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
+        postojeciZahtjevi.push(zahtjevData);
+        localStorage.setItem('AI_ZAHTJEVI', JSON.stringify(postojeciZahtjevi));
+
+        // 2. Automatsko generisanje JSON fajla za download (ili slanje na GitHub)
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(zahtjevData, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `zahtjev_${Date.now()}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+
+        alert('Uspješno ste poslali zahtjev! Podaci su sačuvani u pretraživaču i preuzet je JSON fajl.');
+        zatvoriZahtjevModal();
+    }
+</script>
 
 </body>
 </html>
