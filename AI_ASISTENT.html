@@ -170,6 +170,29 @@
             background-color: var(--primary-hover);
         }
 
+        /* Admin Notifikacija Panel */
+        .admin-notification-panel {
+            background: #1e293b;
+            border: 2px solid #22c55e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.2);
+        }
+        .admin-notification-panel h3 {
+            color: #22c55e;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .request-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4f46e5;
+            font-size: 0.95rem;
+        }
+
         /* Modal za zahtjev */
         .modal-overlay {
             display: none;
@@ -231,6 +254,12 @@
         <h1>AI Glasovni Asistent za Vaše Poslovanje</h1>
         <p>Automatizujte pozive, prodaju i podršku uz naprednu AI sekretaricu.</p>
     </header>
+
+    <!-- Ovdje se dinamički prikazuje obavijest za admina -->
+    <div id="adminPanel" style="display: none;" class="admin-notification-panel">
+        <h3>🔔 Admin Notifikacija: Primljeni Zahtjevi za AI Asistenta</h3>
+        <div id="adminRequestsList"></div>
+    </div>
 
     <div class="pricing-grid">
         <div class="card">
@@ -301,6 +330,41 @@
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
+    // Provjera administratora i prikaz notifikacija pri učitavanju
+    document.addEventListener('DOMContentLoaded', () => {
+        // Simuliramo provjeru ulogovanog korisnika (možeš prilagoditi prema svom sistemu prijave, npr. localStorage.getItem('currentUser'))
+        // Za testiranje, ukoliko u localStorage postaviš trenutni email na admin@gnail.com:
+        const currentUserEmail = localStorage.getItem('logged_user_email') || 'admin@gnail.com'; // Ovdje postavi svoju provjeru
+
+        if (currentUserEmail === 'admin@gnail.com') {
+            const adminPanel = document.getElementById('adminPanel');
+            const requestsList = document.getElementById('adminRequestsList');
+            
+            const savedRequests = JSON.parse(localStorage.getItem('AI_ZAHTJEVI') || '[]');
+            
+            if (savedRequests.length > 0) {
+                adminPanel.style.display = 'block';
+                requestsList.innerHTML = '';
+                
+                savedRequests.forEach((req, index) => {
+                    requestsList.innerHTML += `
+                        <div class="request-item">
+                            <strong>#${index + 1} Zahtjev</strong><br>
+                            👤 <b>Ime:</b> ${req.ime}<br>
+                            🏢 <b>Firma:</b> ${req.firma || 'Nije navedeno'}<br>
+                            📞 <b>Telefon:</b> ${req.telefon}<br>
+                            📧 <b>Email:</b> ${req.email}<br>
+                            ⏱️ <b>Datum:</b> ${new Date(req.datum).toLocaleString()}
+                        </div>
+                    `;
+                });
+            } else {
+                adminPanel.style.display = 'block';
+                requestsList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Trenutno nema novih zahtjeva za aktivaciju.</p>';
+            }
+        }
+    });
+
     function otvoriZahtjevModal() {
         document.getElementById('zahtjevModal').classList.add('active');
     }
@@ -333,7 +397,7 @@
         postojeciZahtjevi.push(zahtjevData);
         localStorage.setItem('AI_ZAHTJEVI', JSON.stringify(postojeciZahtjevi));
 
-        // 2. Automatsko generisanje JSON fajla za download (ili slanje na GitHub)
+        // 2. Automatsko generisanje JSON fajla za download
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(zahtjevData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
@@ -344,6 +408,9 @@
 
         alert('Uspješno ste poslali zahtjev! Podaci su sačuvani u pretraživaču i preuzet je JSON fajl.');
         zatvoriZahtjevModal();
+        
+        // Osvježi stranicu ako je admin u pitanju da odmah vidi notifikaciju
+        location.reload();
     }
 </script>
 
