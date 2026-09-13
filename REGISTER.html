@@ -3,342 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>DocBizHub | Pametno Upravljanje Dokumentima i Pretraga</title>
+  <title>Registracija | DocBizHub</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: #f4f6f9; color: #2b2d42; }
-    
-    /* Navigation Bar */
-    header { background-color: #2b2d42; color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.15); flex-wrap: wrap; gap: 15px; }
-    .logo { font-size: 1.6rem; font-weight: bold; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-    
-    nav ul { display: flex; list-style: none; align-items: center; flex-wrap: wrap; gap: 15px; }
-    nav ul li a { color: #fff; text-decoration: none; font-weight: 500; transition: color 0.3s; }
-    nav ul li a:hover { color: #d90429; }
-
-    /* Language Switcher */
-    .lang-select { background: #4f46e5; color: #fff; border: 1px solid #818cf8; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; outline: none; font-weight: bold; }
-
-    /* Hero Section */
-    #hero { background: linear-gradient(rgba(43, 45, 66, 0.85), rgba(26, 28, 41, 0.9)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat; color: #fff; text-align: center; padding: 130px 20px; }
-    #hero h1 { font-size: 3.2rem; margin-bottom: 15px; font-weight: 800; }
-    #hero p { font-size: 1.3rem; max-width: 750px; margin: 0 auto 35px auto; color: #cbd5e1; }
-    
-    /* Hero Buttons Container */
-    .hero-buttons { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
-    .btn { padding: 14px 32px; font-size: 1.1rem; font-weight: bold; border-radius: 30px; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; display: inline-block; }
-    .btn-primary { background-color: #d90429; color: #fff; box-shadow: 0 4px 15px rgba(217, 4, 41, 0.4); }
-    .btn-primary:hover { background-color: #b50322; transform: translateY(-3px); }
-    .btn-secondary { background-color: transparent; color: #fff; border: 2px solid #fff; }
-    .btn-secondary:hover { background-color: #fff; color: #2b2d42; transform: translateY(-3px); }
-
-    /* Common Section Layout */
-    section { padding: 70px 20px; max-width: 1200px; margin: auto; }
-    h2 { text-align: center; margin-bottom: 30px; color: #2b2d42; font-size: 2.2rem; }
-
-    /* Cards Grid */
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
-    .card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #d90429; transition: transform 0.3s; }
-    .card:hover { transform: translateY(-5px); }
-    .card h3 { margin-bottom: 15px; color: #2b2d42; }
-
-    /* Reviews Section */
-    .reviews-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-    .review-card { background: #fff; padding: 25px; border-radius: 15px; width: 320px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); font-style: italic; border-left: 5px solid #4f46e5; }
-    .review-card p { margin-bottom: 12px; color: #4a4e69; }
-    .review-card strong { display: block; font-style: normal; color: #2b2d42; text-align: right; }
-
-    /* Contact Form */
-    form { max-width: 600px; margin: auto; display: flex; flex-direction: column; background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    input, textarea { padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; outline: none; }
-    input:focus, textarea:focus { border-color: #d90429; }
-
-    #formStatus { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.95rem; }
-
-    /* Footer */
-    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 25px 0; margin-top: 50px; }
-
-    /* MODAL (Iskacući prozor za upozorenje prevarantima) */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
-    .modal-content { background: #fff; width: 100%; max-width: 500px; padding: 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 6px solid #d90429; text-align: center; animation: modalPop 0.3s ease-out; }
-    @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-content h3 { color: #d90429; font-size: 1.5rem; margin-bottom: 15px; }
-    .modal-content p { font-size: 1rem; color: #4a4e69; margin-bottom: 20px; line-height: 1.5; text-align: left; }
-    .modal-checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 25px; text-align: left; background: #fff5f5; padding: 12px; border-radius: 10px; border: 1px solid #fed7d7; }
-    .modal-checkbox-group input[type="checkbox"] { width: 22px; height: 22px; accent-color: #d90429; cursor: pointer; margin-top: 2px; flex-shrink: 0; }
-    .modal-checkbox-group label { font-size: 0.95rem; color: #2b2d42; cursor: pointer; font-weight: 600; }
-    .btn-modal { background-color: #d90429; color: #fff; padding: 12px 30px; border: none; border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; width: 100%; opacity: 0.5; pointer-events: none; }
-    .btn-modal.active { opacity: 1; pointer-events: auto; }
-    .btn-modal:hover { background-color: #b50322; }
-
-    @media (max-width: 768px) {
-      header { flex-direction: column; gap: 15px; text-align: center; }
-      nav ul { justify-content: center; }
-      #hero h1 { font-size: 2.3rem; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: #f4f6f9; 
+      color: #2b2d42; 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; 
     }
+    
+    header { 
+      background-color: #2b2d42; 
+      color: #fff; 
+      padding: 15px 5%; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+    }
+    .logo { font-size: 1.5rem; font-weight: bold; color: #fff; text-decoration: none; transition: color 0.3s; }
+    .logo:hover { color: #d90429; }
+    
+    .main-container { 
+      flex: 1; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 40px 20px; 
+    }
+    .login-card { 
+      background: #fff; 
+      width: 100%; 
+      max-width: 420px; 
+      padding: 35px; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 25px rgba(43, 45, 66, 0.08); 
+      border-top: 5px solid #2b2d42; 
+    }
+    .login-card h2 { text-align: center; color: #2b2d42; margin-bottom: 8px; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 25px; }
+
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #2b2d42; }
+    
+    .input-wrapper { position: relative; }
+    .form-group input { 
+      width: 100%; 
+      padding: 12px 40px 12px 12px; 
+      border: 1px solid #ddd; 
+      border-radius: 10px; 
+      font-size: 1rem; 
+      outline: none; 
+    }
+    .form-group input:focus { border-color: #d90429; }
+
+    .toggle-password { 
+      position: absolute; 
+      right: 12px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      background: none; 
+      border: none; 
+      cursor: pointer; 
+      font-size: 1.1rem; 
+      color: #666; 
+    }
+
+    .btn-submit { 
+      width: 100%; 
+      background-color: #d90429; 
+      color: #fff; 
+      padding: 14px; 
+      border: none; 
+      border-radius: 10px; 
+      font-size: 1.1rem; 
+      font-weight: bold; 
+      cursor: pointer; 
+      transition: background 0.3s; 
+      margin-top: 10px;
+    }
+    .btn-submit:hover { background-color: #b50322; }
+
+    #statusMessage { margin-top: 15px; text-align: center; font-weight: bold; word-break: break-word; font-size: 0.95rem; }
+    
+    .footer-links { text-align: center; margin-top: 20px; font-size: 0.95rem; }
+    .footer-links a { color: #d90429; text-decoration: none; font-weight: bold; }
+    .footer-links a:hover { text-decoration: underline; }
+
+    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; }
   </style>
 </head>
 <body>
 
-  <!-- ISKAČUĆI PROZOR (MODAL) ZA PROVJERU I UPOZORENJE -->
-  <div id="warningModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3>⚠️ VAŽNA OBAVIJEST - SAMO ZA POŠTENE FIRME</h3>
-      <p>
-        Ova platforma je namijenjena <b>isključivo iskrenim i poštenim firmama</b> koje žele pravu i sigurnu poslovnu saradnju. 
-        <br><br>
-        Sve poruke, unosi i aktivnosti se detaljno pregledaju. Svaki pokušaj prevare, lažnog predstavljanja ili zloupotrebe rezultira <b>trenutnom trajnom blokadom</b> i prijavom nadležnim organima. Ako ste prevarant, nemojte se registrovati džaba!
-      </p>
-      
-      <div class="modal-checkbox-group">
-        <input type="checkbox" id="readCheckbox" onchange="toggleModalButton()">
-        <label for="readCheckbox">Pročitao/la sam upozorenje i potvrđujem da zastupam poštenu i legitimnu firmu.</label>
-      </div>
+  <header>
+    <a href="index.html" class="logo">📄 DocBizHub</a>
+  </header>
 
-      <button id="modalOkBtn" class="btn-modal" onclick="closeModal()">OK - Razumijem i slažem se</button>
+  <div class="main-container">
+    <div class="login-card">
+      <h2>Kreirajte profil</h2>
+      <p class="subtitle">Registrujte se na DocBizHub platformu</p>
+
+      <form id="registerForm" onsubmit="event.preventDefault(); handleRegister();">
+        <div class="form-group">
+          <label>Ime i prezime / Naziv firme</label>
+          <input type="text" id="fullName" placeholder="Vaše ime ili naziv" required>
+        </div>
+
+        <div class="form-group">
+          <label>E-mail Adresa</label>
+          <input type="email" id="email" placeholder="vas@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Broj telefona</label>
+          <input type="text" id="phone" placeholder="+387..." required>
+        </div>
+
+        <div class="form-group">
+          <label>Lozinka</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Kreirajte lozinku" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" title="Prikaži/Sakrij lozinku">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="registerBtn">REGISTRUJ SE</button>
+      </form>
+
+      <div id="statusMessage"></div>
+
+      <div class="footer-links">
+        Već imate profil? <a href="LOGIN.html">Prijavite se ovdje</a>
+      </div>
     </div>
   </div>
 
-  <header>
-    <a href="#hero" class="logo">📄 DocBizHub</a>
-    <nav>
-      <ul>
-        <li><a href="#hero" data-i18n="nav_home">Početna</a></li>
-        <li><a href="#about" data-i18n="nav_about">O nama</a></li>
-        <li><a href="#why-us" data-i18n="nav_why">Zašto mi</a></li>
-        <li><a href="#reviews" data-i18n="nav_reviews">Iskustva</a></li>
-        <li><a href="#contact" data-i18n="nav_contact">Kontakt</a></li>
-        <li>
-          <select id="langSwitcher" class="lang-select" onchange="changeLanguage(this.value)">
-            <option value="bs">BS 🇧🇦</option>
-            <option value="en">EN 🇬🇧</option>
-            <option value="de">DE 🇩🇪</option>
-          </select>
-        </li>
-      </ul>
-    </nav>
-  </header>
-
-  <section id="hero">
-    <h1 data-i18n="hero_title">Pametno Upravljanje Dokumentima i Pretraga</h1>
-    <p data-i18n="hero_desc">DocBizHub je vaša centralna platforma za brzu analizu, pretragu poslovnih resursa i naprednu saradnju uz podršku vještačke inteligencije.</p>
-    
-    <!-- Prvi red dugmadi: Prijava i Registracija -->
-    <div class="hero-buttons">
-      <a href="LOGIN.html" class="btn btn-primary" data-i18n="btn_login">Prijava</a>
-      <a href="REGISTER.html" class="btn btn-secondary" data-i18n="btn_register">Registracija</a>
-    </div>
-
-    <!-- Drugi red dugmadi: Dashboard i Pretraga -->
-    <div class="hero-buttons">
-      <a href="DASHBOARD.html" class="btn btn-secondary" data-i18n="btn_dashboard">Otvori Dashboard</a>
-      <a href="PRETRAGA_INTERNET.html" class="btn btn-secondary" data-i18n="btn_search">Pretraga Tržišta</a>
-    </div>
-  </section>
-
-  <section id="about">
-    <h2 data-i18n="about_title">O Našoj Platformi</h2>
-    <div style="text-align: center; max-width: 800px; margin: auto;">
-      <p data-i18n="about_text1">DocBizHub je nastao s ciljem da olakša svakodnevne administrativne i poslovne procese. Naša platforma kombinuje moć moderne tehnologije, sigurnih baza podataka i vještačke inteligencije.</p>
-      <br>
-      <p data-i18n="about_text2">Bilo da vodite mali biznis, tražite poslovne partnere ili želite da organizujete svoje dokumente na jednom mjestu, DocBizHub vam pruža sve alate za uspjeh.</p>
-    </div>
-  </section>
-
-  <section id="why-us">
-    <h2 data-i18n="why_title">Zašto Izabrati DocBizHub</h2>
-    <div class="grid-container">
-      <div class="card">
-        <h3 data-i18n="why_1_title">⚡ Brza i Efikasna Pretraga</h3>
-        <p data-i18n="why_1_desc">Napredni alati i asistenti omogućavaju vam da u sekundi pronađete tražene podatke i resurse.</p>
-      </div>
-      <div class="card">
-        <h3 data-i18n="why_2_title">🔒 Sigurnost Podataka</h3>
-        <p data-i18n="why_2_desc">Vaši dokumenti i pretrage su zaštićeni uz naprednu Supabase enkripciju i zaštitu.</p>
-      </div>
-      <div class="card">
-        <h3 data-i18n="why_3_title">🤖 Pametna AI Integracija</h3>
-        <p data-i18n="why_3_desc">Korištenje moćnih AI modela za automatsko generisanje ideja, analizu upita i rješavanje zadataka.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="reviews">
-    <h2 data-i18n="reviews_title">Iskustva Naših Korisnika</h2>
-    <div class="reviews-container">
-      <div class="review-card">
-        <p data-i18n="rev_1_text">"DocBizHub nam je uštedio stotine sati rada. Pretraga firmi i asistenti su nevjerovatno korisni!"</p>
-        <strong>- Emir H., Direktor 📁</strong>
-      </div>
-      <div class="review-card">
-        <p data-i18n="rev_2_text">"Izuzetno jednostavan interfejs i moćne funkcije. Sistem automatskog slanja upita adminu radi besprijekorno."</p>
-        <strong>- Selma K., Menadžer 💼</strong>
-      </div>
-      <div class="review-card">
-        <p data-i18n="rev_3_text">"Platforma koja nudi sve na jednom mjestu. Topla preporuka svim preduzetnicima."</p>
-        <strong>- Nermin M., Preduzetnik ✨</strong>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2 data-i18n="contact_title">Imate Pitanja? Kontaktirajte Nas</h2>
-    <form id="contactForm" onsubmit="handleContactSubmit(event)">
-      <input type="text" id="contactName" placeholder="Vaše ime" data-i18n-ph="ph_name" required>
-      <input type="email" id="contactEmail" placeholder="Vaš E-mail" data-i18n-ph="ph_email" required>
-      <textarea id="contactMessage" placeholder="Vaša poruka" rows="5" data-i18n-ph="ph_message" required></textarea>
-      <button type="submit" class="btn btn-primary" style="background-color: #2b2d42; color: white;" data-i18n="btn_send">Pošalji Upit</button>
-      <div id="formStatus"></div>
-    </form>
-  </section>
-
   <footer>
-    <p>© 2026 DocBizHub. <span data-i18n="footer_rights">Sva prava zadržana.</span></p>
+    <p>© 2026 DocBizHub. Sva prava zadržana.</p>
   </footer>
 
   <script>
-    // SUPABASE KONFIGURACIJA
     const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Kontrola modala (aktivacija dugmeta tek kada se klikne checkbox)
-    function toggleModalButton() {
-      const checkbox = document.getElementById('readCheckbox');
-      const btn = document.getElementById('modalOkBtn');
-      if (checkbox.checked) {
-        btn.classList.add('active');
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
       } else {
-        btn.classList.remove('active');
+        passwordInput.type = 'password';
       }
     }
 
-    function closeModal() {
-      const modal = document.getElementById('warningModal');
-      modal.style.display = 'none';
-    }
+    async function handleRegister() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+      const statusDiv = document.getElementById('statusMessage');
+      const registerBtn = document.getElementById('registerBtn');
 
-    // Automatsko hvatanje izvora
-    (function sacuvajDolazniIzvor() {
-      const params = new URLSearchParams(window.location.search);
-      const izvorIzUrl = params.get('izvor');
-
-      if (izvorIzUrl) {
-        localStorage.setItem('dolazni_izvor', izvorIzUrl);
-        console.log("Zapamćen dolazni izvor:", izvorIzUrl);
+      if (!fullName || !email || !phone || !password) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = 'Molimo popunite sva polja!';
+        return;
       }
-    })();
-
-    // Prijevodi
-    const translations = {
-      bs: {
-        nav_home: "Početna", nav_about: "O nama", nav_why: "Zašto mi", nav_reviews: "Iskustva", nav_contact: "Kontakt",
-        btn_login: "Prijava", btn_register: "Registracija",
-        hero_title: "Pametno Upravljanje Dokumentima i Pretraga",
-        hero_desc: "DocBizHub je vaša centralna platforma za brzu analizu, pretragu poslovnih resursa i naprednu saradnju uz podršku vještačke inteligencije.",
-        btn_dashboard: "Otvori Dashboard", btn_search: "Pretraga Tržišta",
-        about_title: "O Našoj Platformi",
-        about_text1: "DocBizHub je nastao s ciljem da olakša svakodnevne administrativne i poslovne procese. Naša platforma kombinuje moć moderne tehnologije, sigurnih baza podataka i vještačke inteligencije.",
-        about_text2: "Bilo da vodite mali biznis, tražite poslovne partnere ili želite da organizujete svoje dokumente na jednom mjestu, DocBizHub vam pruža sve alate za uspjeh.",
-        why_title: "Zašto Izabrati DocBizHub",
-        why_1_title: "⚡ Brza i Efikasna Pretraga", why_1_desc: "Napredni alati i asistenti omogućavaju vam da u sekundi pronađete tražene podatke i resurse.",
-        why_2_title: "🔒 Sigurnost Podataka", why_2_desc: "Vaši dokumenti i pretrage su zaštićeni uz naprednu Supabase enkripciju i zaštitu.",
-        why_3_title: "🤖 Pametna AI Integracija", why_3_desc: "Korištenje moćnih AI modela za automatsko generisanje ideja, analizu upita i rješavanje zadataka.",
-        reviews_title: "Iskustva Naših Korisnika",
-        rev_1_text: '"DocBizHub nam je uštedio stotine sati rada. Pretraga firmi i asistenti su nevjerovatno korisni!"',
-        rev_2_text: '"Izuzetno jednostavan interfejs i moćne funkcije. Sistem automatskog slanja upita adminu radi besprijekorno."',
-        rev_3_text: '"Platforma koja nudi sve na jednom mjestu. Topla preporuka svim preduzetnicima."',
-        contact_title: "Imate Pitanja? Kontaktirajte Nas",
-        ph_name: "Vaše ime", ph_email: "Vaš E-mail", ph_message: "Vaša poruka", btn_send: "Pošalji Upit",
-        footer_rights: "Sva prava zadržana."
-      },
-      en: {
-        nav_home: "Home", nav_about: "About Us", nav_why: "Why Us", nav_reviews: "Reviews", nav_contact: "Contact",
-        btn_login: "Login", btn_register: "Register",
-        hero_title: "Smart Document Management & Search",
-        hero_desc: "DocBizHub is your central platform for fast analysis, business resource search, and advanced AI-powered collaboration.",
-        btn_dashboard: "Open Dashboard", btn_search: "Market Search",
-        about_title: "About Our Platform",
-        about_text1: "DocBizHub was created to simplify everyday administrative and business processes. Our platform combines modern technology, secure databases, and artificial intelligence.",
-        about_text2: "Whether you run a small business, look for partners, or organize documents in one place, DocBizHub provides all tools for success.",
-        why_title: "Why Choose DocBizHub",
-        why_1_title: "⚡ Fast & Efficient Search", why_1_desc: "Advanced tools and assistants let you find requested data and resources in seconds.",
-        why_2_title: "🔒 Data Security", why_2_desc: "Your documents and searches are protected with advanced Supabase encryption.",
-        why_3_title: "🤖 Smart AI Integration", why_3_desc: "Using powerful AI models for automated idea generation, query analysis, and task resolution.",
-        reviews_title: "User Reviews",
-        rev_1_text: '"DocBizHub saved us hundreds of hours of work. Company search and assistants are incredibly useful!"',
-        rev_2_text: '"Extremely simple interface and powerful features. The automatic query submission to admin works flawlessly."',
-        rev_3_text: '"A platform that offers everything in one place. Highly recommended for all entrepreneurs."',
-        contact_title: "Have Questions? Contact Us",
-        ph_name: "Your Name", ph_email: "Your E-mail", ph_message: "Your Message", btn_send: "Send Inquiry",
-        footer_rights: "All rights reserved."
-      },
-      de: {
-        nav_home: "Startseite", nav_about: "Über uns", nav_why: "Warum wir", nav_reviews: "Bewertungen", nav_contact: "Kontakt",
-        btn_login: "Anmelden", btn_register: "Registrieren",
-        hero_title: "Intelligentes Dokumentenmanagement & Suche",
-        hero_desc: "DocBizHub ist Ihre zentrale Plattform für schnelle Analyse, Geschäftssuche und KI-gestützte Zusammenarbeit.",
-        btn_dashboard: "Dashboard Öffnen", btn_search: "Marktsuche",
-        about_title: "Über Unsere Plattform",
-        about_text1: "DocBizHub wurde entwickelt, um administrative und geschäftliche Prozesse zu vereinfachen. Unsere Plattform kombiniert moderne Technologie, sichere Datenbanken und Künstliche Intelligenz.",
-        about_text2: "Egal ob Sie ein kleines Unternehmen führen oder Dokumente an einem Ort organisieren möchten, DocBizHub bietet alle Werkzeuge.",
-        why_title: "Warum DocBizHub Wählen",
-        why_1_title: "⚡ Schnelle Suche", why_1_desc: "Fortschrittliche Tools und Assistenten helfen Ihnen, Daten in Sekundenschnelle zu finden.",
-        why_2_title: "🔒 Datensicherheit", why_2_desc: "Ihre Dokumente und Suchanfragen sind durch fortschrittliche Supabase-Verschlüsselung geschützt.",
-        why_3_title: "🤖 Intelligente KI-Integration", why_3_desc: "Nutzen Sie leistungsstarke KI-Modelle für automatisierte Analysen und Aufgabenlösungen.",
-        reviews_title: "Kundenbewertungen",
-        rev_1_text: '"DocBizHub hat uns hunderte Stunden Arbeit erspart. Die Firmensuche und Assistenten sind extrem nützlich!"',
-        rev_2_text: '"Äusserst einfache Benutzeroberfläche und leistungsstarke Funktionen. Das System funktioniert einwandfrei."',
-        rev_3_text: '"Eine Plattform, die alles an einem Ort bietet. Sehr zu empfehlen für alle Unternehmer."',
-        contact_title: "Haben Sie Fragen? Kontaktieren Sie uns",
-        ph_name: "Ihr Name", ph_email: "Ihre E-Mail", ph_message: "Ihre Nachricht", btn_send: "Anfrage Senden",
-        footer_rights: "Alle Rechte vorbehalten."
-      }
-    };
-
-    function changeLanguage(lang) {
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
-      });
-
-      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        const key = el.getAttribute('data-i18n-ph');
-        if (translations[lang] && translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
-      });
-    }
-
-    // Slanje kontakt poruke
-    async function handleContactSubmit(event) {
-      event.preventDefault();
-      
-      const ime = document.getElementById('contactName').value.trim();
-      const mail = document.getElementById('contactEmail').value.trim();
-      const poruka = document.getElementById('contactMessage').value.trim();
-      const statusDiv = document.getElementById('formStatus');
 
       statusDiv.style.color = '#0056b3';
-      statusDiv.textContent = 'Slanje poruke u toku...';
+      statusDiv.textContent = 'Registracija u toku...';
+      registerBtn.disabled = true;
 
       try {
-        const { error } = await _supabase
-          .from('KONTAKT_PORUKE')
-          .insert([
-            { ime: ime, mail: mail, poruka: poruka, status: 'Nova' }
-          ]);
+        // 1. Kreiranje korisnika preko Supabase Auth sistema
+        const { data: authData, error: authError } = await _supabase.auth.signUp({
+          email: email,
+          password: password
+        });
 
-        if (error) throw error;
+        if (authError) throw authError;
+
+        const userId = authData.user ? authData.user.id : null;
+
+        // 2. Upis podataka u tabelu POSAO_KORISNICI koristeći tvoje tačne nazive kolona
+        if (userId) {
+          const { error: dbError } = await _supabase
+            .from('POSAO_KORISNICI')
+            .insert([
+              { 
+                USER: userId, 
+                IME: fullName, 
+                MAIL: email, 
+                TELEFON: phone, 
+                IS_ONLINE: true, 
+                LAST_SEEN: new Date().toLocaleDateString() 
+              }
+            ]);
+
+          if (dbError) {
+            console.warn("Greška pri upisu u tabelu POSAO_KORISNICI:", dbError.message);
+          }
+        }
 
         statusDiv.style.color = 'green';
-        statusDiv.textContent = 'Vaša poruka je uspješno poslata! Odgovorit ćemo vam uskoro.';
-        document.getElementById('contactForm').reset();
+        statusDiv.textContent = 'Registracija uspješna! Preusmjeravanje...';
+
+        setTimeout(() => {
+          window.location.href = 'DASHBOARD.html';
+        }, 1500);
+
       } catch (err) {
         statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Došlo je do greške pri slanju: ' + err.message;
+        statusDiv.textContent = 'Greška: ' + err.message;
+        registerBtn.disabled = false;
       }
     }
   </script>
