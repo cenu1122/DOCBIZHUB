@@ -197,6 +197,7 @@
 <div class="container">
     <header>
         <div class="translate-wrapper">
+            <!-- Ovdje se generiše filtrirana lista jezika -->
             <div id="google_translate_element"></div>
         </div>
         <h1>AI Glasovni Asistent za Vaše Poslovanje</h1>
@@ -204,7 +205,7 @@
     </header>
 
     <div class="pricing-grid">
-        <!-- Jedinstveni paket -->
+        <!-- Jedinstveni paket od 15$ -->
         <div class="card">
             <div class="badge">SVE UKLJUČENO</div>
             <h3>AI Sekretarica</h3>
@@ -230,11 +231,12 @@
     </footer>
 </div>
 
-<!-- Google Translate Script za sve svjetske jezike -->
+<!-- Google Translate Script sa filtriranjem željenih jezika u listi -->
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'bs',
+            includedLanguages: 'bs,hr,sr,en,de,fr,it,es', // Ovdje možeš dodati ili ukloniti kodove željenih jezika odvojene zarezom
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false
         }, 'google_translate_element');
