@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hr">
+<html lang="bs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +37,29 @@
 
         header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .translate-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        #google_translate_element select {
+            padding: 4px 8px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #2b2d42;
+            outline: none;
+            cursor: pointer;
         }
 
         header h1 {
@@ -54,21 +76,22 @@
         }
 
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            display: flex;
+            justify-content: center;
             margin-bottom: 50px;
         }
 
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 30px;
+            padding: 40px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border: 1px solid #334155;
+            border: 2px solid var(--primary);
             display: flex;
             flex-direction: column;
             position: relative;
+            width: 100%;
+            max-width: 450px;
             transition: transform 0.3s ease;
         }
 
@@ -76,15 +99,11 @@
             transform: translateY(-5px);
         }
 
-        .card.popular {
-            border: 2px solid var(--primary);
-        }
-
         .badge {
             position: absolute;
             top: -12px;
             right: 20px;
-            background-color: var(--primary);
+            background-color: var(--accent);
             color: white;
             padding: 4px 12px;
             font-size: 0.8rem;
@@ -93,15 +112,17 @@
         }
 
         .card h3 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         .price {
-            font-size: 2.2rem;
+            font-size: 2.8rem;
             font-weight: bold;
             color: var(--text-main);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            text-align: center;
         }
 
         .price span {
@@ -121,6 +142,7 @@
             color: var(--text-muted);
             display: flex;
             align-items: center;
+            font-size: 1.05rem;
         }
 
         .features li::before {
@@ -134,9 +156,9 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -174,48 +196,51 @@
 
 <div class="container">
     <header>
+        <div class="translate-wrapper">
+            <div id="google_translate_element"></div>
+        </div>
         <h1>AI Glasovni Asistent za Vaše Poslovanje</h1>
-        <p>Automatizujte izlazne (outbound) pozive, prodaju i podršku uz naprednu AI tehnologiju.</p>
+        <p>Automatizujte pozive, prodaju i podršku uz naprednu AI sekretaricu.</p>
     </header>
 
     <div class="pricing-grid">
-        <!-- Paket 1 -->
+        <!-- Jedinstveni paket -->
         <div class="card">
-            <h3>Starter Asistent</h3>
-            <div class="price">10$ <span>/ mjesecno</span></div>
+            <div class="badge">SVE UKLJUČENO</div>
+            <h3>AI Sekretarica</h3>
+            <div class="price">15$ <span>/ mjesečno</span></div>
             <ul class="features">
-                <li>Osnovni AI model za razgovore</li>
-                <li>Automatsko biranje brojeva</li>
-                <li>Baza podataka i logovanje poziva</li>
-                <li>Webhooks integracija</li>
+                <li>Odgovaranje na dolazne i odlazne pozive</li>
+                <li>Pametno dogovaranje termina i sastanaka</li>
+                <li>Izvršavanje svih zadataka kao obična sekretarica</li>
+                <li>Baza podataka, snimci i transkripti poziva</li>
+                <li>Napredna detekcija sekretarice (AMD)</li>
             </ul>
-            <a href="#kontakt" class="btn">Izaberi Starter</a>
-        </div>
-
-        <!-- Paket 2 -->
-        <div class="card popular">
-            <div class="badge">PREPORUČENO</div>
-            <h3>Pro Business</h3>
-            <div class="price">20$ <span>/ mjesecno</span></div>
-            <ul class="features">
-                <li>Napredni AI asistent (Brzi odziv)</li>
-                <li>Detekcija sekretarice (AMD)</li>
-                <li>Snimanje razgovora i audio URL-ovi</li>
-                <li>Prioritetna podrška i stabilnost</li>
-            </ul>
-            <a href="#kontakt" class="btn">Izaberi Pro</a>
+            <a href="#kontakt" class="btn">Aktivirajte Asistenta</a>
         </div>
     </div>
 
     <div class="usage-note">
         <h4>Fleksibilna potrošnja minuta</h4>
-        <p>Pored mjesečne pretplate za održavanje sistema, troškovi samog razgovora obračunavaju se po utrošenom vremenu i iznose samo <strong>0,005$ po minuti</strong> razgovora. Plaćate tačno onoliko koliko razgovarate!</p>
+        <p>Pored mjesečne pretplate od 15$ za održavanje sistema, troškovi samog razgovora obračunavaju se po utrošenom vremenu i iznose samo <strong>0,005$ po minuti</strong> razgovora. Plaćate tačno onoliko koliko razgovarate!</p>
     </div>
 
     <footer>
         <p>&copy; 2026 AI Asistent Sistemi. Sva prava zadržana.</p>
     </footer>
 </div>
+
+<!-- Google Translate Script za sve svjetske jezike -->
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'bs',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
