@@ -166,20 +166,24 @@
 
     async function posaljiNotifikacijuUBazu(vrsta, ime, firma, telefon, email, linkStranice) {
       try {
-        await _supabase
+        const { error } = await _supabase
           .from('NOTIFIKACIJE')
           .insert([
             {
-              VRSTA_NOTIFIKACIJE: vrsta,
-              IME: ime,
-              FIRMA: firma,
-              TELEFON: telefon,
-              EMAIL: email,
-              LINK_STRANICE: linkStranice
+              "VRSTA_NOTIFIKACIJE": vrsta,
+              "IME": ime,
+              "FIRMA": firma,
+              "TELEFON": telefon,
+              "EMAIL": email,
+              "LINK_STRANICE": linkStranice
             }
           ]);
+          
+        if (error) {
+          console.error("Greška pri upisu u NOTIFIKACIJE:", error.message);
+        }
       } catch (err) {
-        console.error('Greška pri upisu notifikacije:', err);
+        console.error('Neočekivana greška pri slanju notifikacije:', err);
       }
     }
 
@@ -228,7 +232,7 @@
             ]);
         }
 
-        // 3. Slanje obavijesti u tabelu NOTIFIKACIJE
+        // 3. Slanje obavijesti u tabelu NOTIFIKACIJE (sa tačnim nazivima kolona)
         await posaljiNotifikacijuUBazu(
           'NOVI_CLAN',
           fullName,
