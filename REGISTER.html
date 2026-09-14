@@ -164,6 +164,25 @@
       }
     }
 
+    async function posaljiNotifikacijuUBazu(vrsta, ime, firma, telefon, email, linkStranice) {
+      try {
+        await _supabase
+          .from('NOTIFIKACIJE')
+          .insert([
+            {
+              VRSTA_NOTIFIKACIJE: vrsta,
+              IME: ime,
+              FIRMA: firma,
+              TELEFON: telefon,
+              EMAIL: email,
+              LINK_STRANICE: linkStranice
+            }
+          ]);
+      } catch (err) {
+        console.error('Greška pri upisu notifikacije:', err);
+      }
+    }
+
     async function handleRegister() {
       const fullName = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -183,7 +202,7 @@
       registerBtn.disabled = true;
 
       try {
-        // 1. Kreiranje korisnika preko Supabase Auth sistema
+        // 1. Kreiranje korisnika preko Supabase Auth
         const { data: authData, error: authError } = await _supabase.auth.signUp({
           email: email,
           password: password
@@ -193,9 +212,9 @@
 
         const userId = authData.user ? authData.user.id : null;
 
-        // 2. Upis podataka u tabelu POSAO_KORISNICI koristeći tvoje tačne nazive kolona
+        // 2. Upis u POSAO_KORISNICI
         if (userId) {
-          const { error: dbError } = await _supabase
+          await _supabase
             .from('POSAO_KORISNICI')
             .insert([
               { 
@@ -207,11 +226,17 @@
                 LAST_SEEN: new Date().toLocaleDateString() 
               }
             ]);
-
-          if (dbError) {
-            console.warn("Greška pri upisu u tabelu POSAO_KORISNICI:", dbError.message);
-          }
         }
+
+        // 3. Slanje obavijesti u tabelu NOTIFIKACIJE
+        await posaljiNotifikacijuUBazu(
+          'NOVI_CLAN',
+          fullName,
+          fullName,
+          phone,
+          email,
+          `DASHBOARD.html?korisnik=${encodeURIComponent(email)}`
+        );
 
         statusDiv.style.color = 'green';
         statusDiv.textContent = 'Registracija uspješna! Preusmjeravanje...';
