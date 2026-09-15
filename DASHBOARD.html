@@ -28,6 +28,7 @@
     .dash-tile .icon{font-size:2.5rem}
     .dash-tile h3{color:#1e1f29;font-size:1.2rem}
     .dash-tile p{font-size:0.85rem;color:#777}
+    .admin-only{display:none} /* Početno sakriveno, JS otkriva ako je admin */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
     .modal-overlay.active{display:flex}
     .modal-content{background:#fff;width:100%;max-width:700px;padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.2);display:flex;flex-direction:column;gap:20px}
@@ -93,8 +94,11 @@
       <a href="PROFIL.html" class="dash-tile"><div class="icon">👤</div><h3>Moj Profil</h3><p>Uredite svoje poslovne podatke, CV i postavke.</p></a>
       <a href="NETWORKING.html" class="dash-tile"><div class="icon">🤝</div><h3>Poslovni Networking</h3><p>Povežite se sa drugim preduzetnicima.</p></a>
       <a href="PRETRAGA.html" class="dash-tile"><div class="icon">🔍</div><h3>Pretraga Baze</h3><p>Pronađite članove, kompanije i resurse.</p></a>
-      <a href="DODAJ_FIRMU.html" class="dash-tile"><div class="icon">🏢</div><h3>Dodaj Firmu</h3><p>Unesite novu firmu ili organizaciju.</p></a>
-      <a href="DODAJ_LJUDE.html" class="dash-tile"><div class="icon">👥</div><h3>Dodaj Ljude</h3><p>Registrujte nove saradnike ili kontakte.</p></a>
+      
+      <!-- OVE DVIJE PLOČICE SU VIDLJIVE SAMO ZA ADMINA -->
+      <a href="DODAJ_FIRMU.html" class="dash-tile admin-only"><div class="icon">🏢</div><h3>Dodaj Firmu</h3><p>Unesite novu firmu ili organizaciju.</p></a>
+      <a href="DODAJ_LJUDE.html" class="dash-tile admin-only"><div class="icon">👥</div><h3>Dodaj Ljude</h3><p>Registrujte nove saradnike ili kontakte.</p></a>
+
       <a href="FORUM.html" class="dash-tile"><div class="icon">🗣️</div><h3>Poslovni Forum</h3><p>Diskutujte o projektima i tehnologijama.</p></a>
       <a href="PORUKE.html" class="dash-tile"><div class="icon">💬</div><h3>Poruke & Chat</h3><p>Pregledajte aktivne poslovne razgovore.</p></a>
       <div class="dash-tile" onclick="otvoriModalDokumenata()"><div class="icon">📁</div><h3>Dokumenti i Alati</h3><p>Word, Excel, PowerPoint i DOCS folderi.</p></div>
@@ -134,7 +138,7 @@
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- SUPABASE & ADMIN NOTIFIKACIJE LOGIKA -->
+  <!-- SUPABASE & ADMIN LOGIKA -->
   <script>
     const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmFkam1hbnJncHVtZHJmaCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
@@ -150,6 +154,12 @@
         const { data: { user } } = await _supabase.auth.getUser();
         if (user?.email) {
           document.getElementById('lblUserEmail').innerText = `👤 ${user.email}`;
+          
+          // Provjera da li je admin i prikazivanje admin pločica
+          if (user.email.toLowerCase() === 'admin@gmail.com') {
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+          }
+
           const { data: profile } = await _supabase.from('UPOZNAVANJ_KORISNICI').select('IME').or(`USER.eq.${user.id},MAIL.eq.${user.email}`).maybeSingle();
           if (profile?.IME) document.getElementById('txtWelcome').innerText = `Dobrodošli nazad, ${profile.IME}! 👋`;
         } else {
@@ -169,13 +179,9 @@
       try {
         const { data: { user } } = await _supabase.auth.getUser();
         
-        // PROVJERA: Ako korisnik nije prijavljen ili NIJE admin@gmail.com, prekida se izvršavanje!
         if (!user?.email || user.email.toLowerCase() !== 'admin@gmail.com') {
-          console.log("Korisnik nije admin - notifikacije iz baze su onemogućene.");
           return;
         }
-
-        console.log("✅ Admin ulogovan - pokrećem praćenje tabele NOTIFIKACIJE.");
 
         if (adminChannel) await _supabase.removeChannel(adminChannel);
         
