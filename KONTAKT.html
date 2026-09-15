@@ -1,6 +1,83 @@
-</div>
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontakt i Podrška | LjubavNaPrviKlik</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #2b2d42; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    header { background-color: #2b2d42; color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); flex-wrap: wrap; gap: 10px; }
+    .logo { font-size: 1.4rem; font-weight: bold; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    
+    .lang-select { padding: 6px 12px; border-radius: 20px; border: 2px solid #ff4757; background: #fff; font-weight: bold; color: #2b2d42; cursor: pointer; outline: none; }
+    
+    .btn-dash, .btn-admin-toggle { background: #ff4757; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; border: none; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-dash:hover, .btn-admin-toggle:hover { background: #ff6b81; }
+    
+    .admin-badge { background: #fff; color: #ff4757; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
 
-<header>
+    .main-container { flex: 1; padding: 30px 20px; max-width: 800px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 25px; }
+
+    .admin-panel { display: none; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-left: 6px solid #ff4757; }
+    .admin-panel h3 { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: #2b2d42; }
+    
+    .admin-filter-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+    .btn-filter { background: #e0e0ff; border: none; padding: 6px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; color: #3742fa; }
+    .btn-filter.active { background: #3742fa; color: #fff; }
+
+    .msg-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .msg-card.unread-card { border-left: 4px solid #ff4757; background: #fff5f5; }
+    .msg-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #666; margin-bottom: 10px; flex-wrap: wrap; gap: 5px; }
+    
+    .reply-input-box { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .reply-input-box textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; resize: vertical; min-height: 60px; }
+    .btn-send-reply { background: #28a745; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; align-self: flex-start; font-size: 0.85rem; }
+    .btn-send-reply:hover { background: #218838; }
+
+    .contact-card { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+    .contact-card h2 { font-size: 1.8rem; margin-bottom: 5px; color: #2b2d42; }
+    .subtitle { color: #666; font-size: 0.95rem; margin-bottom: 25px; }
+
+    .chat-container-box { background: #fdfdfd; border: 1px solid #e1e1e8; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
+    .chat-box { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+    
+    .chat-bubble { padding: 10px 14px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; word-break: break-word; line-height: 1.4; }
+    .chat-user { background: #e3f2fd; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .chat-admin { background: #f1f8e9; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #c8e6c9; }
+    .chat-meta { font-size: 0.75rem; color: #666; margin-bottom: 3px; font-weight: bold; }
+
+    .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-weight: bold; font-size: 0.9rem; color: #2b2d42; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #dcdde1; font-family: inherit; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #ff4757; }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    
+    .form-group input[readonly] { background-color: #f1f2f6; color: #57606f; cursor: not-allowed; }
+
+    .btn-submit { background: #ff4757; color: #fff; border: none; width: 100%; padding: 14px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: #ff6b81; }
+    .btn-submit:disabled { background: #a4b0be; cursor: not-allowed; }
+
+    #statusMessage { margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.95rem; }
+
+    #toastNotif { display: none; position: fixed; bottom: 20px; right: 20px; background: #2b2d42; color: #fff; padding: 15px 20px; border-radius: 12px; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.2); border-left: 5px solid #28a745; max-width: 320px; flex-direction: column; gap: 4px; }
+
+    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <!-- TOAST OBAVJEŠTENJE -->
+  <div id="toastNotif">
+    <strong id="toastTitle" style="font-size: 0.95rem;">🔔 Naslov</strong>
+    <span id="toastBody" style="font-size: 0.85rem; color: #dcdde1;">Poruka</span>
+  </div>
+
+  <header>
     <a href="DASHBOARD.html" class="logo">❤️ LjubavNaPrviKlik</a>
     
     <div class="nav-actions">
@@ -20,10 +97,11 @@
 
   <div class="main-container">
 
+    <!-- ADMIN PANEL -->
     <div class="admin-panel" id="adminPanel">
       <h3>
         👑 Admin Odgovori 
-        <button onclick="ucitajPorukeZaAdmina()" style="font-size:0.8rem; padding:4px 8px; cursor:pointer;">🔄 Osvježi</button>
+        <button onclick="ucitajPorukeZaAdmina()" style="font-size:0.8rem; padding:6px 12px; cursor:pointer; border-radius:8px; border:1px solid #ccc; background:#f1f2f6;">🔄 Osvježi</button>
       </h3>
 
       <div class="admin-filter-bar">
@@ -34,13 +112,14 @@
       <div id="adminMsgList">Učitavanje...</div>
     </div>
 
+    <!-- KONTAKT FORMA I CHAT HISTORIJA -->
     <div class="contact-card">
       <h2 id="txtMainTitle">📩 Kontakt & Podrška</h2>
       <p class="subtitle" id="txtSubtitle">Pošaljite nam pitanje ili nastavite razgovor sa administratorom!</p>
 
       <div id="conversationContainer" class="chat-container-box" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <span style="font-weight:bold; color:#155724; font-size:1.05rem;">💬 Historija razgovora:</span>
+          <span style="font-weight:bold; color:#2b2d42; font-size:1.05rem;">💬 Historija razgovora:</span>
           <div style="display:flex; gap:8px;">
             <button type="button" onclick="zapocniNoviUpit()" style="background:#28a745; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:0.85rem; cursor:pointer;">➕ Započni Novu Temu</button>
             <button type="button" onclick="ucitajHistorijuKorisnika()" style="background:#2b2d42; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:0.85rem; cursor:pointer;">🔄 Osvježi</button>
@@ -87,6 +166,7 @@
     <p>© 2026 LjubavNaPrviKlik. <span id="txtRights">Sva prava zadržana.</span></p>
   </footer>
 
+  <!-- SKRIPTE -->
   <script>
     const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
@@ -324,6 +404,8 @@
         } else {
           inputIme.removeAttribute('readonly');
           inputEmail.removeAttribute('readonly');
+          inputIme.placeholder = "Unesite vaše ime...";
+          inputEmail.placeholder = "Unesite vaš email...";
           provjeriAdminPristup(null);
         }
       } catch (e) {
@@ -342,13 +424,13 @@
         .limit(1)
         .maybeSingle();
 
-      if (data && aktivnaPorukaId !== null) {
+      if (data) {
         aktivnaPorukaId = data.id;
         postojecaHistorija = data.razgovor || [];
 
         if (postojecaHistorija.length === 0 && data.poruka) {
           postojecaHistorija.push({ posiljalac: 'korisnik', poruka: data.poruka, vrijeme: data.created_at });
-          if (data.odgovor && data.odgovor !== 'Na čekanju...') {
+          if (data.odgovor && !data.odgovor.includes('Na čekanju')) {
             postojecaHistorija.push({ posiljalac: 'admin', poruka: data.odgovor, vrijeme: data.created_at });
           }
         }
