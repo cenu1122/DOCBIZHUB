@@ -8,274 +8,1351 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #2b2d42; display: flex; flex-direction: column; min-height: 100vh; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    header { background-color: #2b2d42; color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); flex-wrap: wrap; gap: 10px; }
-    .logo { font-size: 1.4rem; font-weight: bold; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      color: #2b2d42;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-    .nav-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    
-    .lang-wrapper { display: flex; align-items: center; gap: 6px; background: #fff; padding: 4px 10px; border-radius: 20px; border: 2px solid #3742fa; }
-    #google_translate_element select { padding: 4px 8px; border: none; background: transparent; font-weight: bold; font-size: 0.85rem; color: #2b2d42; outline: none; cursor: pointer; }
-    
-    .btn-nav { background: #3742fa; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; transition: background 0.2s; border: none; cursor: pointer; }
-    .btn-nav:hover { background: #2f3542; }
-    .btn-logout { background: #6c757d; }
-    .btn-logout:hover { background: #495057; }
+    header {
+      background-color: #2b2d42;
+      color: #fff;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-    .main-container { flex: 1; padding: 30px 20px; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 25px; }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .welcome-card { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(55, 66, 250, 0.08); border-left: 6px solid #3742fa; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-    .welcome-text h1 { color: #1e1f29; font-size: 1.8rem; margin-bottom: 5px; }
-    .welcome-text p { color: #666; font-size: 1rem; }
-    .user-badge { background: #e0e0ff; color: #3742fa; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .dash-tile { background: #fff; padding: 25px; border-radius: 16px; text-decoration: none; color: #2b2d42; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #f0f0f0; cursor: pointer; }
-    .dash-tile:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(55, 66, 250, 0.15); border-color: #b8bfff; }
-    .dash-tile .icon { font-size: 2.5rem; }
-    .dash-tile h3 { color: #1e1f29; font-size: 1.2rem; }
-    .dash-tile p { font-size: 0.85rem; color: #777; }
+    .lang-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 2px solid #3742fa;
+    }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-    .modal-overlay.active { display: flex; }
-    .modal-content { background: #fff; width: 100%; max-width: 700px; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 20px; position: relative; animation: modalIn 0.3s ease-out; }
-    @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
-    .modal-header h2 { color: #1e1f29; font-size: 1.5rem; }
-    .btn-close-modal { background: #ef4444; color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
-    .btn-close-modal:hover { background: #dc2626; }
-    
-    .modal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+    #google_translate_element select {
+      padding: 4px 8px;
+      border: none;
+      background: transparent;
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #2b2d42;
+      outline: none;
+      cursor: pointer;
+    }
 
-    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; }
+    .btn-nav {
+      background: #3742fa;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-nav:hover {
+      background: #2f3542;
+    }
+
+    .btn-logout {
+      background: #6c757d;
+    }
+
+    .btn-logout:hover {
+      background: #495057;
+    }
+
+    .main-container {
+      flex: 1;
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .welcome-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(55, 66, 250, 0.08);
+      border-left: 6px solid #3742fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .welcome-text h1 {
+      color: #1e1f29;
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+    }
+
+    .welcome-text p {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    .user-badge {
+      background: #e0e0ff;
+      color: #3742fa;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .dash-tile {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      text-decoration: none;
+      color: #2b2d42;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+
+    .dash-tile:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(55, 66, 250, 0.15);
+      border-color: #b8bfff;
+    }
+
+    .dash-tile .icon {
+      font-size: 2.5rem;
+    }
+
+    .dash-tile h3 {
+      color: #1e1f29;
+      font-size: 1.2rem;
+    }
+
+    .dash-tile p {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      width: 100%;
+      max-width: 700px;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      animation: modalIn 0.3s ease-out;
+    }
+
+    @keyframes modalIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 15px;
+    }
+
+    .modal-header h2 {
+      color: #1e1f29;
+      font-size: 1.5rem;
+    }
+
+    .btn-close-modal {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-close-modal:hover {
+      background: #dc2626;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+
+    /* =========================================================
+       ADMIN FULLSCREEN NOTIFIKACIJA
+       SAMO admin@gmail.com
+       ========================================================= */
+
+    #adminNotificationOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    #adminNotificationOverlay.active {
+      display: flex;
+    }
+
+    #adminNotificationBox {
+      width: min(900px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 25px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,255,255,0.25);
+      border-top: 10px solid #d90429;
+      animation: adminNotificationPulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes adminNotificationPulse {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.015);
+      }
+    }
+
+    #adminNotificationBox h1 {
+      color: #d90429;
+      font-size: clamp(2rem, 5vw, 4rem);
+      margin-bottom: 15px;
+    }
+
+    #adminNotificationBox .admin-notification-type {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2b2d42;
+      margin-bottom: 25px;
+    }
+
+    .admin-notification-data {
+      background: #f4f4f9;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 25px;
+    }
+
+    .admin-notification-row {
+      padding: 12px 5px;
+      border-bottom: 1px solid #ddd;
+      font-size: 1.1rem;
+      word-break: break-word;
+    }
+
+    .admin-notification-row:last-child {
+      border-bottom: none;
+    }
+
+    .admin-notification-label {
+      font-weight: bold;
+      color: #2b2d42;
+      margin-right: 8px;
+    }
+
+    #adminNotificationConfirm {
+      background: #d90429;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 45px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    #adminNotificationConfirm:hover {
+      background: #b50322;
+      transform: scale(1.03);
+    }
+
+
+    footer {
+      background-color: #2b2d42;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: auto;
+    }
+
   </style>
 </head>
+
 <body>
 
+
+  <!-- =========================================================
+       ADMIN FULLSCREEN NOTIFIKACIJA
+       ========================================================= -->
+
+  <div id="adminNotificationOverlay">
+
+    <div id="adminNotificationBox">
+
+      <h1>🚨 NOVA NOTIFIKACIJA 🚨</h1>
+
+      <div class="admin-notification-type" id="adminNotificationType">
+        NOVI UNOS
+      </div>
+
+      <div class="admin-notification-data">
+
+        <div class="admin-notification-row">
+          <span class="admin-notification-label">👤 Ime:</span>
+          <span id="adminNotificationIme">-</span>
+        </div>
+
+        <div class="admin-notification-row">
+          <span class="admin-notification-label">🏢 Firma:</span>
+          <span id="adminNotificationFirma">-</span>
+        </div>
+
+        <div class="admin-notification-row">
+          <span class="admin-notification-label">📞 Telefon:</span>
+          <span id="adminNotificationTelefon">-</span>
+        </div>
+
+        <div class="admin-notification-row">
+          <span class="admin-notification-label">✉️ E-mail:</span>
+          <span id="adminNotificationEmail">-</span>
+        </div>
+
+        <div class="admin-notification-row">
+          <span class="admin-notification-label">🔗 Link:</span>
+          <span id="adminNotificationLink">-</span>
+        </div>
+
+      </div>
+
+      <button
+        id="adminNotificationConfirm"
+        onclick="zatvoriAdminNotifikaciju()">
+        ✅ POTVRDI I ZATVORI
+      </button>
+
+    </div>
+
+  </div>
+
+
   <header>
-    <a href="DASHBOARD.html" class="logo">🚀 DocBizHub</a>
+
+    <a href="DASHBOARD.html" class="logo">
+      🚀 DocBizHub
+    </a>
 
     <div class="nav-actions">
+
       <div class="lang-wrapper">
         <span>🌐</span>
         <div id="google_translate_element"></div>
       </div>
 
-      <a href="O_NAMA.html" class="btn-nav" id="txtBtnAbout">ℹ️ O nama</a>
-      <a href="KONTAKT.html" class="btn-nav" id="txtBtnContact">📩 Podrška</a>
-      <button class="btn-nav btn-logout" onclick="odjava()" id="txtBtnLogout">🚪 Odjava</button>
+      <a href="O_NAMA.html"
+         class="btn-nav"
+         id="txtBtnAbout">
+        ℹ️ O nama
+      </a>
+
+      <a href="KONTAKT.html"
+         class="btn-nav"
+         id="txtBtnContact">
+        📩 Podrška
+      </a>
+
+      <button
+        class="btn-nav btn-logout"
+        onclick="odjava()"
+        id="txtBtnLogout">
+        🚪 Odjava
+      </button>
+
     </div>
+
   </header>
+
 
   <div class="main-container">
 
+
     <div class="welcome-card">
+
       <div class="welcome-text">
-        <h1 id="txtWelcome">Dobrodošli nazad na DocBizHub! 👋</h1>
-        <p id="txtSubWelcome">Vaša centralna platforma za biznis, projekte, dokumente i profesionalno umrežavanje.</p>
+
+        <h1 id="txtWelcome">
+          Dobrodošli nazad na DocBizHub! 👋
+        </h1>
+
+        <p id="txtSubWelcome">
+          Vaša centralna platforma za biznis, projekte,
+          dokumente i profesionalno umrežavanje.
+        </p>
+
       </div>
-      <div class="user-badge" id="lblUserEmail">Učitavanje profila...</div>
+
+      <div class="user-badge" id="lblUserEmail">
+        Učitavanje profila...
+      </div>
+
     </div>
 
+
     <div class="dashboard-grid">
-      
+
+
       <a href="PROFIL.html" class="dash-tile">
         <div class="icon">👤</div>
         <h3>Moj Profil</h3>
-        <p>Uredite svoje poslovne podatke, CV i postavke naloga.</p>
+        <p>
+          Uredite svoje poslovne podatke, CV i postavke naloga.
+        </p>
       </a>
+
 
       <a href="NETWORKING.html" class="dash-tile">
         <div class="icon">🤝</div>
         <h3>Poslovni Networking</h3>
-        <p>Povežite se sa drugim preduzetnicima, saradnicima i proširite mrežu.</p>
+        <p>
+          Povežite se sa drugim preduzetnicima,
+          saradnicima i proširite mrežu.
+        </p>
       </a>
+
 
       <a href="PRETRAGA.html" class="dash-tile">
         <div class="icon">🔍</div>
         <h3>Pretraga Baze</h3>
-        <p>Pronađite članove, kompanije, resurse i prilike za saradnju.</p>
+        <p>
+          Pronađite članove, kompanije, resurse
+          i prilike za saradnju.
+        </p>
       </a>
+
 
       <a href="DODAJ_FIRMU.html" class="dash-tile">
         <div class="icon">🏢</div>
         <h3>Dodaj Firmu</h3>
-        <p>Unesite novu firmu, preduzeće ili poslovnu organizaciju u bazu.</p>
+        <p>
+          Unesite novu firmu, preduzeće ili
+          poslovnu organizaciju u bazu.
+        </p>
       </a>
+
 
       <a href="DODAJ_LJUDE.html" class="dash-tile">
         <div class="icon">👥</div>
         <h3>Dodaj Ljude</h3>
-        <p>Registrujte nove saradnike, kontakte ili korisnike u sistem.</p>
+        <p>
+          Registrujte nove saradnike,
+          kontakte ili korisnike u sistem.
+        </p>
       </a>
+
 
       <a href="FORUM.html" class="dash-tile">
         <div class="icon">🗣️</div>
         <h3>Poslovni Forum</h3>
-        <p>Diskutujte o projektima, tehnologijama i razmjenjujte iskustva.</p>
+        <p>
+          Diskutujte o projektima, tehnologijama
+          i razmjenjujte iskustva.
+        </p>
       </a>
+
 
       <a href="PORUKE.html" class="dash-tile">
         <div class="icon">💬</div>
         <h3>Poruke & Chat</h3>
-        <p>Pregledajte vaše aktivne poslovne razgovore i dogovore.</p>
+        <p>
+          Pregledajte vaše aktivne poslovne
+          razgovore i dogovore.
+        </p>
       </a>
 
-      <div class="dash-tile" onclick="otvoriModalDokumenata()">
+
+      <div
+        class="dash-tile"
+        onclick="otvoriModalDokumenata()">
+
         <div class="icon">📁</div>
+
         <h3>Dokumenti i Alati</h3>
-        <p>Otvorite meni za Word, Excel, PowerPoint i fajlove iz foldera DOCS.</p>
+
+        <p>
+          Otvorite meni za Word, Excel,
+          PowerPoint i fajlove iz foldera DOCS.
+        </p>
+
       </div>
 
-      <!-- Nova kartica za AI Asistent -->
+
       <a href="AI_ASISTENT.html" class="dash-tile">
+
         <div class="icon">📞</div>
+
         <h3>AI Asistent i Pozivi</h3>
-        <p>Pokrenite sistem za automatske glasovne pozive i AI asistente.</p>
+
+        <p>
+          Pokrenite sistem za automatske glasovne
+          pozive i AI asistente.
+        </p>
+
       </a>
+
 
       <a href="INTERVJU.html" class="dash-tile">
+
         <div class="icon">🎙️</div>
+
         <h3>Intervjui</h3>
-        <p>Vježbajte poslovnu konverzaciju i koristite alate za intervjue.</p>
+
+        <p>
+          Vježbajte poslovnu konverzaciju
+          i koristite alate za intervjue.
+        </p>
+
       </a>
+
 
       <a href="JEZICI.html" class="dash-tile">
+
         <div class="icon">🎓</div>
+
         <h3>Učenje Jezika</h3>
-        <p>Usavršite strane jezike uz AI profesora za poslovnu komunikaciju.</p>
+
+        <p>
+          Usavršite strane jezike uz AI profesora
+          za poslovnu komunikaciju.
+        </p>
+
       </a>
+
 
       <a href="POSAO.html" class="dash-tile">
+
         <div class="icon">💼</div>
+
         <h3>Poslovi & Oglasi</h3>
-        <p>Pregledajte ponude za posao, projekte i investicione prilike.</p>
+
+        <p>
+          Pregledajte ponude za posao,
+          projekte i investicione prilike.
+        </p>
+
       </a>
+
 
       <a href="ZABAVA.html" class="dash-tile">
+
         <div class="icon">🎉</div>
+
         <h3>Kutak za Odmor</h3>
-        <p>Opustite se uz zanimljiv sadržaj van svakodnevnih obaveza.</p>
+
+        <p>
+          Opustite se uz zanimljiv sadržaj
+          van svakodnevnih obaveza.
+        </p>
+
       </a>
+
 
       <a href="TEST.html" class="dash-tile">
+
         <div class="icon">🧪</div>
+
         <h3>Test & Sistemske Provjere</h3>
-        <p>Pokrenite testove kompatibilnosti, sistemske dijagnostike i vještina.</p>
+
+        <p>
+          Pokrenite testove kompatibilnosti,
+          sistemske dijagnostike i vještina.
+        </p>
+
       </a>
+
 
       <a href="KONTAKT.html" class="dash-tile">
+
         <div class="icon">📩</div>
+
         <h3>Korisnička Podrška</h3>
-        <p>Imate pitanje, prijedlog ili problem? Kontaktirajte naš tim.</p>
+
+        <p>
+          Imate pitanje, prijedlog ili problem?
+          Kontaktirajte naš tim.
+        </p>
+
       </a>
 
+
     </div>
 
   </div>
+
+
+  <!-- =========================================================
+       MODAL ZA DOKUMENTE
+       ========================================================= -->
 
   <div class="modal-overlay" id="DOCSModal">
+
     <div class="modal-content">
+
       <div class="modal-header">
-        <h2>📂 Izaberite tip dokumenta</h2>
-        <button class="btn-close-modal" onclick="zatvoriModalDokumenata()">✕</button>
+
+        <h2>
+          📂 Izaberite tip dokumenta
+        </h2>
+
+        <button
+          class="btn-close-modal"
+          onclick="zatvoriModalDokumenata()">
+          ✕
+        </button>
+
       </div>
-      <p style="color: #666; font-size: 0.95rem;">Izaberite alat koji želite da pokrenete iz foldera <strong>DOCS</strong>:</p>
-      
+
+      <p style="color: #666; font-size: 0.95rem;">
+        Izaberite alat koji želite da pokrenete
+        iz foldera <strong>DOCS</strong>:
+      </p>
+
+
       <div class="modal-grid">
+
+
         <a href="DOCS/word.html" class="dash-tile">
+
           <div class="icon">📄</div>
+
           <h3>Word</h3>
-          <p>Tekstualni dokumenti</p>
+
+          <p>
+            Tekstualni dokumenti
+          </p>
+
         </a>
+
 
         <a href="DOCS/excel.html" class="dash-tile">
+
           <div class="icon">📈</div>
+
           <h3>Excel</h3>
-          <p>Tabele i podaci</p>
+
+          <p>
+            Tabele i podaci
+          </p>
+
         </a>
+
 
         <a href="DOCS/powerpoint.html" class="dash-tile">
+
           <div class="icon">📊</div>
+
           <h3>PowerPoint</h3>
-          <p>Prezentacije</p>
+
+          <p>
+            Prezentacije
+          </p>
+
         </a>
+
+
       </div>
+
     </div>
+
   </div>
 
+
   <footer>
-    <p>© 2026 DocBizHub. Sva prava zadržana.</p>
+
+    <p>
+      © 2026 DocBizHub. Sva prava zadržana.
+    </p>
+
   </footer>
 
+
+  <!-- =========================================================
+       GOOGLE TRANSLATE
+       ========================================================= -->
+
   <script type="text/javascript">
+
     function googleTranslateElementInit() {
+
       new google.translate.TranslateElement({
+
         pageLanguage: 'bs',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+
+        layout:
+          google.translate.TranslateElement.InlineLayout.SIMPLE,
+
         autoDisplay: false
+
       }, 'google_translate_element');
+
     }
+
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+  <script
+    type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+  </script>
+
+
+  <!-- =========================================================
+       SUPABASE + DASHBOARD + ADMIN NOTIFIKACIJE
+       ========================================================= -->
 
   <script>
-    const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+    const SUPABASE_URL =
+      'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoidWR1d3B2ZGptYW5yZ3B1bWRyZmgiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NDgxMTA4NCwiZXhwIjoyMTAwMzg3MDg0fQ.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
 
     let _supabase;
+
     if (typeof supabase !== 'undefined') {
-      _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      _supabase =
+        supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY
+        );
+
     }
+
+
+    /* =========================================================
+       DOKUMENTI MODAL
+       ========================================================= */
 
     function otvoriModalDokumenata() {
-      document.getElementById('DOCSModal').classList.add('active');
+
+      document
+        .getElementById('DOCSModal')
+        .classList
+        .add('active');
+
     }
+
 
     function zatvoriModalDokumenata() {
-      document.getElementById('DOCSModal').classList.remove('active');
+
+      document
+        .getElementById('DOCSModal')
+        .classList
+        .remove('active');
+
     }
+
 
     window.onclick = function(event) {
-      const modal = document.getElementById('DOCSModal');
+
+      const modal =
+        document.getElementById('DOCSModal');
+
       if (event.target === modal) {
+
         zatvoriModalDokumenata();
+
       }
-    }
+
+    };
+
+
+    /* =========================================================
+       UČITAVANJE PROFILA
+       ========================================================= */
 
     async function ucitajProfilKorisnika() {
+
       if (!_supabase) return;
+
       try {
-        const { data: { user } } = await _supabase.auth.getUser();
+
+        const {
+          data: { user }
+        } = await _supabase.auth.getUser();
+
 
         if (user && user.email) {
-          document.getElementById('lblUserEmail').innerText = `👤 ${user.email}`;
 
-          const { data: profile } = await _supabase
-            .from('UPOZNAVANJ_KORISNICI')
-            .select('IME')
-            .or(`USER.eq.${user.id},MAIL.eq.${user.email}`)
-            .maybeSingle();
+          document
+            .getElementById('lblUserEmail')
+            .innerText =
+              `👤 ${user.email}`;
+
+
+          const { data: profile } =
+            await _supabase
+              .from('UPOZNAVANJ_KORISNICI')
+              .select('IME')
+              .or(
+                `USER.eq.${user.id},MAIL.eq.${user.email}`
+              )
+              .maybeSingle();
+
 
           if (profile && profile.IME) {
-            document.getElementById('txtWelcome').innerText = `Dobrodošli nazad, ${profile.IME}! 👋`;
+
+            document
+              .getElementById('txtWelcome')
+              .innerText =
+                `Dobrodošli nazad, ${profile.IME}! 👋`;
+
           }
+
         } else {
-          document.getElementById('lblUserEmail').innerText = '👤 Gost / Nije prijavljen';
+
+          document
+            .getElementById('lblUserEmail')
+            .innerText =
+              '👤 Gost / Nije prijavljen';
+
         }
+
       } catch (e) {
-        console.warn("Greška pri dohvaćanju korisnika:", e);
+
+        console.warn(
+          "Greška pri dohvaćanju korisnika:",
+          e
+        );
+
       }
+
     }
+
+
+    /* =========================================================
+       ODJAVA
+       ========================================================= */
 
     async function odjava() {
-      if (_supabase) await _supabase.auth.signOut();
-      window.location.href = 'index.html';
+
+      if (_supabase) {
+
+        await _supabase.auth.signOut();
+
+      }
+
+      window.location.href =
+        'index.html';
+
     }
 
-    document.addEventListener('DOMContentLoaded', ucitajProfilKorisnika);
+
+    /* =========================================================
+       ADMIN NOTIFIKACIJE
+       SAMO admin@gmail.com
+       ========================================================= */
+
+    let adminNotificationChannel = null;
+
+    let adminNotificationUserChecked = false;
+
+    let adminNotificationIsAdmin = false;
+
+
+    async function pokreniAdminNotifikacije() {
+
+      if (!_supabase) {
+
+        console.warn(
+          "Supabase nije dostupan."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        /* -----------------------------------------------------
+           Provjera trenutno prijavljenog korisnika
+           ----------------------------------------------------- */
+
+        const {
+          data: { user },
+          error
+        } = await _supabase.auth.getUser();
+
+
+        if (
+          error ||
+          !user ||
+          !user.email
+        ) {
+
+          console.log(
+            "Nema prijavljenog korisnika za admin notifikacije."
+          );
+
+          return;
+
+        }
+
+
+        /* -----------------------------------------------------
+           SAMO admin@gmail.com
+           ----------------------------------------------------- */
+
+        if (
+          user.email.toLowerCase() !==
+          'admin@gmail.com'
+        ) {
+
+          console.log(
+            "Korisnik nije admin - notifikacije su isključene."
+          );
+
+          return;
+
+        }
+
+
+        adminNotificationIsAdmin = true;
+
+        adminNotificationUserChecked = true;
+
+
+        console.log(
+          "✅ ADMIN DETEKTOVAN - pokrećem praćenje NOTIFIKACIJE."
+        );
+
+
+        /* -----------------------------------------------------
+           Ako postoji stari kanal, ukloni ga
+           ----------------------------------------------------- */
+
+        if (adminNotificationChannel) {
+
+          await _supabase.removeChannel(
+            adminNotificationChannel
+          );
+
+        }
+
+
+        /* -----------------------------------------------------
+           PRAĆENJE NOVIH REDOVA
+           ----------------------------------------------------- */
+
+        adminNotificationChannel =
+          _supabase
+            .channel('admin-notifikacije-kanal')
+
+            .on(
+              'postgres_changes',
+              {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'NOTIFIKACIJE'
+              },
+
+              function(payload) {
+
+                console.log(
+                  "🚨 NOVA NOTIFIKACIJA:",
+                  payload.new
+                );
+
+
+                prikaziAdminNotifikaciju(
+                  payload.new
+                );
+
+              }
+            )
+
+            .subscribe(
+              function(status) {
+
+                console.log(
+                  "Status admin NOTIFIKACIJE kanala:",
+                  status
+                );
+
+              }
+            );
+
+      } catch (err) {
+
+        console.error(
+          "Greška pri pokretanju admin notifikacija:",
+          err
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       PRIKAŽI ADMIN NOTIFIKACIJU
+       ========================================================= */
+
+    function prikaziAdminNotifikaciju(
+      notifikacija
+    ) {
+
+      /* -------------------------------------------------------
+         Dodatna sigurnosna provjera
+         ------------------------------------------------------- */
+
+      if (!adminNotificationIsAdmin) {
+
+        return;
+
+      }
+
+
+      const overlay =
+        document.getElementById(
+          'adminNotificationOverlay'
+        );
+
+
+      const type =
+        document.getElementById(
+          'adminNotificationType'
+        );
+
+
+      const ime =
+        document.getElementById(
+          'adminNotificationIme'
+        );
+
+
+      const firma =
+        document.getElementById(
+          'adminNotificationFirma'
+        );
+
+
+      const telefon =
+        document.getElementById(
+          'adminNotificationTelefon'
+        );
+
+
+      const email =
+        document.getElementById(
+          'adminNotificationEmail'
+        );
+
+
+      const link =
+        document.getElementById(
+          'adminNotificationLink'
+        );
+
+
+      /* -------------------------------------------------------
+         Popuni podatke iz NOTIFIKACIJE
+         ------------------------------------------------------- */
+
+      type.textContent =
+        notifikacija.VRSTA_NOTIFIKACIJE ||
+        'NOVI UNOS';
+
+
+      ime.textContent =
+        notifikacija.IME ||
+        '-';
+
+
+      firma.textContent =
+        notifikacija.FIRMA ||
+        '-';
+
+
+      telefon.textContent =
+        notifikacija.TELEFON ||
+        '-';
+
+
+      email.textContent =
+        notifikacija.EMAIL ||
+        '-';
+
+
+      link.textContent =
+        notifikacija.LINK_STRANICE ||
+        '-';
+
+
+      /* -------------------------------------------------------
+         Prikaži veliki overlay
+         ------------------------------------------------------- */
+
+      overlay.classList.add(
+        'active'
+      );
+
+
+      /* -------------------------------------------------------
+         Pokušaj pokrenuti zvuk
+         ------------------------------------------------------- */
+
+      pustiAdminAlarm();
+
+    }
+
+
+    /* =========================================================
+       ZATVARANJE NOTIFIKACIJE
+       ========================================================= */
+
+    function zatvoriAdminNotifikaciju() {
+
+      const overlay =
+        document.getElementById(
+          'adminNotificationOverlay'
+        );
+
+
+      overlay.classList.remove(
+        'active'
+      );
+
+    }
+
+
+    /* =========================================================
+       ZVUČNI ALARM
+       ========================================================= */
+
+    function pustiAdminAlarm() {
+
+      try {
+
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+
+        if (!AudioContext) {
+
+          return;
+
+        }
+
+
+        const audioContext =
+          new AudioContext();
+
+
+        const oscillator =
+          audioContext.createOscillator();
+
+
+        const gainNode =
+          audioContext.createGain();
+
+
+        oscillator.type =
+          'sine';
+
+
+        oscillator.frequency.setValueAtTime(
+          880,
+          audioContext.currentTime
+        );
+
+
+        oscillator.frequency.setValueAtTime(
+          660,
+          audioContext.currentTime + 0.2
+        );
+
+
+        oscillator.frequency.setValueAtTime(
+          880,
+          audioContext.currentTime + 0.4
+        );
+
+
+        gainNode.gain.setValueAtTime(
+          0.001,
+          audioContext.currentTime
+        );
+
+
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.25,
+          audioContext.currentTime + 0.03
+        );
+
+
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + 0.6
+        );
+
+
+        oscillator.connect(
+          gainNode
+        );
+
+
+        gainNode.connect(
+          audioContext.destination
+        );
+
+
+        oscillator.start();
+
+
+        oscillator.stop(
+          audioContext.currentTime + 0.6
+        );
+
+
+      } catch (e) {
+
+        console.warn(
+          "Zvuk alarma nije mogao biti pokrenut:",
+          e
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       POKRETANJE STRANICE
+       ========================================================= */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function() {
+
+        /* Postojeća funkcija */
+
+        ucitajProfilKorisnika();
+
+
+        /* Nova admin funkcija */
+
+        pokreniAdminNotifikacije();
+
+      }
+    );
+
   </script>
 
 </body>
