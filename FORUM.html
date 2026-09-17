@@ -48,17 +48,17 @@
         </div>
     </header>
 
-    <!-- GLAVNI LINKEDIN LAYOUT (3 STUPA) -->
-    <main class="container mx-auto px-4 py-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-6">
+    <!-- GLAVNI LINKEDIN LAYOUT (DINAMIČKI GRID) -->
+    <main class="container mx-auto px-4 py-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-6" id="GLAVNI_GRID">
         
         <!-- 1. LIJEVA SEKCIJA -->
-        <aside class="col-span-1 space-y-4">
+        <aside id="SEKCIJA_LIJEVA" class="col-span-1 space-y-4">
             <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm flex justify-between items-center">
                 <h3 class="font-bold text-xs">MOJ PROFIL</h3>
-                <button id="BTN_LIJEVA" onclick="TOGGLE_SEKCIJU('LIJEVA_SADRZAJ', 'BTN_LIJEVA')" class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition">🔽</button>
+                <button id="BTN_LIJEVA" onclick="SAKRIJ_SEKCIJU('LIJEVA')" class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition">◀</button>
             </div>
             
-            <div id="LIJEVA_SADRZAJ" class="space-y-4">
+            <div class="space-y-4">
                 <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm text-center">
                     <div class="h-14 linkedin-blue"></div>
                     <div class="px-4 pb-4 -mt-8">
@@ -85,13 +85,13 @@
         </aside>
 
         <!-- 2. CENTRALNA SEKCIJA -->
-        <section class="col-span-1 md:col-span-2 space-y-4">
+        <section id="SEKCIJA_SREDNJA" class="col-span-1 md:col-span-2 space-y-4">
             <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm flex justify-between items-center">
                 <h3 class="font-bold text-xs">CENTRALNI FEED</h3>
-                <button id="BTN_SREDNJA" onclick="TOGGLE_SEKCIJU('SREDNJA_SADRZAJ', 'BTN_SREDNJA')" class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition">🔽</button>
+                <!-- Središnja sekcija se ne može sakriti jer je glavni dio -->
             </div>
 
-            <div id="SREDNJA_SADRZAJ" class="space-y-4">
+            <div class="space-y-4">
                 <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                     <div class="flex gap-3 items-center">
                         <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-gray-700">K</div>
@@ -104,18 +104,17 @@
             </div>
         </section>
 
-        <!-- 3. DESNA SEKCIJA SA ADMIN PROVJEROM ZA DUGME -->
-        <aside class="col-span-1 space-y-4">
+        <!-- 3. DESNA SEKCIJA -->
+        <aside id="SEKCIJA_DESNA" class="col-span-1 space-y-4">
             <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm flex justify-between items-center">
-                <h3 class="font-bold text-xs">POSLOVNE VIJESTI</h3>
                 <div class="flex gap-1 items-center">
-                    <!-- OVO DUGME JE SKRIVENO ZA OBIČNE KORISNIKE, POJAVI SE SAMO ADMINU -->
                     <button id="ADMIN_LINK_BTN" onclick="OTVORI_LINK_MODAL()" class="text-xs font-bold text-white linkedin-blue px-2 py-1 rounded hover:opacity-90 transition hidden" title="Dodaj novi link">➕</button>
-                    <button id="BTN_DESNA" onclick="TOGGLE_SEKCIJU('DESNA_SADRZAJ', 'BTN_DESNA')" class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition">🔽</button>
+                    <h3 class="font-bold text-xs">POSLOVNE VIJESTI</h3>
                 </div>
+                <button id="BTN_DESNA" onclick="SAKRIJ_SEKCIJU('DESNA')" class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition">▶</button>
             </div>
 
-            <div id="DESNA_SADRZAJ" class="space-y-4">
+            <div class="space-y-4">
                 <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-xs">LINKOVI IZ TABELE</h3>
@@ -135,6 +134,12 @@
         </aside>
 
     </main>
+
+    <!-- DUGMAD ZA PONOVNO OTVARANJE AKO JE NEŠTO SAKRIVENO -->
+    <div id="KONTROLE_OTVARANJA" class="container mx-auto px-4 max-w-6xl flex gap-2 mb-4">
+        <button id="OTVORI_LIJEVA" onclick="OTVORI_SEKCIJU('LIJEVA')" class="hidden text-xs bg-gray-800 text-white px-3 py-1.5 rounded font-bold">➕ POKAŽI LIJEVU SEKCIJU</button>
+        <button id="OTVORI_DESNA" onclick="OTVORI_SEKCIJU('DESNA')" class="hidden text-xs bg-gray-800 text-white px-3 py-1.5 rounded font-bold">➕ POKAŽI DESNU SEKCIJU</button>
+    </div>
 
     <!-- MODAL ZA NOVU TEMU -->
     <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
@@ -157,7 +162,7 @@
         </div>
     </div>
 
-    <!-- MODAL ZA DODAVANJE U POSLOVNI_LINKOVI (SAMO ZA ADMINA) -->
+    <!-- MODAL ZA DODAVANJE U POSLOVNI_LINKOVI -->
     <div id="MODAL_LINK" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl border border-gray-200 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
@@ -188,50 +193,31 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
         let _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-        // TABELA POSLOVNI_LINKOVI
         let POSLOVNI_LINKOVI = [
-            {
-                naslov: "B2B TRENDS I AI U BIZNISU 2026",
-                url: "https://www.forbes.com",
-                izvor: "Forbes • 1.200 čitatelja"
-            },
-            {
-                naslov: "GLOBALNA DIGITALNA TRANSFORMACIJA",
-                url: "https://www.techcrunch.com",
-                izvor: "TechCrunch • 840 čitatelja"
-            },
-            {
-                naslov: "EU FONDOVI ZA STARTUP-OVE",
-                url: "https://ec.europa.eu/regional_policy/index_en",
-                izvor: "Evropska komisija • 3.1k čitatelja"
-            }
+            { naslov: "B2B TRENDS I AI U BIZNISU 2026", url: "https://www.forbes.com", izvor: "Forbes • 1.200 čitatelja" },
+            { naslov: "GLOBALNA DIGITALNA TRANSFORMACIJA", url: "https://www.techcrunch.com", izvor: "TechCrunch • 840 čitatelja" },
+            { naslov: "EU FONDOVI ZA STARTUP-OVE", url: "https://ec.europa.eu/regional_policy/index_en", izvor: "Evropska komisija • 3.1k čitatelja" }
         ];
 
         let POSAO_FORUM = [
-            {
-                id: 1,
-                kategorija: "B2B",
-                naslov: "DOBRODOŠLI NA POSLOVNI FORUM",
-                sadrzaj: "OVO JE POČETNA TEMA NA FORUMU.",
-                autor: "ADMINISTRATOR",
-                datum: "17.09.2026."
-            }
+            { id: 1, kategorija: "B2B", naslov: "DOBRODOŠLI NA POSLOVNI FORUM", sadrzaj: "OVO JE POČETNA TEMA NA FORUMU.", autor: "ADMINISTRATOR", datum: "17.09.2026." }
         ];
 
         let POSAO_FORUM_KOMENTARI = [
             { id: 1, tema_id: 1, autor: "KORISNIK1", tekst: "ODLIČNA INICIJATIVA!" }
         ];
 
-        let stanjaSekcija = { LIJEVA_SADRZAJ: true, SREDNJA_SADRZAJ: true, DESNA_SADRZAJ: true };
+        // Stanja vidljivosti sekcija
+        let lijevaVidljiva = true;
+        let desnaVidljiva = true;
 
         window.onload = function() {
             PRIKAZI_TEME(POSAO_FORUM);
             PRIKAZI_POSLOVNE_LINKOVE();
             AZURIRAJ_OBAVIJESTI();
-            provjeriAdminPrava(); // Provjerava da li je ulogovan admin za prikaz dugmeta ➕
+            provjeriAdminPrava();
         };
 
-        // PROVJERA DA LI JE ULOGOVAN ADMIN (admin@gmail.com)
         async function provjeriAdminPrava() {
             if (!_supabase) return;
             try {
@@ -245,12 +231,56 @@
             }
         }
 
-        function TOGGLE_SEKCIJU(elementId, btnId) {
-            const el = document.getElementById(elementId);
-            const btn = document.getElementById(btnId);
-            stanjaSekcija[elementId] = !stanjaSekcija[elementId];
-            el.style.display = stanjaSekcija[elementId] ? 'block' : 'none';
-            btn.textContent = stanjaSekcija[elementId] ? '🔽' : '🔼';
+        // FUNKCIJA ZA POTPUNO SKRIVANJE SEKCIJE I AUTOMATSKO PREUREĐIVANJE GRID-A
+        function SAKRIJ_SEKCIJU(tip) {
+            const lijeva = document.getElementById('SEKCIJA_LIJEVA');
+            const srednja = document.getElementById('SEKCIJA_SREDNJA');
+            const desna = document.getElementById('SEKCIJA_DESNA');
+
+            if (tip === 'LIJEVA') {
+                lijeva.style.display = 'none';
+                lijevaVidljiva = false;
+                document.getElementById('OTVORI_LIJEVA').classList.remove('hidden');
+            } else if (tip === 'DESNA') {
+                desna.style.display = 'none';
+                desnaVidljiva = false;
+                document.getElementById('OTVORI_DESNA').classList.remove('hidden');
+            }
+
+            prilagodiGridRaspored(srednja, lijevaVidljiva, desnaVidljiva);
+        }
+
+        // FUNKCIJA ZA PONOVNO VRAĆANJE SEKCIJE
+        function OTVORI_SEKCIJU(tip) {
+            const lijeva = document.getElementById('SEKCIJA_LIJEVA');
+            const srednja = document.getElementById('SEKCIJA_SREDNJA');
+            const desna = document.getElementById('SEKCIJA_DESNA');
+
+            if (tip === 'LIJEVA') {
+                lijeva.style.display = 'block';
+                lijevaVidljiva = true;
+                document.getElementById('OTVORI_LIJEVA').classList.add('hidden');
+            } else if (tip === 'DESNA') {
+                desna.style.display = 'block';
+                desnaVidljiva = true;
+                document.getElementById('OTVORI_DESNA').classList.add('hidden');
+            }
+
+            prilagodiGridRaspored(srednja, lijevaVidljiva, desnaVidljiva);
+        }
+
+        // AUTOMATSKO MIJENJANJE ŠIRINE CENTRALNOG DIJELA (GRID COLUMNS)
+        function prilagodiGridRaspored(srednja, lijevaOtvorena, desnaOtvorena) {
+            if (lijevaOtvorena && desnaOtvorena) {
+                // Sve 3 otvorene: lijeva 1 kolona, srednja 2 kolone, desna 1 kolona
+                srednja.className = "col-span-1 md:col-span-2 space-y-4";
+            } else if (!lijevaOtvorena && !desnaOtvorena) {
+                // Obje bočne zatvorene: srednja zauzima sva 4 mjesta širine
+                srednja.className = "col-span-1 md:col-span-4 space-y-4";
+            } else {
+                // Jedna bočna zatvorena: srednja zauzima 3 kolone da popuni prostor
+                srednja.className = "col-span-1 md:col-span-3 space-y-4";
+            }
         }
 
         function PRIKAZI_POSLOVNE_LINKOVE() {
@@ -274,10 +304,7 @@
             const url = document.getElementById('INPUT_L_URL').value.trim();
             const izvor = document.getElementById('INPUT_L_IZVOR').value.toUpperCase();
 
-            if (!naslov || !url) {
-                alert('MOLIMO UNESITE BAREM NASLOV I URL.');
-                return;
-            }
+            if (!naslov || !url) { alert('MOLIMO UNESITE BAREM NASLOV I URL.'); return; }
 
             POSLOVNI_LINKOVI.push({ naslov, url, izvor: izvor || 'KORISNIČKI UNOS' });
             PRIKAZI_POSLOVNE_LINKOVE();
@@ -352,7 +379,7 @@
                 const poslTema = POSAO_FORUM[0];
                 const linkElement = document.getElementById('LINK_POSLJEDNJE_TEME');
                 linkElement.textContent = poslTema.naslov;
-                linkElement.setAttribute('href', `#tema-${poslTema.id}`);
+                linkElement.setAttribute('href', `#tema-${poslTemplateId = poslTema.id}`);
             }
         }
 
@@ -389,7 +416,7 @@
 
         function FILTRIRAJ_TEME() {
             const pojam = document.getElementById('PRETRAGA').value.toLowerCase();
-            const izabranaKategorija = document.getElementById('FILTER_KATEGORIJA').value;
+            const izabranaKategorija = document.getElementById('FILTER_KATEGORIJA'].value;
             const filtrirano = POSAO_FORUM.filter(tema => {
                 const poklapaPretragu = tema.naslov.toLowerCase().includes(pojam) || tema.sadrzaj.toLowerCase().includes(pojam);
                 const poklapaKategoriju = izabranaKategorija === "" || tema.kategorija === izabranaKategorija;
