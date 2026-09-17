@@ -7,7 +7,6 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* LinkedIn specifične boje i stilovi */
         .linkedin-blue { background-color: #0a66c2; }
         .linkedin-blue-text { color: #0a66c2; }
         .linkedin-hover:hover { background-color: rgba(0, 0, 0, 0.08); }
@@ -18,7 +17,6 @@
     <!-- LINKEDIN NAVIGACIJA -->
     <header class="bg-white border-b border-gray-300 sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto px-4 h-14 flex justify-between items-center max-w-6xl">
-            <!-- Logo i Pretraga -->
             <div class="flex items-center gap-3">
                 <div class="linkedin-blue text-white font-bold p-1.5 rounded text-xl flex items-center justify-center w-10 h-10">In</div>
                 <div class="relative hidden sm:block">
@@ -27,11 +25,10 @@
                 </div>
             </div>
 
-            <!-- Navigacijske ikone (Simulacija LinkedIn menija) -->
             <nav class="flex items-center gap-6 text-xs text-gray-600 font-medium">
                 <div class="flex flex-col items-center cursor-pointer linkedin-blue-text">
                     <span class="text-lg">🏠</span>
-                    <span>POVRATak</span>
+                    <span>POVRATAK</span>
                 </div>
                 <div class="flex flex-col items-center cursor-pointer hover:text-black">
                     <span class="text-lg">👥</span>
@@ -68,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- FILTER KATEGORIJA KAO LINKEDIN GRUPA/WIDGET -->
             <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                 <h3 class="text-xs font-bold text-gray-500 mb-2">KATEGORIJE FORUMA</h3>
                 <select id="FILTER_KATEGORIJA" class="w-full text-xs p-2 border rounded bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-500" onchange="FILTRIRAJ_TEME()">
@@ -83,7 +79,6 @@
         <!-- CENTRALNI STUP - FEED I OBJAVE -->
         <section class="col-span-1 md:col-span-2 space-y-4">
             
-            <!-- BOX ZA KREIRANJE NOVE TEME (LINKEDIN STYLE "START A POST") -->
             <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                 <div class="flex gap-3 items-center">
                     <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-gray-700">K</div>
@@ -100,45 +95,49 @@
 
             <!-- GLAVNA LISTA TEMA (FEED) -->
             <div id="LISTA_TEMA" class="space-y-4">
-                <!-- Dinamički sadržaj iz tabele POSAO_FORUM i POSAO_FORUM_KOMENTARI -->
+                <!-- Dinamički sadržaj -->
             </div>
         </section>
 
-        <!-- DESNI STUP - VIJESTI I OBAVJEŠTENJA (LINKEDIN "TODAY'S NEWS") -->
+        <!-- DESNI STUP - SPOLJNE VIJESTI SA LINKOVIMA + OBAVJEŠTENJA -->
         <aside class="hidden md:block md:col-span-1 space-y-4">
+            <!-- SPOLJNE VIJESTI SA DRUGIH STRANICA (LINKEDIN "TODAY'S NEWS") -->
             <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-xs">POSLOVNE VIJESTI</h3>
+                    <h3 class="font-bold text-xs">POSLOVNE VIJESTI (EXT)</h3>
                     <span class="text-[10px] text-gray-400">ℹ️</span>
                 </div>
                 <ul class="space-y-3 text-xs">
                     <li>
-                        <strong class="block hover:underline cursor-pointer">B2BTRENDS 2026</strong>
-                        <span class="text-[10px] text-gray-500">Prije 2 sata • 1.200 čitatelja</span>
+                        <a href="https://www.forbes.com" target="_blank" class="block hover:underline font-bold text-gray-800">B2B TRENDS I AI U BIZNISU 2026</a>
+                        <span class="text-[10px] text-gray-500">Forbes • 1.200 čitatelja</span>
                     </li>
                     <li>
-                        <strong class="block hover:underline cursor-pointer">Digitalna transformacija</strong>
-                        <span class="text-[10px] text-gray-500">Prije 5 sati • 840 čitatelja</span>
+                        <a href="https://www.techcrunch.com" target="_blank" class="block hover:underline font-bold text-gray-800">GLOBALNA DIGITALNA TRANSFORMACIJA</a>
+                        <span class="text-[10px] text-gray-500">TechCrunch • 840 čitatelja</span>
                     </li>
                     <li>
-                        <strong class="block hover:underline cursor-pointer">Financije i fondovi EU</strong>
-                        <span class="text-[10px] text-gray-500">Prije 1 dan • 3.1k čitatelja</span>
+                        <a href="https://www.bloomberg.com" target="_blank" class="block hover:underline font-bold text-gray-800">EU FONDOVI ZA STARTUP-OVE</a>
+                        <span class="text-[10px] text-gray-500">Bloomberg • 3.1k čitatelja</span>
                     </li>
                 </ul>
             </div>
 
-            <!-- OBAVJEŠTENJA WIDGET -->
+            <!-- DONJI WIDGET: ISKLJUČIVO ZA NOVE TEME S VAŠEG FORUMA -->
             <div id="WIDGET_NOTIF" class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
-                <h3 class="font-bold text-xs mb-2 text-gray-700">🔔 AKTIVNA OBAVJEŠTENJA</h3>
-                <p class="text-[11px] text-gray-600 bg-blue-50 p-2 rounded border-l-2 border-blue-600">
-                    Administrator je postavio novu temu na forumu.
-                </p>
+                <h3 class="font-bold text-xs mb-2 text-gray-700">🔔 NOVA TEMA NA FORUMU</h3>
+                <div id="POSLJEDNJA_OBAVIJEST" class="text-[11px] text-gray-600 bg-blue-50 p-2 rounded border-l-2 border-blue-600 space-y-1">
+                    <p class="font-bold text-gray-800">Najnovija objava:</p>
+                    <a id="LINK_POSLJEDNJE_TEME" href="#tema-1" class="linkedin-blue-text font-bold hover:underline block truncate">
+                        -
+                    </a>
+                </div>
             </div>
         </aside>
 
     </main>
 
-    <!-- MODAL ZA NOVU TEMU (POST) -->
+    <!-- MODAL ZA NOVU TEMU -->
     <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-2xl border border-gray-200">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
@@ -159,9 +158,7 @@
         </div>
     </div>
 
-    <!-- SKRIPTA SA ORIGINALNIM TABELAMA I FUNKCIONALNOSTIMA -->
     <script>
-        // 1. Tabela za teme
         let POSAO_FORUM = [
             {
                 id: 1,
@@ -173,14 +170,13 @@
             }
         ];
 
-        // 2. Odvojena tabela za komentare (povezana preko tema_id)
         let POSAO_FORUM_KOMENTARI = [
             { id: 1, tema_id: 1, autor: "KORISNIK1", tekst: "ODLIČNA INICIJATIVA!" }
         ];
 
-        // Učitavanje pri pokretanju stranice
         window.onload = function() {
             PRIKAZI_TEME(POSAO_FORUM);
+            AZURIRAJ_OBAVIJESTI();
         };
 
         function PRIKAZI_TEME(temeZaPrikaz) {
@@ -193,7 +189,6 @@
             }
 
             temeZaPrikaz.forEach(tema => {
-                // Izvlačenje komentara isključivo iz tabele POSAO_FORUM_KOMENTARI za trenutnu temu
                 const komentariTeme = POSAO_FORUM_KOMENTARI.filter(k => k.tema_id === tema.id);
                 
                 let komentariHtml = komentariTeme.map(k => `
@@ -203,8 +198,7 @@
                 `).join('');
 
                 const htmlTema = `
-                    <div class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 space-y-3">
-                        <!-- Zaglavlje objave (Autor i datum u LinkedIn stilu) -->
+                    <div id="tema-${tema.id}" class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 space-y-3 scroll-mt-20">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-2">
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 border flex items-center justify-center font-bold text-gray-700 text-xs">
@@ -218,19 +212,16 @@
                             <span class="text-[10px] bg-blue-50 linkedin-blue-text px-2 py-0.5 rounded font-bold border border-blue-200">${tema.kategorija}</span>
                         </div>
 
-                        <!-- Sadržaj objave -->
                         <div>
                             <h3 class="text-xs font-bold mt-1 text-gray-900">${tema.naslov}</h3>
                             <p class="text-gray-700 text-xs mt-1 leading-relaxed">${tema.sadrzaj}</p>
                         </div>
 
-                        <!-- Interakcije (Like / Komentari brojač) -->
                         <div class="flex justify-between text-[11px] text-gray-500 border-t border-b border-gray-100 py-1.5">
                             <span>👍 12 lajkova</span>
                             <span>${komentariTeme.length} komentara</span>
                         </div>
 
-                        <!-- SEKCIJA ZA KOMENTARE -->
                         <div class="space-y-2 pt-1">
                             <div class="space-y-1">
                                 ${komentariHtml || '<p class="text-[11px] text-gray-400 italic">NEMA KOMENTARA.</p>'}
@@ -244,6 +235,16 @@
                 `;
                 kontejner.innerHTML += htmlTema;
             });
+        }
+
+        // AŽURIRA SAMO DONJI WIDGET SA POSLJEDNJOM TEMOM S VAŠEG FORUMA
+        function AZURIRAJ_OBAVIJESTI() {
+            if (POSAO_FORUM.length > 0) {
+                const poslTema = POSAO_FORUM[0];
+                const linkElement = document.getElementById('LINK_POSLJEDNJE_TEME');
+                linkElement.textContent = poslTema.naslov;
+                linkElement.setAttribute('href', `#tema-${poslTema.id}`);
+            }
         }
 
         function OTVORI_MODAL() {
@@ -272,13 +273,12 @@
 
             const noviId = POSAO_FORUM.length > 0 ? POSAO_FORUM[POSAO_FORUM.length - 1].id + 1 : 1;
 
-            // Upis u tabelu POSAO_FORUM
             const novaTema = {
                 id: noviId,
                 kategorija: KATEGORIJA,
                 naslov: NASLOV,
                 sadrzaj: SADRZAJ,
-                autor: "KORISNIK",
+                autor: "ADMINISTRATOR",
                 datum: new Date().toLocaleDateString('bs-BA')
             };
 
@@ -289,6 +289,7 @@
             document.getElementById('SADRZAJ_TEME').value = '';
             
             PRIKAZI_TEME(POSAO_FORUM);
+            AZURIRAJ_OBAVIJESTI();
         }
 
         function DODAJ_KOMENTAR(temaId) {
@@ -299,7 +300,6 @@
 
             const noviKomentarId = POSAO_FORUM_KOMENTARI.length > 0 ? POSAO_FORUM_KOMENTARI[POSAO_FORUM_KOMENTARI.length - 1].id + 1 : 1;
 
-            // Upis u odvojenu tabelu POSAO_FORUM_KOMENTARI
             POSAO_FORUM_KOMENTARI.push({
                 id: noviKomentarId,
                 tema_id: temaId,
