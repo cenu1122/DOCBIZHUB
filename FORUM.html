@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POSLOVNI FORUM</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans uppercase">
@@ -31,33 +32,7 @@
 
         <!-- LISTA TEMA -->
         <div id="LISTA_TEMA" class="space-y-4">
-            <div class="p-4 bg-white rounded-lg shadow border border-gray-100">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-medium">B2B</span>
-                    <!-- NOVA STATUS KOLONA -->
-                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold">STATUS_ODGOVORA: ČEKANJE GROQ ODGOVORA (ODGODA 5-16 MIN)</span>
-                </div>
-                <h3 class="text-lg font-semibold mt-2">DOBRODOŠLI NA POSLOVNI FORUM</h3>
-                <p class="text-gray-600 text-sm mt-1">OVO JE AUTOMATSKI GENERIRANA TEMA OD STRANE ADMINISTRATORA.</p>
-                
-                <!-- SEKCIJA ZA KOMENTARE -->
-                <div class="mt-4 border-t pt-3">
-                    <h4 class="text-sm font-bold text-gray-700">KOMENTARI:</h4>
-                    <div id="KOMENTARI_LISTA" class="mt-2 space-y-2">
-                        <p class="text-xs text-gray-500">KORISNIK1: ODLIČNA INICIJATIVA!</p>
-                        <p class="text-xs text-indigo-600 font-semibold">ADMIN (GROQ): [ČEKA SE AUTOMATSKI ODGOVOR - PREOSTALO ~12 MINUTA...]</p>
-                    </div>
-                    <div class="mt-3 flex gap-2">
-                        <input type="text" id="NOVI_KOMENTAR" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1 text-xs border rounded-lg">
-                        <button onclick="DODAJ_KOMENTAR()" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg">POŠALJI</button>
-                    </div>
-                </div>
-
-                <div class="text-xs text-gray-400 mt-3 flex justify-between">
-                    <span>AUTOR: ADMINISTRATOR</span>
-                    <span>17.09.2026.</span>
-                </div>
-            </div>
+            <!-- Dinamički sadržaj iz tabele POSAO_FORUM i POSAO_FORUM_KOMENTARI -->
         </div>
     </main>
 
@@ -79,8 +54,77 @@
         </div>
     </div>
 
-    <!-- SKRIPTA ZA FUNKCIONALNOSTI I GROQ ODGODU OD 5-16 MINUTA -->
+    <!-- SKRIPTA ZA DVIJE TABELE -->
     <script>
+        // 1. Tabela za teme
+        let POSAO_FORUM = [
+            {
+                id: 1,
+                kategorija: "B2B",
+                naslov: "DOBRODOŠLI NA POSLOVNI FORUM",
+                sadrzaj: "OVO JE POČETNA TEMA NA FORUMU.",
+                autor: "ADMINISTRATOR",
+                datum: "17.09.2026."
+            }
+        ];
+
+        // 2. Odvojena tabela za komentare (povezana preko tema_id)
+        let POSAO_FORUM_KOMENTARI = [
+            { id: 1, tema_id: 1, autor: "KORISNIK1", tekst: "ODLIČNA INICIJATIVA!" }
+        ];
+
+        // Učitavanje pri pokretanju stranice
+        window.onload = function() {
+            PRIKAZI_TEME(POSAO_FORUM);
+        };
+
+        function PRIKAZI_TEME(temeZaPrikaz) {
+            const kontejner = document.getElementById('LISTA_TEMA');
+            kontejner.innerHTML = '';
+
+            if (temeZaPrikaz.length === 0) {
+                kontejner.innerHTML = '<p class="text-center text-gray-500 py-4">NEMA PRONAĐENIH TEMA.</p>';
+                return;
+            }
+
+            temeZaPrikaz.forEach(tema => {
+                // Izvlačenje komentara isključivo iz tabele POSAO_FORUM_KOMENTARI za trenutnu temu
+                const komentariTeme = POSAO_FORUM_KOMENTARI.filter(k => k.tema_id === tema.id);
+                
+                let komentariHtml = komentariTeme.map(k => `
+                    <p class="text-xs text-gray-600"><strong>${k.autor}:</strong> ${k.tekst}</p>
+                `).join('');
+
+                const htmlTema = `
+                    <div class="p-4 bg-white rounded-lg shadow border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-medium">${tema.kategorija}</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mt-2">${tema.naslov}</h3>
+                        <p class="text-gray-600 text-sm mt-1">${tema.sadrzaj}</p>
+                        
+                        <!-- SEKCIJA ZA KOMENTARE -->
+                        <div class="mt-4 border-t pt-3">
+                            <h4 class="text-sm font-bold text-gray-700">KOMENTARI:</h4>
+                            <div class="mt-2 space-y-2">
+                                ${komentariHtml || '<p class="text-xs text-gray-400">NEMA KOMENTARA.</p>'}
+                            </div>
+                            <div class="mt-3 flex gap-2">
+                                <input type="text" id="KOMENTAR_INPUT_${tema.id}" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <button onclick="DODAJ_KOMENTAR(${tema.id})" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700">POŠALJI</button>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-gray-400 mt-3 flex justify-between">
+                            <span>AUTOR: ${tema.autor}</span>
+                            <span>${tema.datum}</span>
+                        </div>
+                    </div>
+                `;
+                kontejner.innerHTML += htmlTema;
+            });
+        }
+
         function OTVORI_MODAL() {
             document.getElementById('MODAL_TEMA').classList.remove('hidden');
         }
@@ -90,49 +134,67 @@
         }
 
         function SPREMI_TEMU() {
-            const NASLOV = document.getElementById('NASLOV_TEME').value;
+            const NASLOV = document.getElementById('NASLOV_TEME').value.toUpperCase();
             const KATEGORIJA = document.getElementById('KATEGORIJA_TEME').value;
-            const SADRZAJ = document.getElementById('SADRZAJ_TEME').value;
+            const SADRZAJ = document.getElementById('SADRZAJ_TEME').value.toUpperCase();
 
             if(!NASLOV || !SADRZAJ) {
                 alert('MOLIMO POPUNITE SVA POLJA.');
                 return;
             }
 
-            console.log("SPREMANJE U BAZU:", { NASLOV, KATEGORIJA, SADRZAJ, STATUS_ODGOVORA: "AKTIVNO" });
+            const noviId = POSAO_FORUM.length > 0 ? POSAO_FORUM[POSAO_FORUM.length - 1].id + 1 : 1;
+
+            // Upis u tabelu POSAO_FORUM
+            const novaTema = {
+                id: noviId,
+                kategorija: KATEGORIJA,
+                naslov: NASLOV,
+                sadrzaj: SADRZAJ,
+                autor: "KORISNIK",
+                datum: new Date().toLocaleDateString('bs-BA')
+            };
+
+            POSAO_FORUM.unshift(novaTema);
 
             ZATVORI_MODAL();
             document.getElementById('NASLOV_TEME').value = '';
             document.getElementById('SADRZAJ_TEME').value = '';
-            alert('TEMA USPJEŠNO OBJAVLJENA!');
+            
+            PRIKAZI_TEME(POSAO_FORUM);
+        }
+
+        function DODAJ_KOMENTAR(temaId) {
+            const inputPolje = document.getElementById(`KOMENTAR_INPUT_${temaId}`);
+            const tekstKomentara = inputPolje.value.toUpperCase();
+            
+            if(!tekstKomentara) return;
+
+            const noviKomentarId = POSAO_FORUM_KOMENTARI.length > 0 ? POSAO_FORUM_KOMENTARI[POSAO_FORUM_KOMENTARI.length - 1].id + 1 : 1;
+
+            // Upis u odvojenu tabelu POSAO_FORUM_KOMENTARI
+            POSAO_FORUM_KOMENTARI.push({
+                id: noviKomentarId,
+                tema_id: temaId,
+                autor: "KORISNIK",
+                tekst: tekstKomentara
+            });
+
+            inputPolje.value = '';
+            PRIKAZI_TEME(POSAO_FORUM);
         }
 
         function FILTRIRAJ_TEME() {
-            const POJAM = document.getElementById('PRETRAGA').value.toLowerCase();
-            const KATEGORIJA = document.getElementById('FILTER_KATEGORIJA').value;
-        }
+            const pojam = document.getElementById('PRETRAGA').value.toLowerCase();
+            const izabranaKategorija = document.getElementById('FILTER_KATEGORIJA').value;
 
-        function DODAJ_KOMENTAR() {
-            const TEKST_KOMENTARA = document.getElementById('NOVI_KOMENTAR').value;
-            if(!TEKST_KOMENTARA) return;
+            const filtrirano = POSAO_FORUM.filter(tema => {
+                const poklapaPretragu = tema.naslov.toLowerCase().includes(pojam) || tema.sadrzaj.toLowerCase().includes(pojam);
+                const poklapaKategoriju = izabranaKategorija === "" || tema.kategorija === izabranaKategorija;
+                return poklapaPretragu && poklapaKategoriju;
+            });
 
-            // GENERIRANJE NASUMIČNE ODGODE IZMEĐU 5 I 16 MINUTA (U MILISEKUNDAMA)
-            // FORMULA: Math.floor(Math.random() * (max - min + 1)) + min
-            const MINUTA_ODGODE = Math.floor(Math.random() * (16 - 5 + 1)) + 5;
-            const MILISEKUNDE_ODGODE = MINUTA_ODGODE * 60 * 1000;
-
-            console.log(`KOMENTAR ZAPRIMLJEN. GROQ ĆE ODGOVORITI NAKON ${MINUTA_ODGODE} MINUTA.`);
-
-            // OVDJE SE UPISUJE STATUS U KOLONU STATUS_ODGOVORA
-            alert(`KOMENTAR POSLAN! STATUS_ODGOVORA: ČEKA SE GROQ (ODGODA: ${MINUTA_ODGODE} MIN).`);
-            
-            document.getElementById('NOVI_KOMENTAR').value = '';
-
-            // SIMULACIJA POZIVA GROQ API-JA NAKON ZADANE ODGODE
-            setTimeout(() => {
-                console.log("GROQ GENERIRA ODGOVOR NA KOMENTAR...");
-                // OVDJE DOLAZI STVARNI API POZIV PREMA SUPABASE/GROQ WEBHUKU
-            }, MILISEKUNDE_ODGODE);
+            PRIKAZI_TEME(filtrirano);
         }
     </script>
 </body>
