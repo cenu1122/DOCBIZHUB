@@ -1,438 +1,139 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Posao & Karijera | LjubavNaPrviKlik</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff0f3; color: #2b2d42; display: flex; flex-direction: column; min-height: 100vh; }
-
-    header { background-color: #2b2d42; color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); flex-wrap: wrap; gap: 10px; position: relative; }
-    .logo { font-size: 1.4rem; font-weight: bold; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-
-    .nav-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .btn-nav { background: #d90429; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; transition: background 0.2s; border: none; cursor: pointer; }
-    .btn-nav:hover { background: #ef233c; }
-
-    /* Stilovi za gornju desnu navigaciju (Dugme foruma i Notifikacije) */
-    .top-nav-utilities {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .nav-btn {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        color: #1e293b;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        transition: all 0.2s ease;
-    }
-
-    .nav-btn:hover {
-        background: #f1f5f9;
-        border-color: #94a3b8;
-    }
-
-    /* Stilovi za notifikacije (Zvonce) */
-    .notif-container {
-        position: relative;
-    }
-
-    .notif-bell-btn {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        transition: all 0.2s ease;
-        position: relative;
-    }
-
-    .notif-bell-btn:hover {
-        background: #f1f5f9;
-    }
-
-    .notif-badge {
-        position: absolute;
-        top: -4px;
-        right: -4px;
-        background: #ef4444;
-        color: #ffffff;
-        font-size: 11px;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 10px;
-        display: none;
-    }
-
-    /* Padajući prozor za notifikacije */
-    .notif-dropdown {
-        position: absolute;
-        top: 50px;
-        right: 0;
-        width: 320px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        display: none;
-        flex-direction: column;
-        overflow: hidden;
-        z-index: 1001;
-    }
-
-    .notif-dropdown.active {
-        display: flex;
-    }
-
-    .notif-header {
-        padding: 12px 16px;
-        border-bottom: 1px solid #f1f5f9;
-        font-weight: bold;
-        font-size: 14px;
-        color: #1e293b;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .notif-list {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    .notif-item {
-        padding: 12px 16px;
-        border-bottom: 1px solid #f8fafc;
-        font-size: 13px;
-        color: #334155;
-        cursor: pointer;
-        transition: background 0.15s;
-    }
-
-    .notif-item:hover {
-        background: #f8fafc;
-    }
-
-    .notif-item.unread {
-        background: #eff6ff;
-    }
-
-    .notif-item .time {
-        font-size: 11px;
-        color: #94a3b8;
-        margin-top: 4px;
-        display: block;
-    }
-
-    .notif-empty {
-        padding: 20px;
-        text-align: center;
-        color: #94a3b8;
-        font-size: 13px;
-    }
-
-    .main-container { flex: 1; padding: 30px 20px; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 25px; }
-
-    /* Sekcija za pretragu i filtere */
-    .filter-card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 5px 20px rgba(217, 4, 41, 0.06); border-left: 6px solid #d90429; display: flex; flex-direction: column; gap: 15px; }
-    .filter-card h2 { color: #800020; font-size: 1.5rem; }
-    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-    
-    .filter-input, .filter-select { padding: 12px 16px; border-radius: 12px; border: 2px solid #e0e0e0; font-size: 0.95rem; outline: none; transition: border-color 0.2s; width: 100%; background: #fafafa; }
-    .filter-input:focus, .filter-select:focus { border-color: #d90429; background: #fff; }
-
-    .stats-info { font-size: 0.9rem; color: #666; font-weight: bold; }
-
-    /* Grid sa profilima za posao */
-    .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    
-    .user-card { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px; border: 1px solid #f0f0f0; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
-    .user-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(217, 4, 41, 0.12); border-color: #ffccd5; }
-    
-    .user-header { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 55px; height: 55px; border-radius: 50%; background: #ffe0e3; color: #d90429; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; flex-shrink: 0; }
-    .user-name { font-size: 1.2rem; font-weight: bold; color: #2b2d42; }
-    .user-location { font-size: 0.85rem; color: #777; }
-
-    .user-details { display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; margin-top: 5px; }
-    .badge { display: inline-block; background: #fff0f3; color: #d90429; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; margin-right: 4px; margin-bottom: 4px; }
-    
-    .btn-contact-user { margin-top: auto; background: #2b2d42; color: #fff; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: background 0.2s; display: block; }
-    .btn-contact-user:hover { background: #d90429; }
-
-    .no-results { text-align: center; padding: 40px; color: #777; font-size: 1.1rem; grid-column: 1 / -1; background: #fff; border-radius: 16px; }
-
-    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSLOVNI FORUM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 font-sans uppercase">
 
-  <header>
-    <a href="DASHBOARD.html" class="logo">💼 Posao & Karijera Portal</a>
-    
-    <div class="nav-actions">
-      <!-- Forum dugme i Notifikacije u gornjem desnom uglu -->
-      <div class="top-nav-utilities">
-          <a href="FORUM.html" class="nav-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              Forum
-          </a>
+    <!-- NAVIGACIJA -->
+    <header class="bg-indigo-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">POSLOVNI FORUM</h1>
+            <button onclick="OTVORI_MODAL()" class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition">NOVA TEMA</button>
+        </div>
+    </header>
 
-          <div class="notif-container">
-              <button class="notif-bell-btn" id="notifBell" onclick="toggleNotifDropdown()" title="Obavještenja">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                  <span class="notif-badge" id="notifBadge">0</span>
-              </button>
+    <!-- GLAVNI SADRŽAJ -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- FILTRI I PRETRAGA -->
+        <div class="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+            <input type="text" id="PRETRAGA" placeholder="PRETRAŽI TEME..." class="px-4 py-2 border rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-indigo-500" oninput="FILTRIRAJ_TEME()">
+            <select id="FILTER_KATEGORIJA" class="px-4 py-2 border rounded-lg w-full sm:w-1/4 focus:outline-none focus:ring-2 focus:ring-indigo-500" onchange="FILTRIRAJ_TEME()">
+                <option value="">SVE KATEGORIJE</option>
+                <option value="B2B">B2B SURADNJA</option>
+                <option value="FINANCIJE">FINANCIJE</option>
+                <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
+            </select>
+        </div>
 
-              <div class="notif-dropdown" id="notifDropdown">
-                  <div class="notif-header">
-                      <span>Obavještenja sa foruma</span>
-                      <small style="cursor: pointer; color: #3b82f6;" onclick="markAllAsRead()">Označi pročitano</small>
-                  </div>
-                  <div class="notif-list" id="notifList"></div>
-              </div>
-          </div>
-      </div>
+        <!-- LISTA TEMA -->
+        <div id="LISTA_TEMA" class="space-y-4">
+            <div class="p-4 bg-white rounded-lg shadow border border-gray-100">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-medium">B2B</span>
+                    <!-- NOVA STATUS KOLONA -->
+                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold">STATUS_ODGOVORA: ČEKANJE GROQ ODGOVORA (ODGODA 5-16 MIN)</span>
+                </div>
+                <h3 class="text-lg font-semibold mt-2">DOBRODOŠLI NA POSLOVNI FORUM</h3>
+                <p class="text-gray-600 text-sm mt-1">OVO JE AUTOMATSKI GENERIRANA TEMA OD STRANE ADMINISTRATORA.</p>
+                
+                <!-- SEKCIJA ZA KOMENTARE -->
+                <div class="mt-4 border-t pt-3">
+                    <h4 class="text-sm font-bold text-gray-700">KOMENTARI:</h4>
+                    <div id="KOMENTARI_LISTA" class="mt-2 space-y-2">
+                        <p class="text-xs text-gray-500">KORISNIK1: ODLIČNA INICIJATIVA!</p>
+                        <p class="text-xs text-indigo-600 font-semibold">ADMIN (GROQ): [ČEKA SE AUTOMATSKI ODGOVOR - PREOSTALO ~12 MINUTA...]</p>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="NOVI_KOMENTAR" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1 text-xs border rounded-lg">
+                        <button onclick="DODAJ_KOMENTAR()" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg">POŠALJI</button>
+                    </div>
+                </div>
 
-      <a href="DASHBOARD.html" class="btn-nav">🏠 Dashboard</a>
-      <a href="KONTAKT.html" class="btn-nav">📩 Podrška</a>
+                <div class="text-xs text-gray-400 mt-3 flex justify-between">
+                    <span>AUTOR: ADMINISTRATOR</span>
+                    <span>17.09.2026.</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL ZA NOVU TEMU -->
+    <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
+            <h2 class="text-xl font-bold mb-4">OTVORITE NOVU TEMU</h2>
+            <input type="text" id="NASLOV_TEME" placeholder="NASLOV TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="KATEGORIJA_TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="B2B">B2B SURADNJA</option>
+                <option value="FINANCIJE">FINANCIJE</option>
+                <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
+            </select>
+            <textarea id="SADRZAJ_TEME" placeholder="SADRŽAJ RASPRAVE..." rows="4" class="w-full px-3 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="ZATVORI_MODAL()" class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">OTKAŽI</button>
+                <button onclick="SPREMI_TEMU()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">OBJAVI</button>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <div class="main-container">
-    <div class="filter-card">
-      <h2>Pretraga profesionalaca i saradnika</h2>
-      <div class="filter-grid">
-        <input type="text" id="searchInput" class="filter-input" placeholder="🔍 Pretraži po imenu, gradu..." onkeyup="filtrirajKorisnike()">
-        <input type="text" id="jobFilterInput" class="filter-input" placeholder="💼 Filtriraj po zanimanju..." onkeyup="filtrirajKorisnike()">
-        <input type="text" id="skillFilterInput" class="filter-input" placeholder="💡 Filtriraj po vještinama/interesima..." onkeyup="filtrirajKorisnike()">
-      </div>
-      <div class="stats-info" id="statsInfo">Učitavanje korisnika iz baze...</div>
-    </div>
-
-    <div id="usersGrid" class="users-grid"></div>
-  </div>
-
-  <footer>
-    <p>© 2026 LjubavNaPrviKlik. Sva prava zadržana.</p>
-  </footer>
-
-  <script>
-    const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
-
-    let _supabase;
-    if (typeof supabase !== 'undefined') {
-      _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-
-    let sviKorisnici = [];
-
-    async function ucitajKorisnikeZaPosao() {
-      const grid = document.getElementById('usersGrid');
-      const stats = document.getElementById('statsInfo');
-
-      if (!_supabase) {
-        grid.innerHTML = '<div class="no-results">Greška: Supabase nije inicijalizovan.</div>';
-        return;
-      }
-
-      try {
-        const { data, error } = await _supabase
-          .from('POSAO__KORISNICI')
-          .select('*');
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          grid.innerHTML = '<div class="no-results">Trenutno nema registrovanih korisnika u bazi poslova.</div>';
-          stats.innerText = 'Pronađeno 0 korisnika.';
-          return;
+    <!-- SKRIPTA ZA FUNKCIONALNOSTI I GROQ ODGODU OD 5-16 MINUTA -->
+    <script>
+        function OTVORI_MODAL() {
+            document.getElementById('MODAL_TEMA').classList.remove('hidden');
         }
 
-        sviKorisnici = data;
-        prikaziKorisnike(sviKorisnici);
+        function ZATVORI_MODAL() {
+            document.getElementById('MODAL_TEMA').classList.add('hidden');
+        }
 
-      } catch (e) {
-        console.error("Greška pri dohvatanju poslova:", e);
-        grid.innerHTML = `<div class="no-results">Došlo je do greške pri učitavanju podataka iz tabele.</div>`;
-        stats.innerText = 'Greška pri učitavanju.';
-      }
-    }
+        function SPREMI_TEMU() {
+            const NASLOV = document.getElementById('NASLOV_TEME').value;
+            const KATEGORIJA = document.getElementById('KATEGORIJA_TEME').value;
+            const SADRZAJ = document.getElementById('SADRZAJ_TEME').value;
 
-    function prikaziKorisnike(lista) {
-      const grid = document.getElementById('usersGrid');
-      const stats = document.getElementById('statsInfo');
-
-      stats.innerText = `Prikazano korisnika: ${lista.length}`;
-
-      if (lista.length === 0) {
-        grid.innerHTML = '<div class="no-results">Nema korisnika koji odgovaraju vašoj pretrazi.</div>';
-        return;
-      }
-
-      let html = '';
-      lista.forEach(user => {
-        const ime = user.IME || user.Ime || 'Korisnik';
-        const prezime = user.PREZIME || user.Prezime || '';
-        const zanimanje = user.ZANIMANJE || user.Zanimanje || 'Nije navedeno';
-        const grad = user.GRAD || user.Grad || user.LOKACIJA || 'Lokacija nije unijeta';
-        const interesovanja = user.INTERESOVANJA || user.Interesovanja || user.VJETINE || 'Nema unesenih vještina';
-        const mail = user.MAIL || user.Email || user.email || '#';
-
-        const inicijali = (ime.charAt(0) + (prezime ? prezime.charAt(0) : '')).toUpperCase();
-
-        html += `
-          <div class="user-card">
-            <div class="user-header">
-              <div class="user-avatar">${inicijali}</div>
-              <div>
-                <div class="user-name">${ime} ${prezime}</div>
-                <div class="user-location">📍 ${grad}</div>
-              </div>
-            </div>
-            <div class="user-details">
-              <p><strong>💼 Zanimanje:</strong> <span class="badge">${zanimanje}</span></p>
-              <p><strong>💡 Interesi/Vještine:</strong> ${interesovanja}</p>
-            </div>
-            <a href="mailto:${mail}" class="btn-contact-user">📩 Kontaktiraj korisnika</a>
-          </div>
-        `;
-      });
-
-      grid.innerHTML = html;
-    }
-
-    function filtrirajKorisnike() {
-      const pojamPretrage = document.getElementById('searchInput').value.toLowerCase();
-      const pojamZanimanja = document.getElementById('jobFilterInput').value.toLowerCase();
-      const pojamVjestina = document.getElementById('skillFilterInput').value.toLowerCase();
-
-      const filtrirani = sviKorisnici.filter(user => {
-        const punoIme = `${user.IME || ''} ${user.PREZIME || ''}`.toLowerCase();
-        const grad = (user.GRAD || user.Grad || user.LOKACIJA || '').toLowerCase();
-        const zanimanje = (user.ZANIMANJE || user.Zanimanje || '').toLowerCase();
-        const vjestine = (user.INTERESOVANJA || user.Interesovanja || user.VJETINE || '').toLowerCase();
-
-        const poklapaOpste = punoIme.includes(pojamPretrage) || grad.includes(pojamPretrage);
-        const poklapaZanimanje = zanimanje.includes(pojamZanimanja);
-        const poklapaVjestine = vjestine.includes(pojamVjestina);
-
-        return poklapaOpste && poklapaZanimanje && poklapaVjestine;
-      });
-
-      prikaziKorisnike(filtrirani);
-    }
-
-    // ČITANJE NOTIFIKACIJA DIREKTNO IZ SUPABASE TABELE
-    let notifications = [];
-
-    async function ucitajNotifikacijeSaForuma() {
-        if (!_supabase) return;
-        try {
-            const { data, error } = await _supabase
-                .from('FORUM_TEME')
-                .select('*')
-                .order('CREATED_AT', { ascending: false })
-                .limit(5);
-
-            if (error) throw error;
-
-            if (data && data.length > 0) {
-                notifications = data.map(item => ({
-                    id: item.ID || item.id || Date.now(),
-                    text: `Nova tema: "${item.NASLOV || item.tekst || 'Pogledaj objavu'}"`,
-                    time: "Nedavno",
-                    unread: true
-                }));
-                updateNotificationsUI();
+            if(!NASLOV || !SADRZAJ) {
+                alert('MOLIMO POPUNITE SVA POLJA.');
+                return;
             }
-        } catch (e) {
-            console.log("Greška pri učitavanju notifikacija iz baze.");
+
+            console.log("SPREMANJE U BAZU:", { NASLOV, KATEGORIJA, SADRZAJ, STATUS_ODGOVORA: "AKTIVNO" });
+
+            ZATVORI_MODAL();
+            document.getElementById('NASLOV_TEME').value = '';
+            document.getElementById('SADRZAJ_TEME').value = '';
+            alert('TEMA USPJEŠNO OBJAVLJENA!');
         }
-    }
 
-    function updateNotificationsUI() {
-        const listEl = document.getElementById('notifList');
-        const badgeEl = document.getElementById('notifBadge');
-        if (!listEl || !badgeEl) return;
-        
-        listEl.innerHTML = '';
-        const unreadCount = notifications.filter(n => n.unread).length;
-        
-        if (unreadCount > 0) {
-            badgeEl.style.display = 'block';
-            badgeEl.textContent = unreadCount;
-        } else {
-            badgeEl.style.display = 'none';
+        function FILTRIRAJ_TEME() {
+            const POJAM = document.getElementById('PRETRAGA').value.toLowerCase();
+            const KATEGORIJA = document.getElementById('FILTER_KATEGORIJA').value;
         }
-        
-        if (notifications.length === 0) {
-            listEl.innerHTML = '<div class="notif-empty">Nemate novih obavještenja</div>';
-            return;
+
+        function DODAJ_KOMENTAR() {
+            const TEKST_KOMENTARA = document.getElementById('NOVI_KOMENTAR').value;
+            if(!TEKST_KOMENTARA) return;
+
+            // GENERIRANJE NASUMIČNE ODGODE IZMEĐU 5 I 16 MINUTA (U MILISEKUNDAMA)
+            // FORMULA: Math.floor(Math.random() * (max - min + 1)) + min
+            const MINUTA_ODGODE = Math.floor(Math.random() * (16 - 5 + 1)) + 5;
+            const MILISEKUNDE_ODGODE = MINUTA_ODGODE * 60 * 1000;
+
+            console.log(`KOMENTAR ZAPRIMLJEN. GROQ ĆE ODGOVORITI NAKON ${MINUTA_ODGODE} MINUTA.`);
+
+            // OVDJE SE UPISUJE STATUS U KOLONU STATUS_ODGOVORA
+            alert(`KOMENTAR POSLAN! STATUS_ODGOVORA: ČEKA SE GROQ (ODGODA: ${MINUTA_ODGODE} MIN).`);
+            
+            document.getElementById('NOVI_KOMENTAR').value = '';
+
+            // SIMULACIJA POZIVA GROQ API-JA NAKON ZADANE ODGODE
+            setTimeout(() => {
+                console.log("GROQ GENERIRA ODGOVOR NA KOMENTAR...");
+                // OVDJE DOLAZI STVARNI API POZIV PREMA SUPABASE/GROQ WEBHUKU
+            }, MILISEKUNDE_ODGODE);
         }
-        
-        notifications.forEach(notif => {
-            const item = document.createElement('div');
-            item.className = `notif-item ${notif.unread ? 'unread' : ''}`;
-            item.innerHTML = `
-                <div>${notif.text}</div>
-                <span class="time">${notif.time}</span>
-            `;
-            item.onclick = () => {
-                notif.unread = false;
-                saveAndRefresh();
-                window.location.href = 'FORUM.html';
-            };
-            listEl.appendChild(item);
-        });
-    }
-
-    function toggleNotifDropdown() {
-        const dropdown = document.getElementById('notifDropdown');
-        if (dropdown) dropdown.classList.toggle('active');
-    }
-
-    function markAllAsRead() {
-        notifications.forEach(n => n.unread = false);
-        saveAndRefresh();
-    }
-
-    function saveAndRefresh() {
-        updateNotificationsUI();
-    }
-
-    window.addEventListener('click', function(e) {
-        if (!e.target.closest('.notif-container')) {
-            const dropdown = document.getElementById('notifDropdown');
-            if (dropdown) dropdown.classList.remove('active');
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        ucitajKorisnikeZaPosao();
-        ucitajNotifikacijeSaForuma();
-    });
-  </script>
-
+    </script>
 </body>
 </html>
