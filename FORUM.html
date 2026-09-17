@@ -3,58 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POSLOVNI FORUM</title>
+    <title>POSLOVNI FORUM - LINKEDIN STYLE</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* LinkedIn specifične boje i stilovi */
+        .linkedin-blue { background-color: #0a66c2; }
+        .linkedin-blue-text { color: #0a66c2; }
+        .linkedin-hover:hover { background-color: rgba(0, 0, 0, 0.08); }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans uppercase">
+<body class="bg-[#f3f2ef] text-gray-900 font-sans uppercase">
 
-    <!-- NAVIGACIJA -->
-    <header class="bg-indigo-600 text-white shadow-md">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">POSLOVNI FORUM</h1>
-            <button onclick="OTVORI_MODAL()" class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition">NOVA TEMA</button>
+    <!-- LINKEDIN NAVIGACIJA -->
+    <header class="bg-white border-b border-gray-300 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 h-14 flex justify-between items-center max-w-6xl">
+            <!-- Logo i Pretraga -->
+            <div class="flex items-center gap-3">
+                <div class="linkedin-blue text-white font-bold p-1.5 rounded text-xl flex items-center justify-center w-10 h-10">In</div>
+                <div class="relative hidden sm:block">
+                    <input type="text" id="PRETRAGA" placeholder="PRETRAŽI TEME..." class="bg-[#eef3f8] px-3 py-1.5 pl-9 rounded text-xs w-60 focus:w-72 transition-all focus:outline-none focus:ring-1 focus:ring-black" oninput="FILTRIRAJ_TEME()">
+                    <span class="absolute left-2.5 top-2 text-gray-500 text-xs">🔍</span>
+                </div>
+            </div>
+
+            <!-- Navigacijske ikone (Simulacija LinkedIn menija) -->
+            <nav class="flex items-center gap-6 text-xs text-gray-600 font-medium">
+                <div class="flex flex-col items-center cursor-pointer linkedin-blue-text">
+                    <span class="text-lg">🏠</span>
+                    <span>POVRATak</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer hover:text-black">
+                    <span class="text-lg">👥</span>
+                    <span>MREŽA</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer hover:text-black">
+                    <span class="text-lg">💼</span>
+                    <span>POSLOVI</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer hover:text-black relative" onclick="TOGGLE_NOTIFIKACIJE()">
+                    <span class="text-lg">🔔</span>
+                    <span>OBAVJEŠTENJA</span>
+                    <span id="badge-notif" class="absolute -top-1 right-2 bg-red-600 text-white rounded-full text-[9px] px-1">1</span>
+                </div>
+            </nav>
         </div>
     </header>
 
-    <!-- GLAVNI SADRŽAJ -->
-    <main class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- FILTRI I PRETRAGA -->
-        <div class="flex flex-col sm:flex-row justify-between gap-4 mb-6">
-            <input type="text" id="PRETRAGA" placeholder="PRETRAŽI TEME..." class="px-4 py-2 border rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-indigo-500" oninput="FILTRIRAJ_TEME()">
-            <select id="FILTER_KATEGORIJA" class="px-4 py-2 border rounded-lg w-full sm:w-1/4 focus:outline-none focus:ring-2 focus:ring-indigo-500" onchange="FILTRIRAJ_TEME()">
-                <option value="">SVE KATEGORIJE</option>
-                <option value="B2B">B2B SURADNJA</option>
-                <option value="FINANCIJE">FINANCIJE</option>
-                <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
-            </select>
-        </div>
+    <!-- GLAVNI LINKEDIN LAYOUT (3 STUPA) -->
+    <main class="container mx-auto px-4 py-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <!-- LIJEVI STUP - PROFIL KARTICA -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm text-center">
+                <div class="h-14 linkedin-blue"></div>
+                <div class="px-4 pb-4 -mt-8">
+                    <div class="w-16 h-16 bg-gray-300 border-2 border-white rounded-full mx-auto flex items-center justify-center text-xl font-bold text-gray-700 bg-indigo-200">K</div>
+                    <h2 class="font-bold text-sm mt-2">KORISNIK PORTALA</h2>
+                    <p class="text-[10px] text-gray-500 mt-0.5">B2B STRATEG & PROFESIONALAC</p>
+                </div>
+                <div class="border-t border-gray-200 p-3 text-left text-[11px] space-y-1 bg-gray-50">
+                    <div class="flex justify-between"><span class="text-gray-500">Pregledi profila</span><span class="linkedin-blue-text font-bold">142</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Utisci na objave</span><span class="linkedin-blue-text font-bold">48</span></div>
+                </div>
+            </div>
 
-        <!-- LISTA TEMA -->
-        <div id="LISTA_TEMA" class="space-y-4">
-            <!-- Dinamički sadržaj iz tabele POSAO_FORUM i POSAO_FORUM_KOMENTARI -->
-        </div>
+            <!-- FILTER KATEGORIJA KAO LINKEDIN GRUPA/WIDGET -->
+            <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
+                <h3 class="text-xs font-bold text-gray-500 mb-2">KATEGORIJE FORUMA</h3>
+                <select id="FILTER_KATEGORIJA" class="w-full text-xs p-2 border rounded bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-500" onchange="FILTRIRAJ_TEME()">
+                    <option value="">SVE KATEGORIJE</option>
+                    <option value="B2B">B2B SURADNJA</option>
+                    <option value="FINANCIJE">FINANCIJE</option>
+                    <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- CENTRALNI STUP - FEED I OBJAVE -->
+        <section class="col-span-1 md:col-span-2 space-y-4">
+            
+            <!-- BOX ZA KREIRANJE NOVE TEME (LINKEDIN STYLE "START A POST") -->
+            <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
+                <div class="flex gap-3 items-center">
+                    <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-gray-700">K</div>
+                    <button onclick="OTVORI_MODAL()" class="flex-1 text-left bg-white border border-gray-400 rounded-full py-3 px-4 text-xs font-semibold text-gray-500 hover:bg-gray-100 transition shadow-inner">
+                        ZAPOČNI DISKUSIJU ILI PODIJELI TEMU...
+                    </button>
+                </div>
+                <div class="flex justify-around mt-3 pt-2 border-t border-gray-100 text-xs font-semibold text-gray-600">
+                    <button onclick="OTVORI_MODAL()" class="flex items-center gap-1.5 hover:bg-gray-100 px-3 py-1.5 rounded transition">📷 MEDIA</button>
+                    <button onclick="OTVORI_MODAL()" class="flex items-center gap-1.5 hover:bg-gray-100 px-3 py-1.5 rounded transition">📅 DOGAĐAJ</button>
+                    <button onclick="OTVORI_MODAL()" class="flex items-center gap-1.5 hover:bg-gray-100 px-3 py-1.5 rounded transition">✍️ PIŠI ČLANAK</button>
+                </div>
+            </div>
+
+            <!-- GLAVNA LISTA TEMA (FEED) -->
+            <div id="LISTA_TEMA" class="space-y-4">
+                <!-- Dinamički sadržaj iz tabele POSAO_FORUM i POSAO_FORUM_KOMENTARI -->
+            </div>
+        </section>
+
+        <!-- DESNI STUP - VIJESTI I OBAVJEŠTENJA (LINKEDIN "TODAY'S NEWS") -->
+        <aside class="hidden md:block md:col-span-1 space-y-4">
+            <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-xs">POSLOVNE VIJESTI</h3>
+                    <span class="text-[10px] text-gray-400">ℹ️</span>
+                </div>
+                <ul class="space-y-3 text-xs">
+                    <li>
+                        <strong class="block hover:underline cursor-pointer">B2BTRENDS 2026</strong>
+                        <span class="text-[10px] text-gray-500">Prije 2 sata • 1.200 čitatelja</span>
+                    </li>
+                    <li>
+                        <strong class="block hover:underline cursor-pointer">Digitalna transformacija</strong>
+                        <span class="text-[10px] text-gray-500">Prije 5 sati • 840 čitatelja</span>
+                    </li>
+                    <li>
+                        <strong class="block hover:underline cursor-pointer">Financije i fondovi EU</strong>
+                        <span class="text-[10px] text-gray-500">Prije 1 dan • 3.1k čitatelja</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- OBAVJEŠTENJA WIDGET -->
+            <div id="WIDGET_NOTIF" class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
+                <h3 class="font-bold text-xs mb-2 text-gray-700">🔔 AKTIVNA OBAVJEŠTENJA</h3>
+                <p class="text-[11px] text-gray-600 bg-blue-50 p-2 rounded border-l-2 border-blue-600">
+                    Administrator je postavio novu temu na forumu.
+                </p>
+            </div>
+        </aside>
+
     </main>
 
-    <!-- MODAL ZA NOVU TEMU -->
-    <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center p-4">
-        <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
-            <h2 class="text-xl font-bold mb-4">OTVORITE NOVU TEMU</h2>
-            <input type="text" id="NASLOV_TEME" placeholder="NASLOV TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <select id="KATEGORIJA_TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <!-- MODAL ZA NOVU TEMU (POST) -->
+    <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-2xl border border-gray-200">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h2 class="text-sm font-bold">KREIRAJ OBJAVU NA FORUMU</h2>
+                <button onclick="ZATVORI_MODAL()" class="text-gray-500 font-bold hover:text-black">✕</button>
+            </div>
+            <input type="text" id="NASLOV_TEME" placeholder="NASLOV TEME..." class="w-full px-3 py-2 border rounded-lg mb-3 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600">
+            <select id="KATEGORIJA_TEME" class="w-full px-3 py-2 border rounded-lg mb-3 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600">
                 <option value="B2B">B2B SURADNJA</option>
                 <option value="FINANCIJE">FINANCIJE</option>
                 <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
             </select>
-            <textarea id="SADRZAJ_TEME" placeholder="SADRŽAJ RASPRAVE..." rows="4" class="w-full px-3 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            <textarea id="SADRZAJ_TEME" placeholder="ŠTA ŽELITE PODIJELITI SA POSLOVNOM ZAJEDNICOM..." rows="4" class="w-full px-3 py-2 border rounded-lg mb-4 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"></textarea>
             <div class="flex justify-end gap-2">
-                <button onclick="ZATVORI_MODAL()" class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">OTKAŽI</button>
-                <button onclick="SPREMI_TEMU()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">OBJAVI</button>
+                <button onclick="ZATVORI_MODAL()" class="px-4 py-2 bg-gray-200 rounded text-xs font-semibold text-gray-700 hover:bg-gray-300">OTKAŽI</button>
+                <button onclick="SPREMI_TEMU()" class="px-4 py-2 linkedin-blue text-white rounded text-xs font-semibold hover:opacity-90">OBJAVI</button>
             </div>
         </div>
     </div>
 
-    <!-- SKRIPTA ZA DVIJE TABELE -->
+    <!-- SKRIPTA SA ORIGINALNIM TABELAMA I FUNKCIONALNOSTIMA -->
     <script>
         // 1. Tabela za teme
         let POSAO_FORUM = [
@@ -83,7 +188,7 @@
             kontejner.innerHTML = '';
 
             if (temeZaPrikaz.length === 0) {
-                kontejner.innerHTML = '<p class="text-center text-gray-500 py-4">NEMA PRONAĐENIH TEMA.</p>';
+                kontejner.innerHTML = '<div class="bg-white p-6 rounded-lg border text-center text-gray-500 text-xs shadow-sm">NEMA PRONAĐENIH TEMA.</div>';
                 return;
             }
 
@@ -92,32 +197,48 @@
                 const komentariTeme = POSAO_FORUM_KOMENTARI.filter(k => k.tema_id === tema.id);
                 
                 let komentariHtml = komentariTeme.map(k => `
-                    <p class="text-xs text-gray-600"><strong>${k.autor}:</strong> ${k.tekst}</p>
+                    <div class="bg-gray-50 p-2 rounded mt-1 border border-gray-100">
+                        <p class="text-[11px] text-gray-800"><strong>${k.autor}:</strong> ${k.tekst}</p>
+                    </div>
                 `).join('');
 
                 const htmlTema = `
-                    <div class="p-4 bg-white rounded-lg shadow border border-gray-100">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-medium">${tema.kategorija}</span>
-                        </div>
-                        <h3 class="text-lg font-semibold mt-2">${tema.naslov}</h3>
-                        <p class="text-gray-600 text-sm mt-1">${tema.sadrzaj}</p>
-                        
-                        <!-- SEKCIJA ZA KOMENTARE -->
-                        <div class="mt-4 border-t pt-3">
-                            <h4 class="text-sm font-bold text-gray-700">KOMENTARI:</h4>
-                            <div class="mt-2 space-y-2">
-                                ${komentariHtml || '<p class="text-xs text-gray-400">NEMA KOMENTARA.</p>'}
+                    <div class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 space-y-3">
+                        <!-- Zaglavlje objave (Autor i datum u LinkedIn stilu) -->
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-indigo-100 border flex items-center justify-center font-bold text-gray-700 text-xs">
+                                    ${tema.autor.substring(0,2)}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-gray-900">${tema.autor}</h4>
+                                    <span class="text-[10px] text-gray-500">${tema.datum} • 🌐</span>
+                                </div>
                             </div>
-                            <div class="mt-3 flex gap-2">
-                                <input type="text" id="KOMENTAR_INPUT_${tema.id}" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                                <button onclick="DODAJ_KOMENTAR(${tema.id})" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700">POŠALJI</button>
-                            </div>
+                            <span class="text-[10px] bg-blue-50 linkedin-blue-text px-2 py-0.5 rounded font-bold border border-blue-200">${tema.kategorija}</span>
                         </div>
 
-                        <div class="text-xs text-gray-400 mt-3 flex justify-between">
-                            <span>AUTOR: ${tema.autor}</span>
-                            <span>${tema.datum}</span>
+                        <!-- Sadržaj objave -->
+                        <div>
+                            <h3 class="text-xs font-bold mt-1 text-gray-900">${tema.naslov}</h3>
+                            <p class="text-gray-700 text-xs mt-1 leading-relaxed">${tema.sadrzaj}</p>
+                        </div>
+
+                        <!-- Interakcije (Like / Komentari brojač) -->
+                        <div class="flex justify-between text-[11px] text-gray-500 border-t border-b border-gray-100 py-1.5">
+                            <span>👍 12 lajkova</span>
+                            <span>${komentariTeme.length} komentara</span>
+                        </div>
+
+                        <!-- SEKCIJA ZA KOMENTARE -->
+                        <div class="space-y-2 pt-1">
+                            <div class="space-y-1">
+                                ${komentariHtml || '<p class="text-[11px] text-gray-400 italic">NEMA KOMENTARA.</p>'}
+                            </div>
+                            <div class="flex gap-2 pt-2">
+                                <input type="text" id="KOMENTAR_INPUT_${tema.id}" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1.5 text-xs bg-gray-50 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                <button onclick="DODAJ_KOMENTAR(${tema.id})" class="px-3 py-1.5 linkedin-blue text-white text-xs font-semibold rounded-full hover:opacity-90 transition">POŠALJI</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -131,6 +252,12 @@
 
         function ZATVORI_MODAL() {
             document.getElementById('MODAL_TEMA').classList.add('hidden');
+        }
+
+        function TOGGLE_NOTIFIKACIJE() {
+            const w = document.getElementById('WIDGET_NOTIF');
+            w.classList.toggle('bg-yellow-50');
+            setTimeout(() => w.classList.remove('bg-yellow-50'), 1000);
         }
 
         function SPREMI_TEMU() {
