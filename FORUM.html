@@ -1,206 +1,138 @@
 <!DOCTYPE html>
-<html lang="hr">
+<html lang="bs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodaj Firmu i Excel Upload | DocBizHub</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .main-container {
-            background-color: #1e1e1e;
-            border-radius: 12px;
-            padding: 30px;
-            width: 600px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        p.opis {
-            color: #a0a0a0;
-            font-size: 14px;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .upload-box {
-            border: 2px dashed #4f46e5;
-            border-radius: 10px;
-            padding: 30px;
-            background-color: #252525;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        .upload-box:hover {
-            border-color: #6366f1;
-            background-color: #2a2a2a;
-        }
-
-        .upload-box img, .folder-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .btn-izaberi {
-            background-color: #4f46e5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-
-        .btn-izaberi:hover {
-            background-color: #4338ca;
-        }
-
-        .btn-upload {
-            background-color: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
-            display: none; /* Prikazuje se tek kada se izabere fajl */
-        }
-
-        .btn-upload:hover {
-            background-color: #059669;
-        }
-
-        #file-name {
-            color: #34d399;
-            margin-top: 10px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        #status-poruka {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-    </style>
+    <title>POSLOVNI FORUM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 font-sans uppercase">
 
-    <div class="main-container">
-        <h2>🏢 Dodaj Firmu / Bulk Excel Upload</h2>
-        <p class="opis">
-            Izaberi ili prevuci svoj Excel (<code>.xlsx</code>) ili CSV fajl sa firmama i kontaktima. Sistem će automatski pročitati sve kolone i sinhronizovati ih direktno u Supabase tabelu <strong>POSAO:KOKORISNICI</strong>.
-        </p>
+    <!-- NAVIGACIJA -->
+    <header class="bg-indigo-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">POSLOVNI FORUM</h1>
+            <button onclick="OTVORI_MODAL()" class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition">NOVA TEMA</button>
+        </div>
+    </header>
 
-        <div class="upload-box" id="drop-zone" onclick="document.getElementById('file-input').click();">
-            📂
-            <p style="margin: 10px 0 5px 0; font-weight: 500;">Klikni ovdje ili prevuci fajl</p>
-            <span style="color: #71717a; font-size: 12px;">Podržani formati: .xlsx, .xls, .csv</span>
-            <br>
-            <button type="button" class="btn-izaberi" onclick="event.stopPropagation(); document.getElementById('file-input').click();">Izaberi fajl sa računara</button>
-            
-            <input type="file" id="file-input" accept=".xlsx, .xls, .csv" style="display: none;" onchange="fajlIzabran(this)">
+    <!-- GLAVNI SADRŽAJ -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- FILTRI I PRETRAGA -->
+        <div class="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+            <input type="text" id="PRETRAGA" placeholder="PRETRAŽI TEME..." class="px-4 py-2 border rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-indigo-500" oninput="FILTRIRAJ_TEME()">
+            <select id="FILTER_KATEGORIJA" class="px-4 py-2 border rounded-lg w-full sm:w-1/4 focus:outline-none focus:ring-2 focus:ring-indigo-500" onchange="FILTRIRAJ_TEME()">
+                <option value="">SVE KATEGORIJE</option>
+                <option value="B2B">B2B SURADNJA</option>
+                <option value="FINANCIJE">FINANCIJE</option>
+                <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
+            </select>
         </div>
 
-        <div id="file-name"></div>
+        <!-- LISTA TEMA -->
+        <div id="LISTA_TEMA" class="space-y-4">
+            <div class="p-4 bg-white rounded-lg shadow border border-gray-100">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-medium">B2B</span>
+                    <!-- NOVA STATUS KOLONA -->
+                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold">STATUS_ODGOVORA: ČEKANJE GROQ ODGOVORA (ODGODA 5-16 MIN)</span>
+                </div>
+                <h3 class="text-lg font-semibold mt-2">DOBRODOŠLI NA POSLOVNI FORUM</h3>
+                <p class="text-gray-600 text-sm mt-1">OVO JE AUTOMATSKI GENERIRANA TEMA OD STRANE ADMINISTRATORA.</p>
+                
+                <!-- SEKCIJA ZA KOMENTARE -->
+                <div class="mt-4 border-t pt-3">
+                    <h4 class="text-sm font-bold text-gray-700">KOMENTARI:</h4>
+                    <div id="KOMENTARI_LISTA" class="mt-2 space-y-2">
+                        <p class="text-xs text-gray-500">KORISNIK1: ODLIČNA INICIJATIVA!</p>
+                        <p class="text-xs text-indigo-600 font-semibold">ADMIN (GROQ): [ČEKA SE AUTOMATSKI ODGOVOR - PREOSTALO ~12 MINUTA...]</p>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="NOVI_KOMENTAR" placeholder="OSTAVI KOMENTAR..." class="w-full px-3 py-1 text-xs border rounded-lg">
+                        <button onclick="DODAJ_KOMENTAR()" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg">POŠALJI</button>
+                    </div>
+                </div>
 
-        <button type="button" class="btn-upload" id="btn-submit" onclick="uploadUBazu()">Prebaci podatke u Supabase (POSAO:KOKORISNICI)</button>
-        
-        <div id="status-poruka"></div>
+                <div class="text-xs text-gray-400 mt-3 flex justify-between">
+                    <span>AUTOR: ADMINISTRATOR</span>
+                    <span>17.09.2026.</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL ZA NOVU TEMU -->
+    <div id="MODAL_TEMA" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
+            <h2 class="text-xl font-bold mb-4">OTVORITE NOVU TEMU</h2>
+            <input type="text" id="NASLOV_TEME" placeholder="NASLOV TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="KATEGORIJA_TEME" class="w-full px-3 py-2 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="B2B">B2B SURADNJA</option>
+                <option value="FINANCIJE">FINANCIJE</option>
+                <option value="TEHNOLOGIJA">TEHNOLOGIJA</option>
+            </select>
+            <textarea id="SADRZAJ_TEME" placeholder="SADRŽAJ RASPRAVE..." rows="4" class="w-full px-3 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="ZATVORI_MODAL()" class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">OTKAŽI</button>
+                <button onclick="SPREMI_TEMU()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">OBJAVI</button>
+            </div>
+        </div>
     </div>
 
+    <!-- SKRIPTA ZA FUNKCIONALNOSTI I GROQ ODGODU OD 5-16 MINUTA -->
     <script>
-        // 1. OVDJE UNESI SVOJE SUPABASE PODATKE
-        const SUPABASE_URL = 'TVOJ_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'TVOJ_SUPABASE_ANON_KEY';
-        
-        // Inicijalizacija Supabase klijenta (ako koristiš Supabase JS v2)
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let izabraniPodaci = [];
-
-        // Funkcija kada korisnik izabere fajl
-        function fajlIzabran(input) {
-            const fajl = input.files[0];
-            if (!fajl) return;
-
-            document.getElementById('file-name').innerText = `Izabrani fajl: ${fajl.name}`;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-
-                // Uzimamo prvi sheet (list) iz Excel-a
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-
-                // Pretvaramo podatke u JSON niz objekata (gdje su ključevi nazivi kolona iz Excel-a)
-                izabraniPodaci = XLSX.utils.sheet_to_json(worksheet);
-
-                if (izabraniPodaci.length > 0) {
-                    document.getElementById('btn-submit').style.display = 'block';
-                    document.getElementById('status-poruka').innerHTML = `<span style="color: #34d399;">Uspješno učitano ${izabraniPodaci redova iz fajla. Klikni dugme za slanje!</span>`;
-                } else {
-                    document.getElementById('status-poruka').innerHTML = `<span style="color: #ef4444;">Fajl je prazan ili pogrešno formatiran.</span>`;
-                }
-            };
-            reader.readAsArrayBuffer(fajl);
+        function OTVORI_MODAL() {
+            document.getElementById('MODAL_TEMA').classList.remove('hidden');
         }
 
-        // Funkcija koja klikom na dugme prebacuje podatke u Supabase tabelu
-        async function uploadUBazu() {
-            if (izabraniPodaci.length === 0) {
-                alert('Nema podataka za slanje!');
+        function ZATVORI_MODAL() {
+            document.getElementById('MODAL_TEMA').classList.add('hidden');
+        }
+
+        function SPREMI_TEMU() {
+            const NASLOV = document.getElementById('NASLOV_TEME').value;
+            const KATEGORIJA = document.getElementById('KATEGORIJA_TEME').value;
+            const SADRZAJ = document.getElementById('SADRZAJ_TEME').value;
+
+            if(!NASLOV || !SADRZAJ) {
+                alert('MOLIMO POPUNITE SVA POLJA.');
                 return;
             }
 
-            const statusEl = document.getElementById('status-poruka');
-            statusEl.innerHTML = '<span style="color: #f59e0b;">Slanje podataka u Supabase u toku...</span>';
+            console.log("SPREMANJE U BAZU:", { NASLOV, KATEGORIJA, SADRZAJ, STATUS_ODGOVORA: "AKTIVNO" });
 
-            try {
-                // Slanje u Supabase tabelu 'POSAO:KOKORISNICI' 
-                // Napomena: Ako ti je naziv tabele u Supabase doslovno "POSAO:KOKORISNICI", unesi ga ispod:
-                const { data, error } = await supabaseClient
-                    .from('POSAO:KOKORISNICI') 
-                    .insert(izabraniPodaci);
+            ZATVORI_MODAL();
+            document.getElementById('NASLOV_TEME').value = '';
+            document.getElementById('SADRZAJ_TEME').value = '';
+            alert('TEMA USPJEŠNO OBJAVLJENA!');
+        }
 
-                if (error) {
-                    throw error;
-                }
+        function FILTRIRAJ_TEME() {
+            const POJAM = document.getElementById('PRETRAGA').value.toLowerCase();
+            const KATEGORIJA = document.getElementById('FILTER_KATEGORIJA').value;
+        }
 
-                statusEl.innerHTML = '<span style="color: #10b981; font-weight: bold;">✅ Svi podaci su uspješno prebačeni u Supabase tabelu!</span>';
-                document.getElementById('btn-submit').style.display = 'none';
+        function DODAJ_KOMENTAR() {
+            const TEKST_KOMENTARA = document.getElementById('NOVI_KOMENTAR').value;
+            if(!TEKST_KOMENTARA) return;
 
-            } catch (err) {
-                console.error('Greška pri upisu:', err);
-                statusEl.innerHTML = `<span style="color: #ef4444;">❌ Greška: ${err.message}</span>`;
-            }
+            // GENERIRANJE NASUMIČNE ODGODE IZMEĐU 5 I 16 MINUTA (U MILISEKUNDAMA)
+            // FORMULA: Math.floor(Math.random() * (max - min + 1)) + min
+            const MINUTA_ODGODE = Math.floor(Math.random() * (16 - 5 + 1)) + 5;
+            const MILISEKUNDE_ODGODE = MINUTA_ODGODE * 60 * 1000;
+
+            console.log(`KOMENTAR ZAPRIMLJEN. GROQ ĆE ODGOVORITI NAKON ${MINUTA_ODGODE} MINUTA.`);
+
+            // OVDJE SE UPISUJE STATUS U KOLONU STATUS_ODGOVORA
+            alert(`KOMENTAR POSLAN! STATUS_ODGOVORA: ČEKA SE GROQ (ODGODA: ${MINUTA_ODGODE} MIN).`);
+            
+            document.getElementById('NOVI_KOMENTAR').value = '';
+
+            // SIMULACIJA POZIVA GROQ API-JA NAKON ZADANE ODGODE
+            setTimeout(() => {
+                console.log("GROQ GENERIRA ODGOVOR NA KOMENTAR...");
+                // OVDJE DOLAZI STVARNI API POZIV PREMA SUPABASE/GROQ WEBHUKU
+            }, MILISEKUNDE_ODGODE);
         }
     </script>
 </body>
