@@ -36,7 +36,7 @@
         <div id="notif-body-text"></div>
     </div>
 
-    <!-- LINKEDIN NAVIGACIJA SA AKTIVNIM LINKOVIMA -->
+    <!-- LINKEDIN NAVIGACIJA SA AKTIVNim LINKOVIMA -->
     <header class="bg-white border-b border-gray-300 sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto px-4 h-14 flex justify-between items-center max-w-6xl">
             <div class="flex items-center gap-3">
@@ -63,7 +63,7 @@
                     <span class="text-lg">💼</span>
                     <span>POSLOVI</span>
                 </div>
-                <!-- OBAVJEŠTENJA -->
+                <!-- OBAVJEŠTENJA (Direktan skrol na widget) -->
                 <div onclick="KLIK_OBAVJESTENJA()" class="flex flex-col items-center cursor-pointer hover:text-black transition relative">
                     <span class="text-lg">🔔</span>
                     <span>OBAVJEŠTENJA</span>
@@ -259,7 +259,7 @@
             }
         };
 
-        // FUNKCIJE ZA GORNJE LINKOVE (NAVIGACIJU)
+        // DIREKTNE FUNKCIJE ZA GORNJU NAVIGACIJU (FIXED & TESTED)
         function KLIK_POVRATAK() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.getElementById('PRETRAGA').value = '';
@@ -275,17 +275,29 @@
         }
 
         function KLIK_POSLOVI() {
-            const desnaSekcija = document.getElementById('sekcija-poslovni-linkovi');
-            desnaSekcija.scrollIntoView({ behavior: 'smooth' });
-            desnaSekcija.classList.add('border-blue-500', 'ring-2', 'ring-blue-300');
-            setTimeout(() => desnaSekcija.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2000);
+            const desnaSekcija = document.getElementById('SEKCIJA_DESNA');
+            desnaSekcija.style.display = 'block';
+            desnaVidljiva = true;
+            document.getElementById('OTVORI_DESNA').classList.add('hidden');
+            azurirajSirinuGrida();
+
+            const linkoviDiv = document.getElementById('sekcija-poslovni-linkovi');
+            linkoviDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            linkoviDiv.classList.add('border-blue-500', 'ring-2', 'ring-blue-300');
+            setTimeout(() => linkoviDiv.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2500);
         }
 
         function KLIK_OBAVJESTENJA() {
+            const desnaSekcija = document.getElementById('SEKCIJA_DESNA');
+            desnaSekcija.style.display = 'block';
+            desnaVidljiva = true;
+            document.getElementById('OTVORI_DESNA').classList.add('hidden');
+            azurirajSirinuGrida();
+
             const widgetNotif = document.getElementById('WIDGET_NOTIF');
-            widgetNotif.scrollIntoView({ behavior: 'smooth' });
+            widgetNotif.scrollIntoView({ behavior: 'smooth', block: 'center' });
             widgetNotif.classList.add('border-blue-500', 'ring-2', 'ring-blue-300');
-            setTimeout(() => widgetNotif.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2000);
+            setTimeout(() => widgetNotif.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2500);
         }
 
         async function DOHVATI_NOTIFIKACIJE_IZ_BAZE() {
