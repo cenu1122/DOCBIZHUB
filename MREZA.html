@@ -1,164 +1,617 @@
+```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MREŽA KONTAKATA - POSLOVNI FORUM</title>
-    <!-- Tailwind CSS CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        .linkedin-blue { background-color: #0a66c2; }
-        .linkedin-blue-text { color: #0a66c2; }
+        .linkedin-blue {
+            background-color: #0a66c2;
+        }
+
+        .linkedin-blue-text {
+            color: #0a66c2;
+        }
     </style>
 </head>
+
 <body class="bg-[#f3f2ef] text-gray-900 font-sans uppercase">
 
     <!-- NAVIGACIJA -->
     <header class="bg-white border-b border-gray-300 sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto px-4 h-14 flex justify-between items-center max-w-6xl">
+
             <div class="flex items-center gap-3">
-                <div class="linkedin-blue text-white font-bold p-1.5 rounded text-xl flex items-center justify-center w-10 h-10">In</div>
-                <h1 class="font-bold text-sm">MOJA MREŽA I KORISNICI</h1>
+                <div class="linkedin-blue text-white font-bold p-1.5 rounded text-xl flex items-center justify-center w-10 h-10">
+                    In
+                </div>
+
+                <h1 class="font-bold text-sm">
+                    MOJA MREŽA I KORISNICI
+                </h1>
             </div>
+
             <nav class="flex items-center gap-6 text-xs text-gray-600 font-medium">
-                <a href="DASHBOARD.html" class="hover:text-black transition">🏠 POVRATAK</a>
-                <a href="FORUM.html" class="hover:text-black transition">💬 FORUM</a>
-                <a href="POSAO.html" class="hover:text-black transition">💼 POSLOVI</a>
+                <a href="DASHBOARD.html" class="hover:text-black transition">
+                    🏠 POVRATAK
+                </a>
+
+                <a href="FORUM.html" class="hover:text-black transition">
+                    💬 FORUM
+                </a>
+
+                <a href="POSAO.html" class="hover:text-black transition">
+                    💼 POSLOVI
+                </a>
             </nav>
+
         </div>
     </header>
+
 
     <!-- GLAVNI SADRŽAJ -->
     <main class="container mx-auto px-4 py-6 max-w-4xl space-y-6">
 
-        <!-- SEKCIJA 1: MOJI PRIJATELJI IZ TABELE POSAO_PRIJATELJI -->
+        <!-- SEKCIJA 1: MOJI PRIJATELJI -->
         <section class="bg-white rounded-lg border border-gray-300 p-5 shadow-sm">
+
             <div class="flex justify-between items-center border-b pb-2 mb-4">
-                <h2 class="font-bold text-sm text-gray-800">👥 MOJI STEČENI PRIJATELJI (POSAO_PRIJATELJI)</h2>
-                <span id="broj-prijatelja" class="text-xs bg-gray-100 px-2 py-0.5 rounded font-bold">0 prijatelja</span>
+
+                <h2 class="font-bold text-sm text-gray-800">
+                    👥 MOJI STEČENI PRIJATELJI
+                </h2>
+
+                <span
+                    id="broj-prijatelja"
+                    class="text-xs bg-gray-100 px-2 py-0.5 rounded font-bold">
+                    0 prijatelja
+                </span>
+
             </div>
-            <div id="MOJI_PRIJATELJI_LISTA" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <p class="text-xs text-gray-500 italic">Učitavanje prijatelja...</p>
+
+            <div
+                id="MOJI_PRIJATELJI_LISTA"
+                class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <p class="text-xs text-gray-500 italic">
+                    Učitavanje prijatelja...
+                </p>
+
             </div>
+
         </section>
 
-        <!-- SEKCIJA 2: KOMPLETAN SPISAK KORISNIKA IZ TABELE POSAO_KORISNICI -->
+
+        <!-- SEKCIJA 2: KOMPLETAN SPISAK KORISNIKA -->
         <section class="bg-white rounded-lg border border-gray-300 p-5 shadow-sm">
+
             <div class="flex justify-between items-center border-b pb-2 mb-4">
-                <h2 class="font-bold text-sm text-gray-800">📂 KOMPLETAN SPISAK KORISNIKA (POSAO_KORISNICI)</h2>
-                <span id="broj-korisnika" class="text-xs bg-gray-100 px-2 py-0.5 rounded font-bold">0 korisnika</span>
+
+                <h2 class="font-bold text-sm text-gray-800">
+                    📂 KOMPLETAN SPISAK KORISNIKA
+                </h2>
+
+                <span
+                    id="broj-korisnika"
+                    class="text-xs bg-gray-100 px-2 py-0.5 rounded font-bold">
+                    0 korisnika
+                </span>
+
             </div>
-            <div id="SPISAK_SVIH_KORISNIKA" class="space-y-3">
-                <p class="text-xs text-gray-500 italic">Učitavanje korisnika iz baze...</p>
+
+            <div
+                id="SPISAK_SVIH_KORISNIKA"
+                class="space-y-3">
+
+                <p class="text-xs text-gray-500 italic">
+                    Učitavanje korisnika iz baze...
+                </p>
+
             </div>
+
         </section>
 
     </main>
 
-    <script>
-        const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
-        let _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-        window.onload = function() {
+    <script>
+
+        /* ==========================================
+           SUPABASE
+        ========================================== */
+
+        const SUPABASE_URL =
+            'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+        const SUPABASE_ANON_KEY =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+        let _supabase =
+            (typeof supabase !== 'undefined')
+                ? supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_ANON_KEY
+                )
+                : null;
+
+
+        /* ==========================================
+           UČITAVANJE STRANICE
+        ========================================== */
+
+        window.onload = function () {
+
             UČITAJ_PRIJATELJE();
+
             UČITAJ_KORISNIKE();
+
         };
 
-        // 1. Učitavanje prijatelja iz tabele POSAO_PRIJATELJI
+
+        /* ==========================================
+           UZMI MAIL TRENUTNOG KORISNIKA
+        ========================================== */
+
+        function DOBAVI_KORISNIK_MAIL() {
+
+            /*
+             * OVDJE UZIMAMO MAIL IZ localStorage.
+             *
+             * Ako si kod sebe mail sačuvao pod drugim
+             * nazivom, promijeni ovaj dio.
+             */
+
+            const korisnikMail =
+                localStorage.getItem('KORISNIK_MAIL') ||
+                localStorage.getItem('korisnik_mail') ||
+                localStorage.getItem('EMAIL') ||
+                localStorage.getItem('email');
+
+            return korisnikMail;
+        }
+
+
+        /* ==========================================
+           1. UČITAJ SAMO PRIJATELJE
+           
+           GDJE JE:
+           
+           POSAO_PRIJATELJI.KORISNIK_MAIL
+           
+           = MAIL TRENUTNOG KORISNIKA
+        ========================================== */
+
         async function UČITAJ_PRIJATELJE() {
-            if (!_supabase) return;
 
-            const { data, error } = await _supabase
-                .from('POSAO_PRIJATELJI')
-                .select('*')
-                .order('id', { ascending: false });
+            if (!_supabase) {
+                console.error('Supabase nije učitan.');
+                return;
+            }
 
-            const kontejner = document.getElementById('MOJI_PRIJATELJI_LISTA');
-            const badge = document.getElementById('broj-prijatelja');
+
+            const korisnikMail = DOBAVI_KORISNIK_MAIL();
+
+
+            console.log(
+                'KORISNIK MAIL:',
+                korisnikMail
+            );
+
+
+            const kontejner =
+                document.getElementById(
+                    'MOJI_PRIJATELJI_LISTA'
+                );
+
+            const badge =
+                document.getElementById(
+                    'broj-prijatelja'
+                );
+
+
             kontejner.innerHTML = '';
 
-            if (error) {
-                console.error("Greška pri dohvatu prijatelja:", error);
-                kontejner.innerHTML = `<p class="text-xs text-red-500">Greška: ${error.message}</p>`;
+
+            /* ------------------------------------------
+               AKO NEMA MAILA
+            ------------------------------------------ */
+
+            if (!korisnikMail) {
+
+                kontejner.innerHTML = `
+                    <p class="text-xs text-red-500">
+                        Nije pronađen KORISNIK_MAIL.
+                    </p>
+                `;
+
+                badge.textContent =
+                    '0 prijatelja';
+
+                console.error(
+                    'KORISNIK_MAIL nije pronađen u localStorage.'
+                );
+
                 return;
             }
+
+
+            /* ------------------------------------------
+               DOHVATI SAMO PRIJATELJE TOG KORISNIKA
+               
+               OVO JE GLAVNI DIO IZMJENE
+            ------------------------------------------ */
+
+            const {
+                data,
+                error
+            } = await _supabase
+
+                .from('POSAO_PRIJATELJI')
+
+                .select('*')
+
+                .eq(
+                    'KORISNIK_MAIL',
+                    korisnikMail
+                )
+
+                .order(
+                    'id',
+                    {
+                        ascending: false
+                    }
+                );
+
+
+            /* ------------------------------------------
+               GREŠKA
+            ------------------------------------------ */
+
+            if (error) {
+
+                console.error(
+                    'Greška pri dohvatu prijatelja:',
+                    error
+                );
+
+                kontejner.innerHTML = `
+                    <p class="text-xs text-red-500">
+                        Greška: ${error.message}
+                    </p>
+                `;
+
+                badge.textContent =
+                    '0 prijatelja';
+
+                return;
+            }
+
+
+            /* ------------------------------------------
+               NEMA PRIJATELJA
+            ------------------------------------------ */
 
             if (!data || data.length === 0) {
-                kontejner.innerHTML = '<p class="text-xs text-gray-500 italic">Nemate dodanih prijatelja u tabeli POSAO_PRIJATELJI.</p>';
-                badge.textContent = '0 prijatelja';
+
+                kontejner.innerHTML = `
+                    <p class="text-xs text-gray-500 italic">
+                        Nema prijatelja za korisnika:
+                        ${korisnikMail}
+                    </p>
+                `;
+
+                badge.textContent =
+                    '0 prijatelja';
+
                 return;
             }
 
-            badge.textContent = data.length + ' prijatelja';
+
+            /* ------------------------------------------
+               BROJ PRIJATELJA
+            ------------------------------------------ */
+
+            badge.textContent =
+                data.length + ' prijatelja';
+
+
+            /* ------------------------------------------
+               PRIKAŽI PRIJATELJE
+            ------------------------------------------ */
 
             data.forEach(p => {
-                const ime = p.IME || p.ime || p.naziv || 'PRIJATELJ';
-                const status = p.STATUS || p.status || 'AKTIVAN';
-                const inicijali = ime.substring(0, 2).toUpperCase();
+
+                const ime =
+                    p.IME ||
+                    p.ime ||
+                    p.NAZIV ||
+                    p.naziv ||
+                    p.PRIJATELJ_IME ||
+                    p.prijatelj_ime ||
+                    'PRIJATELJ';
+
+
+                const status =
+                    p.STATUS ||
+                    p.status ||
+                    'AKTIVAN';
+
+
+                const email =
+                    p.EMAIL ||
+                    p.email ||
+                    p.PRIJATELJ_MAIL ||
+                    p.prijatelj_mail ||
+                    '';
+
+
+                const inicijali =
+                    ime
+                        .substring(0, 2)
+                        .toUpperCase();
+
 
                 kontejner.innerHTML += `
-                    <div class="p-3 bg-gray-50 rounded border flex items-center gap-3 text-xs">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">${inicijali}</div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">${ime.toUpperCase()}</h4>
-                            <p class="text-[10px] text-gray-500">STATUS: ${status.toUpperCase()}</p>
+
+                    <div
+                        class="p-3 bg-gray-50 rounded border
+                        flex items-center gap-3 text-xs">
+
+                        <div
+                            class="w-10 h-10 rounded-full
+                            bg-blue-100 text-blue-700
+                            font-bold flex items-center
+                            justify-center">
+
+                            ${inicijali}
+
                         </div>
+
+
+                        <div>
+
+                            <h4
+                                class="font-bold text-gray-800">
+
+                                ${ime.toUpperCase()}
+
+                            </h4>
+
+
+                            ${
+                                email
+                                ? `
+                                    <p class="text-[10px] text-gray-500">
+                                        ✉️ ${email}
+                                    </p>
+                                  `
+                                : ''
+                            }
+
+
+                            <p
+                                class="text-[10px]
+                                text-gray-500">
+
+                                STATUS:
+                                ${status.toUpperCase()}
+
+                            </p>
+
+                        </div>
+
                     </div>
+
                 `;
+
             });
+
         }
 
-        // 2. Učitavanje korisnika iz tabele POSAO_KORISNICI
+
+        /* ==========================================
+           2. UČITAVANJE SVIH KORISNIKA
+        ========================================== */
+
         async function UČITAJ_KORISNIKE() {
+
             if (!_supabase) return;
 
-            const { data, error } = await _supabase
-                .from('POSAO_KORISNICI')
-                .select('*')
-                .order('id', { ascending: false });
 
-            const kontejner = document.getElementById('SPISAK_SVIH_KORISNIKA');
-            const badge = document.getElementById('broj-korisnika');
+            const {
+                data,
+                error
+            } = await _supabase
+
+                .from('POSAO_KORISNICI')
+
+                .select('*')
+
+                .order(
+                    'id',
+                    {
+                        ascending: false
+                    }
+                );
+
+
+            const kontejner =
+                document.getElementById(
+                    'SPISAK_SVIH_KORISNIKA'
+                );
+
+            const badge =
+                document.getElementById(
+                    'broj-korisnika'
+                );
+
+
             kontejner.innerHTML = '';
 
+
+            /* ------------------------------------------
+               GREŠKA
+            ------------------------------------------ */
+
             if (error) {
-                console.error("Greška pri dohvatu korisnika:", error);
-                kontejner.innerHTML = `<p class="text-xs text-red-500">Greška: ${error.message}</p>`;
+
+                console.error(
+                    "Greška pri dohvatu korisnika:",
+                    error
+                );
+
+                kontejner.innerHTML = `
+                    <p class="text-xs text-red-500">
+                        Greška: ${error.message}
+                    </p>
+                `;
+
                 return;
             }
+
+
+            /* ------------------------------------------
+               NEMA KORISNIKA
+            ------------------------------------------ */
 
             if (!data || data.length === 0) {
-                kontejner.innerHTML = '<p class="text-xs text-gray-500 italic">Nema unosa u tabeli POSAO_KORISNICI.</p>';
-                badge.textContent = '0 korisnika';
+
+                kontejner.innerHTML = `
+                    <p class="text-xs text-gray-500 italic">
+                        Nema unosa u tabeli POSAO_KORISNICI.
+                    </p>
+                `;
+
+                badge.textContent =
+                    '0 korisnika';
+
                 return;
             }
 
-            badge.textContent = data.length + ' korisnika';
+
+            badge.textContent =
+                data.length + ' korisnika';
+
+
+            /* ------------------------------------------
+               PRIKAŽI SVE KORISNIKE
+            ------------------------------------------ */
 
             data.forEach(item => {
-                const ime = item.IME || item.ime || 'NEPOZNATO';
-                const firma = item.FIRMA || item.firma || 'N/A';
-                const telefon = item.TELEFON || item.telefon || '/';
-                const email = item.EMAIL || item.email || '/';
-                const datum = item.DATUM ? new Date(item.DATUM).toLocaleDateString('bs-BA') : 'N/A';
+
+                const ime =
+                    item.IME ||
+                    item.ime ||
+                    'NEPOZNATO';
+
+
+                const firma =
+                    item.FIRMA ||
+                    item.firma ||
+                    'N/A';
+
+
+                const telefon =
+                    item.TELEFON ||
+                    item.telefon ||
+                    '/';
+
+
+                const email =
+                    item.EMAIL ||
+                    item.email ||
+                    '/';
+
+
+                const datum =
+                    item.DATUM
+                        ? new Date(
+                            item.DATUM
+                          ).toLocaleDateString(
+                            'bs-BA'
+                          )
+                        : 'N/A';
+
 
                 kontejner.innerHTML += `
-                    <div class="p-3 bg-gray-50 rounded border flex justify-between items-center text-xs">
+
+                    <div
+                        class="p-3 bg-gray-50 rounded border
+                        flex justify-between items-center text-xs">
+
                         <div class="space-y-0.5">
-                            <p class="font-bold text-gray-800">👤 ${ime.toUpperCase()}</p>
-                            <p class="text-gray-600">🏢 Firma: ${firma.toUpperCase()}</p>
-                            <p class="text-gray-500 text-[10px]">📞 Tel: ${telefon} | ✉️ Email: ${email}</p>
+
+                            <p
+                                class="font-bold text-gray-800">
+
+                                👤 ${ime.toUpperCase()}
+
+                            </p>
+
+
+                            <p
+                                class="text-gray-600">
+
+                                🏢 Firma:
+                                ${firma.toUpperCase()}
+
+                            </p>
+
+
+                            <p
+                                class="text-gray-500 text-[10px]">
+
+                                📞 Tel:
+                                ${telefon}
+
+                                |
+
+                                ✉️ Email:
+                                ${email}
+
+                            </p>
+
                         </div>
+
+
                         <div class="text-right">
-                            <span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded text-[10px]">REGISTROVAN</span>
-                            <p class="text-[9px] text-gray-400 mt-1">${datum}</p>
+
+                            <span
+                                class="bg-blue-100
+                                text-blue-800
+                                font-bold px-2 py-1
+                                rounded text-[10px]">
+
+                                REGISTROVAN
+
+                            </span>
+
+
+                            <p
+                                class="text-[9px]
+                                text-gray-400 mt-1">
+
+                                ${datum}
+
+                            </p>
+
                         </div>
+
                     </div>
+
                 `;
+
             });
+
         }
+
     </script>
+
 </body>
 </html>
+```
