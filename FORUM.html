@@ -11,11 +11,32 @@
         .linkedin-blue { background-color: #0a66c2; }
         .linkedin-blue-text { color: #0a66c2; }
         .linkedin-hover:hover { background-color: rgba(0, 0, 0, 0.08); }
+        /* Stil za iskačuću notifikaciju gore desno */
+        #notification-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #22c55e;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            max-width: 350px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body class="bg-[#f3f2ef] text-gray-900 font-sans uppercase">
 
-    <!-- LINKEDIN NAVIGACIJA -->
+    <!-- ISKAČUĆA NOTIFIKACIJA ZA REALTIME -->
+    <div id="notification-banner">
+        <div class="font-bold mb-1">🔔 NOVA NOTIFIKACIJA!</div>
+        <div id="notif-body-text"></div>
+    </div>
+
+    <!-- LINKEDIN NAVIGACIJA SA AKTIVNIM LINKOVIMA -->
     <header class="bg-white border-b border-gray-300 sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto px-4 h-14 flex justify-between items-center max-w-6xl">
             <div class="flex items-center gap-3">
@@ -27,19 +48,23 @@
             </div>
 
             <nav class="flex items-center gap-6 text-xs text-gray-600 font-medium">
-                <div class="flex flex-col items-center cursor-pointer linkedin-blue-text">
+                <!-- POVRATAK -->
+                <div onclick="KLIK_POVRATAK()" class="flex flex-col items-center cursor-pointer linkedin-blue-text hover:text-black transition">
                     <span class="text-lg">🏠</span>
                     <span>POVRATAK</span>
                 </div>
-                <div class="flex flex-col items-center cursor-pointer hover:text-black">
+                <!-- MREŽA -->
+                <div onclick="KLIK_MREZA()" class="flex flex-col items-center cursor-pointer hover:text-black transition">
                     <span class="text-lg">👥</span>
                     <span>MREŽA</span>
                 </div>
-                <div class="flex flex-col items-center cursor-pointer hover:text-black">
+                <!-- POSLOVI -->
+                <div onclick="KLIK_POSLOVI()" class="flex flex-col items-center cursor-pointer hover:text-black transition">
                     <span class="text-lg">💼</span>
                     <span>POSLOVI</span>
                 </div>
-                <div class="flex flex-col items-center cursor-pointer hover:text-black relative">
+                <!-- OBAVJEŠTENJA -->
+                <div onclick="KLIK_OBAVJESTENJA()" class="flex flex-col items-center cursor-pointer hover:text-black transition relative">
                     <span class="text-lg">🔔</span>
                     <span>OBAVJEŠTENJA</span>
                     <span id="badge-notif" class="absolute -top-1 right-2 bg-red-600 text-white rounded-full text-[9px] px-1">0</span>
@@ -48,7 +73,7 @@
         </div>
     </header>
 
-    <!-- GLAVNI LINKEDIN LAYOUT (DINAMIČKI GRID KOJI SE ŠIRI) -->
+    <!-- GLAVNI LINKEDIN LAYOUT -->
     <main class="container mx-auto px-4 py-6 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-6">
         
         <!-- 1. LIJEVA SEKCIJA -->
@@ -80,7 +105,7 @@
             </div>
         </aside>
 
-        <!-- 2. CENTRALNA SEKCIJA (ŠIRI SE AUTOMATSKI KAD SE BOČNE ZATVORE) -->
+        <!-- 2. CENTRALNA SEKCIJA -->
         <section id="SEKCIJA_SREDNJA" class="col-span-1 md:col-span-2 space-y-4 transition-all duration-300">
             <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm flex justify-between items-center">
                 <h3 class="font-bold text-xs">CENTRALNI FEED</h3>
@@ -110,30 +135,27 @@
             </div>
 
             <div class="space-y-4">
-                <div class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
+                <div id="sekcija-poslovni-linkovi" class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-xs">LINKOVI IZ TABELE</h3>
                     </div>
                     <ul id="LISTA_POSLOVNIH_LINKOVA" class="space-y-3 text-xs"></ul>
                 </div>
 
-                <!-- WIDGET ZA NOTIFIKACIJE KOJI SE ČITA IZ TABELE NOTIFIKACIJE -->
+                <!-- WIDGET ZA NOTIFIKACIJE -->
                 <div id="WIDGET_NOTIF" class="bg-white rounded-lg border border-gray-300 p-4 shadow-sm space-y-2">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-xs text-gray-700">🔔 NOTIFIKACIJE</h3>
-                        <!-- TEST DUGME ZA DODAVANJE NOVOG REDA U NOTIFIKACIJE -->
-                        <button onclick="DODAJ_TEST_NOTIFIKACIJU()" class="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">+ NOVI RED</button>
+                        <button onclick="DODAJ_TEST_NOTIFIKACIJU()" class="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">+ TEST RED</button>
                     </div>
-                    <div id="LISTA_NOTIFIKACIJA" class="space-y-2 max-h-40 overflow-y-auto">
-                        <!-- Ovdje se automatski crtaju notifikacije iz tabele -->
-                    </div>
+                    <div id="LISTA_NOTIFIKACIJA" class="space-y-2 max-h-40 overflow-y-auto"></div>
                 </div>
             </div>
         </aside>
 
     </main>
 
-    <!-- DUGMAD ZA PONOVNO OTVARANJE AKO JE SEKCIJA SAKRIVENA -->
+    <!-- DUGMAD ZA PONOVNO OTVARANJE SEKCIJA -->
     <div class="container mx-auto px-4 max-w-6xl flex gap-2 mb-4">
         <button id="OTVORI_LIJEVA" onclick="OTVORI_SEKCIJU('LIJEVA')" class="hidden text-xs bg-gray-800 text-white px-3 py-1.5 rounded font-bold">➕ POKAŽI LIJEVU SEKCIJU</button>
         <button id="OTVORI_DESNA" onclick="OTVORI_SEKCIJU('DESNA')" class="hidden text-xs bg-gray-800 text-white px-3 py-1.5 rounded font-bold">➕ POKAŽI DESNU SEKCIJU</button>
@@ -176,14 +198,32 @@
         </div>
     </div>
 
+    <!-- MODAL ZA MREŽU KONTAKATA -->
+    <div id="MODAL_MREZA" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl border border-gray-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-sm font-bold">👥 MOJA POSLOVNA MREŽA</h2>
+                <button onclick="ZATVORI_MREZA_MODAL()" class="text-gray-500 font-bold">✕</button>
+            </div>
+            <div class="text-xs space-y-2 text-gray-700">
+                <p class="font-bold">Aktivni kontakti u mreži:</p>
+                <div class="p-2 bg-gray-50 rounded border"><b>JASKO (JARAN)</b> - B2B SURADNJA</div>
+                <div class="p-2 bg-gray-50 rounded border"><b>ADMINISTRATOR</b> - UPRAVLJANJE PORTALOM</div>
+            </div>
+            <button onclick="ZATVORI_MREZA_MODAL()" class="w-full py-2 linkedin-blue text-white font-bold rounded text-xs">ZATVORI</button>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
         let _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
+        const MOJ_SESSION_ID = 'session_' + Math.random().toString(36).substr(2, 9);
+
         let POSLOVNI_LINKOVI = [
             { naslov: "B2B TRENDS I AI U BIZNISU 2026", url: "https://www.forbes.com", izvor: "Forbes • 1.200 čitatelja" },
-            { naslov: "GLOBALNA DIGITALna transformacija", url: "https://www.techcrunch.com", izvor: "TechCrunch • 840 čitatelja" },
+            { naslov: "GLOBALNA DIGITALNA TRANSFORMACIJA", url: "https://www.techcrunch.com", izvor: "TechCrunch • 840 čitatelja" },
             { naslov: "EU FONDOVI ZA STARTUP-OVE", url: "https://ec.europa.eu/regional_policy/index_en", izvor: "Evropska komisija • 3.1k čitatelja" }
         ];
 
@@ -195,36 +235,118 @@
             { id: 1, tema_id: 1, autor: "KORISNIK1", tekst: "ODLIČNA INICIJATIVA!" }
         ];
 
-        // NOVA TABELA ZA NOTIFIKACIJE
-        let NOTIFIKACIJE = [
-            { id: 1, tekst: "Sistem je uspješno pokrenut i spreman za rad.", datum: "17.09.2026." },
-            { id: 2, tekst: "Administrator je objavio novu temu na forumu.", datum: "17.09.2026." }
-        ];
-
+        let NOTIFIKACIJE = [];
         let lijevaVidljiva = true;
         let desnaVidljiva = true;
 
         window.onload = function() {
+            DOHVATI_NOTIFIKACIJE_IZ_BAZE();
             PRIKAZI_TEME(POSAO_FORUM);
-            PRIKAZI_POSLOVNE_LINKOVE();
-            PRIKAZI_NOTIFIKACIJE();
-            provjeriAdminPrava();
+            PRIKAZI_POSLOVNIH_LINKOVE();
+            
+            if (_supabase) {
+                _supabase
+                    .channel('public:NOTIFIKACIJE')
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'NOTIFIKACIJE' }, payload => {
+                        NOTIFIKACIJE.unshift(payload.new);
+                        PRIKAZI_NOTIFIKACIJE();
+
+                        if (payload.new.session_id !== MOJ_SESSION_ID) {
+                            prikaziIskacucuNotifikaciju(payload.new.VRSTA_NOTIFIKACIJE || payload.new.tekst || 'Nova aktivnost');
+                        }
+                    })
+                    .subscribe();
+            }
         };
 
-        async function provjeriAdminPrava() {
+        // FUNKCIJE ZA GORNJE LINKOVE (NAVIGACIJU)
+        function KLIK_POVRATAK() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('PRETRAGA').value = '';
+            PRIKAZI_TEME(POSAO_FORUM);
+        }
+
+        function KLIK_MREZA() {
+            document.getElementById('MODAL_MREZA').classList.remove('hidden');
+        }
+
+        function ZATVORI_MREZA_MODAL() {
+            document.getElementById('MODAL_MREZA').classList.add('hidden');
+        }
+
+        function KLIK_POSLOVI() {
+            const desnaSekcija = document.getElementById('sekcija-poslovni-linkovi');
+            desnaSekcija.scrollIntoView({ behavior: 'smooth' });
+            desnaSekcija.classList.add('border-blue-500', 'ring-2', 'ring-blue-300');
+            setTimeout(() => desnaSekcija.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2000);
+        }
+
+        function KLIK_OBAVJESTENJA() {
+            const widgetNotif = document.getElementById('WIDGET_NOTIF');
+            widgetNotif.scrollIntoView({ behavior: 'smooth' });
+            widgetNotif.classList.add('border-blue-500', 'ring-2', 'ring-blue-300');
+            setTimeout(() => widgetNotif.classList.remove('border-blue-500', 'ring-2', 'ring-blue-300'), 2000);
+        }
+
+        async function DOHVATI_NOTIFIKACIJE_IZ_BAZE() {
             if (!_supabase) return;
-            try {
-                const { data: { user } } = await _supabase.auth.getUser();
-                if (user && user.email && user.email.toLowerCase() === 'admin@gmail.com') {
-                    const adminBtn = document.getElementById('ADMIN_LINK_BTN');
-                    if (adminBtn) adminBtn.classList.remove('hidden');
-                }
-            } catch (err) {
-                console.warn("Provjera admin prava nije uspjela:", err);
+            const { data, error } = await _supabase
+                .from('NOTIFIKACIJE')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(20);
+
+            if (!error && data) {
+                NOTIFIKACIJE = data;
+                PRIKAZI_NOTIFIKACIJE();
             }
         }
 
-        // FUNKCIJE ZA SKRIVANJE I AUTOMATSKO ŠIRENJE CENTRALNOG DIJELA
+        async function upisiUNotifikacijeBazu(vrst) {
+            if (!_supabase) return;
+            await _supabase.from('NOTIFIKACIJE').insert([
+                {
+                    VRSTA_NOTIFIKACIJE: vrst,
+                    IME: 'KORISNIK',
+                    FIRMA: 'MOJA FIRMA',
+                    LINK_STRANICE: 'DASHBOARD.html',
+                    session_id: MOJ_SESSION_ID,
+                    DATUM: new Date().toISOString()
+                }
+            ]);
+        }
+
+        function PRIKAZI_NOTIFIKACIJE() {
+            const kontejner = document.getElementById('LISTA_NOTIFIKACIJA');
+            const badge = document.getElementById('badge-notif');
+            kontejner.innerHTML = '';
+            badge.textContent = NOTIFIKACIJE.length;
+
+            NOTIFIKACIJE.forEach(n => {
+                const tekstPoruke = n.VRSTA_NOTIFIKACIJE || n.tekst || 'Aktivnost';
+                const datumVrijeme = n.DATUM ? new Date(n.DATUM).toLocaleTimeString('bs-BA') : (n.datum || '');
+                kontejner.innerHTML += `
+                    <div class="text-[11px] text-gray-600 bg-blue-50 p-2 rounded border-l-2 border-blue-600 space-y-0.5">
+                        <p class="font-bold text-gray-800">${tekstPoruke}</p>
+                        <span class="text-[9px] text-gray-400">${datumVrijeme}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function prikaziIskacucuNotifikaciju(tekst) {
+            const banner = document.getElementById('notification-banner');
+            document.getElementById('notif-body-text').textContent = tekst;
+            banner.style.display = 'block';
+            setTimeout(() => { banner.style.display = 'none'; }, 4000);
+        }
+
+        function DODAJ_TEST_NOTIFIKACIJU() {
+            const noviTekst = prompt("UNESI TEKST TEST NOTIFIKACIJE:");
+            if (!noviTekst) return;
+            upisiUNotifikacijeBazu('TEST_OBAVIJEST: ' + noviTekst.toUpperCase());
+        }
+
         function SAKRIJ_SEKCIJU(tip) {
             const lijeva = document.getElementById('SEKCIJA_LIJEVA');
             const desna = document.getElementById('SEKCIJA_DESNA');
@@ -266,38 +388,6 @@
             } else {
                 srednja.className = "col-span-1 md:col-span-3 space-y-4 transition-all duration-300";
             }
-        }
-
-        // CRTANJE NOTIFIKACIJA IZ TABELE NOTIFIKACIJE
-        function PRIKAZI_NOTIFIKACIJE() {
-            const kontejner = document.getElementById('LISTA_NOTIFIKACIJA');
-            const badge = document.getElementById('badge-notif');
-            kontejner.innerHTML = '';
-            badge.textContent = NOTIFIKACIJE.length;
-
-            NOTIFIKACIJE.forEach(n => {
-                kontejner.innerHTML += `
-                    <div class="text-[11px] text-gray-600 bg-blue-50 p-2 rounded border-l-2 border-blue-600 space-y-0.5">
-                        <p class="font-bold text-gray-800">${n.tekst}</p>
-                        <span class="text-[9px] text-gray-400">${n.datum}</span>
-                    </div>
-                `;
-            });
-        }
-
-        // FUNKCIJA KOJA UBAACUJE NOVI RED U TABELU NOTIFIKACIJE I AUTOMATSKI JE PRIKAZUJE
-        function DODAJ_TEST_NOTIFIKACIJU() {
-            const noviTekst = prompt("Unesi tekst nove notifikacije:".toUpperCase());
-            if (!noviTekst) return;
-
-            const noviId = NOTIFIKACIJE.length > 0 ? NOTIFIKACIJE[NOTIFIKACIJE.length - 1].id + 1 : 1;
-            NOTIFIKACIJE.unshift({
-                id: noviId,
-                tekst: noviTekst.toUpperCase(),
-                datum: new Date().toLocaleDateString('bs-BA')
-            });
-
-            PRIKAZI_NOTIFIKACIJE();
         }
 
         function PRIKAZI_POSLOVNIH_LINKOVA() {
@@ -366,18 +456,12 @@
             const noviId = POSAO_FORUM.length > 0 ? POSAO_FORUM[POSAO_FORUM.length - 1].id + 1 : 1;
             POSAO_FORUM.unshift({ id: noviId, kategorija: KATEGORIJA, naslov: NASLOV, sadrzaj: SADRZAJ, autor: "ADMINISTRATOR", datum: new Date().toLocaleDateString('bs-BA') });
 
-            // AUTOMATSKI DODAJ I NOTIFIKACIJU KAD SE OBJAVI NOVA TEMA
-            NOTIFIKACIJE.unshift({
-                id: NOTIFIKACIJE.length + 1,
-                tekst: `Nova tema: ${NASLOV}`,
-                datum: new Date().toLocaleDateString('bs-BA')
-            });
+            upisiUNotifikacijeBazu(`NOVA TEMA: ${NASLOV}`);
 
             ZATVORI_MODAL();
             document.getElementById('NASLOV_TEME').value = '';
             document.getElementById('SADRZAJ_TEME').value = '';
             PRIKAZI_TEME(POSAO_FORUM);
-            PRIKAZI_NOTIFIKACIJE();
         }
 
         function DODAJ_KOMENTAR(temaId) {
@@ -387,6 +471,11 @@
 
             const noviKomentarId = POSAO_FORUM_KOMENTARI.length > 0 ? POSAO_FORUM_KOMENTARI[POSAO_FORUM_KOMENTARI.length - 1].id + 1 : 1;
             POSAO_FORUM_KOMENTARI.push({ id: noviKomentarId, tema_id: temaId, autor: "KORISNIK", tekst: tekstKomentara });
+
+            const nadjenaTema = POSAO_FORUM.find(t => t.id === temaId);
+            const nazivTeme = nadjenaTema ? nadjenaTema.naslov : 'TEMA';
+            upisiUNotifikacijeBazu(`NOVI KOMENTAR NA "${nazivTeme}": ${tekstKomentara}`);
+
             inputPolje.value = '';
             PRIKAZI_TEME(POSAO_FORUM);
         }
