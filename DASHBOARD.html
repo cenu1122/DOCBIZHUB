@@ -133,6 +133,13 @@
         <div class="icon">💬</div><h3>Poruke & Chat</h3>
         <p>Pregledajte vaše aktivne poslovne razgovore i dogovore.</p>
       </a>
+      
+      <!-- NOVA DODANA KARTICA ZA MAIL GENERATOR SA VELIKIM SLOVIMA -->
+      <a href="MAIL_GENERATOR.HTML" class="dash-tile">
+        <div class="icon">📧</div><h3>Mail Generator</h3>
+        <p>Generišite i upravljajte mailovima uz napredne alate.</p>
+      </a>
+
       <div class="dash-tile" onclick="otvoriModalDokumenata()">
         <div class="icon">📁</div><h3>Dokumenti i Alati</h3>
         <p>Otvorite meni za Word, Excel, PowerPoint i fajlove iz foldera DOCS.</p>
@@ -216,7 +223,7 @@
         if (user && user.email) {
           document.getElementById('lblUserEmail').innerText = `👤 ${user.email}`;
 
-          // Ako je admin, prikaži admin kartice
+          /* Ako je admin, prikaži admin kartice */
           if (user.email.toLowerCase() === 'admin@gmail.com') {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
           }
@@ -291,7 +298,6 @@
     function pokreniForumNotifikacije() {
       if (!_supabase) return;
       
-      // Slušamo nove postove ili komentare na forumu
       _supabase.channel('forum-global-kanal')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'FORUM_POSTOVI' }, function(payload) {
           prikaziForumToast("🗣️ Nova tema na forumu!", "Kreirana je nova diskusija. Pogledajte detalje.");
