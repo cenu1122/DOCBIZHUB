@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocBizHub - Glavni Kontrolni Panel</title>
+    <!-- Tailwind CSS za moderan i brz dizajn -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 min-h-screen text-slate-100 font-sans">
+
+    <!-- Zaglavlje -->
+    <header class="border-b border-slate-800 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-xl font-bold text-xl tracking-wider text-white">DBH</div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">DocBizHub Centrala</h1>
+                    <p class="text-xs text-slate-400">Upravljanje komunikacijom i resursima</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Sustav aktivan
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Glavni sadržaj -->
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Sekcija s glavnim akcijama (Dugmad za Slanje i Inbox) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Gumb 1: Slanje Maila -->
+            <a href="MAIL_GENERATOR.html" class="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-blue-500/25">
+                <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 text-white/10 group-hover:scale-110 transition-transform">
+                    <svg class="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4 text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Slanje Poruka</h2>
+                    <p class="text-blue-100 text-sm max-w-sm mb-4">Kreirajte i pošaljite nove glasovne ili klasične mail poruke putem generatora.</p>
+                    <span class="inline-flex items-center text-sm font-semibold text-white group-hover:translate-x-2 transition-transform">
+                        Pokreni generator &rarr;
+                    </span>
+                </div>
+            </a>
+
+            <!-- Gumb 2: Inbox Poruka -->
+            <a href="MAILOVI_INBOX.html" class="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 p-8 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-purple-500/25">
+                <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 text-white/10 group-hover:scale-110 transition-transform">
+                    <svg class="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4 text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Inbox (Pristigle poruke)</h2>
+                    <p class="text-purple-100 text-sm max-w-sm mb-4">Pregledajte primljene poruke, glasovne zapise i status komunikacije.</p>
+                    <span class="inline-flex items-center text-sm font-semibold text-white group-hover:translate-x-2 transition-transform">
+                        Otvori Inbox &rarr;
+                    </span>
+                </div>
+            </a>
+        </section>
+
+        <!-- Sekcija sa YouTube video vodičem / prezentacijom -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Video Upute / Prezentacija sustava
+                    </h3>
+                    <p class="text-xs text-slate-400">Pogledajte video vodič za lakše korištenje platforme.</p>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                    💡 URL videa možete lako zamijeniti u kodu stranice
+                </div>
+            </div>
+
+            <!-- YouTube responsive okvir -->
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner">
+                <!-- 
+                  NAPOMENA ZA ZAMJENU URL-a: 
+                  U 'src' atributu ispod zamijenite 'dQw4w9WgXcQ' ID vašim YouTube video ID-jem.
+                -->
+                <iframe class="absolute top-0 left-0 w-full h-full" 
+                        src="https://www.youtube-video-placeholder.com/embed/dQw4w9WgXcQ" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Dodatni dio: Brzi prečaci i widgeti -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex items-center space-x-4">
+                <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white">Mreža i Kontakti</h4>
+                    <a href="MREZA.html" class="text-xs text-blue-400 hover:underline">Otvori adresar &rarr;</a>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex items-center space-x-4">
+                <div class="p-3 bg-purple-500/10 text-purple-400 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white">Forum / Rasprave</h4>
+                    <a href="FORUM.html" class="text-xs text-purple-400 hover:underline">Idi na forum &rarr;</a>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex items-center space-x-4">
+                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white">Podrška i Info</h4>
+                    <a href="KONTAKT.html" class="text-xs text-emerald-400 hover:underline">Kontaktiraj nas &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Podnožje -->
+    <footer class="border-t border-slate-800 mt-12 py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2026 DocBizHub. Sva prava pridržana.</p>
+    </footer>
+
+</body>
+</html>
