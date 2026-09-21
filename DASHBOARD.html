@@ -28,8 +28,29 @@
     .dash-tile .icon{font-size:2.5rem}
     .dash-tile h3{color:#1e1f29;font-size:1.2rem}
     .dash-tile p{font-size:0.85rem;color:#777}
-    .admin-only{display:none} /* Sakriveno za obične korisnike */
+    .admin-only{display:none}
     
+    /* Stil za gumbe unutar Mail kartice */
+    .mail-actions {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-top: 5px;
+    }
+    .mail-btn {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .mail-btn.gen { background: #3742fa; color: #fff; }
+    .mail-btn.inbox { background: #2ed573; color: #fff; }
+    .mail-btn:hover { opacity: 0.9; }
+
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
     .modal-overlay.active{display:flex}
     .modal-content{background:#fff;width:100%;max-width:700px;padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.2);display:flex;flex-direction:column;gap:20px}
@@ -52,8 +73,13 @@
     #adminNotificationConfirm{background:#d90429;color:#fff;border:none;border-radius:12px;padding:16px 45px;font-size:1.2rem;font-weight:bold;cursor:pointer;transition:background .2s,transform .2s}
     #adminNotificationConfirm:hover{background:#b50322;transform:scale(1.03)}
 
-    /* TOAST OBAVJEŠTENJE ZA FORUM (SVI KORISNICI) */
+    /* TOAST OBAVJEŠTENJE ZA FORUM */
     #forumToast{display:none;position:fixed;bottom:20px;right:20px;background:#2b2d42;color:#fff;padding:15px 20px;border-radius:12px;z-index:99999;box-shadow:0 5px 20px rgba(0,0,0,0.2);border-left:5px solid #3742fa;max-width:320px;flex-direction:column;gap:4px}
+
+    /* YOUTUBE SEKCIJA */
+    .video-section{background:#fff;padding:25px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.05);border:1px solid #f0f0f0;display:flex;flex-direction:column;gap:15px}
+    .video-container{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;background:#000}
+    .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 
     footer{background-color:#2b2d42;color:#fff;text-align:center;padding:20px 0;margin-top:auto}
   </style>
@@ -76,7 +102,7 @@
     </div>
   </div>
 
-  <!-- TOAST OBAVJEŠTENJE ZA FORUM (SVI KORISNICI) -->
+  <!-- TOAST OBAVJEŠTENJE ZA FORUM -->
   <div id="forumToast">
     <strong id="forumToastTitle" style="font-size: 0.95rem;">💬 Forum obavještenje</strong>
     <span id="forumToastBody" style="font-size: 0.85rem; color: #dcdde1;">Nova aktivnost na forumu.</span>
@@ -101,6 +127,16 @@
       <div class="user-badge" id="lblUserEmail">Učitavanje profila...</div>
     </div>
 
+    <!-- YOUTUBE VIDEO SEKCIJA -->
+    <div class="video-section">
+      <h2 style="font-size: 1.3rem; color: #1e1f29;">📺 Video Vodič / Prezentacija</h2>
+      <p style="font-size: 0.9rem; color: #666;">Pogledajte video u nastavku. (URL video zapisa možete lako promijeniti u kodu stranice)</p>
+      <div class="video-container">
+        <!-- Ovdje možete promijeniti YouTube link/ID u src atributu -->
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
     <div class="dashboard-grid">
       <a href="PROFIL.html" class="dash-tile">
         <div class="icon">👤</div><h3>Moj Profil</h3>
@@ -115,7 +151,7 @@
         <p>Pronađite članove, kompanije, resurse i prilike za saradnju.</p>
       </a>
       
-      <!-- OVE DVIJE KARTICE VIDLJIVE SAMO ZA ADMINA -->
+      <!-- ADMIN KARTICE -->
       <a href="DODAJ_FIRMU.html" class="dash-tile admin-only">
         <div class="icon">🏢</div><h3>Dodaj Firmu</h3>
         <p>Unesite novu firmu, preduzeće ili poslovnu organizaciju u bazu.</p>
@@ -134,11 +170,16 @@
         <p>Pregledajte vaše aktivne poslovne razgovore i dogovore.</p>
       </a>
       
-      <!-- NOVA DODANA KARTICA ZA MAIL GENERATOR SA VELIKIM SLOVIMA -->
-      <a href="MAILOVI.html" class="dash-tile">
-        <div class="icon">📧</div><h3>Mail Generator</h3>
-        <p>Generišite i upravljajte mailovima uz napredne alate.</p>
-      </a>
+      <!-- MAIL GENERATOR KARTICA SA INTEGRIRANIM INBOX GUMBOM -->
+      <div class="dash-tile">
+        <div class="icon">📧</div>
+        <h3>Mail Generator</h3>
+        <p>Generišite i upravljajte mailovima i porukama.</p>
+        <div class="mail-actions">
+          <a href="MAILOVI.html" class="mail-btn gen">Generator</a>
+          <a href="MAILOVI_INBOX.html" class="mail-btn inbox">Inbox 📥</a>
+        </div>
+      </div>
 
       <div class="dash-tile" onclick="otvoriModalDokumenata()">
         <div class="icon">📁</div><h3>Dokumenti i Alati</h3>
@@ -215,7 +256,6 @@
       if (event.target === modal) zatvoriModalDokumenata();
     };
 
-    /* UČITAVANJE PROFILA IZ POSAO_KORISNICI */
     async function ucitajProfilKorisnika() {
       if (!_supabase) return;
       try {
@@ -223,7 +263,6 @@
         if (user && user.email) {
           document.getElementById('lblUserEmail').innerText = `👤 ${user.email}`;
 
-          /* Ako je admin, prikaži admin kartice */
           if (user.email.toLowerCase() === 'admin@gmail.com') {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
           }
@@ -250,7 +289,6 @@
       window.location.href = 'index.html';
     }
 
-    /* ADMIN NOTIFIKACIJE (SAMO ZA ADMINA) */
     let adminNotificationChannel = null;
     let adminNotificationIsAdmin = false;
 
@@ -259,11 +297,9 @@
       try {
         const { data: { user }, error } = await _supabase.auth.getUser();
         if (error || !user || !user.email) return;
-
         if (user.email.toLowerCase() !== 'admin@gmail.com') return;
 
         adminNotificationIsAdmin = true;
-
         if (adminNotificationChannel) {
           await _supabase.removeChannel(adminNotificationChannel);
         }
@@ -294,10 +330,8 @@
       document.getElementById('adminNotificationOverlay').classList.remove('active');
     }
 
-    /* NOTIFIKACIJE ZA FORUM (SVI KORISNICI) */
     function pokreniForumNotifikacije() {
       if (!_supabase) return;
-      
       _supabase.channel('forum-global-kanal')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'FORUM_POSTOVI' }, function(payload) {
           prikaziForumToast("🗣️ Nova tema na forumu!", "Kreirana je nova diskusija. Pogledajte detalje.");
@@ -316,7 +350,6 @@
       setTimeout(() => { toast.style.display = 'none'; }, 6000);
     }
 
-    /* ZVUČNI ALARM */
     function pustiAdminAlarm() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
