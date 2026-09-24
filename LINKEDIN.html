@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LINKEDIN | DOCBIZHUB</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e4e8ef;
+            padding: 22px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .linkedin-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #0a66c2;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background: #eef3f8;
+            color: #172033;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 45px 20px 70px;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 18px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            font-size: 42px;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            margin: 0 auto;
+            max-width: 700px;
+            color: #687386;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .status {
+            margin: 30px auto 0;
+            max-width: 650px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .status.connected {
+            background: #e8f7ee;
+            color: #147a42;
+        }
+
+        .status.error {
+            background: #fdecec;
+            color: #b42318;
+        }
+
+        .buttons {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 0;
+            border-radius: 9px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .connect-btn {
+            background: #0a66c2;
+            color: white;
+        }
+
+        .connect-btn:hover {
+            background: #084f96;
+        }
+
+        .disconnect-btn {
+            background: #e9edf2;
+            color: #333;
+        }
+
+        .disconnect-btn:hover {
+            background: #dce2e9;
+        }
+
+        .features {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .feature {
+            background: white;
+            border-radius: 15px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .feature p {
+            margin: 0;
+            color: #727c8d;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .info {
+            margin-top: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .info h2 {
+            margin-top: 0;
+        }
+
+        .info p {
+            color: #687386;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #8993a3;
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .header {
+                padding: 16px;
+            }
+
+            .brand-title {
+                font-size: 20px;
+            }
+
+            .linkedin-logo {
+                width: 42px;
+                height: 42px;
+                font-size: 24px;
+            }
+
+            .container {
+                padding: 25px 12px 50px;
+            }
+
+            .hero {
+                padding: 28px 18px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .back-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="brand">
+
+        <div class="linkedin-logo">
+            in
+        </div>
+
+        <div class="brand-title">
+            DOCBIZHUB
+        </div>
+
+    </div>
+
+    <a href="https://docbizhub.com/DASHBOARD.html" class="back-button">
+        ← DASHBOARD
+    </a>
+
+</header>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>LINKEDIN</h1>
+
+        <p>
+            Poveži svoj LinkedIn nalog sa DocBizHub sistemom
+            i upravljaj LinkedIn funkcijama iz jednog mjesta.
+        </p>
+
+
+        <div id="status" class="status">
+            Provjeravam status povezivanja...
+        </div>
+
+
+        <div class="buttons">
+
+            <button
+                id="connectBtn"
+                class="connect-btn"
+                onclick="connectLinkedIn()">
+                🔵 POVEŽI LINKEDIN
+            </button>
+
+            <button
+                id="disconnectBtn"
+                class="disconnect-btn"
+                onclick="disconnectLinkedIn()"
+                style="display:none;">
+                🔴 ODVOJI LINKEDIN
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="features">
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📝
+            </div>
+
+            <h3>OBJAVE</h3>
+
+            <p>
+                Povezivanje sa LinkedIn objavama
+                kroz odobreni LinkedIn pristup.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                💬
+            </div>
+
+            <h3>KOMENTARI</h3>
+
+            <p>
+                Buduća integracija LinkedIn
+                komentara i interakcija.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                👍
+            </div>
+
+            <h3>REAKCIJE</h3>
+
+            <p>
+                Pregled i upravljanje dostupnim
+                LinkedIn reakcijama.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📊
+            </div>
+
+            <h3>STATISTIKA</h3>
+
+            <p>
+                LinkedIn podaci i statistika
+                kroz DocBizHub.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="info">
+
+        <h2>🔐 SIGURNO POVEZIVANJE</h2>
+
+        <p>
+            DocBizHub ne čuva LinkedIn Client Secret u ovom HTML fajlu.
+            Tajni podaci ostaju na server-side Supabase Edge Function strani.
+        </p>
+
+        <p>
+            Klikom na dugme za povezivanje bićeš preusmjeren na LinkedIn
+            gdje odobravaš potrebne dozvole.
+        </p>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    DOCBIZHUB © 2026
+
+</footer>
+
+
+<script>
+
+    /*
+     * SUPABASE EDGE FUNCTION
+     */
+    const FUNCTION_URL =
+        "https://lvvidixbdtdjfwxxxqzr.supabase.co/functions/v1/linkedin-oauth";
+
+
+    /*
+     * ELEMENTI
+     */
+    const statusBox =
+        document.getElementById("status");
+
+    const connectBtn =
+        document.getElementById("connectBtn");
+
+    const disconnectBtn =
+        document.getElementById("disconnectBtn");
+
+
+    /*
+     * PRIKAŽI STATUS
+     */
+    function showStatus(message, type = "") {
+
+        statusBox.textContent = message;
+
+        statusBox.className = "status";
+
+        if (type) {
+            statusBox.classList.add(type);
+        }
+
+    }
+
+
+    /*
+     * PROVJERA LINKEDIN STATUSA
+     */
+    async function checkLinkedInStatus() {
+
+        try {
+
+            showStatus("Provjeravam LinkedIn povezivanje...");
+
+            const response = await fetch(
+                FUNCTION_URL + "?action=status",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " + response.status
+                );
+
+            }
+
+
+            const data = await response.json();
+
+
+            if (data.connected === true) {
+
+                showStatus(
+                    "✅ LINKEDIN JE USPJEŠNO POVEZAN!",
+                    "connected"
+                );
+
+                connectBtn.style.display = "none";
+
+                disconnectBtn.style.display = "inline-block";
+
+            } else {
+
+                showStatus(
+                    "⚪ LINKEDIN NIJE POVEZAN."
+                );
+
+                connectBtn.style.display = "inline-block";
+
+                disconnectBtn.style.display = "none";
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "LinkedIn status error:",
+                error
+            );
+
+            showStatus(
+                "⚠️ Nije moguće provjeriti LinkedIn status.",
+                "error"
+            );
+
+            connectBtn.style.display = "inline-block";
+
+            disconnectBtn.style.display = "none";
+
+        }
+
+    }
+
+
+    /*
+     * POVEŽI LINKEDIN
+     */
+    function connectLinkedIn() {
+
+        showStatus(
+            "🔵 Otvaram LinkedIn autorizaciju..."
+        );
+
+        window.location.href =
+            FUNCTION_URL + "?action=start";
+
+    }
+
+
+    /*
+     * ODVOJI LINKEDIN
+     */
+    async function disconnectLinkedIn() {
+
+        try {
+
+            showStatus(
+                "Prekidam LinkedIn povezivanje..."
+            );
+
+
+            const response = await fetch(
+                FUNCTION_URL + "?action=disconnect",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " + response.status
+                );
+
+            }
+
+
+            showStatus(
+                "✅ LINKEDIN JE ODVOJEN."
+            );
+
+            connectBtn.style.display = "inline-block";
+
+            disconnectBtn.style.display = "none";
+
+
+        } catch (error) {
+
+            console.error(
+                "LinkedIn disconnect error:",
+                error
+            );
+
+            showStatus(
+                "⚠️ Greška pri odspajanju LinkedIna.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /*
+     * PROVJERI REZULTAT OAUTH POVRATKA
+     */
+    function checkOAuthResult() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const result =
+            params.get("linkedin");
+
+
+        if (result === "connected") {
+
+            showStatus(
+                "✅ LINKEDIN JE USPJEŠNO POVEZAN!",
+                "connected"
+            );
+
+        }
+
+
+        if (result === "error") {
+
+            showStatus(
+                "❌ LINKEDIN POVEZIVANJE NIJE USPJELO.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /*
+     * POKRETANJE STRANICE
+     */
+    checkOAuthResult();
+
+    checkLinkedInStatus();
+
+</script>
+
+</body>
+</html>
