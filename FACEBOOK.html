@@ -3,46 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatikaeu.store - Facebook Upravljanje</title>
+    <title>Automatikaeu.store - Facebook & Supabase Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h1 { color: #1877f2; text-align: center; }
-        .post-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn { background-color: #1877f2; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
-        .btn:hover { background-color: #165fe5; }
+        .post-card, .section-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 5px; }
+        .btn-fb { background-color: #1877f2; }
+        .btn:hover { opacity: 0.9; }
+        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Automatikaeu.store - Facebook Panel</h1>
-    <p style="text-align: center;">Pregled objava sa tvoje Facebook stranice.</p>
+    <h1>Automatikaeu.store - Facebook Upravljanje</h1>
+    <p style="text-align: center;">Kompletna kontrola objava i poruka sa sajta</p>
     
     <div style="margin-bottom: 20px; text-align: center;">
-        <button class="btn" onclick="fetchPagePosts()">Učitaj objave sa stranice</button>
+        <button class="btn btn-fb" onclick="fetchFacebookPosts()">Učitaj Objave</button>
     </div>
 
-    <div id="posts-container">
-        <!-- Ovdje će se prikazivati objave -->
+    <!-- Sekcija za novu objavu -->
+    <div class="section-card">
+        <h3>Kreiraj novu objavu na stranici</h3>
+        <textarea id="post-message" placeholder="Unesi tekst nove objave..."></textarea>
+        <button class="btn btn-fb" onclick="createFacebookPost()">Objavi na Facebook</button>
+        <div id="create-status" style="margin-top: 10px; font-weight: bold;"></div>
+    </div>
+
+    <!-- Sekcija za slanje poruke -->
+    <div class="section-card">
+        <h3>Pošalji poruku preko Messengera</h3>
+        <input type="text" id="recipient-id" placeholder="ID korisnika (Recipient PSID)">
+        <textarea id="message-text" placeholder="Unesi tekst poruke..."></textarea>
+        <button class="btn btn-fb" onclick="sendMessengerMessage()">Pošalji Poruku</button>
+        <div id="msg-status" style="margin-top: 10px; font-weight: bold;"></div>
+    </div>
+
+    <div id="posts-container" style="margin-top: 20px;">
+        <!-- Ovdje se prikazuju objave -->
     </div>
 </div>
 
 <script>
-    // Ovdje unesi svoj Page Access Token koji si generisao
-    const PAGE_ACCESS_TOKEN = "EAAin3whcmpkBSuFqUeYZBv60ccrVzlQpFJ7tk3Ju63ffHOoZCX5ZCQIgMBZA2j5beWX5jsK2PMoZCddoHcrpaZAoZB4KXRrejt2NfcgO8A0HxARxil1YO0A1JbWJXdfWN9sUmZAqbfmGHfov4WyJZADyfmqrLUJy2vUrx0ZCqPvKmCANDj3mZCvKWTvRmEwNcQ74GVkds0ZAywZDZD";
-    const PAGE_ID = "1232440846614790"; // ID stranice Automatikaeu.store
+    const PAGE_ID = "1232440846614790";
+    // Ovdje ubaci svoj privremeni token za testiranje, ili povlači preko baze
+    const PAGE_ACCESS_TOKEN = "TVOJ_PAGE_ACCESS_TOKEN_OVDJE"; 
 
-    function fetchPagePosts() {
-        const container = document.getElementById('posts-container');
-        container.innerHTML = "<p style='text-align:center;'>Učitavanje objava...</p>";
+    // Funkcija za učitavanje objava
+    function fetchFacebookPosts() {
+        const postsContainer = document.getElementById('posts-container');
+        postsContainer.innerHTML = "<p style='text-align:center;'>Učitavanje objava...</p>";
 
         const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/posts?access_token=${PAGE_ACCESS_TOKEN}`;
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                container.innerHTML = "";
+                postsContainer.innerHTML = "<h3>Postojeće objave:</h3>";
                 if (data.data && data.data.length > 0) {
                     data.data.forEach(post => {
                         const postDiv = document.createElement('div');
@@ -51,16 +72,100 @@
                             <p><strong>Objava:</strong> ${post.message || '(Nema tekstualnog sadržaja)'}</p>
                             <small style="color: #666;">ID objave: ${post.id}</small>
                         `;
-                        container.appendChild(postDiv);
+                        postsContainer.appendChild(postDiv);
                     });
                 } else {
-                    container.innerHTML = "<p style='text-align:center;'>Nema pronađenih objava ili je token nevažeći.</p>";
+                    postsContainer.innerHTML += "<p style='text-align:center;'>Nema pronađenih objava.</p>";
                 }
             })
             .catch(error => {
                 console.error('Greška:', error);
-                container.innerHTML = "<p style='text-align:center; color:red;'>Došlo je do greške prilikom učitavanja objava.</p>";
+                postsContainer.innerHTML = "<p style='text-align:center; color:red;'>Greška pri učitavanju objava.</p>";
             });
+    }
+
+    // Funkcija za slanje nove objave na Facebook stranicu
+    function createFacebookPost() {
+        const message = document.getElementById('post-message').value;
+        const statusDiv = document.getElementById('create-status');
+
+        if (!message) {
+            statusDiv.innerHTML = "Unesi tekst objave!";
+            statusDiv.style.color = "red";
+            return;
+        }
+
+        statusDiv.innerHTML = "Objavljivanje...";
+        statusDiv.style.color = "#333";
+
+        const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/feed`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: message,
+                access_token: PAGE_ACCESS_TOKEN
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                statusDiv.innerHTML = "Uspješno objavljeno!";
+                statusDiv.style.color = "green";
+                document.getElementById('post-message').value = "";
+                fetchFacebookPosts();
+            } else {
+                statusDiv.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznata greška");
+                statusDiv.style.color = "red";
+            }
+        })
+        .catch(err => {
+            statusDiv.innerHTML = "Došlo je do greške pri slanju.";
+            statusDiv.style.color = "red";
+        });
+    }
+
+    // Funkcija za slanje poruke preko Messengera
+    function sendMessengerMessage() {
+        const recipientId = document.getElementById('recipient-id').value;
+        const messageText = document.getElementById('message-text').value;
+        const msgStatus = document.getElementById('msg-status');
+
+        if (!recipientId || !messageText) {
+            msgStatus.innerHTML = "Unesi ID primaoca i tekst poruke!";
+            msgStatus.style.color = "red";
+            return;
+        }
+
+        msgStatus.innerHTML = "Slanje poruke...";
+        msgStatus.style.color = "#333";
+
+        const url = `https://graph.facebook.com/v18.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient: { id: recipientId },
+                message: { text: messageText }
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message_id) {
+                msgStatus.innerHTML = "Poruka uspješno poslata!";
+                msgStatus.style.color = "green";
+                document.getElementById('message-text').value = "";
+            } else {
+                msgStatus.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznata greška");
+                msgStatus.style.color = "red";
+            }
+        })
+        .catch(err => {
+            msgStatus.innerHTML = "Došlo je do greške pri slanju poruke.";
+            msgStatus.style.color = "red";
+        });
     }
 </script>
 
