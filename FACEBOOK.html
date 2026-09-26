@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatikaeu.store - Supabase & Facebook</title>
+    <title>Automatikaeu.store - Supabase & Facebook Panel</title>
     <!-- Učitavanje Supabase JavaScript biblioteke -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -11,29 +11,34 @@
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         h1 { color: #1877f2; text-align: center; }
         .post-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
-        .btn:hover { background-color: #34b27b; }
+        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 5px; }
+        .btn-fb { background-color: #1877f2; }
+        .btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Supabase & Facebook Panel</h1>
-    <p style="text-align: center;">Povezivanje sa Supabase projektom sa tvoje slike.</p>
+    <p style="text-align: center;">Upravljanje i pregled objava za Automatikaeu.store</p>
     
     <div style="margin-bottom: 20px; text-align: center;">
-        <button class="btn" onclick="testSupabaseConnection()">Testiraj konekciju sa Supabase</button>
+        <button class="btn" onclick="testSupabaseConnection()">Testiraj Supabase Konekciju</button>
+        <button class="btn btn-fb" onclick="fetchFacebookPosts()">Učitaj Facebook Objave</button>
     </div>
 
     <div id="status-container" style="text-align: center; margin-top: 15px; font-weight: bold;"></div>
+    
+    <div id="posts-container" style="margin-top: 20px;">
+        <!-- Ovdje će se prikazivati objave sa Facebook-a -->
+    </div>
 </div>
 
 <script>
-    // Supabase kredencijali sa tvog ekrana (Legacy / API Keys)
-    const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co"; // Izvučeno iz tvog URL-a sa slike
-    const SUPABASE_ANON_KEY = "OVDJE_ZALIJEPI_ANON_PUBLIC_KLJUC_SA_SLIKE"; // Kopiraj 'anon public' ključ sa ekrana
+    // Supabase kredencijali
+    const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co";
+    const SUPABASE_ANON_KEY = "OVDJE_ZALIJEPI_ANON_PUBLIC_KLJUC_SA_SLIKE";
 
-    // Inicijalizacija Supabase klijenta
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -42,10 +47,7 @@
         statusContainer.innerHTML = "Povezivanje sa Supabase bazom...";
 
         try {
-            // Primer provere konekcije (čitanje iz opšte tabele ili test upit)
             const { data, error } = await _supabase.from('not_existent_table').select('*').limit(1);
-            
-            // Čak i ako tabela ne postoji, ako je konekcija uspela vratiće grešku baze, što znači da ključevi rade!
             statusContainer.innerHTML = "Uspešno ostvarena veza sa Supabase projektom!";
             statusContainer.style.color = "green";
         } catch (err) {
@@ -53,6 +55,40 @@
             statusContainer.innerHTML = "Greška prilikom povezivanja.";
             statusContainer.style.color = "red";
         }
+    }
+
+    function fetchFacebookPosts() {
+        const postsContainer = document.getElementById('posts-container');
+        postsContainer.innerHTML = "<p style='text-align:center;'>Učitavanje Facebook objava...</p>";
+
+        // Ovdje ubacujemo tvoj Page Access Token koji si maloprije generisao
+        const PAGE_ACCESS_TOKEN = "TVOJ_PAGE_ACCESS_TOKEN_OVDJE";
+        const PAGE_ID = "1232440846614790";
+
+        const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/posts?access_token=${PAGE_ACCESS_TOKEN}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                postsContainer.innerHTML = "";
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(post => {
+                        const postDiv = document.createElement('div');
+                        postDiv.className = 'post-card';
+                        postDiv.innerHTML = `
+                            <p><strong>Objava:</strong> ${post.message || '(Nema tekstualnog sadržaja)'}</p>
+                            <small style="color: #666;">ID objave: ${post.id}</small>
+                        `;
+                        postsContainer.appendChild(postDiv);
+                    });
+                } else {
+                    postsContainer.innerHTML = "<p style='text-align:center;'>Nema pronađenih objava ili je token nevažeći.</p>";
+                }
+            })
+            .catch(error => {
+                console.error('Greška:', error);
+                postsContainer.innerHTML = "<p style='text-align:center; color:red;'>Došlo je do greške prilikom učitavanja objava sa Facebook-a.</p>";
+            });
     }
 </script>
 
