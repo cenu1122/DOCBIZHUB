@@ -8,26 +8,29 @@
         body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; font-size: 16px; transition: font-size 0.2s; }
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h1 { color: #1877f2; text-align: center; }
-        .nav-buttons, .font-controls { text-align: center; margin-bottom: 15px; }
+        .nav-buttons, .font-controls { text-align: center; margin-bottom: 20px; }
         .panel-section { display: none; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .active-panel { display: block; }
-        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin: 5px; }
+        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: inherit; margin: 5px; }
         .btn-fb { background-color: #1877f2; }
+        .btn-font { background-color: #555; padding: 5px 10px; font-weight: bold; }
         .btn:hover { opacity: 0.9; }
-        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; font-size: 1em; }
+        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; font-size: inherit; }
         .post-card, .msg-card { background: #f9f9f9; border: 1px solid #e1e1e1; border-radius: 4px; padding: 12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <h1>Automatikaeu.store - Facebook Panel</h1>
+    
     <!-- Kontrole za veličinu slova -->
     <div class="font-controls">
-        <button class="btn" onclick="changeFontSize(1)">A+</button>
-        <button class="btn" onclick="changeFontSize(-1)">A-</button>
+        <span style="font-size: 14px; margin-right: 5px;">Veličina slova:</span>
+        <button class="btn btn-font" onclick="changeFontSize(1)">A+</button>
+        <button class="btn btn-font" onclick="changeFontSize(-1)">A-</button>
     </div>
 
-    <h1>Automatikaeu.store - Facebook Panel</h1>
     <p style="text-align: center;">Izaberi opciju iz menija:</p>
     
     <!-- Navigaciona dugmad za prebacivanje panela -->
@@ -72,8 +75,8 @@
     const PAGE_ID = "1232440846614790";
     const PAGE_ACCESS_TOKEN = "TVOJ_PAGE_ACCESS_TOKEN_OVDJE"; 
 
-    // Funkcija za promjenu veličine slova
     let currentFontSize = 16;
+
     function changeFontSize(direction) {
         currentFontSize += direction * 2;
         if (currentFontSize < 12) currentFontSize = 12;
@@ -149,7 +152,7 @@
                         container.innerHTML += `
                             <div class="msg-card">
                                 <p><strong>ID razgovora:</strong> ${conv.id}</p>
-                                <button class="btn" style="padding: 5px 10px; font-size: 0.9em;" onclick="selectRecipient('${conv.id}')">Izaberi za odgovor</button>
+                                <button class="btn" style="padding: 5px 10px; font-size: inherit;" onclick="selectRecipient('${conv.id}')">Izaberi za odgovor</button>
                             </div>`;
                     });
                 } else {
