@@ -3,168 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatikaeu.store - Facebook & Supabase Panel</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Automatikaeu.store - Facebook Upravljanje</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; font-size: 16px; transition: font-size 0.2s; }
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h1 { color: #1877f2; text-align: center; }
-        .post-card, .section-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 5px; }
+        .nav-buttons, .font-controls { text-align: center; margin-bottom: 15px; }
+        .panel-section { display: none; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .active-panel { display: block; }
+        .btn { background-color: #3ecf8e; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin: 5px; }
         .btn-fb { background-color: #1877f2; }
         .btn:hover { opacity: 0.9; }
-        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; font-size: 1em; }
+        .post-card, .msg-card { background: #f9f9f9; border: 1px solid #e1e1e1; border-radius: 4px; padding: 12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Automatikaeu.store - Facebook Upravljanje</h1>
-    <p style="text-align: center;">Kompletna kontrola objava i poruka sa sajta</p>
-    
-    <div style="margin-bottom: 20px; text-align: center;">
-        <button class="btn btn-fb" onclick="fetchFacebookPosts()">Učitaj Objave</button>
+    <!-- Kontrole za veličinu slova -->
+    <div class="font-controls">
+        <button class="btn" onclick="changeFontSize(1)">A+</button>
+        <button class="btn" onclick="changeFontSize(-1)">A-</button>
     </div>
 
-    <!-- Sekcija za novu objavu -->
-    <div class="section-card">
-        <h3>Kreiraj novu objavu na stranici</h3>
-        <textarea id="post-message" placeholder="Unesi tekst nove objave..."></textarea>
+    <h1>Automatikaeu.store - Facebook Panel</h1>
+    <p style="text-align: center;">Izaberi opciju iz menija:</p>
+    
+    <!-- Navigaciona dugmad za prebacivanje panela -->
+    <div class="nav-buttons">
+        <button class="btn btn-fb" onclick="showPanel('posts-panel')">Pregled Objava</button>
+        <button class="btn btn-fb" onclick="showPanel('create-panel')">Nova Objava</button>
+        <button class="btn btn-fb" onclick="showPanel('messages-panel')">Messenger Poruke</button>
+    </div>
+
+    <!-- PANEL 1: Pregled objava -->
+    <div id="posts-panel" class="panel-section active-panel">
+        <h3>Objave sa Facebook stranice</h3>
+        <button class="btn btn-fb" onclick="fetchFacebookPosts()">Učitaj Objave</button>
+        <div id="posts-container" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- PANEL 2: Kreiranje nove objave -->
+    <div id="create-panel" class="panel-section">
+        <h3>Kreiraj novu objavu</h3>
+        <textarea id="post-message" rows="4" placeholder="Unesi tekst nove objave..."></textarea>
         <button class="btn btn-fb" onclick="createFacebookPost()">Objavi na Facebook</button>
         <div id="create-status" style="margin-top: 10px; font-weight: bold;"></div>
     </div>
 
-    <!-- Sekcija za slanje poruke -->
-    <div class="section-card">
-        <h3>Pošalji poruku preko Messengera</h3>
-        <input type="text" id="recipient-id" placeholder="ID korisnika (Recipient PSID)">
-        <textarea id="message-text" placeholder="Unesi tekst poruke..."></textarea>
+    <!-- PANEL 3: Poruke i Messenger -->
+    <div id="messages-panel" class="panel-section">
+        <h3>Messenger Poruke</h3>
+        <button class="btn btn-fb" onclick="fetchConversations()">Učitaj razgovore / poruke</button>
+        <div id="conversations-container" style="margin-top: 15px;"></div>
+        
+        <hr style="margin: 20px 0;">
+        
+        <h3>Pošalji odgovor korisniku</h3>
+        <input type="text" id="recipient-id" placeholder="Unesi ID korisnika">
+        <textarea id="message-text" rows="3" placeholder="Unesi tekst poruke..."></textarea>
         <button class="btn btn-fb" onclick="sendMessengerMessage()">Pošalji Poruku</button>
         <div id="msg-status" style="margin-top: 10px; font-weight: bold;"></div>
-    </div>
-
-    <div id="posts-container" style="margin-top: 20px;">
-        <!-- Ovdje se prikazuju objave -->
     </div>
 </div>
 
 <script>
     const PAGE_ID = "1232440846614790";
-    // Ovdje ubaci svoj privremeni token za testiranje, ili povlači preko baze
     const PAGE_ACCESS_TOKEN = "TVOJ_PAGE_ACCESS_TOKEN_OVDJE"; 
 
-    // Funkcija za učitavanje objava
-    function fetchFacebookPosts() {
-        const postsContainer = document.getElementById('posts-container');
-        postsContainer.innerHTML = "<p style='text-align:center;'>Učitavanje objava...</p>";
+    // Funkcija za promjenu veličine slova
+    let currentFontSize = 16;
+    function changeFontSize(direction) {
+        currentFontSize += direction * 2;
+        if (currentFontSize < 12) currentFontSize = 12;
+        if (currentFontSize > 28) currentFontSize = 28;
+        document.body.style.fontSize = currentFontSize + 'px';
+    }
 
+    function showPanel(panelId) {
+        document.querySelectorAll('.panel-section').forEach(section => {
+            section.classList.remove('active-panel');
+        });
+        document.getElementById(panelId).classList.add('active-panel');
+    }
+
+    function fetchFacebookPosts() {
+        const container = document.getElementById('posts-container');
+        container.innerHTML = "<p>Učitavanje objava...</p>";
         const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/posts?access_token=${PAGE_ACCESS_TOKEN}`;
 
         fetch(url)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                postsContainer.innerHTML = "<h3>Postojeće objave:</h3>";
+                container.innerHTML = "";
                 if (data.data && data.data.length > 0) {
                     data.data.forEach(post => {
-                        const postDiv = document.createElement('div');
-                        postDiv.className = 'post-card';
-                        postDiv.innerHTML = `
-                            <p><strong>Objava:</strong> ${post.message || '(Nema tekstualnog sadržaja)'}</p>
-                            <small style="color: #666;">ID objave: ${post.id}</small>
-                        `;
-                        postsContainer.appendChild(postDiv);
+                        container.innerHTML += `
+                            <div class="post-card">
+                                <p>${post.message || '(Nema teksta)'}</p>
+                                <small style="color: #666;">ID: ${post.id}</small>
+                            </div>`;
                     });
                 } else {
-                    postsContainer.innerHTML += "<p style='text-align:center;'>Nema pronađenih objava.</p>";
+                    container.innerHTML = "<p>Nema pronađenih objava.</p>";
                 }
             })
-            .catch(error => {
-                console.error('Greška:', error);
-                postsContainer.innerHTML = "<p style='text-align:center; color:red;'>Greška pri učitavanju objava.</p>";
-            });
+            .catch(() => container.innerHTML = "<p style='color:red;'>Greška pri učitavanju.</p>");
     }
 
-    // Funkcija za slanje nove objave na Facebook stranicu
     function createFacebookPost() {
         const message = document.getElementById('post-message').value;
-        const statusDiv = document.getElementById('create-status');
+        const status = document.getElementById('create-status');
+        if (!message) { status.innerHTML = "Unesi tekst!"; status.style.color = "red"; return; }
 
-        if (!message) {
-            statusDiv.innerHTML = "Unesi tekst objave!";
-            statusDiv.style.color = "red";
-            return;
-        }
-
-        statusDiv.innerHTML = "Objavljivanje...";
-        statusDiv.style.color = "#333";
-
-        const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/feed`;
-
-        fetch(url, {
+        status.innerHTML = "Objavljivanje...";
+        fetch(`https://graph.facebook.com/v18.0/${PAGE_ID}/feed`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: message,
-                access_token: PAGE_ACCESS_TOKEN
-            })
+            body: JSON.stringify({ message: message, access_token: PAGE_ACCESS_TOKEN })
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
             if (data.id) {
-                statusDiv.innerHTML = "Uspješno objavljeno!";
-                statusDiv.style.color = "green";
+                status.innerHTML = "Uspješno objavljeno!"; status.style.color = "green";
                 document.getElementById('post-message').value = "";
-                fetchFacebookPosts();
             } else {
-                statusDiv.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznata greška");
-                statusDiv.style.color = "red";
+                status.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznato");
+                status.style.color = "red";
             }
-        })
-        .catch(err => {
-            statusDiv.innerHTML = "Došlo je do greške pri slanju.";
-            statusDiv.style.color = "red";
         });
     }
 
-    // Funkcija za slanje poruke preko Messengera
+    function fetchConversations() {
+        const container = document.getElementById('conversations-container');
+        container.innerHTML = "<p>Učitavanje razgovora...</p>";
+        const url = `https://graph.facebook.com/v18.0/${PAGE_ID}/conversations?access_token=${PAGE_ACCESS_TOKEN}`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = "";
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(conv => {
+                        container.innerHTML += `
+                            <div class="msg-card">
+                                <p><strong>ID razgovora:</strong> ${conv.id}</p>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.9em;" onclick="selectRecipient('${conv.id}')">Izaberi za odgovor</button>
+                            </div>`;
+                    });
+                } else {
+                    container.innerHTML = "<p>Nema aktivnih razgovora.</p>";
+                }
+            })
+            .catch(() => container.innerHTML = "<p style='color:red;'>Greška pri učitavanju poruka.</p>");
+    }
+
+    function selectRecipient(id) {
+        document.getElementById('recipient-id').value = id;
+        const messageBox = document.getElementById('message-text');
+        messageBox.focus();
+    }
+
     function sendMessengerMessage() {
         const recipientId = document.getElementById('recipient-id').value;
-        const messageText = document.getElementById('message-text').value;
-        const msgStatus = document.getElementById('msg-status');
+        const text = document.getElementById('message-text').value;
+        const status = document.getElementById('msg-status');
 
-        if (!recipientId || !messageText) {
-            msgStatus.innerHTML = "Unesi ID primaoca i tekst poruke!";
-            msgStatus.style.color = "red";
-            return;
+        if (!recipientId || !text) {
+            status.innerHTML = "Unesi ID i tekst poruke!"; status.style.color = "red"; return;
         }
 
-        msgStatus.innerHTML = "Slanje poruke...";
-        msgStatus.style.color = "#333";
-
-        const url = `https://graph.facebook.com/v18.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`;
-
-        fetch(url, {
+        status.innerHTML = "Slanje...";
+        fetch(`https://graph.facebook.com/v18.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 recipient: { id: recipientId },
-                message: { text: messageText }
+                message: { text: text }
             })
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
             if (data.message_id) {
-                msgStatus.innerHTML = "Poruka uspješno poslata!";
-                msgStatus.style.color = "green";
+                status.innerHTML = "Poruka uspješno poslata!"; status.style.color = "green";
                 document.getElementById('message-text').value = "";
             } else {
-                msgStatus.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznata greška");
-                msgStatus.style.color = "red";
+                status.innerHTML = "Greška: " + (data.error ? data.error.message : "Nepoznato");
+                status.style.color = "red";
             }
-        })
-        .catch(err => {
-            msgStatus.innerHTML = "Došlo je do greške pri slanju poruke.";
-            msgStatus.style.color = "red";
         });
     }
 </script>
