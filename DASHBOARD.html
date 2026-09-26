@@ -5,90 +5,1037 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | DocBizHub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f4f4f9;color:#2b2d42;display:flex;flex-direction:column;min-height:100vh}
-    header{background-color:#2b2d42;color:#fff;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.15);flex-wrap:wrap;gap:10px}
-    .logo{font-size:1.4rem;font-weight:bold;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
-    .nav-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .lang-wrapper{display:flex;align-items:center;gap:6px;background:#fff;padding:4px 10px;border-radius:20px;border:2px solid #3742fa}
-    #google_translate_element select{padding:4px 8px;border:none;background:transparent;font-weight:bold;font-size:0.85rem;color:#2b2d42;outline:none;cursor:pointer}
-    .btn-nav{background:#3742fa;color:#fff;text-decoration:none;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:0.9rem;border:none;cursor:pointer;transition:background 0.2s}
-    .btn-nav:hover{background:#2f3542}
-    .btn-logout{background:#6c757d}
-    .btn-logout:hover{background:#495057}
-    .main-container{flex:1;padding:30px 20px;max-width:1000px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:25px}
-    .welcome-card{background:#fff;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(55,66,250,0.08);border-left:6px solid #3742fa;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
-    .welcome-text h1{color:#1e1f29;font-size:1.8rem;margin-bottom:5px}
-    .welcome-text p{color:#666;font-size:1rem}
-    .user-badge{background:#e0e0ff;color:#3742fa;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:0.9rem}
-    .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-    .dash-tile{background:#fff;padding:25px;border-radius:16px;text-decoration:none;color:#2b2d42;box-shadow:0 5px 15px rgba(0,0,0,0.05);display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;transition:transform 0.2s,box-shadow 0.2s;border:1px solid #f0f0f0;cursor:pointer}
-    .dash-tile:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(55,66,250,0.15);border-color:#b8bfff}
-    .dash-tile .icon{font-size:2.5rem}
-    .dash-tile h3{color:#1e1f29;font-size:1.2rem}
-    .dash-tile p{font-size:0.85rem;color:#777}
-    .admin-only{display:none}
-    
-    /* Stil za gumbe unutar Mail kartice */
-    .mail-actions {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      margin-top: 5px;
-    }
-    .mail-btn {
-      flex: 1;
-      padding: 6px 10px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-      text-align: center;
-      transition: opacity 0.2s;
-    }
-    .mail-btn.gen { background: #3742fa; color: #fff; }
-    .mail-btn.inbox { background: #2ed573; color: #fff; }
-    .mail-btn:hover { opacity: 0.9; }
-
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
-    .modal-overlay.active{display:flex}
-    .modal-content{background:#fff;width:100%;max-width:700px;padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.2);display:flex;flex-direction:column;gap:20px}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #f1f5f9;padding-bottom:15px}
-    .modal-header h2{color:#1e1f29;font-size:1.5rem}
-    .btn-close-modal{background:#ef4444;color:#fff;border:none;width:35px;height:35px;border-radius:50%;font-size:1.1rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
-    .modal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
-
-    /* ADMIN NOTIFIKACIJA OVERLAY */
-    #adminNotificationOverlay{display:none;position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.92);z-index:999999;align-items:center;justify-content:center;padding:30px}
-    #adminNotificationOverlay.active{display:flex}
-    #adminNotificationBox{width:min(900px,95vw);max-height:90vh;overflow-y:auto;background:#fff;border-radius:25px;padding:40px;text-align:center;box-shadow:0 0 60px rgba(255,255,255,.25);border-top:10px solid #d90429;animation:adminNotificationPulse 1s ease-in-out infinite alternate}
-    @keyframes adminNotificationPulse{from{transform:scale(1)}to{transform:scale(1.015)}}
-    #adminNotificationBox h1{color:#d90429;font-size:clamp(2rem,5vw,4rem);margin-bottom:15px}
-    .admin-notification-type{font-size:1.5rem;font-weight:bold;color:#2b2d42;margin-bottom:25px}
-    .admin-notification-data{background:#f4f4f9;border-radius:15px;padding:20px;text-align:left;margin-bottom:25px}
-    .admin-notification-row{padding:12px 5px;border-bottom:1px solid #ddd;font-size:1.1rem;word-break:break-word}
-    .admin-notification-row:last-child{border-bottom:none}
-    .admin-notification-label{font-weight:bold;color:#2b2d42;margin-right:8px}
-    #adminNotificationConfirm{background:#d90429;color:#fff;border:none;border-radius:12px;padding:16px 45px;font-size:1.2rem;font-weight:bold;cursor:pointer;transition:background .2s,transform .2s}
-    #adminNotificationConfirm:hover{background:#b50322;transform:scale(1.03)}
-
-    /* TOAST OBAVJEŠTENJE ZA FORUM */
-    #forumToast{display:none;position:fixed;bottom:20px;right:20px;background:#2b2d42;color:#fff;padding:15px 20px;border-radius:12px;z-index:99999;box-shadow:0 5px 20px rgba(0,0,0,0.2);border-left:5px solid #3742fa;max-width:320px;flex-direction:column;gap:4px}
-
-    /* YOUTUBE SEKCIJA */
-    .video-section{background:#fff;padding:25px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.05);border:1px solid #f0f0f0;display:flex;flex-direction:column;gap:15px}
-    .video-container{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;background:#000}
-    .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-
-    footer{background-color:#2b2d42;color:#fff;text-align:center;padding:20px 0;margin-top:auto}
-  </style>
+ 
 </head>
 <body>
 
   <!-- ADMIN NOTIFIKACIJA OVERLAY -->
-  <div id="adminNotificationOverlay">
-    <div id="adminNotificationBox">
+<style>
+/* =========================================================
+   DOCBIZHUB — MODERN DASHBOARD UI
+   Postojeći HTML + JavaScript ostaju kompatibilni
+   ========================================================= */
+
+:root{
+  --bg:#f6f8fc;
+  --surface:#ffffff;
+  --surface-soft:#f8fafc;
+  --text:#0f172a;
+  --muted:#64748b;
+  --line:#e5e7eb;
+
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#eff6ff;
+
+  --success:#16a34a;
+  --danger:#dc2626;
+
+  --sidebar:#0f172a;
+  --sidebar-soft:#172033;
+
+  --shadow:0 10px 30px rgba(15,23,42,.06);
+  --shadow-hover:0 18px 45px rgba(37,99,235,.12);
+
+  --radius:18px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:
+    Inter,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  background:var(--bg);
+  color:var(--text);
+
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+
+  color:var(--text);
+
+  min-height:72px;
+
+  padding:12px 4%;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  border-bottom:1px solid var(--line);
+
+  box-shadow:
+    0 4px 20px rgba(15,23,42,.04);
+
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+/* LOGO */
+
+.logo{
+  font-size:1.25rem;
+  font-weight:850;
+
+  color:var(--text);
+  text-decoration:none;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  letter-spacing:-.5px;
+}
+
+.logo::first-letter{
+  color:var(--primary);
+}
+
+/* =========================================================
+   NAV ACTIONS
+   ========================================================= */
+
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+}
+
+/* LANGUAGE */
+
+.lang-wrapper{
+  display:flex;
+  align-items:center;
+  gap:5px;
+
+  background:#fff;
+
+  padding:5px 9px;
+
+  border-radius:10px;
+
+  border:1px solid var(--line);
+
+  box-shadow:0 2px 8px rgba(15,23,42,.03);
+}
+
+#google_translate_element select{
+  padding:3px 5px;
+
+  border:none;
+
+  background:transparent;
+
+  font-weight:700;
+  font-size:.78rem;
+
+  color:var(--text);
+
+  outline:none;
+
+  cursor:pointer;
+}
+
+/* NAV BUTTON */
+
+.btn-nav{
+  background:#fff;
+
+  color:#334155;
+
+  text-decoration:none;
+
+  padding:9px 14px;
+
+  border-radius:10px;
+
+  font-weight:750;
+  font-size:.82rem;
+
+  border:1px solid var(--line);
+
+  cursor:pointer;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.btn-nav:hover{
+  background:#f8fafc;
+  border-color:#cbd5e1;
+  transform:translateY(-1px);
+}
+
+/* LOGOUT */
+
+.btn-logout{
+  background:#fff1f2;
+  color:#be123c;
+  border-color:#ffe4e6;
+}
+
+.btn-logout:hover{
+  background:#ffe4e6;
+  border-color:#fecdd3;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.main-container{
+  flex:1;
+
+  padding:32px 22px 45px;
+
+  max-width:1180px;
+
+  margin:0 auto;
+
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:24px;
+}
+
+/* =========================================================
+   WELCOME
+   ========================================================= */
+
+.welcome-card{
+  position:relative;
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f8fbff 100%
+    );
+
+  padding:32px;
+
+  border-radius:22px;
+
+  border:1px solid var(--line);
+
+  box-shadow:var(--shadow);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  flex-wrap:wrap;
+
+  gap:20px;
+}
+
+.welcome-card::after{
+  content:"";
+
+  position:absolute;
+
+  width:280px;
+  height:280px;
+
+  border-radius:50%;
+
+  background:rgba(37,99,235,.07);
+
+  right:-120px;
+  top:-170px;
+}
+
+.welcome-text{
+  position:relative;
+  z-index:2;
+}
+
+.welcome-text h1{
+  color:var(--text);
+
+  font-size:clamp(1.55rem,3vw,2rem);
+
+  line-height:1.15;
+
+  letter-spacing:-1px;
+
+  margin-bottom:8px;
+}
+
+.welcome-text p{
+  color:var(--muted);
+
+  font-size:.92rem;
+
+  max-width:650px;
+}
+
+.user-badge{
+  position:relative;
+  z-index:2;
+
+  background:var(--primary-soft);
+
+  color:var(--primary);
+
+  padding:9px 14px;
+
+  border-radius:999px;
+
+  font-weight:750;
+
+  font-size:.78rem;
+
+  border:1px solid #dbeafe;
+}
+
+/* =========================================================
+   DASHBOARD GRID
+   ========================================================= */
+
+.dashboard-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+
+  gap:16px;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.dash-tile{
+  position:relative;
+
+  background:var(--surface);
+
+  padding:23px;
+
+  min-height:185px;
+
+  border-radius:var(--radius);
+
+  text-decoration:none;
+
+  color:var(--text);
+
+  border:1px solid var(--line);
+
+  box-shadow:
+    0 6px 20px rgba(15,23,42,.035);
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:flex-start;
+
+  text-align:left;
+
+  gap:10px;
+
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    border-color .22s ease;
+
+  cursor:pointer;
+}
+
+.dash-tile:hover{
+  transform:translateY(-5px);
+
+  box-shadow:var(--shadow-hover);
+
+  border-color:#bfdbfe;
+}
+
+/* CARD ICON */
+
+.dash-tile .icon{
+  width:45px;
+  height:45px;
+
+  border-radius:13px;
+
+  background:#f1f5f9;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:20px;
+
+  margin-bottom:4px;
+
+  transition:.2s ease;
+}
+
+.dash-tile:hover .icon{
+  background:var(--primary-soft);
+
+  transform:scale(1.05);
+}
+
+/* CARD TITLE */
+
+.dash-tile h3{
+  color:var(--text);
+
+  font-size:1rem;
+
+  font-weight:800;
+
+  letter-spacing:-.2px;
+}
+
+/* CARD DESCRIPTION */
+
+.dash-tile p{
+  font-size:.76rem;
+
+  line-height:1.55;
+
+  color:var(--muted);
+
+  max-width:260px;
+}
+
+/* =========================================================
+   SPECIAL FEATURE CARDS
+   ========================================================= */
+
+.dash-tile:nth-child(2),
+.dash-tile:nth-child(8){
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f5f9ff
+    );
+
+  border-color:#bfdbfe;
+}
+
+.dash-tile:nth-child(2) .icon,
+.dash-tile:nth-child(8) .icon{
+  background:#dbeafe;
+}
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
+
+.admin-only{
+  display:none;
+}
+
+/* =========================================================
+   MAIL
+   ========================================================= */
+
+.mail-actions{
+  display:flex;
+
+  gap:7px;
+
+  width:100%;
+
+  margin-top:auto;
+  padding-top:8px;
+}
+
+.mail-btn{
+  flex:1;
+
+  padding:8px 9px;
+
+  font-size:.68rem;
+
+  font-weight:800;
+
+  border-radius:9px;
+
+  text-decoration:none;
+
+  text-align:center;
+
+  transition:
+    opacity .2s,
+    transform .2s;
+}
+
+.mail-btn.gen{
+  background:var(--primary);
+
+  color:#fff;
+}
+
+.mail-btn.inbox{
+  background:#dcfce7;
+
+  color:#15803d;
+}
+
+.mail-btn:hover{
+  opacity:.85;
+
+  transform:translateY(-1px);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-overlay{
+  display:none;
+
+  position:fixed;
+
+  inset:0;
+
+  background:rgba(15,23,42,.65);
+
+  backdrop-filter:blur(6px);
+
+  z-index:1000;
+
+  justify-content:center;
+
+  align-items:center;
+
+  padding:20px;
+}
+
+.modal-overlay.active{
+  display:flex;
+}
+
+.modal-content{
+  background:#fff;
+
+  width:100%;
+
+  max-width:720px;
+
+  padding:28px;
+
+  border-radius:22px;
+
+  border:1px solid var(--line);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.2);
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:20px;
+}
+
+.modal-header{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  border-bottom:1px solid var(--line);
+
+  padding-bottom:16px;
+}
+
+.modal-header h2{
+  color:var(--text);
+
+  font-size:1.25rem;
+
+  letter-spacing:-.4px;
+}
+
+.btn-close-modal{
+  background:#f1f5f9;
+
+  color:#475569;
+
+  border:none;
+
+  width:36px;
+  height:36px;
+
+  border-radius:10px;
+
+  font-size:1rem;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  transition:.2s;
+}
+
+.btn-close-modal:hover{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.modal-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap:14px;
+}
+
+/* =========================================================
+   ADMIN NOTIFICATION
+   ========================================================= */
+
+#adminNotificationOverlay{
+  display:none;
+
+  position:fixed;
+
+  inset:0;
+
+  width:100vw;
+  height:100vh;
+
+  background:rgba(2,6,23,.82);
+
+  backdrop-filter:blur(7px);
+
+  z-index:999999;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+}
+
+#adminNotificationOverlay.active{
+  display:flex;
+}
+
+#adminNotificationBox{
+  width:min(700px,95vw);
+
+  max-height:90vh;
+
+  overflow-y:auto;
+
+  background:#fff;
+
+  border-radius:22px;
+
+  padding:30px;
+
+  text-align:center;
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.35);
+
+  border-top:5px solid var(--danger);
+
+  animation:none;
+}
+
+@keyframes adminNotificationPulse{
+  from{
+    transform:scale(1);
+  }
+
+  to{
+    transform:scale(1.01);
+  }
+}
+
+#adminNotificationBox h1{
+  color:#b91c1c;
+
+  font-size:clamp(1.7rem,5vw,2.8rem);
+
+  margin-bottom:10px;
+}
+
+.admin-notification-type{
+  font-size:1rem;
+
+  font-weight:800;
+
+  color:#475569;
+
+  margin-bottom:20px;
+}
+
+.admin-notification-data{
+  background:#f8fafc;
+
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  padding:12px 18px;
+
+  text-align:left;
+
+  margin-bottom:20px;
+}
+
+.admin-notification-row{
+  padding:11px 4px;
+
+  border-bottom:1px solid var(--line);
+
+  font-size:.9rem;
+
+  word-break:break-word;
+}
+
+.admin-notification-row:last-child{
+  border-bottom:none;
+}
+
+.admin-notification-label{
+  font-weight:800;
+
+  color:var(--text);
+
+  margin-right:8px;
+}
+
+#adminNotificationConfirm{
+  background:#dc2626;
+
+  color:#fff;
+
+  border:none;
+
+  border-radius:10px;
+
+  padding:12px 22px;
+
+  font-size:.82rem;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+#adminNotificationConfirm:hover{
+  background:#b91c1c;
+
+  transform:translateY(-1px);
+}
+
+/* =========================================================
+   FORUM TOAST
+   ========================================================= */
+
+#forumToast{
+  display:none;
+
+  position:fixed;
+
+  bottom:20px;
+
+  right:20px;
+
+  background:#0f172a;
+
+  color:#fff;
+
+  padding:15px 18px;
+
+  border-radius:13px;
+
+  z-index:99999;
+
+  box-shadow:
+    0 15px 35px rgba(0,0,0,.2);
+
+  border-left:4px solid var(--primary);
+
+  max-width:320px;
+
+  flex-direction:column;
+
+  gap:4px;
+}
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+.video-section{
+  background:#fff;
+
+  padding:25px;
+
+  border-radius:20px;
+
+  border:1px solid var(--line);
+
+  box-shadow:var(--shadow);
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:12px;
+}
+
+.video-section h2{
+  color:var(--text)!important;
+
+  font-size:1.15rem!important;
+}
+
+.video-section p{
+  color:var(--muted)!important;
+
+  font-size:.82rem!important;
+}
+
+.video-container{
+  position:relative;
+
+  width:100%;
+
+  padding-bottom:50%;
+
+  height:0;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+  background:#0f172a;
+}
+
+.video-container iframe{
+  position:absolute;
+
+  top:0;
+  left:0;
+
+  width:100%;
+  height:100%;
+
+  border:0;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+  background:#0f172a;
+
+  color:#94a3b8;
+
+  text-align:center;
+
+  padding:22px 15px;
+
+  margin-top:auto;
+
+  font-size:.75rem;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:1050px){
+
+  .main-container{
+    max-width:950px;
+  }
+
+  .dashboard-grid{
+    grid-template-columns:
+      repeat(3,minmax(0,1fr));
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:760px){
+
+  header{
+    padding:12px 16px;
+  }
+
+  .logo{
+    font-size:1.05rem;
+  }
+
+  .nav-actions{
+    gap:6px;
+  }
+
+  .btn-nav{
+    padding:8px 10px;
+
+    font-size:.72rem;
+  }
+
+  .lang-wrapper{
+    display:none;
+  }
+
+  .main-container{
+    padding:20px 14px 35px;
+
+    gap:18px;
+  }
+
+  .welcome-card{
+    padding:23px;
+
+    border-radius:18px;
+  }
+
+  .welcome-text h1{
+    font-size:1.45rem;
+  }
+
+  .welcome-text p{
+    font-size:.82rem;
+  }
+
+  .dashboard-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+    gap:12px;
+  }
+
+  .dash-tile{
+    padding:18px;
+
+    min-height:175px;
+
+    border-radius:15px;
+  }
+
+  .dash-tile h3{
+    font-size:.9rem;
+  }
+
+  .dash-tile p{
+    font-size:.7rem;
+  }
+
+  .dash-tile .icon{
+    width:40px;
+    height:40px;
+
+    font-size:18px;
+  }
+
+  .modal-grid{
+    grid-template-columns:1fr;
+  }
+
+  .video-container{
+    padding-bottom:56.25%;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media(max-width:480px){
+
+  header{
+    align-items:flex-start;
+  }
+
+  .nav-actions{
+    width:100%;
+
+    justify-content:flex-end;
+  }
+
+  .btn-nav{
+    font-size:.68rem;
+  }
+
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
+
+  .dash-tile{
+    min-height:145px;
+  }
+
+  .welcome-card{
+    align-items:flex-start;
+  }
+
+  .user-badge{
+    font-size:.7rem;
+  }
+
+  .video-section{
+    padding:17px;
+  }
+
+  #adminNotificationBox{
+    padding:22px;
+  }
+}
+</style>    <div id="adminNotificationBox">
       <h1>🚨 NOVA NOTIFIKACIJA 🚨</h1>
       <div class="admin-notification-type" id="adminNotificationType">NOVI UNOS</div>
       <div class="admin-notification-data">
