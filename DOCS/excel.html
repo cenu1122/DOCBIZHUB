@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Excel - DocBizHub</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1e293b;
+}
+
+header {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    color: white;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.back-btn {
+    color: white;
+    text-decoration: none;
+    background: rgba(255,255,255,0.12);
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.back-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.hero {
+    text-align: center;
+    padding: 50px 20px 30px;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #64748b;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1150px;
+    margin: auto;
+    padding: 20px;
+}
+
+.search-box {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    margin-bottom: 30px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.category-buttons button {
+    border: none;
+    background: #e2e8f0;
+    color: #334155;
+    padding: 9px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.category-buttons button:hover,
+.category-buttons button.active {
+    background: #2563eb;
+    color: white;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.tool-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    transition: 0.2s;
+}
+
+.tool-card:hover {
+    transform: translateY(-4px);
+}
+
+.icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.tool-card h3 {
+    margin: 0 0 10px;
+}
+
+.tool-card p {
+    color: #64748b;
+    line-height: 1.6;
+    min-height: 70px;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 11px 17px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+}
+
+.info-box {
+    margin-top: 35px;
+    background: #eff6ff;
+    border-left: 5px solid #2563eb;
+    padding: 20px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    background: white;
+    text-align: center;
+    padding: 40px;
+    border-radius: 15px;
+    color: #64748b;
+}
+
+footer {
+    margin-top: 60px;
+    background: #0f172a;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 25px;
+}
+
+@media (max-width: 900px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 15px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">📊 DocBizHub</div>
+
+    <a href="../DASHBOARD.html" class="back-btn">
+        ← Nazad na Dashboard
+    </a>
+
+</header>
+
+<section class="hero">
+
+    <h1>📊 Excel Alati</h1>
+
+    <p>
+        Praktični Excel alati i poslovni kalkulatori za finansije,
+        planiranje, prodaju i svakodnevno poslovanje.
+    </p>
+
+</section>
+
+<div class="container">
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="🔎 Pretraži Excel alate..."
+        >
+
+        <div class="category-buttons">
+
+            <button class="active" onclick="filterCategory('Sve', this)">
+                Sve
+            </button>
+
+            <button onclick="filterCategory('Finansije', this)">
+                💰 Finansije
+            </button>
+
+            <button onclick="filterCategory('Prodaja', this)">
+                🛒 Prodaja
+            </button>
+
+            <button onclick="filterCategory('Planiranje', this)">
+                📅 Planiranje
+            </button>
+
+            <button onclick="filterCategory('Zaposleni', this)">
+                👥 Zaposleni
+            </button>
+
+            <button onclick="filterCategory('Analiza', this)">
+                📈 Analiza
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="tools-grid" id="toolsGrid">
+
+        <div class="tool-card" data-category="Finansije">
+
+            <div class="icon">💰</div>
+
+            <h3>Budžet</h3>
+
+            <p>
+                Jednostavan pregled prihoda, rashoda i ukupnog budžeta.
+            </p>
+
+            <button class="btn" onclick="showMessage('Budžet')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Finansije">
+
+            <div class="icon">📊</div>
+
+            <h3>Cash Flow</h3>
+
+            <p>
+                Praćenje novčanih priliva i odliva kroz poslovanje.
+            </p>
+
+            <button class="btn" onclick="showMessage('Cash Flow')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Prodaja">
+
+            <div class="icon">🛒</div>
+
+            <h3>Praćenje prodaje</h3>
+
+            <p>
+                Evidencija prodaje po proizvodima, kupcima i periodima.
+            </p>
+
+            <button class="btn" onclick="showMessage('Praćenje prodaje')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Planiranje">
+
+            <div class="icon">📅</div>
+
+            <h3>Godišnji plan</h3>
+
+            <p>
+                Organizujte ciljeve, aktivnosti i planove poslovanja.
+            </p>
+
+            <button class="btn" onclick="showMessage('Godišnji plan')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Zaposleni">
+
+            <div class="icon">👥</div>
+
+            <h3>Trošak zaposlenih</h3>
+
+            <p>
+                Pregled troškova zaposlenih i ukupnog troška rada.
+            </p>
+
+            <button class="btn" onclick="showMessage('Trošak zaposlenih')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Analiza">
+
+            <div class="icon">📈</div>
+
+            <h3>Analiza profita</h3>
+
+            <p>
+                Analizirajte prihode, troškove, maržu i profit.
+            </p>
+
+            <button class="btn" onclick="showMessage('Analiza profita')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Finansije">
+
+            <div class="icon">🧾</div>
+
+            <h3>Troškovi poslovanja</h3>
+
+            <p>
+                Evidencija fiksnih i varijabilnih troškova.
+            </p>
+
+            <button class="btn" onclick="showMessage('Troškovi poslovanja')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Analiza">
+
+            <div class="icon">📋</div>
+
+            <h3>Inventar</h3>
+
+            <p>
+                Jednostavan pregled proizvoda, količina i vrijednosti zaliha.
+            </p>
+
+            <button class="btn" onclick="showMessage('Inventar')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Planiranje">
+
+            <div class="icon">🎯</div>
+
+            <h3>Praćenje ciljeva</h3>
+
+            <p>
+                Postavite poslovne ciljeve i pratite njihov napredak.
+            </p>
+
+            <button class="btn" onclick="showMessage('Praćenje ciljeva')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Prodaja">
+
+            <div class="icon">👤</div>
+
+            <h3>CRM tabela</h3>
+
+            <p>
+                Evidencija klijenata, kontakata i statusa prodajnih prilika.
+            </p>
+
+            <button class="btn" onclick="showMessage('CRM tabela')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Analiza">
+
+            <div class="icon">📉</div>
+
+            <h3>Mjesečni izvještaj</h3>
+
+            <p>
+                Brzi pregled ključnih poslovnih pokazatelja po mjesecima.
+            </p>
+
+            <button class="btn" onclick="showMessage('Mjesečni izvještaj')">
+                Otvori
+            </button>
+
+        </div>
+
+
+        <div class="tool-card" data-category="Finansije">
+
+            <div class="icon">🧮</div>
+
+            <h3>Kalkulator marže</h3>
+
+            <p>
+                Izračunajte prodajnu cijenu, trošak i profitnu maržu.
+            </p>
+
+            <button class="btn" onclick="showMessage('Kalkulator marže')">
+                Otvori
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>💡 Napomena</strong>
+
+        <p>
+            Ova stranica je pripremljena kao centralno mjesto za Excel
+            poslovne alate. Pojedinačni alati mogu se kasnije povezati
+            sa stvarnim Excel fajlovima, automatskim kalkulatorima ili
+            bazom podataka.
+        </p>
+
+    </div>
+
+</div>
+
+
+<footer>
+    © 2026 DocBizHub — Poslovanje na jednom mjestu
+</footer>
+
+
+<script>
+
+let currentCategory = "Sve";
+
+const searchInput = document.getElementById("search");
+const cards = document.querySelectorAll(".tool-card");
+const grid = document.getElementById("toolsGrid");
+
+
+function filterCategory(category, button) {
+
+    currentCategory = category;
+
+    document
+        .querySelectorAll(".category-buttons button")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    filterTools();
+}
+
+
+function filterTools() {
+
+    const searchText =
+        searchInput.value.toLowerCase().trim();
+
+    let visible = 0;
+
+    cards.forEach(card => {
+
+        const category =
+            card.dataset.category;
+
+        const text =
+            card.innerText.toLowerCase();
+
+        const categoryMatch =
+            currentCategory === "Sve" ||
+            category === currentCategory;
+
+        const searchMatch =
+            text.includes(searchText);
+
+        if (categoryMatch && searchMatch) {
+
+            card.style.display = "block";
+            visible++;
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    let noResults =
+        document.getElementById("noResults");
+
+
+    if (visible === 0) {
+
+        if (!noResults) {
+
+            noResults =
+                document.createElement("div");
+
+            noResults.id = "noResults";
+            noResults.className = "no-results";
+
+            noResults.innerHTML = `
+                <h3>🔎 Nema rezultata</h3>
+                <p>
+                    Nije pronađen nijedan Excel alat
+                    koji odgovara vašoj pretrazi.
+                </p>
+            `;
+
+            grid.appendChild(noResults);
+        }
+
+    } else {
+
+        if (noResults) {
+            noResults.remove();
+        }
+
+    }
+
+}
+
+
+function showMessage(tool) {
+
+    alert(
+        "📊 " + tool +
+        "\\n\\n" +
+        "Ovaj alat je pripremljen za povezivanje sa Excel fajlom ili kalkulatorom."
+    );
+
+}
+
+
+searchInput.addEventListener(
+    "input",
+    filterTools
+);
+
+</script>
+
+</body>
+</html>
