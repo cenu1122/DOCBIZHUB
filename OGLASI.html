@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Oglasi | DocBizHub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            color: white;
+            padding: 22px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.12);
+            padding: 10px 16px;
+            border-radius: 10px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.22);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .primary-btn {
+            border: none;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary-btn {
+            border: 1px solid #dbe2ea;
+            cursor: pointer;
+            background: white;
+            color: #334155;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .secondary-btn:hover {
+            background: #f8fafc;
+        }
+
+        .search-box {
+            margin-top: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1px solid #dbe2ea;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #2563eb;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .filter {
+            border: 1px solid #dbe2ea;
+            background: white;
+            color: #475569;
+            padding: 9px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .filter.active,
+        .filter:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+            border: 1px solid #edf1f5;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.55;
+            margin-bottom: 15px;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 9px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .empty {
+            display: none;
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.55);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 600px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.20);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 18px;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">📢 DocBizHub</div>
+
+    <a href="DASHBOARD.html" class="back-btn">
+        ← Nazad na Dashboard
+    </a>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>📢 Oglasi</h1>
+
+        <p>
+            Objavite ponudu, potražite uslugu, pronađite poslovnu
+            priliku ili predstavite svoj proizvod i biznis.
+        </p>
+
+        <div class="top-actions">
+            <button class="primary-btn" onclick="openModal()">
+                ➕ Objavi oglas
+            </button>
+
+            <button class="secondary-btn" onclick="showAll()">
+                🔄 Prikaži sve
+            </button>
+        </div>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="search"
+                placeholder="🔎 Pretraži oglase..."
+                onkeyup="filterAds()"
+            >
+        </div>
+
+    </section>
+
+    <div class="filters">
+        <button class="filter active" onclick="filterCategory('sve', this)">
+            Svi oglasi
+        </button>
+
+        <button class="filter" onclick="filterCategory('usluge', this)">
+            🛠️ Usluge
+        </button>
+
+        <button class="filter" onclick="filterCategory('posao', this)">
+            💼 Posao
+        </button>
+
+        <button class="filter" onclick="filterCategory('proizvodi', this)">
+            📦 Proizvodi
+        </button>
+
+        <button class="filter" onclick="filterCategory('nekretnine', this)">
+            🏢 Nekretnine
+        </button>
+
+        <button class="filter" onclick="filterCategory('ostalo', this)">
+            📌 Ostalo
+        </button>
+    </div>
+
+    <section class="grid" id="adGrid">
+
+        <div class="card" data-category="usluge">
+            <span class="badge">🛠️ USLUGE</span>
+
+            <h2>Izrada web stranica</h2>
+
+            <p>
+                Izrada modernih i responzivnih web stranica
+                za firme, obrte i male biznise.
+            </p>
+
+            <div class="meta">
+                📍 Bosna i Hercegovina
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+        <div class="card" data-category="posao">
+            <span class="badge">💼 POSAO</span>
+
+            <h2>Poslovna saradnja</h2>
+
+            <p>
+                Tražimo zainteresovane osobe za poslovnu
+                saradnju i razvoj novih projekata.
+            </p>
+
+            <div class="meta">
+                📍 Online / BiH
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+        <div class="card" data-category="proizvodi">
+            <span class="badge">📦 PROIZVODI</span>
+
+            <h2>Domaći proizvodi</h2>
+
+            <p>
+                Ponuda domaćih proizvoda i proizvoda
+                malih lokalnih proizvođača.
+            </p>
+
+            <div class="meta">
+                📍 Travnik
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+        <div class="card" data-category="nekretnine">
+            <span class="badge">🏢 NEKRETNINE</span>
+
+            <h2>Poslovni prostor</h2>
+
+            <p>
+                Oglas za poslovni prostor pogodan za kancelariju,
+                trgovinu ili drugu djelatnost.
+            </p>
+
+            <div class="meta">
+                📍 Srednja Bosna
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+        <div class="card" data-category="ostalo">
+            <span class="badge">📌 OSTALO</span>
+
+            <h2>Poslovna oprema</h2>
+
+            <p>
+                Ponuda korištene i nove opreme za poslovanje
+                i kancelarijski rad.
+            </p>
+
+            <div class="meta">
+                📍 BiH
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+        <div class="card" data-category="usluge">
+            <span class="badge">🛠️ USLUGE</span>
+
+            <h2>Računovodstvene usluge</h2>
+
+            <p>
+                Računovodstvo, finansijsko savjetovanje i
+                podrška malim i srednjim preduzećima.
+            </p>
+
+            <div class="meta">
+                📍 BiH / Online
+            </div>
+
+            <a href="#" class="btn">Pogledaj oglas</a>
+        </div>
+
+    </section>
+
+    <div class="empty" id="empty">
+        Nema oglasa koji odgovaraju pretrazi.
+    </div>
+
+</main>
+
+<footer class="footer">
+    © 2026 DocBizHub — Oglasi
+</footer>
+
+<!-- MODAL ZA OBJAVU OGLASA -->
+
+<div class="modal" id="adModal">
+
+    <div class="modal-content">
+
+        <h2>➕ Objavi novi oglas</h2>
+
+        <form onsubmit="submitAd(event)">
+
+            <div class="form-group">
+                <label>Naslov oglasa</label>
+                <input
+                    type="text"
+                    id="adTitle"
+                    required
+                    placeholder="Unesite naslov oglasa"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Kategorija</label>
+
+                <select id="adCategory" required>
+                    <option value="">Odaberite kategoriju</option>
+                    <option value="usluge">Usluge</option>
+                    <option value="posao">Posao</option>
+                    <option value="proizvodi">Proizvodi</option>
+                    <option value="nekretnine">Nekretnine</option>
+                    <option value="ostalo">Ostalo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Lokacija</label>
+
+                <input
+                    type="text"
+                    id="adLocation"
+                    placeholder="Grad / područje"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Opis</label>
+
+                <textarea
+                    id="adDescription"
+                    required
+                    placeholder="Opišite vaš oglas..."
+                ></textarea>
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="submit" class="primary-btn">
+                    Objavi oglas
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal()"
+                >
+                    Otkaži
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function openModal() {
+    document.getElementById("adModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("adModal").style.display = "none";
+}
+
+function submitAd(event) {
+
+    event.preventDefault();
+
+    alert(
+        "Oglas je pripremljen za objavu.\n\n" +
+        "Za stvarno spremanje oglasa potrebno je povezati stranicu sa bazom podataka."
+    );
+
+    closeModal();
+}
+
+function filterAds() {
+
+    const search = document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+    const cards = document.querySelectorAll(".card");
+
+    let found = 0;
+
+    cards.forEach(card => {
+
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(search)) {
+            card.style.display = "";
+            found++;
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+    document.getElementById("empty").style.display =
+        found === 0 ? "block" : "none";
+}
+
+function filterCategory(category, button) {
+
+    document.querySelectorAll(".filter").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const cards = document.querySelectorAll(".card");
+
+    let found = 0;
+
+    cards.forEach(card => {
+
+        if (
+            category === "sve" ||
+            card.dataset.category === category
+        ) {
+            card.style.display = "";
+            found++;
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+    document.getElementById("empty").style.display =
+        found === 0 ? "block" : "none";
+}
+
+function showAll() {
+
+    document.getElementById("search").value = "";
+
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+        card.style.display = "";
+    });
+
+    document.querySelectorAll(".filter").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    document.querySelector(".filter").classList.add("active");
+
+    document.getElementById("empty").style.display = "none";
+}
+
+window.onclick = function(event) {
+
+    const modal = document.getElementById("adModal");
+
+    if (event.target === modal) {
+        closeModal();
+    }
+
+};
+
+</script>
+
+</body>
+</html>
