@@ -17,7 +17,187 @@ header{position:sticky;top:0;z-index:100;background:rgba(11,23,48,.94);backdrop-
 .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 8px 25px rgba(20,39,76,.04)}.step-num{width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:900;margin-bottom:16px}.step h3{font-size:1rem;margin-bottom:7px}.step p{color:var(--muted);font-size:.8rem;line-height:1.6}.audience{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.audience-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}.audience-card strong{display:block;margin:11px 0 6px}.audience-card p{font-size:.78rem;color:var(--muted);line-height:1.55}.audience-icon{font-size:1.5rem}.video-section{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 8px 25px rgba(20,39,76,.04)}.video-heading{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:16px}.video-heading h2{font-size:1.45rem}.video-heading p{font-size:.82rem;color:var(--muted)}.video-container{position:relative;width:100%;padding-bottom:50%;height:0;border-radius:16px;overflow:hidden;background:#0b1730}.video-container iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.final-cta{background:linear-gradient(135deg,#0b1730,#18376f);color:#fff;border-radius:24px;padding:35px;display:flex;justify-content:space-between;align-items:center;gap:20px}.final-cta h2{font-size:1.8rem;letter-spacing:-.7px}.final-cta p{color:#d5def5;font-size:.85rem;margin-top:6px}.final-cta a{background:#fff;color:var(--navy);padding:12px 17px;border-radius:12px;font-weight:900;white-space:nowrap}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,12,26,.72);z-index:1000;justify-content:center;align-items:center;padding:20px}.modal-overlay.active{display:flex}.modal-content{background:#fff;width:100%;max-width:700px;padding:28px;border-radius:22px;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:1px solid var(--line);margin-bottom:16px}.btn-close-modal{background:#f0f2f6;color:var(--ink);border:0;width:35px;height:35px;border-radius:10px;font-weight:900;cursor:pointer}.modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.modal-grid .dash-tile{min-height:150px}
 #adminNotificationOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999999;align-items:center;justify-content:center;padding:20px}#adminNotificationOverlay.active{display:flex}#adminNotificationBox{width:min(900px,95vw);max-height:90vh;overflow:auto;background:#fff;border-radius:24px;padding:35px;text-align:center;border-top:8px solid #d90429}#adminNotificationBox h1{color:#d90429;font-size:clamp(1.7rem,4vw,3rem);margin-bottom:12px}.admin-notification-type{font-size:1.2rem;font-weight:900;margin-bottom:20px}.admin-notification-data{background:#f5f7fb;border-radius:15px;padding:18px;text-align:left;margin-bottom:20px}.admin-notification-row{padding:10px 4px;border-bottom:1px solid #ddd;font-size:.95rem;word-break:break-word}.admin-notification-label{font-weight:900;margin-right:7px}#adminNotificationConfirm{background:#d90429;color:#fff;border:0;border-radius:11px;padding:13px 30px;font-weight:900;cursor:pointer}#forumToast{display:none;position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:14px 18px;border-radius:13px;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,.2);border-left:4px solid var(--blue);max-width:320px;flex-direction:column;gap:4px}footer{background:var(--navy);color:#aebbd7;text-align:center;padding:25px 0;font-size:.78rem}
-@media(max-width:1000px){.hero{grid-template-columns:1fr}.hero-visual{max-width:650px}.dashboard-grid{grid-template-columns:repeat(2,1fr)}.stats,.audience{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){header{padding:11px 4%}.nav-actions{justify-content:center}.nav-actions .btn-nav{font-size:.76rem;padding:8px 10px}.main-container{width:94%;padding-top:20px}.hero{padding:30px 23px;min-height:auto;border-radius:23px}.hero h1{font-size:2.35rem;letter-spacing:-1.4px}.hero-visual{display:none}.stats,.dashboard-grid,.how-grid,.audience{grid-template-columns:1fr}.search-section{padding:23px}.search-box{flex-direction:column}.search-box button{padding:12px}.video-container{padding-bottom:58%}.final-cta{flex-direction:column;align-items:flex-start}.modal-grid{grid-template-columns:1fr}.logo{font-size:1.05rem}}
+/* =========================================================
+   DOCBIZ AI
+   ========================================================= */
+
+#docbiz-ai-open {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+
+    width: 58px;
+    height: 58px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #111827;
+    color: white;
+
+    font-size: 25px;
+    cursor: pointer;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,.20);
+
+    z-index: 9998;
+}
+
+#docbiz-ai {
+    position: fixed;
+
+    right: 25px;
+    bottom: 95px;
+
+    width: 390px;
+    height: 600px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow: 0 15px 50px rgba(0,0,0,.20);
+
+    display: none;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    z-index: 9999;
+}
+
+.docbiz-ai-header {
+    padding: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.docbiz-ai-header strong {
+    display: block;
+    font-size: 17px;
+}
+
+.docbiz-ai-header small {
+    display: block;
+    margin-top: 3px;
+    color: #6b7280;
+}
+
+#docbiz-ai-close {
+    border: none;
+    background: transparent;
+
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#docbiz-ai-messages {
+    flex: 1;
+    overflow-y: auto;
+
+    padding: 18px;
+}
+
+.docbiz-ai-welcome {
+    padding: 16px;
+
+    background: #f3f4f6;
+
+    border-radius: 14px;
+}
+
+.docbiz-ai-actions {
+    display: grid;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.docbiz-ai-actions button {
+    padding: 10px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    background: white;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+.docbiz-ai-message {
+    margin-bottom: 12px;
+    padding: 11px 14px;
+
+    border-radius: 12px;
+
+    line-height: 1.5;
+}
+
+.docbiz-ai-user {
+    background: #111827;
+    color: white;
+    margin-left: 35px;
+}
+
+.docbiz-ai-bot {
+    background: #f3f4f6;
+    margin-right: 35px;
+}
+
+.docbiz-ai-input {
+    display: flex;
+
+    padding: 12px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+#docbiz-ai-input {
+    flex: 1;
+
+    resize: none;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    padding: 10px;
+
+    outline: none;
+}
+
+#docbiz-ai-send {
+    width: 45px;
+    margin-left: 8px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #111827;
+    color: white;
+
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+
+    #docbiz-ai {
+        right: 10px;
+        bottom: 80px;
+
+        width: calc(100% - 20px);
+        height: 70vh;
+    }
+
+    #docbiz-ai-open {
+        right: 15px;
+        bottom: 15px;
+    }
+}@media(max-width:1000px){.hero{grid-template-columns:1fr}.hero-visual{max-width:650px}.dashboard-grid{grid-template-columns:repeat(2,1fr)}.stats,.audience{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){header{padding:11px 4%}.nav-actions{justify-content:center}.nav-actions .btn-nav{font-size:.76rem;padding:8px 10px}.main-container{width:94%;padding-top:20px}.hero{padding:30px 23px;min-height:auto;border-radius:23px}.hero h1{font-size:2.35rem;letter-spacing:-1.4px}.hero-visual{display:none}.stats,.dashboard-grid,.how-grid,.audience{grid-template-columns:1fr}.search-section{padding:23px}.search-box{flex-direction:column}.search-box button{padding:12px}.video-container{padding-bottom:58%}.final-cta{flex-direction:column;align-items:flex-start}.modal-grid{grid-template-columns:1fr}.logo{font-size:1.05rem}}
+
 </style>
 </head>
 <body>
@@ -224,10 +404,13 @@ async function ucitajProfilKorisnika(){
         profile.IME
       ){
 
-        document
-          .getElementById('txtWelcome')
-          .innerText =
-            `Dobrodošli nazad, ${profile.IME}! 👋`;
+      const welcomeElement =
+  document.getElementById('txtSubWelcome');
+
+if (welcomeElement) {
+  welcomeElement.innerText =
+    `Dobrodošli nazad, ${profile.IME}! 👋`;
+}
 
       }
 
@@ -1109,7 +1292,65 @@ document.addEventListener(
   }
 );
 
-</script>
+     </script>
+
+     <!-- DOCBIZ AI -->
+<div id="docbiz-ai">
+    <div class="docbiz-ai-header">
+        <div>
+            <strong>🤖 DocBiz AI</strong>
+            <small>Vaš poslovni AI asistent</small>
+        </div>
+
+        <button id="docbiz-ai-close">×</button>
+    </div>
+
+    <div id="docbiz-ai-messages">
+        <div class="docbiz-ai-welcome">
+            <strong>Zdravo! 👋</strong>
+
+            <p>
+                Šta želite uraditi?
+            </p>
+
+            <div class="docbiz-ai-actions">
+                <button data-ai="Sažmi moje najvažnije poslovne informacije.">
+                    📄 Sažmi
+                </button>
+
+                <button data-ai="Pomozi mi pronaći relevantne poslovne informacije.">
+                    🔎 Pretraži
+                </button>
+
+                <button data-ai="Napiši profesionalni poslovni email.">
+                    ✉️ Napiši email
+                </button>
+
+                <button data-ai="Napravi mi poslovni izvještaj.">
+                    📊 Izvještaj
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="docbiz-ai-input">
+        <textarea
+            id="docbiz-ai-input"
+            placeholder="Napišite pitanje..."
+            rows="1"
+        ></textarea>
+
+        <button id="docbiz-ai-send">
+            ➤
+        </button>
+    </div>
+</div>
+
+<button id="docbiz-ai-open">
+    🤖
+</button>
+
+<script src="js/docbiz-ai.js"></script>
 
 </body>
 </html>
