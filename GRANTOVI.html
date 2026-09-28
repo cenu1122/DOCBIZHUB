@@ -185,6 +185,7 @@
 <main class="container">
 
     <section class="hero">
+
         <h1>💰 Grantovi & Fondovi</h1>
 
         <p>
@@ -193,117 +194,349 @@
         </p>
 
         <div class="search-box">
+
             <input
                 type="text"
                 id="search"
                 placeholder="🔎 Pretraži grantove i fondove..."
                 onkeyup="searchCards()"
             >
-        </div>
-    </section>
 
-    <section class="grid" id="grantGrid">
-
-        <div class="card">
-            <div class="icon">🇪🇺</div>
-            <h2>EU fondovi</h2>
-            <p>
-                Programi Evropske unije namijenjeni podršci
-                preduzećima, inovacijama i razvoju.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
-        </div>
-
-        <div class="card">
-            <div class="icon">🏢</div>
-            <h2>Federalni grantovi</h2>
-            <p>
-                Javni pozivi i programi podrške institucija
-                Federacije Bosne i Hercegovine.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
-        </div>
-
-        <div class="card">
-            <div class="icon">🏛️</div>
-            <h2>Kantonalni grantovi</h2>
-            <p>
-                Programi podrške i javni pozivi dostupni
-                na kantonalnom nivou.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
-        </div>
-
-        <div class="card">
-            <div class="icon">🌱</div>
-            <h2>Poljoprivreda</h2>
-            <p>
-                Poticaji, grantovi i programi podrške za
-                poljoprivrednike i ruralni razvoj.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
-        </div>
-
-        <div class="card">
-            <div class="icon">🚀</div>
-            <h2>Startup programi</h2>
-            <p>
-                Fondovi i programi namijenjeni startupima,
-                inovacijama i novim poslovnim idejama.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
-        </div>
-
-        <div class="card">
-            <div class="icon">💻</div>
-            <h2>Digitalizacija</h2>
-            <p>
-                Programi podrške za digitalnu transformaciju
-                i modernizaciju poslovanja.
-            </p>
-            <a href="#" class="btn">Saznaj više</a>
         </div>
 
     </section>
 
-    <div class="empty" id="empty">
+
+    <section
+        class="grid"
+        id="grantGrid"
+    >
+
+        <div
+            id="LOADING_GRANTOVA"
+            style="
+                grid-column:1 / -1;
+                text-align:center;
+                padding:40px;
+                color:#64748b;
+            "
+        >
+            ⏳ Učitavanje grantova...
+        </div>
+
+    </section>
+
+
+    <div
+        class="empty"
+        id="empty"
+    >
         Nema rezultata za unesenu pretragu.
     </div>
 
 </main>
 
+
 <footer class="footer">
     © 2026 DocBizHub — Grantovi & Fondovi
 </footer>
 
+
 <script>
+
+const SUPABASE_URL =
+    "https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+
+const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ";
+
+async function UCITAJ_GRANTOVE() {
+
+    const GRID =
+        document.getElementById("grantGrid");
+
+
+    try {
+
+        const ODGOVOR = await fetch(
+
+            `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&STATUS=eq.AKTIVAN&order=DATUM_OBJAVE.desc`,
+
+            {
+                headers: {
+
+                    "apikey":
+                        SUPABASE_ANON_KEY,
+
+                    "Authorization":
+                        `Bearer ${SUPABASE_ANON_KEY}`
+
+                }
+            }
+
+        );
+
+
+        if (!ODGOVOR.ok) {
+
+            throw new Error(
+                `GREŠKA: ${ODGOVOR.status}`
+            );
+
+        }
+
+
+        const GRANTOVI =
+            await ODGOVOR.json();
+
+
+        GRID.innerHTML = "";
+
+
+        if (!GRANTOVI.length) {
+
+            GRID.innerHTML = `
+
+                <div
+                    style="
+                        grid-column:1/-1;
+                        text-align:center;
+                        padding:40px;
+                        color:#64748b;
+                    "
+                >
+                    Trenutno nema aktivnih grantova.
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        GRANTOVI.forEach(GRANT => {
+
+            const DATUM =
+                GRANT.DATUM_OBJAVE
+                ? new Date(
+                    GRANT.DATUM_OBJAVE
+                  ).toLocaleDateString("bs-BA")
+                : "Nije navedeno";
+
+
+            const ROK =
+                GRANT.ROK
+                ? new Date(
+                    GRANT.ROK
+                  ).toLocaleDateString("bs-BA")
+                : "Nije naveden";
+
+
+            const CARD =
+                document.createElement("div");
+
+
+            CARD.className =
+                "card";
+
+
+            CARD.innerHTML = `
+
+                <div class="icon">
+                    💰
+                </div>
+
+
+                <h2>
+                    ${SIGURAN_TEKST(GRANT.NASLOV)}
+                </h2>
+
+
+                <p>
+                    ${SIGURAN_TEKST(
+                        GRANT.OPIS || ""
+                    )}
+                </p>
+
+
+                <p style="
+                    font-size:13px;
+                    color:#64748b;
+                    margin-bottom:8px;
+                ">
+                    📁
+                    ${SIGURAN_TEKST(
+                        GRANT.KATEGORIJA || ""
+                    )}
+                </p>
+
+
+                <p style="
+                    font-size:13px;
+                    color:#64748b;
+                    margin-bottom:8px;
+                ">
+                    📅 Objavljeno:
+                    ${DATUM}
+                </p>
+
+
+                <p style="
+                    font-size:13px;
+                    color:#64748b;
+                    margin-bottom:18px;
+                ">
+                    ⏰ Rok:
+                    ${ROK}
+                </p>
+
+
+                <a
+                    href="${SIGURAN_URL(GRANT.URL)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn"
+                >
+                    Saznaj više →
+                </a>
+
+            `;
+
+
+            GRID.appendChild(CARD);
+
+        });
+
+    }
+
+
+    catch (GRESKA) {
+
+        console.error(
+            "GREŠKA PRI UČITAVANJU GRANTOVA:",
+            GRESKA
+        );
+
+
+        GRID.innerHTML = `
+
+            <div
+                style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:40px;
+                    color:#dc2626;
+                "
+            >
+                ❌ Grantovi trenutno nisu dostupni.
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+function SIGURAN_TEKST(TEKST) {
+
+    const DIV =
+        document.createElement("div");
+
+
+    DIV.textContent =
+        TEKST || "";
+
+
+    return DIV.innerHTML;
+
+}
+
+
+
+function SIGURAN_URL(URL) {
+
+    try {
+
+        const TEST =
+            new URL(URL);
+
+
+        if (
+            TEST.protocol === "http:" ||
+            TEST.protocol === "https:"
+        ) {
+
+            return TEST.href;
+
+        }
+
+    }
+
+    catch (GRESKA) {}
+
+    return "#";
+
+}
+
+
+
 function searchCards() {
 
-    const search = document
-        .getElementById("search")
-        .value
-        .toLowerCase();
+    const SEARCH =
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase();
 
-    const cards = document.querySelectorAll(".card");
 
-    let found = 0;
+    const CARDS =
+        document.querySelectorAll(".card");
 
-    cards.forEach(card => {
 
-        const text = card.innerText.toLowerCase();
+    let FOUND = 0;
 
-        if (text.includes(search)) {
-            card.style.display = "";
-            found++;
-        } else {
-            card.style.display = "none";
+
+    CARDS.forEach(CARD => {
+
+        const TEXT =
+            CARD.innerText.toLowerCase();
+
+
+        if (TEXT.includes(SEARCH)) {
+
+            CARD.style.display =
+                "";
+
+            FOUND++;
+
+        }
+
+        else {
+
+            CARD.style.display =
+                "none";
+
         }
 
     });
 
-    document.getElementById("empty").style.display =
-        found === 0 ? "block" : "none";
+
+    document.getElementById("empty")
+        .style.display =
+            FOUND === 0
+            ? "block"
+            : "none";
+
 }
+
+
+
+UCITAJ_GRANTOVE();
+
 </script>
 
 </body>
