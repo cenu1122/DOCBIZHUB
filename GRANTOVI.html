@@ -956,6 +956,10 @@ async function UCITAJ_GRANTOVE() {
    ========================================================= */
 
 
+/* =========================================================
+   PRIKAŽI GRANTOVE
+   ========================================================= */
+
 function PRIKAZI_GRANTOVE() {
 
     const GRID =
@@ -1011,7 +1015,19 @@ function PRIKAZI_GRANTOVE() {
 
                     GRANT.INSTITUCIJA,
 
-                    GRANT.IZVOR
+                    GRANT.IZVOR,
+
+                    GRANT.KO_MOZE_APLICIRATI,
+
+                    GRANT.STA_SE_FINANSIRA,
+
+                    GRANT.IZNOS_PODRSKE,
+
+                    GRANT.SUFINANSIRANJE,
+
+                    GRANT.PROJEKAT,
+
+                    GRANT.POTREBNA_DOKUMENTACIJA
 
                 ]
                     .filter(Boolean)
@@ -1067,6 +1083,7 @@ function PRIKAZI_GRANTOVE() {
             "resultInfo"
         ).textContent =
             "Nema pronađenih grantova.";
+
 
         return;
 
@@ -1139,6 +1156,347 @@ function PRIKAZI_GRANTOVE() {
                 GRANT.STATUS ||
                 "AKTIVAN";
 
+
+            /* =================================================
+               KREIRAJ CARD SADRŽAJ
+               ================================================= */
+
+
+            CARD.innerHTML = `
+
+                <div class="icon">
+                    💰
+                </div>
+
+
+                <span
+                    class="status ${STATUS_KLASA(STATUS)}"
+                >
+                    ${STATUS_NAZIV(STATUS)}
+                </span>
+
+
+                <h2>
+                    ${SIGURAN_TEKST(
+                        GRANT.NASLOV
+                    )}
+                </h2>
+
+
+                <p>
+                    ${SIGURAN_TEKST(
+                        GRANT.OPIS ||
+                        "Informacije o javnom pozivu."
+                    )}
+                </p>
+
+
+                <div class="meta">
+
+
+                    <div class="meta-row">
+
+                        📁
+
+                        <strong>
+                            Kategorija:
+                        </strong>
+
+                        ${SIGURAN_TEKST(
+                            GRANT.KATEGORIJA ||
+                            "Nije navedeno"
+                        )}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        🏛️
+
+                        <strong>
+                            Institucija:
+                        </strong>
+
+                        ${SIGURAN_TEKST(
+                            GRANT.INSTITUCIJA ||
+                            "Nije navedeno"
+                        )}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        📅
+
+                        <strong>
+                            Objavljeno:
+                        </strong>
+
+                        ${DATUM}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        ⏰
+
+                        <strong>
+                            Rok:
+                        </strong>
+
+                        ${ROK}
+
+                    </div>
+
+
+                    <!-- =================================================
+                         DETALJI GRANTA
+                         ================================================= -->
+
+
+                    <div
+                        style="
+                            margin-top:20px;
+                            padding-top:18px;
+                            border-top:1px solid #e5e7eb;
+                        "
+                    >
+
+                        <div class="meta-row">
+
+                            👤
+
+                            <strong>
+                                Ko može aplicirati:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.KO_MOZE_APLICIRATI ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-row">
+
+                            🎯
+
+                            <strong>
+                                Šta se finansira:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.STA_SE_FINANSIRA ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-row">
+
+                            💰
+
+                            <strong>
+                                Iznos podrške:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.IZNOS_PODRSKE ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-row">
+
+                            🤝
+
+                            <strong>
+                                Sufinansiranje:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.SUFINANSIRANJE ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-row">
+
+                            📋
+
+                            <strong>
+                                Projekat:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.PROJEKAT ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-row">
+
+                            📎
+
+                            <strong>
+                                Potrebna dokumentacija:
+                            </strong>
+
+                            <div style="margin-top:5px;">
+                                ${SIGURAN_TEKST(
+                                    GRANT.POTREBNA_DOKUMENTACIJA ||
+                                    "Nije navedeno."
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="source">
+
+                        Izvor:
+
+                        ${SIGURAN_TEKST(
+                            GRANT.IZVOR ||
+                            "DocBizHub"
+                        )}
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+            /* =================================================
+               SAZNAJ VIŠE - PRAVI LINK
+               ================================================= */
+
+
+            const META =
+                CARD.querySelector(
+                    ".meta"
+                );
+
+
+            const IZVOR_URL =
+                SIGURAN_URL(
+                    GRANT.URL
+                );
+
+
+            if (
+                IZVOR_URL
+            ) {
+
+                const LINK =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                LINK.href =
+                    IZVOR_URL;
+
+
+                LINK.target =
+                    "_blank";
+
+
+                LINK.rel =
+                    "noopener noreferrer";
+
+
+                LINK.className =
+                    "btn";
+
+
+                LINK.textContent =
+                    "Saznaj više →";
+
+
+                LINK.title =
+                    "Otvori originalni javni poziv";
+
+
+                META.insertBefore(
+                    LINK,
+                    META.querySelector(
+                        ".source"
+                    )
+                );
+
+            }
+
+
+            else {
+
+                const LINK =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                LINK.className =
+                    "btn btn-disabled";
+
+
+                LINK.textContent =
+                    "Link nije dostupan";
+
+
+                LINK.title =
+                    "Za ovaj grant trenutno nema ispravnog URL-a";
+
+
+                META.insertBefore(
+                    LINK,
+                    META.querySelector(
+                        ".source"
+                    )
+                );
+
+
+                console.warn(
+                    "GRANT NEMA ISPRAVAN URL:",
+                    GRANT
+                );
+
+            }
+
+
+            GRID.appendChild(
+                CARD
+            );
+
+        }
+    );
+
+}
 
             /* =================================================
                KREIRAJ CARD SADRŽAJ
