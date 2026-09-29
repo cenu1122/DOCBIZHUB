@@ -712,11 +712,11 @@ function SIGURAN_TEKST(TEKST) {
    ========================================================= */
 
 
-function SIGURAN_URL(URL) {
+function SIGURAN_URL(URL_VRIJEDNOST) {
 
     if (
-        URL === null ||
-        URL === undefined
+        URL_VRIJEDNOST === null ||
+        URL_VRIJEDNOST === undefined
     ) {
 
         return null;
@@ -724,11 +724,52 @@ function SIGURAN_URL(URL) {
     }
 
 
-    const SIROVI_URL =
-        String(URL).trim();
+    let SIROVI_URL =
+        String(URL_VRIJEDNOST).trim();
 
 
     if (!SIROVI_URL) {
+
+        return null;
+
+    }
+
+
+    /*
+       Ako je URL slučajno spremljen
+       sa navodnicima, ukloni ih.
+    */
+
+    SIROVI_URL =
+        SIROVI_URL
+            .replace(
+                /^["']+|["']+$/g,
+                ""
+            )
+            .trim();
+
+
+    if (!SIROVI_URL) {
+
+        return null;
+
+    }
+
+
+    /*
+       Prihvati samo HTTP i HTTPS.
+    */
+
+    if (
+        !/^https?:\/\//i.test(
+            SIROVI_URL
+        )
+    ) {
+
+        console.warn(
+            "GRANT URL NIJE HTTP/HTTPS:",
+            SIROVI_URL
+        );
 
         return null;
 
@@ -739,8 +780,7 @@ function SIGURAN_URL(URL) {
 
         const TEST =
             new URL(
-                SIROVI_URL,
-                window.location.href
+                SIROVI_URL
             );
 
 
@@ -759,7 +799,8 @@ function SIGURAN_URL(URL) {
 
         console.warn(
             "NEISPRAVAN GRANT URL:",
-            URL
+            SIROVI_URL,
+            GRESKA
         );
 
     }
@@ -941,9 +982,6 @@ async function UCITAJ_GRANTOVE() {
 
                         "apikey":
                             SUPABASE_ANON_KEY,
-
-                        "Authorization":
-                            `Bearer ${SUPABASE_ANON_KEY}`,
 
                         "Accept":
                             "application/json"
@@ -1630,9 +1668,30 @@ function PRIKAZI_GRANTOVE() {
                ================================================= */
 
 
+            /*
+               POPRAVKA:
+               Provjeravamo i URL i url kako bi
+               link radio bez obzira kako je
+               Supabase vratio naziv polja.
+            */
+
+            const VRIJEDNOST_URL =
+                GRANT.URL ??
+                GRANT.url ??
+                GRANT["URL"] ??
+                "";
+
+
+            console.log(
+                "GRANT URL:",
+                GRANT.NASLOV,
+                VRIJEDNOST_URL
+            );
+
+
             const IZVOR_URL =
                 SIGURAN_URL(
-                    GRANT.URL
+                    VRIJEDNOST_URL
                 );
 
 
