@@ -1,207 +1,599 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Grantovi & Fondovi | DocBizHub</title>
 
+
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
             background: #f4f7fb;
             color: #1f2937;
         }
 
+
         .header {
-            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a5f
+                );
+
             color: white;
+
             padding: 22px 30px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+
+            gap: 20px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0,0,0,0.12);
         }
+
 
         .logo {
             font-size: 24px;
             font-weight: 700;
         }
 
+
         .back-btn {
             color: white;
             text-decoration: none;
-            background: rgba(255,255,255,0.12);
+
+            background:
+                rgba(255,255,255,0.12);
+
             padding: 10px 16px;
+
             border-radius: 10px;
+
             transition: 0.2s;
+
+            white-space: nowrap;
         }
 
+
         .back-btn:hover {
-            background: rgba(255,255,255,0.22);
+            background:
+                rgba(255,255,255,0.22);
         }
+
 
         .container {
             max-width: 1200px;
+
             margin: 35px auto;
+
             padding: 0 20px;
         }
 
+
         .hero {
             background: white;
+
             border-radius: 18px;
+
             padding: 35px;
+
             margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.07);
         }
+
 
         .hero h1 {
             font-size: 32px;
+
             margin-bottom: 10px;
+
             color: #0f172a;
         }
+
 
         .hero p {
             color: #64748b;
+
             font-size: 16px;
+
             line-height: 1.6;
         }
 
-        .search-box {
+
+        .filters {
+            display: grid;
+
+            grid-template-columns:
+                1fr 220px 220px;
+
+            gap: 12px;
+
             margin-top: 22px;
         }
 
-        .search-box input {
+
+        .search-box input,
+        .filter-select {
+
             width: 100%;
+
             padding: 15px 18px;
-            border: 1px solid #dbe2ea;
+
+            border:
+                1px solid #dbe2ea;
+
             border-radius: 12px;
+
             font-size: 16px;
+
             outline: none;
+
+            background: white;
         }
 
-        .search-box input:focus {
+
+        .search-box input:focus,
+        .filter-select:focus {
+
             border-color: #2563eb;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #edf1f5;
-        }
+        .result-info {
 
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
-        }
+            margin-top: 15px;
 
-        .icon {
-            font-size: 35px;
-            margin-bottom: 15px;
-        }
-
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #0f172a;
-        }
-
-        .card p {
             color: #64748b;
-            line-height: 1.5;
-            margin-bottom: 18px;
-        }
 
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            background: #2563eb;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 9px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            background: #1d4ed8;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 35px 20px;
-            color: #94a3b8;
             font-size: 14px;
         }
 
+
+        .grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(300px, 1fr)
+                );
+
+            gap: 20px;
+        }
+
+
+        .card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(0,0,0,0.06);
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+
+            border:
+                1px solid #edf1f5;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 10px 25px
+                rgba(0,0,0,0.10);
+        }
+
+
+        .icon {
+
+            font-size: 35px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .card h2 {
+
+            font-size: 20px;
+
+            margin-bottom: 12px;
+
+            color: #0f172a;
+
+            line-height: 1.4;
+        }
+
+
+        .card p {
+
+            color: #64748b;
+
+            line-height: 1.5;
+
+            margin-bottom: 12px;
+        }
+
+
+        .meta {
+
+            margin-top: auto;
+
+            padding-top: 10px;
+        }
+
+
+        .meta-row {
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            margin-bottom: 8px;
+
+            line-height: 1.5;
+        }
+
+
+        .status {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 14px;
+        }
+
+
+        .status-aktivan {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .status-istekao {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        .status-zatvoren {
+
+            background: #e2e8f0;
+
+            color: #475569;
+        }
+
+
+        .btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 11px 16px;
+
+            border-radius: 9px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+
+            margin-top: 8px;
+        }
+
+
+        .btn:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        .source {
+
+            font-size: 12px;
+
+            color: #94a3b8;
+
+            margin-top: 12px;
+        }
+
+
         .empty {
+
             display: none;
+
             text-align: center;
-            padding: 30px;
+
+            padding: 45px 20px;
+
             color: #64748b;
         }
 
-        @media (max-width: 600px) {
-            .header {
-                padding: 18px;
+
+        .error {
+
+            grid-column: 1 / -1;
+
+            text-align: center;
+
+            padding: 45px 20px;
+
+            color: #dc2626;
+
+            background: white;
+
+            border-radius: 16px;
+        }
+
+
+        .loading {
+
+            grid-column: 1 / -1;
+
+            text-align: center;
+
+            padding: 45px 20px;
+
+            color: #64748b;
+
+            background: white;
+
+            border-radius: 16px;
+        }
+
+
+        .footer {
+
+            text-align: center;
+
+            padding: 35px 20px;
+
+            color: #94a3b8;
+
+            font-size: 14px;
+        }
+
+
+        @media (max-width: 850px) {
+
+            .filters {
+
+                grid-template-columns:
+                    1fr 1fr;
+
             }
 
+            .search-box {
+
+                grid-column:
+                    1 / -1;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .header {
+
+                padding: 18px;
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
+            .back-btn {
+
+                text-align: center;
+            }
+
+
             .hero {
+
                 padding: 25px;
             }
 
+
             .hero h1 {
+
                 font-size: 26px;
             }
+
+
+            .filters {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .search-box {
+
+                grid-column: auto;
+            }
+
+
+            .grid {
+
+                grid-template-columns: 1fr;
+            }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-<header class="header">
-    <div class="logo">📊 DocBizHub</div>
 
-    <a href="DASHBOARD.html" class="back-btn">
+<header class="header">
+
+    <div class="logo">
+        📊 DocBizHub
+    </div>
+
+
+    <a
+        href="DASHBOARD.html"
+        class="back-btn"
+    >
         ← Nazad na Dashboard
     </a>
+
 </header>
+
 
 <main class="container">
 
+
     <section class="hero">
 
-        <h1>💰 Grantovi & Fondovi</h1>
+        <h1>
+            💰 Grantovi & Fondovi
+        </h1>
+
 
         <p>
-            Pronađite dostupne grantove, fondove, javne pozive i programe
+            Pronađite dostupne grantove,
+            fondove, javne pozive i programe
             podrške za razvoj poslovanja.
         </p>
 
-        <div class="search-box">
 
-            <input
-                type="text"
-                id="search"
-                placeholder="🔎 Pretraži grantove i fondove..."
-                onkeyup="searchCards()"
+        <div class="filters">
+
+
+            <!-- PRETRAGA -->
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="🔎 Pretraži grantove, institucije..."
+                >
+
+            </div>
+
+
+            <!-- KATEGORIJA -->
+
+            <select
+                id="categoryFilter"
+                class="filter-select"
             >
 
+                <option value="">
+                    📁 Sve kategorije
+                </option>
+
+                <option value="FEDERALNI">
+                    Federalni
+                </option>
+
+                <option value="POLJOPRIVREDA">
+                    Poljoprivreda
+                </option>
+
+                <option value="KANTONALNI">
+                    Kanton Sarajevo
+                </option>
+
+            </select>
+
+
+            <!-- STATUS -->
+
+            <select
+                id="statusFilter"
+                class="filter-select"
+            >
+
+                <option value="AKTIVAN">
+                    🟢 Aktivni
+                </option>
+
+                <option value="ISTEKAO">
+                    🔴 Istekli
+                </option>
+
+                <option value="SVE">
+                    ⚪ Svi
+                </option>
+
+            </select>
+
+
+        </div>
+
+
+        <div
+            class="result-info"
+            id="resultInfo"
+        >
+            Učitavanje...
         </div>
 
     </section>
@@ -213,13 +605,8 @@
     >
 
         <div
-            id="LOADING_GRANTOVA"
-            style="
-                grid-column:1 / -1;
-                text-align:center;
-                padding:40px;
-                color:#64748b;
-            "
+            class="loading"
+            id="loading"
         >
             ⏳ Učitavanje grantova...
         </div>
@@ -231,18 +618,28 @@
         class="empty"
         id="empty"
     >
-        Nema rezultata za unesenu pretragu.
+        Nema rezultata za odabrane filtere.
     </div>
+
 
 </main>
 
 
 <footer class="footer">
-    © 2026 DocBizHub — Grantovi & Fondovi
+
+    © 2026 DocBizHub —
+    Grantovi & Fondovi
+
 </footer>
 
 
 <script>
+
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
 
 const SUPABASE_URL =
     "https://uduwpvdjmanrgpumdrfh.supabase.co";
@@ -251,31 +648,187 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ";
 
+
+/* =========================================================
+   SVI GRANTOVI
+   ========================================================= */
+
+
+let SVI_GRANTOVI = [];
+
+
+/* =========================================================
+   SIGURAN TEKST
+   ========================================================= */
+
+
+function SIGURAN_TEKST(TEKST) {
+
+    const DIV =
+        document.createElement("div");
+
+    DIV.textContent =
+        TEKST || "";
+
+    return DIV.innerHTML;
+}
+
+
+/* =========================================================
+   SIGURAN URL
+   ========================================================= */
+
+
+function SIGURAN_URL(URL) {
+
+    try {
+
+        const TEST =
+            new URL(URL);
+
+        if (
+            TEST.protocol === "http:" ||
+            TEST.protocol === "https:"
+        ) {
+
+            return TEST.href;
+
+        }
+
+    } catch (GRESKA) {}
+
+    return "#";
+}
+
+
+/* =========================================================
+   DATUM
+   ========================================================= */
+
+
+function FORMAT_DATUMA(DATUM) {
+
+    if (!DATUM) {
+
+        return "Nije navedeno";
+
+    }
+
+
+    const TEST =
+        new Date(DATUM);
+
+
+    if (
+        Number.isNaN(
+            TEST.getTime()
+        )
+    ) {
+
+        return "Nije navedeno";
+
+    }
+
+
+    return TEST.toLocaleDateString(
+        "bs-BA"
+    );
+}
+
+
+/* =========================================================
+   STATUS NAZIV
+   ========================================================= */
+
+
+function STATUS_NAZIV(STATUS) {
+
+    if (
+        STATUS === "ISTEKAO"
+    ) {
+
+        return "Istekao";
+
+    }
+
+
+    if (
+        STATUS === "ZATVOREN"
+    ) {
+
+        return "Zatvoren";
+
+    }
+
+
+    return "Aktivan";
+}
+
+
+/* =========================================================
+   STATUS KLASA
+   ========================================================= */
+
+
+function STATUS_KLASA(STATUS) {
+
+    if (
+        STATUS === "ISTEKAO"
+    ) {
+
+        return "status-istekao";
+
+    }
+
+
+    if (
+        STATUS === "ZATVOREN"
+    ) {
+
+        return "status-zatvoren";
+
+    }
+
+
+    return "status-aktivan";
+}
+
+
+/* =========================================================
+   UČITAJ SVE GRANTOVE
+   ========================================================= */
+
+
 async function UCITAJ_GRANTOVE() {
 
     const GRID =
-        document.getElementById("grantGrid");
+        document.getElementById(
+            "grantGrid"
+        );
 
 
     try {
 
-        const ODGOVOR = await fetch(
+        const ODGOVOR =
+            await fetch(
 
-            `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&STATUS=eq.AKTIVAN&order=DATUM_OBJAVE.desc`,
+                `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`,
 
-            {
-                headers: {
+                {
 
-                    "apikey":
-                        SUPABASE_ANON_KEY,
+                    headers: {
 
-                    "Authorization":
-                        `Bearer ${SUPABASE_ANON_KEY}`
+                        "apikey":
+                            SUPABASE_ANON_KEY,
+
+                        "Authorization":
+                            `Bearer ${SUPABASE_ANON_KEY}`
+
+                    }
 
                 }
-            }
 
-        );
+            );
 
 
         if (!ODGOVOR.ok) {
@@ -287,127 +840,24 @@ async function UCITAJ_GRANTOVE() {
         }
 
 
-        const GRANTOVI =
+        SVI_GRANTOVI =
             await ODGOVOR.json();
 
 
-        GRID.innerHTML = "";
+        const LOADING =
+            document.getElementById(
+                "loading"
+            );
 
 
-        if (!GRANTOVI.length) {
+        if (LOADING) {
 
-            GRID.innerHTML = `
-
-                <div
-                    style="
-                        grid-column:1/-1;
-                        text-align:center;
-                        padding:40px;
-                        color:#64748b;
-                    "
-                >
-                    Trenutno nema aktivnih grantova.
-                </div>
-
-            `;
-
-            return;
+            LOADING.remove();
 
         }
 
 
-        GRANTOVI.forEach(GRANT => {
-
-            const DATUM =
-                GRANT.DATUM_OBJAVE
-                ? new Date(
-                    GRANT.DATUM_OBJAVE
-                  ).toLocaleDateString("bs-BA")
-                : "Nije navedeno";
-
-
-            const ROK =
-                GRANT.ROK
-                ? new Date(
-                    GRANT.ROK
-                  ).toLocaleDateString("bs-BA")
-                : "Nije naveden";
-
-
-            const CARD =
-                document.createElement("div");
-
-
-            CARD.className =
-                "card";
-
-
-            CARD.innerHTML = `
-
-                <div class="icon">
-                    💰
-                </div>
-
-
-                <h2>
-                    ${SIGURAN_TEKST(GRANT.NASLOV)}
-                </h2>
-
-
-                <p>
-                    ${SIGURAN_TEKST(
-                        GRANT.OPIS || ""
-                    )}
-                </p>
-
-
-                <p style="
-                    font-size:13px;
-                    color:#64748b;
-                    margin-bottom:8px;
-                ">
-                    📁
-                    ${SIGURAN_TEKST(
-                        GRANT.KATEGORIJA || ""
-                    )}
-                </p>
-
-
-                <p style="
-                    font-size:13px;
-                    color:#64748b;
-                    margin-bottom:8px;
-                ">
-                    📅 Objavljeno:
-                    ${DATUM}
-                </p>
-
-
-                <p style="
-                    font-size:13px;
-                    color:#64748b;
-                    margin-bottom:18px;
-                ">
-                    ⏰ Rok:
-                    ${ROK}
-                </p>
-
-
-                <a
-                    href="${SIGURAN_URL(GRANT.URL)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn"
-                >
-                    Saznaj više →
-                </a>
-
-            `;
-
-
-            GRID.appendChild(CARD);
-
-        });
+        PRIKAZI_GRANTOVE();
 
     }
 
@@ -422,122 +872,400 @@ async function UCITAJ_GRANTOVE() {
 
         GRID.innerHTML = `
 
-            <div
-                style="
-                    grid-column:1/-1;
-                    text-align:center;
-                    padding:40px;
-                    color:#dc2626;
-                "
-            >
+            <div class="error">
+
                 ❌ Grantovi trenutno nisu dostupni.
+
+                <br><br>
+
+                Pokušajte ponovo kasnije.
+
             </div>
 
         `;
 
-    }
 
-}
-
-
-
-function SIGURAN_TEKST(TEKST) {
-
-    const DIV =
-        document.createElement("div");
-
-
-    DIV.textContent =
-        TEKST || "";
-
-
-    return DIV.innerHTML;
-
-}
-
-
-
-function SIGURAN_URL(URL) {
-
-    try {
-
-        const TEST =
-            new URL(URL);
-
-
-        if (
-            TEST.protocol === "http:" ||
-            TEST.protocol === "https:"
-        ) {
-
-            return TEST.href;
-
-        }
+        document.getElementById(
+            "resultInfo"
+        ).textContent =
+            "Greška pri učitavanju.";
 
     }
 
-    catch (GRESKA) {}
-
-    return "#";
-
 }
 
 
+/* =========================================================
+   PRIKAŽI GRANTOVE
+   ========================================================= */
 
-function searchCards() {
+
+function PRIKAZI_GRANTOVE() {
+
+    const GRID =
+        document.getElementById(
+            "grantGrid"
+        );
+
+
+    const EMPTY =
+        document.getElementById(
+            "empty"
+        );
+
 
     const SEARCH =
         document
             .getElementById("search")
             .value
+            .trim()
             .toLowerCase();
 
 
-    const CARDS =
-        document.querySelectorAll(".card");
+    const KATEGORIJA =
+        document
+            .getElementById(
+                "categoryFilter"
+            )
+            .value;
 
 
-    let FOUND = 0;
+    const STATUS_FILTER =
+        document
+            .getElementById(
+                "statusFilter"
+            )
+            .value;
 
 
-    CARDS.forEach(CARD => {
+    const FILTRIRANI =
+        SVI_GRANTOVI.filter(
+            GRANT => {
 
-        const TEXT =
-            CARD.innerText.toLowerCase();
+
+                /* PRETRAGA */
+
+                const TEKST = [
+
+                    GRANT.NASLOV,
+
+                    GRANT.OPIS,
+
+                    GRANT.KATEGORIJA,
+
+                    GRANT.INSTITUCIJA,
+
+                    GRANT.IZVOR
+
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
 
 
-        if (TEXT.includes(SEARCH)) {
+                const ODGOVARA_PRETRAZI =
+                    !SEARCH ||
+                    TEKST.includes(
+                        SEARCH
+                    );
 
-            CARD.style.display =
-                "";
 
-            FOUND++;
+                /* KATEGORIJA */
+
+                const ODGOVARA_KATEGORIJI =
+                    !KATEGORIJA ||
+                    GRANT.KATEGORIJA ===
+                        KATEGORIJA;
+
+
+                /* STATUS */
+
+                const ODGOVARA_STATUSU =
+                    STATUS_FILTER === "SVE" ||
+                    GRANT.STATUS ===
+                        STATUS_FILTER;
+
+
+                return (
+                    ODGOVARA_PRETRAZI &&
+                    ODGOVARA_KATEGORIJI &&
+                    ODGOVARA_STATUSU
+                );
+
+            }
+        );
+
+
+    GRID.innerHTML = "";
+
+
+    if (
+        FILTRIRANI.length === 0
+    ) {
+
+        EMPTY.style.display =
+            "block";
+
+
+        document.getElementById(
+            "resultInfo"
+        ).textContent =
+            "Nema pronađenih grantova.";
+
+        return;
+
+    }
+
+
+    EMPTY.style.display =
+        "none";
+
+
+    let TEKST_STATUSA =
+        "svih";
+
+
+    if (
+        STATUS_FILTER ===
+        "AKTIVAN"
+    ) {
+
+        TEKST_STATUSA =
+            "aktivnih";
+
+    }
+
+
+    if (
+        STATUS_FILTER ===
+        "ISTEKAO"
+    ) {
+
+        TEKST_STATUSA =
+            "isteklih";
+
+    }
+
+
+    document.getElementById(
+        "resultInfo"
+    ).textContent =
+        `Prikazano ${FILTRIRANI.length} ${TEKST_STATUSA} grantova.`;
+
+
+    FILTRIRANI.forEach(
+        GRANT => {
+
+
+            const CARD =
+                document.createElement(
+                    "article"
+                );
+
+
+            CARD.className =
+                "card";
+
+
+            const DATUM =
+                FORMAT_DATUMA(
+                    GRANT.DATUM_OBJAVE
+                );
+
+
+            const ROK =
+                FORMAT_DATUMA(
+                    GRANT.ROK
+                );
+
+
+            const STATUS =
+                GRANT.STATUS ||
+                "AKTIVAN";
+
+
+            const URL =
+                SIGURAN_URL(
+                    GRANT.URL
+                );
+
+
+            CARD.innerHTML = `
+
+                <div class="icon">
+                    💰
+                </div>
+
+
+                <span
+                    class="status ${STATUS_KLASA(STATUS)}"
+                >
+                    ${STATUS_NAZIV(STATUS)}
+                </span>
+
+
+                <h2>
+                    ${SIGURAN_TEKST(
+                        GRANT.NASLOV
+                    )}
+                </h2>
+
+
+                <p>
+                    ${SIGURAN_TEKST(
+                        GRANT.OPIS ||
+                        "Informacije o javnom pozivu."
+                    )}
+                </p>
+
+
+                <div class="meta">
+
+
+                    <div class="meta-row">
+
+                        📁
+
+                        <strong>
+                            Kategorija:
+                        </strong>
+
+                        ${SIGURAN_TEKST(
+                            GRANT.KATEGORIJA ||
+                            "Nije navedeno"
+                        )}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        🏛️
+
+                        <strong>
+                            Institucija:
+                        </strong>
+
+                        ${SIGURAN_TEKST(
+                            GRANT.INSTITUCIJA ||
+                            "Nije navedeno"
+                        )}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        📅
+
+                        <strong>
+                            Objavljeno:
+                        </strong>
+
+                        ${DATUM}
+
+                    </div>
+
+
+                    <div class="meta-row">
+
+                        ⏰
+
+                        <strong>
+                            Rok:
+                        </strong>
+
+                        ${ROK}
+
+                    </div>
+
+
+                    <a
+                        href="${URL}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn"
+                    >
+                        Saznaj više →
+                    </a>
+
+
+                    <div class="source">
+
+                        Izvor:
+
+                        ${SIGURAN_TEKST(
+                            GRANT.IZVOR ||
+                            "DocBizHub"
+                        )}
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+            GRID.appendChild(
+                CARD
+            );
 
         }
-
-        else {
-
-            CARD.style.display =
-                "none";
-
-        }
-
-    });
-
-
-    document.getElementById("empty")
-        .style.display =
-            FOUND === 0
-            ? "block"
-            : "none";
+    );
 
 }
 
 
+/* =========================================================
+   PRETRAGA
+   ========================================================= */
+
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        PRIKAZI_GRANTOVE
+    );
+
+
+/* =========================================================
+   FILTER KATEGORIJE
+   ========================================================= */
+
+
+document
+    .getElementById("categoryFilter")
+    .addEventListener(
+        "change",
+        PRIKAZI_GRANTOVE
+    );
+
+
+/* =========================================================
+   FILTER STATUSA
+   ========================================================= */
+
+
+document
+    .getElementById("statusFilter")
+    .addEventListener(
+        "change",
+        PRIKAZI_GRANTOVE
+    );
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
 
 UCITAJ_GRANTOVE();
 
+
 </script>
+
 
 </body>
 </html>
