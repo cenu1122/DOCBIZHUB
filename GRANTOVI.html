@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -661,7 +660,6 @@
 
 </footer>
 
-
 <script>
 
 
@@ -705,6 +703,7 @@ function SIGURAN_TEKST(TEKST) {
 
 
     return DIV.innerHTML;
+
 }
 
 
@@ -726,8 +725,7 @@ function SIGURAN_URL(URL) {
 
 
     const SIROVI_URL =
-        String(URL)
-            .trim();
+        String(URL).trim();
 
 
     if (!SIROVI_URL) {
@@ -755,7 +753,9 @@ function SIGURAN_URL(URL) {
 
         }
 
-    } catch (GRESKA) {
+    }
+
+    catch (GRESKA) {
 
         console.warn(
             "NEISPRAVAN GRANT URL:",
@@ -766,6 +766,7 @@ function SIGURAN_URL(URL) {
 
 
     return null;
+
 }
 
 
@@ -801,6 +802,23 @@ function FORMAT_DATUMA(DATUM) {
     return TEST.toLocaleDateString(
         "bs-BA"
     );
+
+}
+
+
+/* =========================================================
+   NORMALIZUJ STATUS
+   ========================================================= */
+
+
+function NORMALIZUJ_STATUS(STATUS) {
+
+    return String(
+        STATUS || "AKTIVAN"
+    )
+        .trim()
+        .toUpperCase();
+
 }
 
 
@@ -812,11 +830,7 @@ function FORMAT_DATUMA(DATUM) {
 function STATUS_NAZIV(STATUS) {
 
     const NORMALIZOVANI_STATUS =
-        String(
-            STATUS || "AKTIVAN"
-        )
-            .trim()
-            .toUpperCase();
+        NORMALIZUJ_STATUS(STATUS);
 
 
     if (
@@ -840,6 +854,7 @@ function STATUS_NAZIV(STATUS) {
 
 
     return "Aktivan";
+
 }
 
 
@@ -851,11 +866,7 @@ function STATUS_NAZIV(STATUS) {
 function STATUS_KLASA(STATUS) {
 
     const NORMALIZOVANI_STATUS =
-        String(
-            STATUS || "AKTIVAN"
-        )
-            .trim()
-            .toUpperCase();
+        NORMALIZUJ_STATUS(STATUS);
 
 
     if (
@@ -879,21 +890,7 @@ function STATUS_KLASA(STATUS) {
 
 
     return "status-aktivan";
-}
 
-
-/* =========================================================
-   NORMALIZUJ STATUS
-   ========================================================= */
-
-
-function NORMALIZUJ_STATUS(STATUS) {
-
-    return String(
-        STATUS || "AKTIVAN"
-    )
-        .trim()
-        .toUpperCase();
 }
 
 
@@ -910,13 +907,32 @@ async function UCITAJ_GRANTOVE() {
         );
 
 
+    const RESULT_INFO =
+        document.getElementById(
+            "resultInfo"
+        );
+
+
     try {
+
+        console.log(
+            "POČETAK UČITAVANJA GRANTOVA..."
+        );
+
+
+        const URL =
+            `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`;
+
+
+        console.log(
+            "SUPABASE URL:",
+            URL
+        );
+
 
         const ODGOVOR =
             await fetch(
-
-                `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`,
-
+                URL,
                 {
 
                     method: "GET",
@@ -929,38 +945,35 @@ async function UCITAJ_GRANTOVE() {
                         "Authorization":
                             `Bearer ${SUPABASE_ANON_KEY}`,
 
-                        "Content-Type":
-                            "application/json",
-
                         "Accept":
                             "application/json"
 
                     }
 
                 }
-
             );
+
+
+        console.log(
+            "SUPABASE STATUS:",
+            ODGOVOR.status
+        );
 
 
         if (!ODGOVOR.ok) {
 
-            let DETALJI_GRESKE = "";
+            const TEKST_GRESKE =
+                await ODGOVOR.text();
 
 
-            try {
-
-                DETALJI_GRESKE =
-                    await ODGOVOR.text();
-
-            } catch (GRESKA) {
-
-                DETALJI_GRESKE = "";
-
-            }
+            console.error(
+                "SUPABASE GREŠKA:",
+                TEKST_GRESKE
+            );
 
 
             throw new Error(
-                `GREŠKA: ${ODGOVOR.status} ${ODGOVOR.statusText} ${DETALJI_GRESKE}`
+                `Supabase greška ${ODGOVOR.status}: ${TEKST_GRESKE}`
             );
 
         }
@@ -970,10 +983,16 @@ async function UCITAJ_GRANTOVE() {
             await ODGOVOR.json();
 
 
+        console.log(
+            "GRANTOVI UČITANI:",
+            PODACI
+        );
+
+
         if (!Array.isArray(PODACI)) {
 
             throw new Error(
-                "Supabase nije vratio listu grantova."
+                "Supabase nije vratio niz grantova."
             );
 
         }
@@ -1009,25 +1028,34 @@ async function UCITAJ_GRANTOVE() {
         );
 
 
-        GRID.innerHTML = `
+        if (GRID) {
 
-            <div class="error">
+            GRID.innerHTML = `
 
-                ❌ Grantovi trenutno nisu dostupni.
+                <div class="error">
 
-                <br><br>
+                    ❌ Grantovi trenutno nisu dostupni.
 
-                Pokušajte ponovo kasnije.
+                    <br><br>
 
-            </div>
+                    ${SIGURAN_TEKST(
+                        GRESKA.message ||
+                        "Nepoznata greška."
+                    )}
 
-        `;
+                </div>
+
+            `;
+
+        }
 
 
-        document.getElementById(
-            "resultInfo"
-        ).textContent =
-            "Greška pri učitavanju.";
+        if (RESULT_INFO) {
+
+            RESULT_INFO.textContent =
+                "Greška pri učitavanju grantova.";
+
+        }
 
     }
 
@@ -1053,52 +1081,62 @@ function PRIKAZI_GRANTOVE() {
         );
 
 
-    const SEARCH_INPUT =
+    const RESULT_INFO =
+        document.getElementById(
+            "resultInfo"
+        );
+
+
+    const SEARCH_ELEMENT =
         document.getElementById(
             "search"
         );
 
 
-    const CATEGORY_INPUT =
+    const CATEGORY_ELEMENT =
         document.getElementById(
             "categoryFilter"
         );
 
 
-    const STATUS_INPUT =
+    const STATUS_ELEMENT =
         document.getElementById(
             "statusFilter"
         );
 
 
     const SEARCH =
-        SEARCH_INPUT
-            ? SEARCH_INPUT.value
+        SEARCH_ELEMENT
+            ? SEARCH_ELEMENT.value
                 .trim()
                 .toLowerCase()
             : "";
 
 
     const KATEGORIJA =
-        CATEGORY_INPUT
-            ? CATEGORY_INPUT.value
+        CATEGORY_ELEMENT
+            ? CATEGORY_ELEMENT.value
             : "";
 
 
     const STATUS_FILTER =
-        STATUS_INPUT
-            ? STATUS_INPUT.value
+        STATUS_ELEMENT
+            ? STATUS_ELEMENT.value
             : "AKTIVAN";
+
+
+    /* =========================================================
+       FILTRIRANJE
+       ========================================================= */
 
 
     const FILTRIRANI =
         SVI_GRANTOVI.filter(
             GRANT => {
 
-
-                /* =================================================
+                /* -----------------------------------------
                    PRETRAGA
-                   ================================================= */
+                   ----------------------------------------- */
 
 
                 const TEKST = [
@@ -1142,9 +1180,9 @@ function PRIKAZI_GRANTOVE() {
                     );
 
 
-                /* =================================================
+                /* -----------------------------------------
                    KATEGORIJA
-                   ================================================= */
+                   ----------------------------------------- */
 
 
                 const GRANT_KATEGORIJA =
@@ -1169,9 +1207,9 @@ function PRIKAZI_GRANTOVE() {
                         FILTER_KATEGORIJA;
 
 
-                /* =================================================
+                /* -----------------------------------------
                    STATUS
-                   ================================================= */
+                   ----------------------------------------- */
 
 
                 const GRANT_STATUS =
@@ -1196,6 +1234,11 @@ function PRIKAZI_GRANTOVE() {
         );
 
 
+    /* =========================================================
+       OBRIŠI STARE CARDOVE
+       ========================================================= */
+
+
     GRID.innerHTML = "";
 
 
@@ -1212,9 +1255,7 @@ function PRIKAZI_GRANTOVE() {
             "block";
 
 
-        document.getElementById(
-            "resultInfo"
-        ).textContent =
+        RESULT_INFO.textContent =
             "Nema pronađenih grantova.";
 
 
@@ -1269,20 +1310,17 @@ function PRIKAZI_GRANTOVE() {
     }
 
 
-    document.getElementById(
-        "resultInfo"
-    ).textContent =
+    RESULT_INFO.textContent =
         `Prikazano ${FILTRIRANI.length} ${TEKST_STATUSA} grantova.`;
 
 
     /* =========================================================
-       KREIRANJE CARDOVA
+       KREIRAJ SVAKI CARD
        ========================================================= */
 
 
     FILTRIRANI.forEach(
         GRANT => {
-
 
             const CARD =
                 document.createElement(
@@ -1294,16 +1332,31 @@ function PRIKAZI_GRANTOVE() {
                 "card";
 
 
+            /* -----------------------------------------
+               DATUM
+               ----------------------------------------- */
+
+
             const DATUM =
                 FORMAT_DATUMA(
                     GRANT.DATUM_OBJAVE
                 );
 
 
+            /* -----------------------------------------
+               ROK
+               ----------------------------------------- */
+
+
             const ROK =
                 FORMAT_DATUMA(
                     GRANT.ROK
                 );
+
+
+            /* -----------------------------------------
+               STATUS
+               ----------------------------------------- */
 
 
             const STATUS =
@@ -1313,7 +1366,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               KREIRAJ CARD SADRŽAJ
+               CARD SADRŽAJ
                ================================================= */
 
 
@@ -1562,7 +1615,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               META
+               META ELEMENT
                ================================================= */
 
 
@@ -1573,7 +1626,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               SAZNAJ VIŠE - PRAVI LINK
+               URL GRANTA
                ================================================= */
 
 
@@ -1581,6 +1634,11 @@ function PRIKAZI_GRANTOVE() {
                 SIGURAN_URL(
                     GRANT.URL
                 );
+
+
+            /* =================================================
+               AKO URL POSTOJI
+               ================================================= */
 
 
             if (
@@ -1631,6 +1689,11 @@ function PRIKAZI_GRANTOVE() {
             }
 
 
+            /* =================================================
+               AKO URL NE POSTOJI
+               ================================================= */
+
+
             else {
 
                 const LINK =
@@ -1672,7 +1735,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               DODAJ CARD U GRID
+               DODAJ CARD NA STRANICU
                ================================================= */
 
 
@@ -1692,7 +1755,9 @@ function PRIKAZI_GRANTOVE() {
 
 
 document
-    .getElementById("search")
+    .getElementById(
+        "search"
+    )
     .addEventListener(
         "input",
         PRIKAZI_GRANTOVE
@@ -1705,7 +1770,9 @@ document
 
 
 document
-    .getElementById("categoryFilter")
+    .getElementById(
+        "categoryFilter"
+    )
     .addEventListener(
         "change",
         PRIKAZI_GRANTOVE
@@ -1718,7 +1785,9 @@ document
 
 
 document
-    .getElementById("statusFilter")
+    .getElementById(
+        "statusFilter"
+    )
     .addEventListener(
         "change",
         PRIKAZI_GRANTOVE
@@ -1726,7 +1795,7 @@ document
 
 
 /* =========================================================
-   START
+   START APLIKACIJE
    ========================================================= */
 
 
@@ -1734,8 +1803,5 @@ UCITAJ_GRANTOVE();
 
 
 </script>
-
-
 </body>
 </html>
-```
