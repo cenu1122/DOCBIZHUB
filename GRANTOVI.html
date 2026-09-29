@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -377,6 +378,12 @@
             padding: 45px 20px;
 
             color: #64748b;
+
+            background: white;
+
+            border-radius: 16px;
+
+            margin-top: 20px;
         }
 
 
@@ -689,8 +696,13 @@ function SIGURAN_TEKST(TEKST) {
     const DIV =
         document.createElement("div");
 
+
     DIV.textContent =
-        TEKST || "";
+        TEKST === null ||
+        TEKST === undefined
+            ? ""
+            : String(TEKST);
+
 
     return DIV.innerHTML;
 }
@@ -799,8 +811,17 @@ function FORMAT_DATUMA(DATUM) {
 
 function STATUS_NAZIV(STATUS) {
 
+    const NORMALIZOVANI_STATUS =
+        String(
+            STATUS || "AKTIVAN"
+        )
+            .trim()
+            .toUpperCase();
+
+
     if (
-        STATUS === "ISTEKAO"
+        NORMALIZOVANI_STATUS ===
+        "ISTEKAO"
     ) {
 
         return "Istekao";
@@ -809,7 +830,8 @@ function STATUS_NAZIV(STATUS) {
 
 
     if (
-        STATUS === "ZATVOREN"
+        NORMALIZOVANI_STATUS ===
+        "ZATVOREN"
     ) {
 
         return "Zatvoren";
@@ -828,8 +850,17 @@ function STATUS_NAZIV(STATUS) {
 
 function STATUS_KLASA(STATUS) {
 
+    const NORMALIZOVANI_STATUS =
+        String(
+            STATUS || "AKTIVAN"
+        )
+            .trim()
+            .toUpperCase();
+
+
     if (
-        STATUS === "ISTEKAO"
+        NORMALIZOVANI_STATUS ===
+        "ISTEKAO"
     ) {
 
         return "status-istekao";
@@ -838,7 +869,8 @@ function STATUS_KLASA(STATUS) {
 
 
     if (
-        STATUS === "ZATVOREN"
+        NORMALIZOVANI_STATUS ===
+        "ZATVOREN"
     ) {
 
         return "status-zatvoren";
@@ -847,6 +879,21 @@ function STATUS_KLASA(STATUS) {
 
 
     return "status-aktivan";
+}
+
+
+/* =========================================================
+   NORMALIZUJ STATUS
+   ========================================================= */
+
+
+function NORMALIZUJ_STATUS(STATUS) {
+
+    return String(
+        STATUS || "AKTIVAN"
+    )
+        .trim()
+        .toUpperCase();
 }
 
 
@@ -872,13 +919,21 @@ async function UCITAJ_GRANTOVE() {
 
                 {
 
+                    method: "GET",
+
                     headers: {
 
                         "apikey":
                             SUPABASE_ANON_KEY,
 
                         "Authorization":
-                            `Bearer ${SUPABASE_ANON_KEY}`
+                            `Bearer ${SUPABASE_ANON_KEY}`,
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Accept":
+                            "application/json"
 
                     }
 
@@ -889,15 +944,43 @@ async function UCITAJ_GRANTOVE() {
 
         if (!ODGOVOR.ok) {
 
+            let DETALJI_GRESKE = "";
+
+
+            try {
+
+                DETALJI_GRESKE =
+                    await ODGOVOR.text();
+
+            } catch (GRESKA) {
+
+                DETALJI_GRESKE = "";
+
+            }
+
+
             throw new Error(
-                `GREŠKA: ${ODGOVOR.status}`
+                `GREŠKA: ${ODGOVOR.status} ${ODGOVOR.statusText} ${DETALJI_GRESKE}`
+            );
+
+        }
+
+
+        const PODACI =
+            await ODGOVOR.json();
+
+
+        if (!Array.isArray(PODACI)) {
+
+            throw new Error(
+                "Supabase nije vratio listu grantova."
             );
 
         }
 
 
         SVI_GRANTOVI =
-            await ODGOVOR.json();
+            PODACI;
 
 
         const LOADING =
@@ -956,10 +1039,6 @@ async function UCITAJ_GRANTOVE() {
    ========================================================= */
 
 
-/* =========================================================
-   PRIKAŽI GRANTOVE
-   ========================================================= */
-
 function PRIKAZI_GRANTOVE() {
 
     const GRID =
@@ -974,28 +1053,42 @@ function PRIKAZI_GRANTOVE() {
         );
 
 
+    const SEARCH_INPUT =
+        document.getElementById(
+            "search"
+        );
+
+
+    const CATEGORY_INPUT =
+        document.getElementById(
+            "categoryFilter"
+        );
+
+
+    const STATUS_INPUT =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
     const SEARCH =
-        document
-            .getElementById("search")
-            .value
-            .trim()
-            .toLowerCase();
+        SEARCH_INPUT
+            ? SEARCH_INPUT.value
+                .trim()
+                .toLowerCase()
+            : "";
 
 
     const KATEGORIJA =
-        document
-            .getElementById(
-                "categoryFilter"
-            )
-            .value;
+        CATEGORY_INPUT
+            ? CATEGORY_INPUT.value
+            : "";
 
 
     const STATUS_FILTER =
-        document
-            .getElementById(
-                "statusFilter"
-            )
-            .value;
+        STATUS_INPUT
+            ? STATUS_INPUT.value
+            : "AKTIVAN";
 
 
     const FILTRIRANI =
@@ -1003,7 +1096,10 @@ function PRIKAZI_GRANTOVE() {
             GRANT => {
 
 
-                /* PRETRAGA */
+                /* =================================================
+                   PRETRAGA
+                   ================================================= */
+
 
                 const TEKST = [
 
@@ -1030,7 +1126,11 @@ function PRIKAZI_GRANTOVE() {
                     GRANT.POTREBNA_DOKUMENTACIJA
 
                 ]
-                    .filter(Boolean)
+                    .filter(
+                        VRIJEDNOST =>
+                            VRIJEDNOST !== null &&
+                            VRIJEDNOST !== undefined
+                    )
                     .join(" ")
                     .toLowerCase();
 
@@ -1042,19 +1142,47 @@ function PRIKAZI_GRANTOVE() {
                     );
 
 
-                /* KATEGORIJA */
+                /* =================================================
+                   KATEGORIJA
+                   ================================================= */
+
+
+                const GRANT_KATEGORIJA =
+                    String(
+                        GRANT.KATEGORIJA || ""
+                    )
+                        .trim()
+                        .toUpperCase();
+
+
+                const FILTER_KATEGORIJA =
+                    String(
+                        KATEGORIJA || ""
+                    )
+                        .trim()
+                        .toUpperCase();
+
 
                 const ODGOVARA_KATEGORIJI =
-                    !KATEGORIJA ||
-                    GRANT.KATEGORIJA ===
-                        KATEGORIJA;
+                    !FILTER_KATEGORIJA ||
+                    GRANT_KATEGORIJA ===
+                        FILTER_KATEGORIJA;
 
 
-                /* STATUS */
+                /* =================================================
+                   STATUS
+                   ================================================= */
+
+
+                const GRANT_STATUS =
+                    NORMALIZUJ_STATUS(
+                        GRANT.STATUS
+                    );
+
 
                 const ODGOVARA_STATUSU =
                     STATUS_FILTER === "SVE" ||
-                    GRANT.STATUS ===
+                    GRANT_STATUS ===
                         STATUS_FILTER;
 
 
@@ -1069,6 +1197,11 @@ function PRIKAZI_GRANTOVE() {
 
 
     GRID.innerHTML = "";
+
+
+    /* =========================================================
+       NEMA REZULTATA
+       ========================================================= */
 
 
     if (
@@ -1092,6 +1225,11 @@ function PRIKAZI_GRANTOVE() {
 
     EMPTY.style.display =
         "none";
+
+
+    /* =========================================================
+       TEKST STATUSA
+       ========================================================= */
 
 
     let TEKST_STATUSA =
@@ -1120,10 +1258,26 @@ function PRIKAZI_GRANTOVE() {
     }
 
 
+    if (
+        STATUS_FILTER ===
+        "ZATVOREN"
+    ) {
+
+        TEKST_STATUSA =
+            "zatvorenih";
+
+    }
+
+
     document.getElementById(
         "resultInfo"
     ).textContent =
         `Prikazano ${FILTRIRANI.length} ${TEKST_STATUSA} grantova.`;
+
+
+    /* =========================================================
+       KREIRANJE CARDOVA
+       ========================================================= */
 
 
     FILTRIRANI.forEach(
@@ -1153,8 +1307,9 @@ function PRIKAZI_GRANTOVE() {
 
 
             const STATUS =
-                GRANT.STATUS ||
-                "AKTIVAN";
+                NORMALIZUJ_STATUS(
+                    GRANT.STATUS
+                );
 
 
             /* =================================================
@@ -1265,6 +1420,7 @@ function PRIKAZI_GRANTOVE() {
                         "
                     >
 
+
                         <div class="meta-row">
 
                             👤
@@ -1274,10 +1430,12 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.KO_MOZE_APLICIRATI ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
@@ -1292,10 +1450,12 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.STA_SE_FINANSIRA ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
@@ -1310,10 +1470,12 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.IZNOS_PODRSKE ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
@@ -1328,10 +1490,12 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.SUFINANSIRANJE ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
@@ -1346,10 +1510,12 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.PROJEKAT ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
@@ -1364,14 +1530,17 @@ function PRIKAZI_GRANTOVE() {
                             </strong>
 
                             <div style="margin-top:5px;">
+
                                 ${SIGURAN_TEKST(
                                     GRANT.POTREBNA_DOKUMENTACIJA ||
                                     "Nije navedeno."
                                 )}
+
                             </div>
 
                         </div>
 
+
                     </div>
 
 
@@ -1393,7 +1562,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               SAZNAJ VIŠE - PRAVI LINK
+               META
                ================================================= */
 
 
@@ -1401,6 +1570,11 @@ function PRIKAZI_GRANTOVE() {
                 CARD.querySelector(
                     ".meta"
                 );
+
+
+            /* =================================================
+               SAZNAJ VIŠE - PRAVI LINK
+               ================================================= */
 
 
             const IZVOR_URL =
@@ -1443,11 +1617,15 @@ function PRIKAZI_GRANTOVE() {
                     "Otvori originalni javni poziv";
 
 
-                META.insertBefore(
-                    LINK,
+                const SOURCE =
                     META.querySelector(
                         ".source"
-                    )
+                    );
+
+
+                META.insertBefore(
+                    LINK,
+                    SOURCE
                 );
 
             }
@@ -1473,11 +1651,15 @@ function PRIKAZI_GRANTOVE() {
                     "Za ovaj grant trenutno nema ispravnog URL-a";
 
 
-                META.insertBefore(
-                    LINK,
+                const SOURCE =
                     META.querySelector(
                         ".source"
-                    )
+                    );
+
+
+                META.insertBefore(
+                    LINK,
+                    SOURCE
                 );
 
 
@@ -1489,224 +1671,9 @@ function PRIKAZI_GRANTOVE() {
             }
 
 
-            GRID.appendChild(
-                CARD
-            );
-
-        }
-    );
-
-}
-
             /* =================================================
-               KREIRAJ CARD SADRŽAJ
+               DODAJ CARD U GRID
                ================================================= */
-
-
-            CARD.innerHTML = `
-
-                <div class="icon">
-                    💰
-                </div>
-
-
-                <span
-                    class="status ${STATUS_KLASA(STATUS)}"
-                >
-                    ${STATUS_NAZIV(STATUS)}
-                </span>
-
-
-                <h2>
-                    ${SIGURAN_TEKST(
-                        GRANT.NASLOV
-                    )}
-                </h2>
-
-
-                <p>
-                    ${SIGURAN_TEKST(
-                        GRANT.OPIS ||
-                        "Informacije o javnom pozivu."
-                    )}
-                </p>
-
-
-                <div class="meta">
-
-
-                    <div class="meta-row">
-
-                        📁
-
-                        <strong>
-                            Kategorija:
-                        </strong>
-
-                        ${SIGURAN_TEKST(
-                            GRANT.KATEGORIJA ||
-                            "Nije navedeno"
-                        )}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        🏛️
-
-                        <strong>
-                            Institucija:
-                        </strong>
-
-                        ${SIGURAN_TEKST(
-                            GRANT.INSTITUCIJA ||
-                            "Nije navedeno"
-                        )}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        📅
-
-                        <strong>
-                            Objavljeno:
-                        </strong>
-
-                        ${DATUM}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        ⏰
-
-                        <strong>
-                            Rok:
-                        </strong>
-
-                        ${ROK}
-
-                    </div>
-
-
-                    <!-- LINK SE DODAJE JAVASCRIPTOM -->
-
-
-                    <div class="source">
-
-                        Izvor:
-
-                        ${SIGURAN_TEKST(
-                            GRANT.IZVOR ||
-                            "DocBizHub"
-                        )}
-
-                    </div>
-
-
-                </div>
-
-            `;
-
-
-            /* =================================================
-               SAZNAJ VIŠE - PRAVI LINK
-               ================================================= */
-
-
-            const META =
-                CARD.querySelector(
-                    ".meta"
-                );
-
-
-            const IZVOR_URL =
-                SIGURAN_URL(
-                    GRANT.URL
-                );
-
-
-            if (
-                IZVOR_URL
-            ) {
-
-                const LINK =
-                    document.createElement(
-                        "a"
-                    );
-
-
-                LINK.href =
-                    IZVOR_URL;
-
-
-                LINK.target =
-                    "_blank";
-
-
-                LINK.rel =
-                    "noopener noreferrer";
-
-
-                LINK.className =
-                    "btn";
-
-
-                LINK.textContent =
-                    "Saznaj više →";
-
-
-                LINK.title =
-                    "Otvori originalni javni poziv";
-
-
-                META.insertBefore(
-                    LINK,
-                    META.querySelector(
-                        ".source"
-                    )
-                );
-
-            }
-
-            else {
-
-                const LINK =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                LINK.className =
-                    "btn btn-disabled";
-
-
-                LINK.textContent =
-                    "Link nije dostupan";
-
-
-                LINK.title =
-                    "Za ovaj grant trenutno nema ispravnog URL-a";
-
-
-                META.insertBefore(
-                    LINK,
-                    META.querySelector(
-                        ".source"
-                    )
-                );
-
-
-                console.warn(
-                    "GRANT NEMA ISPRAVAN URL:",
-                    GRANT
-                );
-
-            }
 
 
             GRID.appendChild(
@@ -1771,3 +1738,4 @@ UCITAJ_GRANTOVE();
 
 </body>
 </html>
+```
