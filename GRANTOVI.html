@@ -337,12 +337,24 @@
             transition: 0.2s;
 
             margin-top: 8px;
+
+            cursor: pointer;
         }
 
 
         .btn:hover {
 
             background: #1d4ed8;
+        }
+
+
+        .btn-disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+
+            pointer-events: none;
         }
 
 
@@ -530,8 +542,14 @@
             <div class="search-box">
 
                 <input
-                    type="text"
+                    type="search"
                     id="search"
+                    name="grant_search"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    inputmode="search"
                     placeholder="🔎 Pretraži grantove, institucije..."
                 >
 
@@ -542,7 +560,9 @@
 
             <select
                 id="categoryFilter"
+                name="grant_category"
                 class="filter-select"
+                autocomplete="off"
             >
 
                 <option value="">
@@ -568,7 +588,9 @@
 
             <select
                 id="statusFilter"
+                name="grant_status"
                 class="filter-select"
+                autocomplete="off"
             >
 
                 <option value="AKTIVAN">
@@ -646,7 +668,7 @@ const SUPABASE_URL =
 
 
 const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoidWR1d3B2ZGptYW5yZ3B1bWRyZmgiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NDgxMTA4NCwiZXhwIjoyMTAwMzg3MDg0fQ.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ";
 
 
 /* =========================================================
@@ -681,10 +703,36 @@ function SIGURAN_TEKST(TEKST) {
 
 function SIGURAN_URL(URL) {
 
+    if (
+        URL === null ||
+        URL === undefined
+    ) {
+
+        return null;
+
+    }
+
+
+    const SIROVI_URL =
+        String(URL)
+            .trim();
+
+
+    if (!SIROVI_URL) {
+
+        return null;
+
+    }
+
+
     try {
 
         const TEST =
-            new URL(URL);
+            new URL(
+                SIROVI_URL,
+                window.location.href
+            );
+
 
         if (
             TEST.protocol === "http:" ||
@@ -695,9 +743,17 @@ function SIGURAN_URL(URL) {
 
         }
 
-    } catch (GRESKA) {}
+    } catch (GRESKA) {
 
-    return "#";
+        console.warn(
+            "NEISPRAVAN GRANT URL:",
+            URL
+        );
+
+    }
+
+
+    return null;
 }
 
 
@@ -1084,10 +1140,9 @@ function PRIKAZI_GRANTOVE() {
                 "AKTIVAN";
 
 
-            const URL =
-                SIGURAN_URL(
-                    GRANT.URL
-                );
+            /* =================================================
+               KREIRAJ CARD SADRŽAJ
+               ================================================= */
 
 
             CARD.innerHTML = `
@@ -1180,14 +1235,7 @@ function PRIKAZI_GRANTOVE() {
                     </div>
 
 
-                    <a
-                        href="${URL}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn"
-                    >
-                        Saznaj više →
-                    </a>
+                    <!-- LINK SE DODAJE JAVASCRIPTOM -->
 
 
                     <div class="source">
@@ -1205,6 +1253,102 @@ function PRIKAZI_GRANTOVE() {
                 </div>
 
             `;
+
+
+            /* =================================================
+               SAZNAJ VIŠE - PRAVI LINK
+               ================================================= */
+
+
+            const META =
+                CARD.querySelector(
+                    ".meta"
+                );
+
+
+            const IZVOR_URL =
+                SIGURAN_URL(
+                    GRANT.URL
+                );
+
+
+            if (
+                IZVOR_URL
+            ) {
+
+                const LINK =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                LINK.href =
+                    IZVOR_URL;
+
+
+                LINK.target =
+                    "_blank";
+
+
+                LINK.rel =
+                    "noopener noreferrer";
+
+
+                LINK.className =
+                    "btn";
+
+
+                LINK.textContent =
+                    "Saznaj više →";
+
+
+                LINK.title =
+                    "Otvori originalni javni poziv";
+
+
+                META.insertBefore(
+                    LINK,
+                    META.querySelector(
+                        ".source"
+                    )
+                );
+
+            }
+
+            else {
+
+                const LINK =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                LINK.className =
+                    "btn btn-disabled";
+
+
+                LINK.textContent =
+                    "Link nije dostupan";
+
+
+                LINK.title =
+                    "Za ovaj grant trenutno nema ispravnog URL-a";
+
+
+                META.insertBefore(
+                    LINK,
+                    META.querySelector(
+                        ".source"
+                    )
+                );
+
+
+                console.warn(
+                    "GRANT NEMA ISPRAVAN URL:",
+                    GRANT
+                );
+
+            }
 
 
             GRID.appendChild(
