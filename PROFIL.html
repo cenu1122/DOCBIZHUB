@@ -110,6 +110,7 @@
 
     .email-text {
       color: #666;
+      word-break: break-word;
     }
 
     .section-title {
@@ -258,6 +259,7 @@
       margin-top: 15px;
       text-align: center;
       font-weight: bold;
+      min-height: 22px;
     }
 
     .help-text {
@@ -265,6 +267,35 @@
       margin-top: 6px;
       color: #777;
       font-size: 0.82rem;
+    }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #f4f4f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loading-box {
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 350px;
+      width: calc(100% - 40px);
+    }
+
+    .loading-box h3 {
+      margin-bottom: 10px;
+    }
+
+    .loading-box p {
+      color: #666;
+      font-size: 0.95rem;
     }
 
     footer {
@@ -283,513 +314,514 @@
       .main-container {
         padding: 20px 12px;
       }
+
+      header {
+        padding: 14px 18px;
+      }
+
+      .logo {
+        font-size: 1.15rem;
+      }
     }
   </style>
 </head>
 
-
 <body>
 
-
-<header>
-
-  <a href="DASHBOARD.html" class="logo">
-    🚀 DocBizHub
-  </a>
-
-  <button
-    class="btn-logout"
-    onclick="logout()"
-  >
-    Odjava
-  </button>
-
-</header>
+  <!-- LOADING -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-box">
+      <h3>🚀 DocBizHub</h3>
+      <p>Učitavam vaš profil...</p>
+    </div>
+  </div>
 
 
-<div class="main-container">
+  <!-- HEADER -->
+  <header>
 
-  <div class="profile-card">
+    <a href="DASHBOARD.html" class="logo">
+      🚀 DocBizHub
+    </a>
+
+    <button
+      class="btn-logout"
+      onclick="logout()"
+    >
+      Odjava
+    </button>
+
+  </header>
 
 
-    <!-- PROFIL -->
+  <!-- MAIN -->
+  <div class="main-container">
 
-    <div class="profile-header">
+    <div class="profile-card">
 
-      <div class="avatar-container">
+      <!-- PROFIL HEADER -->
 
-        <img
-          id="profileImg"
-          src="https://via.placeholder.com/130"
-          alt="Profilna slika"
+      <div class="profile-header">
+
+        <div class="avatar-container">
+
+          <img
+            id="profileImg"
+            src="https://via.placeholder.com/130"
+            alt="Profilna slika"
+          >
+
+          <a
+            href="DODAJ_SLIKU.html"
+            class="btn-change-photo"
+          >
+            📷
+          </a>
+
+        </div>
+
+
+        <h2 id="displayName">
+          Učitavanje...
+        </h2>
+
+        <p
+          class="email-text"
+          id="displayEmail"
         >
+          -
+        </p>
+
+      </div>
+
+
+      <!-- OSNOVNI PODACI -->
+
+      <div class="section-title">
+        👤 Osnovni podaci
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="nameInput">
+          Ime i prezime / Naziv firme
+        </label>
+
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="Ime ili naziv firme"
+        >
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <label>
+          📧 E-mail
+        </label>
+
+        <div
+          class="email-box"
+          id="emailBox"
+        >
+          -
+        </div>
+
+
+        <div class="verification-box">
+
+          <div
+            id="emailVerificationStatus"
+            class="verification-status"
+          >
+            Provjera...
+          </div>
+
+
+          <button
+            id="emailVerifyBtn"
+            class="btn-small btn-email"
+            onclick="posaljiEmailVerifikaciju()"
+          >
+            📧 Pošalji verifikacijski e-mail
+          </button>
+
+
+          <div class="help-text">
+            Nakon klika provjerite inbox i Spam/Junk folder.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TELEFON -->
+
+      <div class="form-group">
+
+        <label for="phoneInput">
+          📞 Broj telefona
+        </label>
+
+        <input
+          type="tel"
+          id="phoneInput"
+          placeholder="+38761123456"
+        >
+
+
+        <div class="verification-box">
+
+          <div
+            id="phoneVerificationStatus"
+            class="verification-status"
+          >
+            Provjera...
+          </div>
+
+
+          <button
+            id="phoneSendBtn"
+            class="btn-small btn-phone"
+            onclick="posaljiSMSKod()"
+          >
+            📱 Pošalji SMS kod
+          </button>
+
+
+          <div
+            id="otpBox"
+            class="otp-box"
+          >
+
+            <label for="otpInput">
+              🔢 SMS verifikacijski kod
+            </label>
+
+
+            <input
+              id="otpInput"
+              class="otp-input"
+              type="text"
+              maxlength="6"
+              inputmode="numeric"
+              placeholder="123456"
+            >
+
+
+            <button
+              class="btn-small btn-phone"
+              onclick="potvrdiSMSKod()"
+            >
+              ✅ Potvrdi kod
+            </button>
+
+          </div>
+
+
+          <div class="help-text">
+            Broj mora biti u međunarodnom formatu, npr. +38761123456.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- GRAD -->
+
+      <div class="form-group">
+
+        <label for="gradInput">
+          📍 Grad
+        </label>
+
+        <input
+          type="text"
+          id="gradInput"
+          placeholder="Npr. Travnik, Sarajevo..."
+        >
+
+      </div>
+
+
+      <!-- POSLOVNI PODACI -->
+
+      <div class="section-title">
+        💼 Poslovni podaci
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="djelatnostInput">
+          Djelatnost
+        </label>
+
+        <select id="djelatnostInput">
+
+          <option value="">
+            -- Odaberite djelatnost --
+          </option>
+
+          <option value="IT i programiranje">
+            IT i programiranje
+          </option>
+
+          <option value="Marketing i reklama">
+            Marketing i reklama
+          </option>
+
+          <option value="Dizajn">
+            Dizajn
+          </option>
+
+          <option value="Građevina">
+            Građevina
+          </option>
+
+          <option value="Trgovina">
+            Trgovina
+          </option>
+
+          <option value="Proizvodnja">
+            Proizvodnja
+          </option>
+
+          <option value="Ugostiteljstvo">
+            Ugostiteljstvo
+          </option>
+
+          <option value="Transport i logistika">
+            Transport i logistika
+          </option>
+
+          <option value="Finansije i računovodstvo">
+            Finansije i računovodstvo
+          </option>
+
+          <option value="Pravne usluge">
+            Pravne usluge
+          </option>
+
+          <option value="Edukacija">
+            Edukacija
+          </option>
+
+          <option value="Zdravstvo">
+            Zdravstvo
+          </option>
+
+          <option value="Nekretnine">
+            Nekretnine
+          </option>
+
+          <option value="Turizam">
+            Turizam
+          </option>
+
+          <option value="Ostalo">
+            Ostalo
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- VRSTA SARADNJE -->
+
+      <div class="form-group">
+
+        <label for="saradnjaInput">
+          🤝 Vrsta saradnje
+        </label>
+
+        <select id="saradnjaInput">
+
+          <option value="">
+            -- Odaberite --
+          </option>
+
+          <option value="Tražim klijente">
+            Tražim klijente
+          </option>
+
+          <option value="Tražim posao">
+            Tražim posao
+          </option>
+
+          <option value="Nudim usluge">
+            Nudim usluge
+          </option>
+
+          <option value="Tražim saradnika">
+            Tražim saradnika
+          </option>
+
+          <option value="Tražim poslovnog partnera">
+            Tražim poslovnog partnera
+          </option>
+
+          <option value="Nudim proizvod">
+            Nudim proizvod
+          </option>
+
+          <option value="Tražim proizvod">
+            Tražim proizvod
+          </option>
+
+          <option value="Više opcija">
+            Više opcija
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- JA -->
+
+      <div class="section-title">
+        🙋 JA
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="jaInput">
+          O meni / Šta nudim?
+        </label>
+
+        <textarea
+          id="jaInput"
+          placeholder="Opišite sebe, firmu, usluge, proizvode i iskustvo..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- TRAŽIM -->
+
+      <div class="section-title">
+        🔎 TRAŽIM
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="trazimInput">
+          Šta tražim?
+        </label>
+
+        <textarea
+          id="trazimInput"
+          placeholder="Opišite šta tražite..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ONLINE -->
+
+      <div class="section-title">
+        🌐 Online profili
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="linkedinInput">
+          🔗 LinkedIn
+        </label>
+
+        <input
+          type="url"
+          id="linkedinInput"
+          placeholder="https://www.linkedin.com/in/vas-profil"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="webInput">
+          🌐 Web stranica
+        </label>
+
+        <input
+          type="url"
+          id="webInput"
+          placeholder="https://www.vasastranica.ba"
+        >
+
+      </div>
+
+
+      <!-- SAVE -->
+
+      <button
+        class="btn-save"
+        id="saveBtn"
+        onclick="updateProfile()"
+      >
+        💾 Sačuvaj izmjene
+      </button>
+
+
+      <div id="statusMessage"></div>
+
+
+      <div class="action-links">
 
         <a
           href="DODAJ_SLIKU.html"
-          class="btn-change-photo"
+          class="btn-secondary"
         >
-          📷
+          📷 Promijeni / Ubaci sliku
+        </a>
+
+
+        <a
+          href="DASHBOARD.html"
+          class="btn-secondary"
+        >
+          💬 Dashboard
         </a>
 
       </div>
 
-
-      <h2 id="displayName">
-        Učitavanje...
-      </h2>
-
-
-      <p
-        class="email-text"
-        id="displayEmail"
-      >
-        -
-      </p>
-
     </div>
-
-
-
-    <!-- OSNOVNI PODACI -->
-
-    <div class="section-title">
-      👤 Osnovni podaci
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="nameInput">
-        Ime i prezime / Naziv firme
-      </label>
-
-      <input
-        type="text"
-        id="nameInput"
-        placeholder="Ime ili naziv firme"
-      >
-
-    </div>
-
-
-
-    <!-- EMAIL -->
-
-    <div class="form-group">
-
-      <label>
-        📧 E-mail
-      </label>
-
-
-      <div
-        class="email-box"
-        id="emailBox"
-      >
-        -
-      </div>
-
-
-      <div class="verification-box">
-
-        <div
-          id="emailVerificationStatus"
-          class="verification-status"
-        >
-          Provjera...
-        </div>
-
-
-        <button
-          id="emailVerifyBtn"
-          class="btn-small btn-email"
-          onclick="posaljiEmailVerifikaciju()"
-        >
-          📧 Pošalji verifikacijski e-mail
-        </button>
-
-
-        <div class="help-text">
-          Nakon klika provjerite inbox i Spam/Junk folder.
-        </div>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- TELEFON -->
-
-    <div class="form-group">
-
-      <label for="phoneInput">
-        📞 Broj telefona
-      </label>
-
-
-      <input
-        type="tel"
-        id="phoneInput"
-        placeholder="+38761123456"
-      >
-
-
-      <div class="verification-box">
-
-        <div
-          id="phoneVerificationStatus"
-          class="verification-status"
-        >
-          Provjera...
-        </div>
-
-
-        <button
-          id="phoneSendBtn"
-          class="btn-small btn-phone"
-          onclick="posaljiSMSKod()"
-        >
-          📱 Pošalji SMS kod
-        </button>
-
-
-        <div
-          id="otpBox"
-          class="otp-box"
-        >
-
-          <label for="otpInput">
-            🔢 SMS verifikacijski kod
-          </label>
-
-
-          <input
-            id="otpInput"
-            class="otp-input"
-            type="text"
-            maxlength="6"
-            inputmode="numeric"
-            placeholder="123456"
-          >
-
-
-          <button
-            class="btn-small btn-phone"
-            onclick="potvrdiSMSKod()"
-          >
-            ✅ Potvrdi kod
-          </button>
-
-        </div>
-
-
-        <div class="help-text">
-          Broj mora biti u međunarodnom formatu, npr. +38761123456.
-        </div>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- GRAD -->
-
-    <div class="form-group">
-
-      <label for="gradInput">
-        📍 Grad
-      </label>
-
-      <input
-        type="text"
-        id="gradInput"
-        placeholder="Npr. Travnik, Sarajevo..."
-      >
-
-    </div>
-
-
-
-    <!-- POSLOVNI PODACI -->
-
-    <div class="section-title">
-      💼 Poslovni podaci
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="djelatnostInput">
-        Djelatnost
-      </label>
-
-      <select id="djelatnostInput">
-
-        <option value="">
-          -- Odaberite djelatnost --
-        </option>
-
-        <option value="IT i programiranje">
-          IT i programiranje
-        </option>
-
-        <option value="Marketing i reklama">
-          Marketing i reklama
-        </option>
-
-        <option value="Dizajn">
-          Dizajn
-        </option>
-
-        <option value="Građevina">
-          Građevina
-        </option>
-
-        <option value="Trgovina">
-          Trgovina
-        </option>
-
-        <option value="Proizvodnja">
-          Proizvodnja
-        </option>
-
-        <option value="Ugostiteljstvo">
-          Ugostiteljstvo
-        </option>
-
-        <option value="Transport i logistika">
-          Transport i logistika
-        </option>
-
-        <option value="Finansije i računovodstvo">
-          Finansije i računovodstvo
-        </option>
-
-        <option value="Pravne usluge">
-          Pravne usluge
-        </option>
-
-        <option value="Edukacija">
-          Edukacija
-        </option>
-
-        <option value="Zdravstvo">
-          Zdravstvo
-        </option>
-
-        <option value="Nekretnine">
-          Nekretnine
-        </option>
-
-        <option value="Turizam">
-          Turizam
-        </option>
-
-        <option value="Ostalo">
-          Ostalo
-        </option>
-
-      </select>
-
-    </div>
-
-
-
-    <div class="form-group">
-
-      <label for="saradnjaInput">
-        🤝 Vrsta saradnje
-      </label>
-
-      <select id="saradnjaInput">
-
-        <option value="">
-          -- Odaberite --
-        </option>
-
-        <option value="Tražim klijente">
-          Tražim klijente
-        </option>
-
-        <option value="Tražim posao">
-          Tražim posao
-        </option>
-
-        <option value="Nudim usluge">
-          Nudim usluge
-        </option>
-
-        <option value="Tražim saradnika">
-          Tražim saradnika
-        </option>
-
-        <option value="Tražim poslovnog partnera">
-          Tražim poslovnog partnera
-        </option>
-
-        <option value="Nudim proizvod">
-          Nudim proizvod
-        </option>
-
-        <option value="Tražim proizvod">
-          Tražim proizvod
-        </option>
-
-        <option value="Više opcija">
-          Više opcija
-        </option>
-
-      </select>
-
-    </div>
-
-
-
-    <!-- JA -->
-
-    <div class="section-title">
-      🙋 JA
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="jaInput">
-        O meni / Šta nudim?
-      </label>
-
-      <textarea
-        id="jaInput"
-        placeholder="Opišite sebe, firmu, usluge, proizvode i iskustvo..."
-      ></textarea>
-
-    </div>
-
-
-
-    <!-- TRAŽIM -->
-
-    <div class="section-title">
-      🔎 TRAŽIM
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="trazimInput">
-        Šta tražim?
-      </label>
-
-      <textarea
-        id="trazimInput"
-        placeholder="Opišite šta tražite..."
-      ></textarea>
-
-    </div>
-
-
-
-    <!-- ONLINE -->
-
-    <div class="section-title">
-      🌐 Online profili
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="linkedinInput">
-        🔗 LinkedIn
-      </label>
-
-      <input
-        type="url"
-        id="linkedinInput"
-        placeholder="https://www.linkedin.com/in/vas-profil"
-      >
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="webInput">
-        🌐 Web stranica
-      </label>
-
-      <input
-        type="url"
-        id="webInput"
-        placeholder="https://www.vasastranica.ba"
-      >
-
-    </div>
-
-
-
-    <!-- SPREMI -->
-
-    <button
-      class="btn-save"
-      id="saveBtn"
-      onclick="updateProfile()"
-    >
-      💾 Sačuvaj izmjene
-    </button>
-
-
-    <div id="statusMessage"></div>
-
-
-
-    <div class="action-links">
-
-      <a
-        href="DODAJ_SLIKU.html"
-        class="btn-secondary"
-      >
-        📷 Promijeni / Ubaci sliku
-      </a>
-
-
-      <a
-        href="DASHBOARD.html"
-        class="btn-secondary"
-      >
-        💬 Dashboard
-      </a>
-
-    </div>
-
 
   </div>
 
-</div>
 
+  <!-- FOOTER -->
 
+  <footer>
 
-<footer>
+    <p>
+      © 2026 DocBizHub. Sva prava zadržana.
+    </p>
 
-  <p>
-    © 2026 DocBizHub. Sva prava zadržana.
-  </p>
-
-</footer>
-
+  </footer>
 
 
 <script>
 
-
-/* ==========================================
+/* =========================================================
    SUPABASE
-========================================== */
+========================================================= */
 
 const SUPABASE_URL =
   'https://uduwpvdjmanrgpumdrfh.supabase.co';
-
 
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
@@ -798,57 +830,206 @@ const SUPABASE_ANON_KEY =
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_ANON_KEY
+    SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
   );
 
 
 let currentUser = null;
 
 
-/* ==========================================
+/* =========================================================
+   LOADING
+========================================================= */
+
+function sakrijLoading() {
+
+  const loading =
+    document.getElementById(
+      "loadingScreen"
+    );
+
+  if (loading) {
+    loading.style.display = "none";
+  }
+
+}
+
+
+/* =========================================================
+   PRONAĐI POSTOJEĆU SESIJU
+========================================================= */
+
+async function ucitajAktivnuSesiju() {
+
+  try {
+
+    /*
+      PRVO čitamo postojeću sesiju.
+
+      Ovo je najvažniji dio popravke.
+      Ne tražimo ponovo šifru.
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    if (error) {
+
+      console.error(
+        "Greška pri učitavanju sesije:",
+        error
+      );
+
+      return null;
+
+    }
+
+
+    const session =
+      data?.session;
+
+
+    /*
+      Ako postoji sesija,
+      uzimamo korisnika iz nje.
+    */
+
+    if (session && session.user) {
+
+      return session.user;
+
+    }
+
+
+    /*
+      Dodatna provjera direktno preko Auth-a.
+    */
+
+    const {
+      data: userData,
+      error: userError
+    } =
+      await supabaseClient.auth.getUser();
+
+
+    if (
+      !userError &&
+      userData &&
+      userData.user
+    ) {
+
+      return userData.user;
+
+    }
+
+
+    return null;
+
+  } catch (error) {
+
+    console.error(
+      "Greška sesije:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
    UCITAJ PROFIL
-========================================== */
+========================================================= */
 
 async function ucitajProfil() {
 
-  const {
-    data: { user },
-    error
-  } =
-    await supabaseClient.auth.getUser();
+  /*
+    ČEKAMO DA SE SUPABASE SESIJA UČITA.
+  */
+
+  const user =
+    await ucitajAktivnuSesiju();
 
 
-  if (error || !user) {
+  /*
+    Samo ako STVARNO nema sesije,
+    vraćamo korisnika na login.
+  */
 
-    window.location.href =
-      "LOGIN.html";
+  if (!user) {
+
+    console.log(
+      "Korisnik nije prijavljen."
+    );
+
+    window.location.replace(
+      "LOGIN.html"
+    );
 
     return;
+
   }
 
 
-  currentUser = user;
+  /*
+    KORISNIK JE PRIJAVLJEN.
+    NEMA PONOVNOG UNOSA ŠIFRE.
+  */
 
+  currentUser =
+    user;
+
+
+  console.log(
+    "Prijavljeni korisnik:",
+    currentUser.id
+  );
+
+
+  /* EMAIL */
 
   document.getElementById(
     "displayEmail"
   ).innerText =
-    user.email || "-";
+    currentUser.email || "-";
 
 
   document.getElementById(
     "emailBox"
   ).innerText =
-    user.email || "-";
+    currentUser.email || "-";
 
 
-  provjeriEmail(user);
+  /* VERIFIKACIJA */
 
+  provjeriEmail(
+    currentUser
+  );
 
-  provjeriTelefon(user);
+  provjeriTelefon(
+    currentUser
+  );
 
 
   try {
+
+    /*
+      UČITAJ RED KORISNIKA
+      IZ POSAO_KORISNICI.
+    */
 
     const {
       data,
@@ -857,21 +1038,32 @@ async function ucitajProfil() {
       await supabaseClient
         .from("POSAO_KORISNICI")
         .select("*")
-        .eq("USER", user.id)
+        .eq(
+          "USER",
+          currentUser.id
+        )
         .maybeSingle();
 
 
     if (error) {
-      throw error;
+
+      console.error(
+        "Greška POSAO_KORISNICI:",
+        error
+      );
+
     }
 
 
     if (data) {
 
+      /* IME */
+
       document.getElementById(
         "displayName"
       ).innerText =
-        data.IME || "Korisnik";
+        data.IME ||
+        "Korisnik";
 
 
       document.getElementById(
@@ -880,13 +1072,17 @@ async function ucitajProfil() {
         data.IME || "";
 
 
+      /* TELEFON */
+
       document.getElementById(
         "phoneInput"
       ).value =
         data.TELEFON ||
-        user.phone ||
+        currentUser.phone ||
         "";
 
+
+      /* GRAD */
 
       document.getElementById(
         "gradInput"
@@ -894,11 +1090,15 @@ async function ucitajProfil() {
         data.GRAD || "";
 
 
+      /* DJELATNOST */
+
       document.getElementById(
         "djelatnostInput"
       ).value =
         data.DJELATNOST || "";
 
+
+      /* SARADNJA */
 
       document.getElementById(
         "saradnjaInput"
@@ -906,11 +1106,15 @@ async function ucitajProfil() {
         data.VRSTA_SARADNJE || "";
 
 
+      /* JA */
+
       document.getElementById(
         "jaInput"
       ).value =
         data.JA || "";
 
+
+      /* TRAŽIM */
 
       document.getElementById(
         "trazimInput"
@@ -918,17 +1122,26 @@ async function ucitajProfil() {
         data.TRAZIM || "";
 
 
+      /* LINKEDIN */
+
       document.getElementById(
         "linkedinInput"
       ).value =
         data.LINKEDIN || "";
 
 
+      /* WEB */
+
       document.getElementById(
         "webInput"
       ).value =
         data.WEB_STRANICA || "";
 
+
+      /*
+        Ako postoji slika direktno
+        u POSAO_KORISNICI.
+      */
 
       if (data.SLIKE_URL) {
 
@@ -942,19 +1155,29 @@ async function ucitajProfil() {
     }
 
 
-    /* SLIKA */
+    /*
+      DODATNO PROVJERAVAMO TABELU SLIKE.
+    */
 
     const {
-      data: slika
+      data: slika,
+      error: slikaError
     } =
       await supabaseClient
         .from("SLIKE")
         .select("url")
-        .eq("korisnik_id", user.id)
+        .eq(
+          "korisnik_id",
+          currentUser.id
+        )
         .maybeSingle();
 
 
-    if (slika && slika.url) {
+    if (
+      !slikaError &&
+      slika &&
+      slika.url
+    ) {
 
       document.getElementById(
         "profileImg"
@@ -964,12 +1187,13 @@ async function ucitajProfil() {
     }
 
 
-  } catch (err) {
+  } catch (error) {
 
     console.error(
-      "Greška:",
-      err
+      "Greška pri učitavanju profila:",
+      error
     );
+
 
     document.getElementById(
       "statusMessage"
@@ -978,12 +1202,20 @@ async function ucitajProfil() {
 
   }
 
+
+  /*
+    Tek kada je profil učitan,
+    sklanjamo loading ekran.
+  */
+
+  sakrijLoading();
+
 }
 
 
-/* ==========================================
-   EMAIL STATUS
-========================================== */
+/* =========================================================
+   EMAIL VERIFIKACIJA
+========================================================= */
 
 function provjeriEmail(user) {
 
@@ -999,7 +1231,10 @@ function provjeriEmail(user) {
     );
 
 
-  if (user.email_confirmed_at) {
+  if (
+    user &&
+    user.email_confirmed_at
+  ) {
 
     status.className =
       "verification-status verified";
@@ -1028,11 +1263,18 @@ function provjeriEmail(user) {
 }
 
 
-/* ==========================================
+/* =========================================================
    POŠALJI EMAIL VERIFIKACIJU
-========================================== */
+========================================================= */
 
 async function posaljiEmailVerifikaciju() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
 
   const button =
     document.getElementById(
@@ -1070,24 +1312,33 @@ async function posaljiEmailVerifikaciju() {
 
 
     if (error) {
+
       throw error;
+
     }
 
 
     status.className =
       "verification-status verified";
 
+
     status.innerText =
-      "📧 Verifikacijski e-mail je poslan. Provjerite inbox.";
+      "📧 Verifikacijski e-mail je poslan.";
 
 
-  } catch (err) {
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
 
     status.className =
       "verification-status not-verified";
 
+
     status.innerText =
-      "❌ " + err.message;
+      "❌ " + error.message;
 
   }
 
@@ -1102,9 +1353,9 @@ async function posaljiEmailVerifikaciju() {
 }
 
 
-/* ==========================================
-   TELEFON STATUS
-========================================== */
+/* =========================================================
+   TELEFON
+========================================================= */
 
 function provjeriTelefon(user) {
 
@@ -1120,10 +1371,14 @@ function provjeriTelefon(user) {
     );
 
 
-  if (user.phone_confirmed_at) {
+  if (
+    user &&
+    user.phone_confirmed_at
+  ) {
 
     status.className =
       "verification-status verified";
+
 
     status.innerText =
       "✅ Telefon je verificiran";
@@ -1131,6 +1386,7 @@ function provjeriTelefon(user) {
 
     button.disabled =
       true;
+
 
     button.innerText =
       "📱 Telefon je verificiran";
@@ -1140,6 +1396,7 @@ function provjeriTelefon(user) {
     status.className =
       "verification-status not-verified";
 
+
     status.innerText =
       "⚠️ Telefon nije verificiran";
 
@@ -1147,20 +1404,33 @@ function provjeriTelefon(user) {
     button.disabled =
       false;
 
+
+    button.innerText =
+      "📱 Pošalji SMS kod";
+
   }
 
 }
 
 
-/* ==========================================
+/* =========================================================
    POŠALJI SMS
-========================================== */
+========================================================= */
 
 async function posaljiSMSKod() {
 
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
   const phone =
     document
-      .getElementById("phoneInput")
+      .getElementById(
+        "phoneInput"
+      )
       .value
       .trim();
 
@@ -1219,23 +1489,21 @@ async function posaljiSMSKod() {
 
   try {
 
-    /*
-      Ovo šalje OTP SMS preko
-      Supabase Phone Auth.
-    */
-
     const {
       error
     } =
       await supabaseClient.auth.updateUser({
 
-        phone: phone
+        phone:
+          phone
 
       });
 
 
     if (error) {
+
       throw error;
+
     }
 
 
@@ -1246,22 +1514,31 @@ async function posaljiSMSKod() {
     status.className =
       "verification-status";
 
+
     status.style.color =
       "#3742fa";
 
+
     status.innerText =
-      "📱 SMS kod je poslan na " + phone;
+      "📱 SMS kod je poslan.";
 
+  } catch (error) {
 
-  } catch (err) {
+    console.error(
+      error
+    );
 
-    console.error(err);
 
     status.className =
       "verification-status not-verified";
 
+
+    status.style.color =
+      "";
+
+
     status.innerText =
-      "❌ " + err.message;
+      "❌ " + error.message;
 
   }
 
@@ -1276,22 +1553,33 @@ async function posaljiSMSKod() {
 }
 
 
-/* ==========================================
-   POTVRDI SMS KOD
-========================================== */
+/* =========================================================
+   POTVRDI SMS
+========================================================= */
 
 async function potvrdiSMSKod() {
 
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
   const phone =
     document
-      .getElementById("phoneInput")
+      .getElementById(
+        "phoneInput"
+      )
       .value
       .trim();
 
 
   const token =
     document
-      .getElementById("otpInput")
+      .getElementById(
+        "otpInput"
+      )
       .value
       .trim();
 
@@ -1325,8 +1613,10 @@ async function potvrdiSMSKod() {
   status.className =
     "verification-status";
 
+
   status.style.color =
     "#3742fa";
+
 
   status.innerText =
     "Provjeravam kod...";
@@ -1340,23 +1630,35 @@ async function potvrdiSMSKod() {
     } =
       await supabaseClient.auth.verifyOtp({
 
-        phone: phone,
+        phone:
+          phone,
 
-        token: token,
+        token:
+          token,
 
-        type: "phone_change"
+        type:
+          "phone_change"
 
       });
 
 
     if (error) {
+
       throw error;
+
     }
 
 
-    /*
-      Učitaj ponovo Auth korisnika.
-    */
+    if (
+      data &&
+      data.user
+    ) {
+
+      currentUser =
+        data.user;
+
+    }
+
 
     const {
       data: refreshed
@@ -1364,8 +1666,10 @@ async function potvrdiSMSKod() {
       await supabaseClient.auth.getUser();
 
 
-    if (refreshed &&
-        refreshed.user) {
+    if (
+      refreshed &&
+      refreshed.user
+    ) {
 
       currentUser =
         refreshed.user;
@@ -1376,8 +1680,10 @@ async function potvrdiSMSKod() {
     status.className =
       "verification-status verified";
 
+
     status.style.color =
       "";
+
 
     status.innerText =
       "✅ Telefon je uspješno verificiran!";
@@ -1402,31 +1708,49 @@ async function potvrdiSMSKod() {
 
 
     /*
-      Sačuvaj telefon u POSAO_KORISNICI.
+      Spremi broj i u POSAO_KORISNICI.
     */
 
-    await supabaseClient
-      .from("POSAO_KORISNICI")
-      .update({
+    const {
+      error: updateError
+    } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .update({
 
-        TELEFON: phone
+          TELEFON:
+            phone
 
-      })
-      .eq(
-        "USER",
-        currentUser.id
+        })
+        .eq(
+          "USER",
+          currentUser.id
+        );
+
+
+    if (updateError) {
+
+      console.error(
+        "Greška spremanja telefona:",
+        updateError
       );
 
+    }
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error(err);
+    console.error(
+      error
+    );
+
 
     status.className =
       "verification-status not-verified";
 
+
     status.style.color =
       "";
+
 
     status.innerText =
       "❌ Kod nije ispravan ili je istekao.";
@@ -1436,11 +1760,18 @@ async function potvrdiSMSKod() {
 }
 
 
-/* ==========================================
+/* =========================================================
    SAČUVAJ PROFIL
-========================================== */
+========================================================= */
 
 async function updateProfile() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
 
   const status =
     document.getElementById(
@@ -1456,61 +1787,79 @@ async function updateProfile() {
 
   const ime =
     document
-      .getElementById("nameInput")
+      .getElementById(
+        "nameInput"
+      )
       .value
       .trim();
 
 
   const telefon =
     document
-      .getElementById("phoneInput")
+      .getElementById(
+        "phoneInput"
+      )
       .value
       .trim();
 
 
   const grad =
     document
-      .getElementById("gradInput")
+      .getElementById(
+        "gradInput"
+      )
       .value
       .trim();
 
 
   const djelatnost =
     document
-      .getElementById("djelatnostInput")
+      .getElementById(
+        "djelatnostInput"
+      )
       .value;
 
 
   const saradnja =
     document
-      .getElementById("saradnjaInput")
+      .getElementById(
+        "saradnjaInput"
+      )
       .value;
 
 
   const ja =
     document
-      .getElementById("jaInput")
+      .getElementById(
+        "jaInput"
+      )
       .value
       .trim();
 
 
   const trazim =
     document
-      .getElementById("trazimInput")
+      .getElementById(
+        "trazimInput"
+      )
       .value
       .trim();
 
 
   const linkedin =
     document
-      .getElementById("linkedinInput")
+      .getElementById(
+        "linkedinInput"
+      )
       .value
       .trim();
 
 
   const web =
     document
-      .getElementById("webInput")
+      .getElementById(
+        "webInput"
+      )
       .value
       .trim();
 
@@ -1519,6 +1868,7 @@ async function updateProfile() {
 
     status.style.color =
       "red";
+
 
     status.innerText =
       "Molimo unesite ime ili naziv firme.";
@@ -1534,6 +1884,7 @@ async function updateProfile() {
 
   status.style.color =
     "#2b2d42";
+
 
   status.innerText =
     "Spremanje...";
@@ -1583,7 +1934,9 @@ async function updateProfile() {
 
 
     if (error) {
+
       throw error;
+
     }
 
 
@@ -1596,20 +1949,24 @@ async function updateProfile() {
     status.style.color =
       "green";
 
+
     status.innerText =
       "✅ Profil uspješno sačuvan!";
 
+  } catch (error) {
 
-  } catch (err) {
+    console.error(
+      error
+    );
 
-    console.error(err);
 
     status.style.color =
       "red";
 
+
     status.innerText =
       "❌ Greška: " +
-      err.message;
+      error.message;
 
   }
 
@@ -1620,27 +1977,79 @@ async function updateProfile() {
 }
 
 
-/* ==========================================
+/* =========================================================
    ODJAVA
-========================================== */
+========================================================= */
 
 async function logout() {
 
-  await supabaseClient.auth.signOut();
+  try {
 
-  window.location.href =
-    "LOGIN.html";
+    await supabaseClient.auth.signOut();
+
+  } catch (error) {
+
+    console.error(
+      "Greška pri odjavi:",
+      error
+    );
+
+  }
+
+
+  window.location.replace(
+    "LOGIN.html"
+  );
 
 }
 
 
-/* ==========================================
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  (event, session) => {
+
+    console.log(
+      "Auth event:",
+      event
+    );
+
+
+    /*
+      SAMO pravi SIGNED_OUT šalje
+      korisnika na LOGIN.
+
+      Ne šaljemo ga na LOGIN samo zato
+      što se stranica ponovo učitava.
+    */
+
+    if (
+      event === "SIGNED_OUT"
+    ) {
+
+      window.location.replace(
+        "LOGIN.html"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
    START
-========================================== */
+========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
-  ucitajProfil
+  () => {
+
+    ucitajProfil();
+
+  }
 );
 
 </script>
