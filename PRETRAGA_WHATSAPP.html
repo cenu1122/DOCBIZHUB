@@ -1,305 +1,2057 @@
-OVO JE NOVA VERZTIJA
-
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pretraga, AI Lektorisanje i Slanje - DocBizHub (Verzija 15)</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1300px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2 { color: #3742fa; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .section { margin-bottom: 25px; padding: 15px; background: #fafafa; border: 1px solid #e1e1e1; border-radius: 6px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        select, input[type="text"], textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
-        textarea { resize: vertical; min-height: 100px; }
-        
-        .action-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 5px; }
-        button { background-color: #3742fa; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #2f3542; }
-        
-        .version-badge { background: #d90429; color: #fff; padding: 8px 14px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; display: inline-block; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
-        th, td { border: 1px solid #dddddd; text-align: left; padding: 10px; font-size: 14px; }
-        th { background-color: #3742fa; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .wa-btn { background-color: #25d366; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; display: inline-block; }
-        .wa-btn:hover { background-color: #1ebe5d; }
-        #STATUS_PORUKA, #AI_STATUS { margin-top: 10px; font-weight: bold; font-size: 13px; color: #3742fa; }
-        .ai-result-box { background: #f0f1ff; border: 1px solid #b8bfff; padding: 15px; border-radius: 6px; margin-top: 10px; white-space: pre-wrap; font-size: 0.95rem; color: #2b2d42; }
-    </style>
+  <title>Moj Profil | DocBizHub</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f9;
+      color: #2b2d42;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #2b2d42;
+      color: #fff;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .btn-logout {
+      background: #3742fa;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .profile-card {
+      width: 100%;
+      max-width: 700px;
+      background: #fff;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(55,66,250,0.08);
+      border-top: 5px solid #3742fa;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 20px;
+    }
+
+    .avatar-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #3742fa;
+    }
+
+    .btn-change-photo {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #3742fa;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-header h2 {
+      margin-bottom: 5px;
+    }
+
+    .email-text {
+      color: #666;
+      word-break: break-word;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      margin: 25px 0 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #3742fa;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .email-box {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 10px;
+      word-break: break-word;
+    }
+
+    .verification-box {
+      margin-top: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8f9ff;
+      border: 1px solid #e3e5ff;
+    }
+
+    .verification-status {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .verified {
+      color: #16803c;
+    }
+
+    .not-verified {
+      color: #d63031;
+    }
+
+    .btn-small {
+      border: none;
+      padding: 10px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .btn-email {
+      background: #3742fa;
+      color: white;
+    }
+
+    .btn-phone {
+      background: #2ed573;
+      color: white;
+    }
+
+    .btn-small:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    .otp-box {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+    }
+
+    .otp-input {
+      text-align: center;
+      letter-spacing: 6px;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .btn-save {
+      width: 100%;
+      background: #3742fa;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-save:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .action-links {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: #f0f2ff;
+      color: #3742fa;
+      padding: 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #statusMessage {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 22px;
+    }
+
+    .help-text {
+      display: block;
+      margin-top: 6px;
+      color: #777;
+      font-size: 0.82rem;
+    }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #f4f4f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loading-box {
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 350px;
+      width: calc(100% - 40px);
+    }
+
+    .loading-box h3 {
+      margin-bottom: 10px;
+    }
+
+    .loading-box p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      background: #2b2d42;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      .profile-card {
+        padding: 25px 20px;
+      }
+
+      .main-container {
+        padding: 20px 12px;
+      }
+
+      header {
+        padding: 14px 18px;
+      }
+
+      .logo {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Upravljanje, Pretraga, AI Lektorisanje i Slanje</h2>
-
-    <div class="section">
-        <h3>✨ AI Lektor i Prepravka Teksta</h3>
-        <label for="AI_INPUT_TEKST">Unesite tekst koji želite da AI prepravi i poboljša:</label>
-        <textarea id="AI_INPUT_TEKST" placeholder="Napišite tekst ovdje..."></textarea>
-        <div class="action-row">
-            <button onclick="PRETRAGAISI_TEKST()">🤖 Prepravi i Lektoriši tekst</button>
-        </div>
-        <div id="AI_STATUS"></div>
-        <div id="AI_REZULTAT_WRAP" style="display:none;">
-            <label style="margin-top: 15px;">Prepravljeni tekst:</label>
-            <div id="AI_REZULTAT_TEKST" class="ai-result-box"></div>
-        </div>
+  <!-- LOADING -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-box">
+      <h3>🚀 DocBizHub</h3>
+      <p>Učitavam vaš profil...</p>
     </div>
+  </div>
 
-    <div class="section">
-        <h3>1. Izaberite primaoca poruke</h3>
-        <label for="KORISNIK_SELECT">Izaberite korisnika i broj:</label>
-        <select id="KORISNIK_SELECT">
-            <option value="">Učitavam korisnike iz baze...</option>
+
+  <!-- HEADER -->
+  <header>
+
+    <a href="DASHBOARD.html" class="logo">
+      🚀 DocBizHub
+    </a>
+
+    <button
+      class="btn-logout"
+      onclick="logout()"
+    >
+      Odjava
+    </button>
+
+  </header>
+
+
+  <!-- MAIN -->
+  <div class="main-container">
+
+    <div class="profile-card">
+
+      <!-- PROFIL HEADER -->
+
+      <div class="profile-header">
+
+        <div class="avatar-container">
+
+          <img
+            id="profileImg"
+            src="https://via.placeholder.com/130"
+            alt="Profilna slika"
+          >
+
+          <a
+            href="DODAJ_SLIKU.html"
+            class="btn-change-photo"
+          >
+            📷
+          </a>
+
+        </div>
+
+
+        <h2 id="displayName">
+          Učitavanje...
+        </h2>
+
+        <p
+          class="email-text"
+          id="displayEmail"
+        >
+          -
+        </p>
+
+      </div>
+
+
+      <!-- OSNOVNI PODACI -->
+
+      <div class="section-title">
+        👤 Osnovni podaci
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="nameInput">
+          Ime i prezime / Naziv firme
+        </label>
+
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="Ime ili naziv firme"
+        >
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <label>
+          📧 E-mail
+        </label>
+
+        <div
+          class="email-box"
+          id="emailBox"
+        >
+          -
+        </div>
+
+
+        <div class="verification-box">
+
+          <div
+            id="emailVerificationStatus"
+            class="verification-status"
+          >
+            Provjera...
+          </div>
+
+
+          <button
+            id="emailVerifyBtn"
+            class="btn-small btn-email"
+            onclick="posaljiEmailVerifikaciju()"
+          >
+            📧 Pošalji verifikacijski e-mail
+          </button>
+
+
+          <div class="help-text">
+            Nakon klika provjerite inbox i Spam/Junk folder.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TELEFON -->
+
+      <div class="form-group">
+
+        <label for="phoneInput">
+          📞 Broj telefona
+        </label>
+
+        <input
+          type="tel"
+          id="phoneInput"
+          placeholder="+38761123456"
+        >
+
+
+        <div class="verification-box">
+
+          <div
+            id="phoneVerificationStatus"
+            class="verification-status"
+          >
+            Provjera...
+          </div>
+
+
+          <button
+            id="phoneSendBtn"
+            class="btn-small btn-phone"
+            onclick="posaljiSMSKod()"
+          >
+            📱 Pošalji SMS kod
+          </button>
+
+
+          <div
+            id="otpBox"
+            class="otp-box"
+          >
+
+            <label for="otpInput">
+              🔢 SMS verifikacijski kod
+            </label>
+
+
+            <input
+              id="otpInput"
+              class="otp-input"
+              type="text"
+              maxlength="6"
+              inputmode="numeric"
+              placeholder="123456"
+            >
+
+
+            <button
+              class="btn-small btn-phone"
+              onclick="potvrdiSMSKod()"
+            >
+              ✅ Potvrdi kod
+            </button>
+
+          </div>
+
+
+          <div class="help-text">
+            Broj mora biti u međunarodnom formatu, npr. +38761123456.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- GRAD -->
+
+      <div class="form-group">
+
+        <label for="gradInput">
+          📍 Grad
+        </label>
+
+        <input
+          type="text"
+          id="gradInput"
+          placeholder="Npr. Travnik, Sarajevo..."
+        >
+
+      </div>
+
+
+      <!-- POSLOVNI PODACI -->
+
+      <div class="section-title">
+        💼 Poslovni podaci
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="djelatnostInput">
+          Djelatnost
+        </label>
+
+        <select id="djelatnostInput">
+
+          <option value="">
+            -- Odaberite djelatnost --
+          </option>
+
+          <option value="IT i programiranje">
+            IT i programiranje
+          </option>
+
+          <option value="Marketing i reklama">
+            Marketing i reklama
+          </option>
+
+          <option value="Dizajn">
+            Dizajn
+          </option>
+
+          <option value="Građevina">
+            Građevina
+          </option>
+
+          <option value="Trgovina">
+            Trgovina
+          </option>
+
+          <option value="Proizvodnja">
+            Proizvodnja
+          </option>
+
+          <option value="Ugostiteljstvo">
+            Ugostiteljstvo
+          </option>
+
+          <option value="Transport i logistika">
+            Transport i logistika
+          </option>
+
+          <option value="Finansije i računovodstvo">
+            Finansije i računovodstvo
+          </option>
+
+          <option value="Pravne usluge">
+            Pravne usluge
+          </option>
+
+          <option value="Edukacija">
+            Edukacija
+          </option>
+
+          <option value="Zdravstvo">
+            Zdravstvo
+          </option>
+
+          <option value="Nekretnine">
+            Nekretnine
+          </option>
+
+          <option value="Turizam">
+            Turizam
+          </option>
+
+          <option value="Ostalo">
+            Ostalo
+          </option>
+
         </select>
+
+      </div>
+
+
+      <!-- VRSTA SARADNJE -->
+
+      <div class="form-group">
+
+        <label for="saradnjaInput">
+          🤝 Vrsta saradnje
+        </label>
+
+        <select id="saradnjaInput">
+
+          <option value="">
+            -- Odaberite --
+          </option>
+
+          <option value="Tražim klijente">
+            Tražim klijente
+          </option>
+
+          <option value="Tražim posao">
+            Tražim posao
+          </option>
+
+          <option value="Nudim usluge">
+            Nudim usluge
+          </option>
+
+          <option value="Tražim saradnika">
+            Tražim saradnika
+          </option>
+
+          <option value="Tražim poslovnog partnera">
+            Tražim poslovnog partnera
+          </option>
+
+          <option value="Nudim proizvod">
+            Nudim proizvod
+          </option>
+
+          <option value="Tražim proizvod">
+            Tražim proizvod
+          </option>
+
+          <option value="Više opcija">
+            Više opcija
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- JA -->
+
+      <div class="section-title">
+        🙋 JA
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="jaInput">
+          O meni / Šta nudim?
+        </label>
+
+        <textarea
+          id="jaInput"
+          placeholder="Opišite sebe, firmu, usluge, proizvode i iskustvo..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- TRAŽIM -->
+
+      <div class="section-title">
+        🔎 TRAŽIM
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="trazimInput">
+          Šta tražim?
+        </label>
+
+        <textarea
+          id="trazimInput"
+          placeholder="Opišite šta tražite..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ONLINE -->
+
+      <div class="section-title">
+        🌐 Online profili
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="linkedinInput">
+          🔗 LinkedIn
+        </label>
+
+        <input
+          type="url"
+          id="linkedinInput"
+          placeholder="https://www.linkedin.com/in/vas-profil"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="webInput">
+          🌐 Web stranica
+        </label>
+
+        <input
+          type="url"
+          id="webInput"
+          placeholder="https://www.vasastranica.ba"
+        >
+
+      </div>
+
+
+      <!-- SAVE -->
+
+      <button
+        class="btn-save"
+        id="saveBtn"
+        onclick="updateProfile()"
+      >
+        💾 Sačuvaj izmjene
+      </button>
+
+
+      <div id="statusMessage"></div>
+
+
+      <div class="action-links">
+
+        <a
+          href="DODAJ_SLIKU.html"
+          class="btn-secondary"
+        >
+          📷 Promijeni / Ubaci sliku
+        </a>
+
+
+        <a
+          href="DASHBOARD.html"
+          class="btn-secondary"
+        >
+          💬 Dashboard
+        </a>
+
+      </div>
+
     </div>
 
-    <div class="section">
-        <h3>2. Pretraga i generisanje podataka (Google Web)</h3>
-        <input type="text" id="SEARCH_INPUT" placeholder="Unesite kriterijum (npr. Mašinske firme Tuzla)..." onkeypress="HANDLE_KEY_PRESS(event)">
-        <div class="action-row">
-            <button onclick="PRETRAZI_I_PAMETNO_UPISI()">Pokreni Pretragu i Snimi</button>
-            <label style="margin:0;">Verzija:</label>
-            <input type="text" id="VERZIJA_PRETRAGE" value="1" style="width:80px;margin:0;text-align:center;">
-            <span class="version-badge">Verzija 15</span>
-        </div>
-        <div id="STATUS_PORUKA"></div>
-    </div>
+  </div>
 
-    <div class="section">
-        <h3>3. Rezultati pretrage (Excel format)</h3>
-        <table id="REZULTATI_TABELA">
-            <thead>
-                <tr>
-                    <th>Naziv Firme / Rezultata</th>
-                    <th>Lokacija</th>
-                    <th>Opis / Detalji</th>
-                    <th>Telefon</th>
-                    <th>Link / Web sajt</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody id="TABELA_BODY">
-                <tr><td colspan="6" style="text-align:center;">Nema unesenih rezultata. Pokrenite pretragu.</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <p>
+      © 2026 DocBizHub. Sva prava zadržana.
+    </p>
+
+  </footer>
+
 
 <script>
-    const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';  
-    const _SUPABASE = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function UCITAJ_KORISNIKE() {
-        const SELECT = document.getElementById('KORISNIK_SELECT');
-        try {
-            const { data, error } = await _SUPABASE.from('BIZNIS_KORISNICI').select('*');
-            if (error) throw error;
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-            if (data && data.length > 0) {
-                SELECT.innerHTML = '<option value="">Izaberite broj sa liste...</option>';
-                data.forEach(KORISNIK => {
-                    let BROJ = KORISNIK.TELEFON || KORISNIK.BROJ_TELEFONA;
-                    if (BROJ && BROJ !== "000000000") {
-                        let OPTION = document.createElement('option');
-                        OPTION.value = BROJ;
-                        OPTION.textContent = `${KORISNIK.IME || 'Korisnik'} - (${BROJ})`;
-                        SELECT.appendChild(OPTION);
-                    }
-                });
-            }
-        } catch (err) {
-            console.log("Greška pri učitavanju korisnika iz baze:", err);
-            SELECT.innerHTML = '<option value="+38760000000">Nusret (+38760000000) - Rezervni broj</option>';
-        }
+const SUPABASE_URL =
+  'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
+  );
+
+
+let currentUser = null;
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function sakrijLoading() {
+
+  const loading =
+    document.getElementById(
+      "loadingScreen"
+    );
+
+  if (loading) {
+    loading.style.display = "none";
+  }
+
+}
+
+
+/* =========================================================
+   PRONAĐI POSTOJEĆU SESIJU
+========================================================= */
+
+async function ucitajAktivnuSesiju() {
+
+  try {
+
+    /*
+      PRVO čitamo postojeću sesiju.
+
+      Ovo je najvažniji dio popravke.
+      Ne tražimo ponovo šifru.
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    if (error) {
+
+      console.error(
+        "Greška pri učitavanju sesije:",
+        error
+      );
+
+      return null;
+
     }
 
-    UCITAJ_KORISNIKE();
 
-    async function PRETRAGAISI_TEKST() {
-        const TEKST_INPUT = document.getElementById('AI_INPUT_TEKST').value.trim();
-        const STATUS_DIV = document.getElementById('AI_STATUS');
-        const REZULTAT_WRAP = document.getElementById('AI_REZULTAT_WRAP');
-        const REZULTAT_TEKST = document.getElementById('AI_REZULTAT_TEKST');
+    const session =
+      data?.session;
 
-        if (!TEKST_INPUT) {
-            alert("Molimo unesite tekst koji želite da AI prepravi!");
-            return;
-        }
 
-        STATUS_DIV.textContent = "AI obrađuje tekst... Molimo sačekajte.";
-        REZULTAT_WRAP.style.display = 'none';
+    /*
+      Ako postoji sesija,
+      uzimamo korisnika iz nje.
+    */
 
-        try {
-            const response = await fetch(`${SUPABASE_URL}/functions/v1/PRETRAGA`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                },
-                body: JSON.stringify({ pojam: "Lektoriši, ispravi pravopis i učini profesionalnim ovaj tekst na bosanskom jeziku: " + TEKST_INPUT })
-            });
+    if (session && session.user) {
 
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error("Greška sa servera: " + errText);
-            }
+      return session.user;
 
-            const data = await response.json();
-            console.log("Odgovor Edge Function:", data);
-
-            let rezultat = "";
-            if (Array.isArray(data)) {
-                rezultat = data[0]?.opis || data[0]?.naziv || JSON.stringify(data);
-            } else if (data && data.choices) {
-                let rawContent = data.choices[0].message.content.trim();
-                let jsonString = rawContent.replace(/```json/g, "").replace(/```/g, "").trim();
-                try {
-                    let parsed = JSON.parse(jsonString);
-                    rezultat = Array.isArray(parsed) ? (parsed[0]?.opis || parsed[0]?.naziv || JSON.stringify(parsed)) : rawContent;
-                } catch(e) {
-                    rezultat = rawContent;
-                }
-            } else {
-                rezultat = JSON.stringify(data);
-            }
-
-            REZULTAT_TEKST.textContent = rezultat;
-            REZULTAT_WRAP.style.display = 'block';
-            STATUS_DIV.textContent = "Tekst uspješno obrađen!";
-        } catch (err) {
-            STATUS_DIV.textContent = "Greška: " + err.message;
-        }
     }
 
-    async function PRETRAZI_I_PAMETNO_UPISI() {
-        const POJAM = document.getElementById('SEARCH_INPUT').value.trim();
-        const TBODY = document.getElementById('TABELA_BODY');
-        const STATUS_DIV = document.getElementById('STATUS_PORUKA');
 
-        if (!POJAM) {
-            alert("Molimo unesite pojmove za pretragu!");
-            return;
-        }
+    /*
+      Dodatna provjera direktno preko Auth-a.
+    */
 
-        TBODY.innerHTML = '<tr><td colspan="6" style="text-align:center;">Pretražujem preko Edge funkcije i Google-a... Molimo sačekajte.</td></tr>';
-        STATUS_DIV.textContent = "Pretraga u toku...";
+    const {
+      data: userData,
+      error: userError
+    } =
+      await supabaseClient.auth.getUser();
 
-        try {
-            const response = await fetch(`${SUPABASE_URL}/functions/v1/PRETRAGA`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                },
-                body: JSON.stringify({ pojam: POJAM })
-            });
 
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`Server status ${response.status}: ${errText}`);
-            }
+    if (
+      !userError &&
+      userData &&
+      userData.user
+    ) {
 
-            const data = await response.json();
-            let items = [];
-            if (Array.isArray(data)) {
-                items = data;
-            } else if (data && data.choices) {
-                let rawContent = data.choices[0].message.content.trim();
-                let jsonString = rawContent.replace(/```json/g, "").replace(/```/g, "").trim();
-                items = JSON.parse(jsonString);
-            }
+      return userData.user;
 
-            TBODY.innerHTML = '';
-            let NOVO_UPISANO = 0;
-
-            if (!items || items.length === 0) {
-                TBODY.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nema pronađenih rezultata.</td></tr>';
-                STATUS_DIV.textContent = "Pretraga završena, nema rezultata.";
-                return;
-            }
-
-            for (const ITEM of items) {
-                let NAZIV_FIRME = ITEM.naziv || ITEM.IME || "Nepoznat naziv";
-                let LINK_FIRME = ITEM.link || ITEM.LINKEDIN || "#";
-                let OPIS_FIRME = ITEM.opis || ITEM.BROJ_TELEFONA || "Nema opisa";
-                let GRAD_LOKACIJA = ITEM.lokacija || "Tuzla / Regija";
-                let TELEFON_FIRME = ITEM.telefon || ITEM.TELEFON || "Nije dostupno";
-
-                let TR = document.createElement('tr');
-                TR.innerHTML = `
-                    <td><strong>${NAZIV_FIRME}</strong></td>
-                    <td>${GRAD_LOKACIJA}</td>
-                    <td>${OPIS_FIRME}</td>
-                    <td><strong>${TELEFON_FIRME}</strong></td>
-                    <td><a href="${LINK_FIRME}" target="_blank" style="color:#3742fa;">Posjeti sajt</a></td>
-                    <td><button class="wa-btn" onclick="POSALJI_NA_WHATSAPP('${NAZIV_FIRME.replace(/'/g, "")}', '${GRAD_LOKACIJA}', '${OPIS_FIRME.replace(/'/g, "").substring(0, 50)}...')">Pošalji WhatsApp</button></td>
-                `;
-                TBODY.appendChild(TR);
-
-                try {
-                    const { data: POSTOJECA_DATA } = await _SUPABASE
-                        .from('BIZNIS_KORISNICI')
-                        .select('ID')
-                        .eq('LINKEDIN', LINK_FIRME)
-                        .maybeSingle();
-
-                    if (!POSTOJECA_DATA) {
-                        const { error: INSERT_ERROR } = await _SUPABASE
-                            .from('BIZNIS_KORISNICI')
-                            .insert([
-                                { 
-                                    IME: NAZIV_FIRME.substring(0, 99), 
-                                    TELEFON: TELEFON_FIRME.substring(0, 49), 
-                                    BROJ_TELEFONA: TELEFON_FIRME.substring(0, 49),
-                                    LINKEDIN: LINK_FIRME 
-                                }
-                            ]);
-                    
-                        if (!INSERT_ERROR) {
-                            NOVO_UPISANO++;
-                        }
-                    }
-                } catch (DB_ERR) {
-                    console.log("Greška pri upisu u bazu:", DB_ERR);
-                }
-            }
-
-            STATUS_DIV.textContent = `Pretraga uspješna. Prikazano rezultata: ${items.length}, novih upisanih u bazu: ${NOVO_UPISANO}.`;
-
-        } catch (err) {
-            console.error("Detaljna greška:", err);
-            TBODY.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Greška: ${err.message || err}</td></tr>`;
-            STATUS_DIV.textContent = "Greška u izvršavanju poziva prema funkciji.";
-        }
     }
 
-    function HANDLE_KEY_PRESS(event) {
-        if (event.key === 'Enter') {
-            PRETRAZI_I_PAMETNO_UPISI();
-        }
+
+    return null;
+
+  } catch (error) {
+
+    console.error(
+      "Greška sesije:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   UCITAJ PROFIL
+========================================================= */
+
+async function ucitajProfil() {
+
+  /*
+    ČEKAMO DA SE SUPABASE SESIJA UČITA.
+  */
+
+  const user =
+    await ucitajAktivnuSesiju();
+
+
+  /*
+    Samo ako STVARNO nema sesije,
+    vraćamo korisnika na login.
+  */
+
+  if (!user) {
+
+    console.log(
+      "Korisnik nije prijavljen."
+    );
+
+    window.location.replace(
+      "LOGIN.html"
+    );
+
+    return;
+
+  }
+
+
+  /*
+    KORISNIK JE PRIJAVLJEN.
+    NEMA PONOVNOG UNOSA ŠIFRE.
+  */
+
+  currentUser =
+    user;
+
+
+  console.log(
+    "Prijavljeni korisnik:",
+    currentUser.id
+  );
+
+
+  /* EMAIL */
+
+  document.getElementById(
+    "displayEmail"
+  ).innerText =
+    currentUser.email || "-";
+
+
+  document.getElementById(
+    "emailBox"
+  ).innerText =
+    currentUser.email || "-";
+
+
+  /* VERIFIKACIJA */
+
+  provjeriEmail(
+    currentUser
+  );
+
+  provjeriTelefon(
+    currentUser
+  );
+
+
+  try {
+
+    /*
+      UČITAJ RED KORISNIKA
+      IZ POSAO_KORISNICI.
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .select("*")
+        .eq(
+          "USER",
+          currentUser.id
+        )
+        .maybeSingle();
+
+
+    if (error) {
+
+      console.error(
+        "Greška POSAO_KORISNICI:",
+        error
+      );
+
     }
 
-    function POSALJI_NA_WHATSAPP(NAZIV, GRAD, DJELATNOST) {
-        const SELECT_ELEMENT = document.getElementById('KORISNIK_SELECT');
-        const IZABRANI_BROJ = SELECT_ELEMENT.value;
 
-        if (!IZABRANI_BROJ) {
-            alert("Molimo izaberite važeći broj telefona primaoca!");
-            return;
-        }
+    if (data) {
 
-        const PORUKA = `Poštovani,\n\nŠaljem vam podatke:\n- Naziv: ${NAZIV}\n- Lokacija: ${GRAD}\n- Detalji: ${DJELATNOST}\n\nPozdrav!`;
-        const ENCODED_PORUKA = encodeURIComponent(PORUKA);
-        const WA_URL = `https://wa.me/${IZABRANI_BROJ}?text=${ENCODED_PORUKA}`;
-        window.open(WA_URL, '_blank');
+      /* IME */
+
+      document.getElementById(
+        "displayName"
+      ).innerText =
+        data.IME ||
+        "Korisnik";
+
+
+      document.getElementById(
+        "nameInput"
+      ).value =
+        data.IME || "";
+
+
+      /* TELEFON */
+
+      document.getElementById(
+        "phoneInput"
+      ).value =
+        data.TELEFON ||
+        currentUser.phone ||
+        "";
+
+
+      /* GRAD */
+
+      document.getElementById(
+        "gradInput"
+      ).value =
+        data.GRAD || "";
+
+
+      /* DJELATNOST */
+
+      document.getElementById(
+        "djelatnostInput"
+      ).value =
+        data.DJELATNOST || "";
+
+
+      /* SARADNJA */
+
+      document.getElementById(
+        "saradnjaInput"
+      ).value =
+        data.VRSTA_SARADNJE || "";
+
+
+      /* JA */
+
+      document.getElementById(
+        "jaInput"
+      ).value =
+        data.JA || "";
+
+
+      /* TRAŽIM */
+
+      document.getElementById(
+        "trazimInput"
+      ).value =
+        data.TRAZIM || "";
+
+
+      /* LINKEDIN */
+
+      document.getElementById(
+        "linkedinInput"
+      ).value =
+        data.LINKEDIN || "";
+
+
+      /* WEB */
+
+      document.getElementById(
+        "webInput"
+      ).value =
+        data.WEB_STRANICA || "";
+
+
+      /*
+        Ako postoji slika direktno
+        u POSAO_KORISNICI.
+      */
+
+      if (data.SLIKE_URL) {
+
+        document.getElementById(
+          "profileImg"
+        ).src =
+          data.SLIKE_URL;
+
+      }
+
     }
+
+
+    /*
+      DODATNO PROVJERAVAMO TABELU SLIKE.
+    */
+
+    const {
+      data: slika,
+      error: slikaError
+    } =
+      await supabaseClient
+        .from("SLIKE")
+        .select("url")
+        .eq(
+          "korisnik_id",
+          currentUser.id
+        )
+        .maybeSingle();
+
+
+    if (
+      !slikaError &&
+      slika &&
+      slika.url
+    ) {
+
+      document.getElementById(
+        "profileImg"
+      ).src =
+        slika.url;
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Greška pri učitavanju profila:",
+      error
+    );
+
+
+    document.getElementById(
+      "statusMessage"
+    ).innerText =
+      "Greška pri učitavanju profila.";
+
+  }
+
+
+  /*
+    Tek kada je profil učitan,
+    sklanjamo loading ekran.
+  */
+
+  sakrijLoading();
+
+}
+
+
+/* =========================================================
+   EMAIL VERIFIKACIJA
+========================================================= */
+
+function provjeriEmail(user) {
+
+  const status =
+    document.getElementById(
+      "emailVerificationStatus"
+    );
+
+
+  const button =
+    document.getElementById(
+      "emailVerifyBtn"
+    );
+
+
+  if (
+    user &&
+    user.email_confirmed_at
+  ) {
+
+    status.className =
+      "verification-status verified";
+
+    status.innerText =
+      "✅ E-mail je verificiran";
+
+
+    button.style.display =
+      "none";
+
+  } else {
+
+    status.className =
+      "verification-status not-verified";
+
+    status.innerText =
+      "⚠️ E-mail nije verificiran";
+
+
+    button.style.display =
+      "inline-block";
+
+  }
+
+}
+
+
+/* =========================================================
+   POŠALJI EMAIL VERIFIKACIJU
+========================================================= */
+
+async function posaljiEmailVerifikaciju() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "emailVerifyBtn"
+    );
+
+
+  const status =
+    document.getElementById(
+      "emailVerificationStatus"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.innerText =
+    "Šaljem...";
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.auth.resend({
+
+        type: "signup",
+
+        email:
+          currentUser.email
+
+      });
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    status.className =
+      "verification-status verified";
+
+
+    status.innerText =
+      "📧 Verifikacijski e-mail je poslan.";
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    status.className =
+      "verification-status not-verified";
+
+
+    status.innerText =
+      "❌ " + error.message;
+
+  }
+
+
+  button.disabled =
+    false;
+
+
+  button.innerText =
+    "📧 Pošalji ponovo";
+
+}
+
+
+/* =========================================================
+   TELEFON
+========================================================= */
+
+function provjeriTelefon(user) {
+
+  const status =
+    document.getElementById(
+      "phoneVerificationStatus"
+    );
+
+
+  const button =
+    document.getElementById(
+      "phoneSendBtn"
+    );
+
+
+  if (
+    user &&
+    user.phone_confirmed_at
+  ) {
+
+    status.className =
+      "verification-status verified";
+
+
+    status.innerText =
+      "✅ Telefon je verificiran";
+
+
+    button.disabled =
+      true;
+
+
+    button.innerText =
+      "📱 Telefon je verificiran";
+
+  } else {
+
+    status.className =
+      "verification-status not-verified";
+
+
+    status.innerText =
+      "⚠️ Telefon nije verificiran";
+
+
+    button.disabled =
+      false;
+
+
+    button.innerText =
+      "📱 Pošalji SMS kod";
+
+  }
+
+}
+
+
+/* =========================================================
+   POŠALJI SMS
+========================================================= */
+
+async function posaljiSMSKod() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
+  const phone =
+    document
+      .getElementById(
+        "phoneInput"
+      )
+      .value
+      .trim();
+
+
+  const status =
+    document.getElementById(
+      "phoneVerificationStatus"
+    );
+
+
+  const otpBox =
+    document.getElementById(
+      "otpBox"
+    );
+
+
+  const button =
+    document.getElementById(
+      "phoneSendBtn"
+    );
+
+
+  if (!phone) {
+
+    status.className =
+      "verification-status not-verified";
+
+    status.innerText =
+      "❌ Unesite broj telefona.";
+
+    return;
+
+  }
+
+
+  if (!phone.startsWith("+")) {
+
+    status.className =
+      "verification-status not-verified";
+
+    status.innerText =
+      "❌ Koristite međunarodni format: +387...";
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+
+  button.innerText =
+    "Šaljem SMS...";
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.auth.updateUser({
+
+        phone:
+          phone
+
+      });
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    otpBox.style.display =
+      "block";
+
+
+    status.className =
+      "verification-status";
+
+
+    status.style.color =
+      "#3742fa";
+
+
+    status.innerText =
+      "📱 SMS kod je poslan.";
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    status.className =
+      "verification-status not-verified";
+
+
+    status.style.color =
+      "";
+
+
+    status.innerText =
+      "❌ " + error.message;
+
+  }
+
+
+  button.disabled =
+    false;
+
+
+  button.innerText =
+    "📱 Pošalji ponovo";
+
+}
+
+
+/* =========================================================
+   POTVRDI SMS
+========================================================= */
+
+async function potvrdiSMSKod() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
+  const phone =
+    document
+      .getElementById(
+        "phoneInput"
+      )
+      .value
+      .trim();
+
+
+  const token =
+    document
+      .getElementById(
+        "otpInput"
+      )
+      .value
+      .trim();
+
+
+  const status =
+    document.getElementById(
+      "phoneVerificationStatus"
+    );
+
+
+  if (!phone) {
+
+    status.innerText =
+      "❌ Nema broja telefona.";
+
+    return;
+
+  }
+
+
+  if (token.length !== 6) {
+
+    status.innerText =
+      "❌ Kod mora imati 6 cifara.";
+
+    return;
+
+  }
+
+
+  status.className =
+    "verification-status";
+
+
+  status.style.color =
+    "#3742fa";
+
+
+  status.innerText =
+    "Provjeravam kod...";
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.verifyOtp({
+
+        phone:
+          phone,
+
+        token:
+          token,
+
+        type:
+          "phone_change"
+
+      });
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    if (
+      data &&
+      data.user
+    ) {
+
+      currentUser =
+        data.user;
+
+    }
+
+
+    const {
+      data: refreshed
+    } =
+      await supabaseClient.auth.getUser();
+
+
+    if (
+      refreshed &&
+      refreshed.user
+    ) {
+
+      currentUser =
+        refreshed.user;
+
+    }
+
+
+    status.className =
+      "verification-status verified";
+
+
+    status.style.color =
+      "";
+
+
+    status.innerText =
+      "✅ Telefon je uspješno verificiran!";
+
+
+    document.getElementById(
+      "otpBox"
+    ).style.display =
+      "none";
+
+
+    document.getElementById(
+      "phoneSendBtn"
+    ).disabled =
+      true;
+
+
+    document.getElementById(
+      "phoneSendBtn"
+    ).innerText =
+      "📱 Telefon je verificiran";
+
+
+    /*
+      Spremi broj i u POSAO_KORISNICI.
+    */
+
+    const {
+      error: updateError
+    } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .update({
+
+          TELEFON:
+            phone
+
+        })
+        .eq(
+          "USER",
+          currentUser.id
+        );
+
+
+    if (updateError) {
+
+      console.error(
+        "Greška spremanja telefona:",
+        updateError
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    status.className =
+      "verification-status not-verified";
+
+
+    status.style.color =
+      "";
+
+
+    status.innerText =
+      "❌ Kod nije ispravan ili je istekao.";
+
+  }
+
+}
+
+
+/* =========================================================
+   SAČUVAJ PROFIL
+========================================================= */
+
+async function updateProfile() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
+  const status =
+    document.getElementById(
+      "statusMessage"
+    );
+
+
+  const saveBtn =
+    document.getElementById(
+      "saveBtn"
+    );
+
+
+  const ime =
+    document
+      .getElementById(
+        "nameInput"
+      )
+      .value
+      .trim();
+
+
+  const telefon =
+    document
+      .getElementById(
+        "phoneInput"
+      )
+      .value
+      .trim();
+
+
+  const grad =
+    document
+      .getElementById(
+        "gradInput"
+      )
+      .value
+      .trim();
+
+
+  const djelatnost =
+    document
+      .getElementById(
+        "djelatnostInput"
+      )
+      .value;
+
+
+  const saradnja =
+    document
+      .getElementById(
+        "saradnjaInput"
+      )
+      .value;
+
+
+  const ja =
+    document
+      .getElementById(
+        "jaInput"
+      )
+      .value
+      .trim();
+
+
+  const trazim =
+    document
+      .getElementById(
+        "trazimInput"
+      )
+      .value
+      .trim();
+
+
+  const linkedin =
+    document
+      .getElementById(
+        "linkedinInput"
+      )
+      .value
+      .trim();
+
+
+  const web =
+    document
+      .getElementById(
+        "webInput"
+      )
+      .value
+      .trim();
+
+
+  if (!ime) {
+
+    status.style.color =
+      "red";
+
+
+    status.innerText =
+      "Molimo unesite ime ili naziv firme.";
+
+    return;
+
+  }
+
+
+  saveBtn.disabled =
+    true;
+
+
+  status.style.color =
+    "#2b2d42";
+
+
+  status.innerText =
+    "Spremanje...";
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .update({
+
+          IME:
+            ime,
+
+          TELEFON:
+            telefon,
+
+          GRAD:
+            grad,
+
+          DJELATNOST:
+            djelatnost,
+
+          VRSTA_SARADNJE:
+            saradnja,
+
+          JA:
+            ja,
+
+          TRAZIM:
+            trazim,
+
+          LINKEDIN:
+            linkedin || null,
+
+          WEB_STRANICA:
+            web || null
+
+        })
+        .eq(
+          "USER",
+          currentUser.id
+        );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    document.getElementById(
+      "displayName"
+    ).innerText =
+      ime;
+
+
+    status.style.color =
+      "green";
+
+
+    status.innerText =
+      "✅ Profil uspješno sačuvan!";
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    status.style.color =
+      "red";
+
+
+    status.innerText =
+      "❌ Greška: " +
+      error.message;
+
+  }
+
+
+  saveBtn.disabled =
+    false;
+
+}
+
+
+/* =========================================================
+   ODJAVA
+========================================================= */
+
+async function logout() {
+
+  try {
+
+    await supabaseClient.auth.signOut();
+
+  } catch (error) {
+
+    console.error(
+      "Greška pri odjavi:",
+      error
+    );
+
+  }
+
+
+  window.location.replace(
+    "LOGIN.html"
+  );
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  (event, session) => {
+
+    console.log(
+      "Auth event:",
+      event
+    );
+
+
+    /*
+      SAMO pravi SIGNED_OUT šalje
+      korisnika na LOGIN.
+
+      Ne šaljemo ga na LOGIN samo zato
+      što se stranica ponovo učitava.
+    */
+
+    if (
+      event === "SIGNED_OUT"
+    ) {
+
+      window.location.replace(
+        "LOGIN.html"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    ucitajProfil();
+
+  }
+);
+
 </script>
 
 </body>
