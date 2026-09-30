@@ -198,6 +198,344 @@ header{position:sticky;top:0;z-index:100;background:rgba(11,23,48,.94);backdrop-
     }
 }@media(max-width:1000px){.hero{grid-template-columns:1fr}.hero-visual{max-width:650px}.dashboard-grid{grid-template-columns:repeat(2,1fr)}.stats,.audience{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){header{padding:11px 4%}.nav-actions{justify-content:center}.nav-actions .btn-nav{font-size:.76rem;padding:8px 10px}.main-container{width:94%;padding-top:20px}.hero{padding:30px 23px;min-height:auto;border-radius:23px}.hero h1{font-size:2.35rem;letter-spacing:-1.4px}.hero-visual{display:none}.stats,.dashboard-grid,.how-grid,.audience{grid-template-columns:1fr}.search-section{padding:23px}.search-box{flex-direction:column}.search-box button{padding:12px}.video-container{padding-bottom:58%}.final-cta{flex-direction:column;align-items:flex-start}.modal-grid{grid-template-columns:1fr}.logo{font-size:1.05rem}}
 
+<section class="my-dashboard-section" id="mojDocBizHub">
+
+    <div class="my-dashboard-head">
+
+        <div class="my-dashboard-title">
+
+            <div class="my-dashboard-title-icon">
+                ⭐
+            </div>
+
+            <div>
+                <h2>Moj DocBizHub</h2>
+                <p>
+                    Organizujte početnu stranicu prema svojim potrebama.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="my-dashboard-actions">
+
+            <button
+                class="my-dashboard-btn primary"
+                onclick="otvoriMojeFunkcije()"
+            >
+                ➕ Dodaj funkciju
+            </button>
+
+            <button
+                class="my-dashboard-btn"
+                onclick="resetujMojeFunkcije()"
+            >
+                🔄 Resetuj
+            </button>
+
+        </div>
+
+    </div>
+
+    <div
+        id="myDashboardGrid"
+        class="my-dashboard-grid"
+    ></div>
+
+</section>
+
+
+<div
+    id="myFunctionsModal"
+    class="my-functions-modal"
+>
+
+    <div class="my-functions-box">
+
+        <div class="my-functions-modal-head">
+
+            <div>
+                <h2>⭐ Organizuj moj DocBizHub</h2>
+
+                <p style="color:var(--muted);font-size:.82rem;margin-top:5px">
+                    Izaberite funkcije koje želite na svom Dashboardu.
+                </p>
+            </div>
+
+            <button
+                class="my-functions-close"
+                onclick="zatvoriMojeFunkcije()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div
+            id="availableFunctions"
+            class="available-functions"
+        ></div>
+
+    </div>
+
+</div>
+   
+/* =========================================================
+   MOJ DOCBIZHUB - PERSONALIZOVANI RASPORED
+   NE MIJENJA POSTOJEĆU LOGIKU
+   ========================================================= */
+
+.my-dashboard-section{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:28px;
+    box-shadow:0 10px 30px rgba(20,39,76,.05);
+}
+
+.my-dashboard-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.my-dashboard-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.my-dashboard-title-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#eef1ff;
+    display:grid;
+    place-items:center;
+    font-size:1.35rem;
+}
+
+.my-dashboard-title h2{
+    font-size:1.55rem;
+    letter-spacing:-.6px;
+}
+
+.my-dashboard-title p{
+    color:var(--muted);
+    font-size:.82rem;
+    margin-top:4px;
+}
+
+.my-dashboard-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.my-dashboard-btn{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    padding:10px 14px;
+    border-radius:11px;
+    font-weight:800;
+    font-size:.78rem;
+    cursor:pointer;
+}
+
+.my-dashboard-btn.primary{
+    background:var(--blue);
+    color:#fff;
+    border-color:var(--blue);
+}
+
+.my-dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+}
+
+.my-function-card{
+    position:relative;
+    background:#f9faff;
+    border:1px solid #e5e9f4;
+    border-radius:18px;
+    padding:20px;
+    min-height:170px;
+    display:flex;
+    flex-direction:column;
+    transition:.2s;
+    cursor:grab;
+}
+
+.my-function-card:hover{
+    transform:translateY(-3px);
+    border-color:#c9d1ff;
+    box-shadow:0 15px 30px rgba(49,85,255,.10);
+}
+
+.my-function-icon{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:#eef1ff;
+    display:grid;
+    place-items:center;
+    font-size:1.3rem;
+    margin-bottom:12px;
+}
+
+.my-function-card h3{
+    font-size:1rem;
+    margin-bottom:6px;
+}
+
+.my-function-card p{
+    color:var(--muted);
+    font-size:.76rem;
+    line-height:1.5;
+}
+
+.my-function-open{
+    margin-top:auto;
+    color:var(--blue);
+    font-size:.76rem;
+    font-weight:900;
+}
+
+.my-function-remove,
+.my-function-move{
+    position:absolute;
+    top:10px;
+    width:28px;
+    height:28px;
+    border:0;
+    border-radius:8px;
+    background:#fff;
+    cursor:pointer;
+    font-weight:900;
+}
+
+.my-function-remove{
+    right:10px;
+    color:#9b1c1c;
+}
+
+.my-function-move{
+    left:10px;
+    color:#667085;
+}
+
+.my-empty-dashboard{
+    grid-column:1/-1;
+    border:2px dashed #dfe4ef;
+    border-radius:18px;
+    padding:35px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.my-functions-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(5,12,26,.72);
+    z-index:10000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.my-functions-modal.active{
+    display:flex;
+}
+
+.my-functions-box{
+    width:min(900px,96vw);
+    max-height:90vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:24px;
+    padding:28px;
+}
+
+.my-functions-modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.my-functions-close{
+    width:36px;
+    height:36px;
+    border:0;
+    border-radius:10px;
+    background:#f0f2f6;
+    cursor:pointer;
+}
+
+.available-functions{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.available-function{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:15px;
+    padding:16px;
+    text-align:left;
+    cursor:pointer;
+}
+
+.available-function.selected{
+    background:#eef1ff;
+    border-color:var(--blue);
+}
+
+.available-function-icon{
+    font-size:1.35rem;
+    margin-bottom:8px;
+}
+
+.available-function strong{
+    display:block;
+    font-size:.88rem;
+}
+
+.available-function small{
+    display:block;
+    color:var(--muted);
+    font-size:.72rem;
+    margin-top:4px;
+}
+
+@media(max-width:1000px){
+    .my-dashboard-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .available-functions{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+    .my-dashboard-grid,
+    .available-functions{
+        grid-template-columns:1fr;
+    }
+
+    .my-dashboard-head{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+   
 </style>
 </head>
 <body>
@@ -1352,5 +1690,701 @@ document.addEventListener(
 
 <script src="js/docbiz-ai.js"></script>
 
+<script>
+
+/* =========================================================
+   MOJ DOCBIZHUB
+   PERSONALIZOVANI RASPORED
+   ========================================================= */
+
+const DOCBIZ_MY_FUNCTIONS_KEY =
+    'docbizhub_my_functions_v1';
+
+const DOCBIZ_FUNCTIONS = [
+
+    {
+        id:'pokreni-biznis',
+        icon:'🚀',
+        title:'Pokreni biznis',
+        description:'Vodiči i resursi za pokretanje poslovanja.',
+        url:'POKRENI_BIZNIS.html'
+    },
+
+    {
+        id:'grantovi',
+        icon:'💰',
+        title:'Grantovi & fondovi',
+        description:'Grantovi, fondovi i finansiranje.',
+        url:'GRANTOVI.html'
+    },
+
+    {
+        id:'biznis-alati',
+        icon:'🧰',
+        title:'Biznis alati',
+        description:'Alati za svakodnevno poslovanje.',
+        url:'BIZNIS_ALATI.html'
+    },
+
+    {
+        id:'poslovne-prilike',
+        icon:'💼',
+        title:'Poslovne prilike',
+        description:'Poslovi, projekti i prilike.',
+        url:'POSAO_FORUM.html'
+    },
+
+    {
+        id:'edukacija',
+        icon:'🎓',
+        title:'Edukacija',
+        description:'Kursevi i poslovno usavršavanje.',
+        url:'EDUKACIJA.html'
+    },
+
+    {
+        id:'jezici',
+        icon:'🌍',
+        title:'Učenje jezika',
+        description:'Učenje jezika.',
+        url:'JEZICI.html'
+    },
+
+    {
+        id:'intervju',
+        icon:'🎙️',
+        title:'Intervjui',
+        description:'Priprema za poslovne intervjue.',
+        url:'INTERVJU.html'
+    },
+
+    {
+        id:'ai',
+        icon:'🤖',
+        title:'AI alati',
+        description:'AI asistenti i pametni alati.',
+        url:'AI_ASISTENT.html'
+    },
+
+    {
+        id:'networking',
+        icon:'👥',
+        title:'Poslovna mreža',
+        description:'Povežite se sa drugim korisnicima.',
+        url:'NETWORKING.html'
+    },
+
+    {
+        id:'forum',
+        icon:'🗣️',
+        title:'Poslovni Forum',
+        description:'Diskusije i razmjena iskustava.',
+        url:'FORUM.html'
+    },
+
+    {
+        id:'poruke',
+        icon:'💬',
+        title:'Chat',
+        description:'Komunikacija sa korisnicima.',
+        url:'PORUKE.html'
+    },
+
+    {
+        id:'oglasi',
+        icon:'📢',
+        title:'Oglasi',
+        description:'Poslovni oglasi.',
+        url:'OGLASI.html'
+    },
+
+    {
+        id:'profil',
+        icon:'👤',
+        title:'Moj profil',
+        description:'Vaš poslovni profil.',
+        url:'PROFIL.html'
+    },
+
+    {
+        id:'pretraga',
+        icon:'🔎',
+        title:'Pretraga baze',
+        description:'Firme, korisnici i resursi.',
+        url:'PRETRAGA.html'
+    },
+
+    {
+        id:'biznis-portal',
+        icon:'📰',
+        title:'Biznis portal',
+        description:'Poslovne informacije.',
+        url:'BIZNIS_PORTAL.html'
+    },
+
+    {
+        id:'zabava',
+        icon:'🎉',
+        title:'Kutak za odmor',
+        description:'Sadržaj za odmor.',
+        url:'ZABAVA.html'
+    },
+
+    {
+        id:'mailovi',
+        icon:'📧',
+        title:'Mailovi',
+        description:'Mail generator i inbox.',
+        url:'MAILOVI.html'
+    },
+
+    {
+        id:'podrska',
+        icon:'📩',
+        title:'Podrška',
+        description:'Kontakt sa DocBizHub timom.',
+        url:'KONTAKT.html'
+    }
+
+];
+
+
+const DOCBIZ_DEFAULT_FUNCTIONS = [
+
+    'grantovi',
+    'biznis-alati',
+    'pokreni-biznis',
+    'poslovne-prilike',
+    'edukacija',
+    'jezici',
+    'intervju',
+    'ai'
+
+];
+
+
+let docbizMyFunctions =
+    ucitajDocBizMyFunctions();
+
+
+function ucitajDocBizMyFunctions(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                DOCBIZ_MY_FUNCTIONS_KEY
+            );
+
+        if(!saved){
+
+            return [
+                ...DOCBIZ_DEFAULT_FUNCTIONS
+            ];
+
+        }
+
+        const parsed =
+            JSON.parse(saved);
+
+        if(
+            !Array.isArray(parsed)
+        ){
+
+            return [
+                ...DOCBIZ_DEFAULT_FUNCTIONS
+            ];
+
+        }
+
+        return parsed;
+
+    }catch(error){
+
+        console.warn(
+            'Moj DocBizHub:',
+            error
+        );
+
+        return [
+            ...DOCBIZ_DEFAULT_FUNCTIONS
+        ];
+
+    }
+
+}
+
+
+function sacuvajDocBizMyFunctions(){
+
+    localStorage.setItem(
+        DOCBIZ_MY_FUNCTIONS_KEY,
+        JSON.stringify(
+            docbizMyFunctions
+        )
+    );
+
+}
+
+
+function pronadjiDocBizFunction(id){
+
+    return DOCBIZ_FUNCTIONS.find(
+        item => item.id === id
+    );
+
+}
+
+
+function escapeDocBizText(text){
+
+    const div =
+        document.createElement('div');
+
+    div.textContent =
+        String(text || '');
+
+    return div.innerHTML;
+
+}
+
+
+function prikaziMojDocBizHub(){
+
+    const grid =
+        document.getElementById(
+            'myDashboardGrid'
+        );
+
+    if(!grid){
+        return;
+    }
+
+
+    if(
+        docbizMyFunctions.length === 0
+    ){
+
+        grid.innerHTML = `
+
+            <div class="my-empty-dashboard">
+
+                <strong>
+                    ⭐ Vaš raspored je prazan
+                </strong>
+
+                Kliknite na
+                <strong>Dodaj funkciju</strong>
+                i izaberite šta želite koristiti.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        docbizMyFunctions
+        .map(
+            (id,index) => {
+
+                const item =
+                    pronadjiDocBizFunction(id);
+
+                if(!item){
+                    return '';
+                }
+
+
+                return `
+
+                    <div
+                        class="my-function-card"
+                        draggable="true"
+                        data-id="${item.id}"
+                    >
+
+                        <button
+                            class="my-function-move"
+                            onclick="pomjeriDocBizFunction(${index})"
+                            title="Pomjeri"
+                        >
+                            ↕
+                        </button>
+
+                        <button
+                            class="my-function-remove"
+                            onclick="ukloniDocBizFunction('${item.id}')"
+                            title="Ukloni"
+                        >
+                            ✕
+                        </button>
+
+                        <div class="my-function-icon">
+                            ${item.icon}
+                        </div>
+
+                        <h3>
+                            ${escapeDocBizText(item.title)}
+                        </h3>
+
+                        <p>
+                            ${escapeDocBizText(item.description)}
+                        </p>
+
+                        <a
+                            href="${item.url}"
+                            class="my-function-open"
+                        >
+                            Otvori →
+                        </a>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join('');
+
+
+    aktivirajDocBizDragDrop();
+
+}
+
+
+function otvoriMojeFunkcije(){
+
+    prikaziDostupneDocBizFunkcije();
+
+    document
+        .getElementById(
+            'myFunctionsModal'
+        )
+        .classList
+        .add('active');
+
+}
+
+
+function zatvoriMojeFunkcije(){
+
+    document
+        .getElementById(
+            'myFunctionsModal'
+        )
+        .classList
+        .remove('active');
+
+}
+
+
+function prikaziDostupneDocBizFunkcije(){
+
+    const box =
+        document.getElementById(
+            'availableFunctions'
+        );
+
+    if(!box){
+        return;
+    }
+
+
+    box.innerHTML =
+        DOCBIZ_FUNCTIONS
+        .map(
+            item => {
+
+                const selected =
+                    docbizMyFunctions
+                    .includes(item.id);
+
+
+                return `
+
+                    <button
+                        type="button"
+                        class="available-function ${selected ? 'selected' : ''}"
+                        onclick="toggleDocBizFunction('${item.id}')"
+                    >
+
+                        <div class="available-function-icon">
+                            ${item.icon}
+                        </div>
+
+                        <strong>
+                            ${escapeDocBizText(item.title)}
+                        </strong>
+
+                        <small>
+                            ${escapeDocBizText(item.description)}
+                        </small>
+
+                    </button>
+
+                `;
+
+            }
+        )
+        .join('');
+
+}
+
+
+function toggleDocBizFunction(id){
+
+    const index =
+        docbizMyFunctions.indexOf(id);
+
+
+    if(index === -1){
+
+        docbizMyFunctions.push(id);
+
+    }else{
+
+        docbizMyFunctions.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    sacuvajDocBizMyFunctions();
+
+    prikaziMojDocBizHub();
+
+    prikaziDostupneDocBizFunkcije();
+
+}
+
+
+function ukloniDocBizFunction(id){
+
+    docbizMyFunctions =
+        docbizMyFunctions.filter(
+            item => item !== id
+        );
+
+
+    sacuvajDocBizMyFunctions();
+
+    prikaziMojDocBizHub();
+
+}
+
+
+function pomjeriDocBizFunction(index){
+
+    if(index <= 0){
+        return;
+    }
+
+
+    const temp =
+        docbizMyFunctions[index - 1];
+
+
+    docbizMyFunctions[index - 1] =
+        docbizMyFunctions[index];
+
+
+    docbizMyFunctions[index] =
+        temp;
+
+
+    sacuvajDocBizMyFunctions();
+
+    prikaziMojDocBizHub();
+
+}
+
+
+function resetujMojeFunkcije(){
+
+    if(
+        !confirm(
+            'Želite li vratiti početni raspored funkcija?'
+        )
+    ){
+        return;
+    }
+
+
+    docbizMyFunctions =
+        [
+            ...DOCBIZ_DEFAULT_FUNCTIONS
+        ];
+
+
+    sacuvajDocBizMyFunctions();
+
+    prikaziMojDocBizHub();
+
+}
+
+
+function aktivirajDocBizDragDrop(){
+
+    const cards =
+        document.querySelectorAll(
+            '.my-function-card'
+        );
+
+
+    cards.forEach(card => {
+
+        card.addEventListener(
+            'dragstart',
+            function(){
+
+                card.classList.add(
+                    'docbiz-dragging'
+                );
+
+            }
+        );
+
+
+        card.addEventListener(
+            'dragend',
+            function(){
+
+                card.classList.remove(
+                    'docbiz-dragging'
+                );
+
+            }
+        );
+
+
+        card.addEventListener(
+            'dragover',
+            function(event){
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        card.addEventListener(
+            'drop',
+            function(event){
+
+                event.preventDefault();
+
+
+                const dragged =
+                    document.querySelector(
+                        '.docbiz-dragging'
+                    );
+
+
+                if(!dragged){
+                    return;
+                }
+
+
+                const fromId =
+                    dragged.dataset.id;
+
+
+                const toId =
+                    card.dataset.id;
+
+
+                if(
+                    !fromId ||
+                    !toId ||
+                    fromId === toId
+                ){
+                    return;
+                }
+
+
+                const fromIndex =
+                    docbizMyFunctions
+                    .indexOf(fromId);
+
+
+                const toIndex =
+                    docbizMyFunctions
+                    .indexOf(toId);
+
+
+                if(
+                    fromIndex < 0 ||
+                    toIndex < 0
+                ){
+                    return;
+                }
+
+
+                const moved =
+                    docbizMyFunctions
+                    .splice(
+                        fromIndex,
+                        1
+                    )[0];
+
+
+                docbizMyFunctions
+                    .splice(
+                        toIndex,
+                        0,
+                        moved
+                    );
+
+
+                sacuvajDocBizMyFunctions();
+
+                prikaziMojDocBizHub();
+
+            }
+        );
+
+    });
+
+}
+
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function(){
+
+        prikaziMojDocBizHub();
+
+    }
+);
+
+
+window.addEventListener(
+    'click',
+    function(event){
+
+        const modal =
+            document.getElementById(
+                'myFunctionsModal'
+            );
+
+        if(
+            event.target === modal
+        ){
+
+            zatvoriMojeFunkcije();
+
+        }
+
+    }
+);
+
+</script>
+   
 </body>
 </html>
