@@ -1,1944 +1,1211 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Grantovi & Fondovi | DocBizHub</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocBizHub — Grantovi & Fondovi</title>
 
     <style>
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
-
         body {
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            background: #f4f7fb;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
             color: #1f2937;
         }
 
-
-        .header {
-            background:
-                linear-gradient(
-                    135deg,
-                    #0f172a,
-                    #1e3a5f
-                );
-
-            color: white;
-
-            padding: 22px 30px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            box-shadow:
-                0 4px 15px
-                rgba(0,0,0,0.12);
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 20px;
         }
 
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
 
-        .logo {
-            font-size: 24px;
+        .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
             font-weight: 700;
         }
 
-
-        .back-btn {
-            color: white;
-            text-decoration: none;
-
-            background:
-                rgba(255,255,255,0.12);
-
-            padding: 10px 16px;
-
-            border-radius: 10px;
-
-            transition: 0.2s;
-
-            white-space: nowrap;
+        .back-link:hover {
+            text-decoration: underline;
         }
 
-
-        .back-btn:hover {
-            background:
-                rgba(255,255,255,0.22);
-        }
-
-
-        .container {
+        main {
             max-width: 1200px;
-
-            margin: 35px auto;
-
-            padding: 0 20px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
         }
-
 
         .hero {
-            background: white;
-
-            border-radius: 18px;
-
-            padding: 35px;
-
             margin-bottom: 25px;
-
-            box-shadow:
-                0 5px 20px
-                rgba(0,0,0,0.07);
         }
-
 
         .hero h1 {
-            font-size: 32px;
-
-            margin-bottom: 10px;
-
-            color: #0f172a;
+            margin: 0 0 10px;
+            font-size: 34px;
+            color: #111827;
         }
 
-
         .hero p {
-            color: #64748b;
-
+            margin: 0;
+            color: #6b7280;
             font-size: 16px;
-
             line-height: 1.6;
         }
 
-
         .filters {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .filter-grid {
             display: grid;
-
-            grid-template-columns:
-                1fr 220px 220px;
-
+            grid-template-columns: 2fr 1fr 1fr;
             gap: 12px;
-
-            margin-top: 22px;
         }
 
-
-        .search-box input,
+        .filter-input,
         .filter-select {
-
             width: 100%;
-
-            padding: 15px 18px;
-
-            border:
-                1px solid #dbe2ea;
-
-            border-radius: 12px;
-
-            font-size: 16px;
-
+            min-height: 46px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 0 14px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 15px;
             outline: none;
-
-            background: white;
         }
 
-
-        .search-box input:focus,
+        .filter-input:focus,
         .filter-select:focus {
-
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-
 
         .result-info {
-
-            margin-top: 15px;
-
-            color: #64748b;
-
+            margin: 0 0 15px;
+            color: #6b7280;
             font-size: 14px;
+            font-weight: 600;
         }
 
-
-        .grid {
-
+        .grant-grid {
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(300px, 1fr)
-                );
-
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 20px;
         }
 
-
-        .card {
-
-            background: white;
-
-            border-radius: 16px;
-
-            padding: 25px;
-
-            box-shadow:
-                0 5px 18px
-                rgba(0,0,0,0.06);
-
-            transition:
-                transform 0.2s,
-                box-shadow 0.2s;
-
-            border:
-                1px solid #edf1f5;
-
+        .grant-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
             display: flex;
-
             flex-direction: column;
-        }
-
-
-        .card:hover {
-
-            transform:
-                translateY(-4px);
-
-            box-shadow:
-                0 10px 25px
-                rgba(0,0,0,0.10);
-        }
-
-
-        .icon {
-
-            font-size: 35px;
-
-            margin-bottom: 15px;
-        }
-
-
-        .card h2 {
-
-            font-size: 20px;
-
-            margin-bottom: 12px;
-
-            color: #0f172a;
-
-            line-height: 1.4;
-        }
-
-
-        .card p {
-
-            color: #64748b;
-
-            line-height: 1.5;
-
-            margin-bottom: 12px;
-        }
-
-
-        .meta {
-
-            margin-top: auto;
-
-            padding-top: 10px;
-        }
-
-
-        .meta-row {
-
-            font-size: 13px;
-
-            color: #64748b;
-
-            margin-bottom: 8px;
-
-            line-height: 1.5;
-        }
-
-
-        .status {
-
-            display: inline-block;
-
-            padding: 5px 9px;
-
-            border-radius: 20px;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            margin-bottom: 14px;
-        }
-
-
-        .status-aktivan {
-
-            background: #dcfce7;
-
-            color: #166534;
-        }
-
-
-        .status-istekao {
-
-            background: #fee2e2;
-
-            color: #991b1b;
-        }
-
-
-        .status-zatvoren {
-
-            background: #e2e8f0;
-
-            color: #475569;
-        }
-
-
-        .btn {
-
-            display: inline-block;
-
-            text-decoration: none;
-
-            background: #2563eb;
-
-            color: white;
-
-            padding: 11px 16px;
-
-            border-radius: 9px;
-
-            font-weight: 600;
-
-            transition: 0.2s;
-
-            margin-top: 8px;
-
-            cursor: pointer;
-        }
-
-
-        .btn:hover {
-
-            background: #1d4ed8;
-        }
-
-
-        .btn-disabled {
-
-            background: #94a3b8;
-
-            cursor: not-allowed;
-
-            pointer-events: none;
-        }
-
-
-        .source {
-
-            font-size: 12px;
-
-            color: #94a3b8;
-
-            margin-top: 12px;
-        }
-
-
-        /* =========================================================
-           DOKUMENTI
-           ========================================================= */
-
-
-        .documents-box {
-
-            margin-top: 20px;
-
-            padding-top: 18px;
-
-            border-top:
-                1px solid #e5e7eb;
-        }
-
-
-        .documents-title {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            font-size: 15px;
-
-            font-weight: 700;
-
-            color: #0f172a;
-
-            margin-bottom: 12px;
-        }
-
-
-        .documents-list {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 9px;
-        }
-
-
-        .document-link {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 12px;
-
-            text-decoration: none;
-
-            background: #f8fafc;
-
-            border:
-                1px solid #e2e8f0;
-
-            border-radius: 10px;
-
-            padding: 11px 13px;
-
-            transition:
-                background 0.2s,
-                border-color 0.2s,
-                transform 0.2s;
-        }
-
-
-        .document-link:hover {
-
-            background: #eff6ff;
-
-            border-color: #bfdbfe;
-
-            transform:
-                translateX(2px);
-        }
-
-
-        .document-left {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
             min-width: 0;
         }
 
-
-        .document-icon {
-
-            font-size: 20px;
-
-            flex-shrink: 0;
+        .grant-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
         }
 
+        .grant-icon {
+            font-size: 30px;
+        }
 
-        .document-name {
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
 
-            color: #1e3a8a;
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
 
-            font-size: 13px;
+        .status-expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
-            font-weight: 600;
-
+        .grant-card h2 {
+            margin: 0 0 10px;
+            color: #111827;
+            font-size: 22px;
             line-height: 1.35;
         }
 
-
-        .document-type {
-
-            display: inline-block;
-
-            margin-top: 3px;
-
-            font-size: 10px;
-
-            color: #64748b;
-
-            text-transform: uppercase;
-
-            letter-spacing: 0.3px;
+        .grant-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
 
-
-        .document-arrow {
-
-            color: #2563eb;
-
-            font-size: 17px;
-
-            flex-shrink: 0;
+        .meta-list {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 18px;
         }
 
-
-        .documents-count {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            min-width: 22px;
-
-            height: 22px;
-
-            padding: 0 6px;
-
-            border-radius: 20px;
-
-            background: #dbeafe;
-
-            color: #1d4ed8;
-
-            font-size: 11px;
-
-            font-weight: 700;
-        }
-
-
-        .empty {
-
-            display: none;
-
-            text-align: center;
-
-            padding: 45px 20px;
-
-            color: #64748b;
-
-            background: white;
-
-            border-radius: 16px;
-
-            margin-top: 20px;
-        }
-
-
-        .error {
-
-            grid-column: 1 / -1;
-
-            text-align: center;
-
-            padding: 45px 20px;
-
-            color: #dc2626;
-
-            background: white;
-
-            border-radius: 16px;
-        }
-
-
-        .loading {
-
-            grid-column: 1 / -1;
-
-            text-align: center;
-
-            padding: 45px 20px;
-
-            color: #64748b;
-
-            background: white;
-
-            border-radius: 16px;
-        }
-
-
-        .footer {
-
-            text-align: center;
-
-            padding: 35px 20px;
-
-            color: #94a3b8;
-
+        .meta-item {
+            color: #374151;
+            line-height: 1.5;
             font-size: 14px;
         }
 
+        .meta-label {
+            font-weight: 800;
+        }
+
+        .details {
+            border-top: 1px solid #eef0f3;
+            padding-top: 16px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 13px 14px;
+        }
+
+        .detail-title {
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .detail-text {
+            color: #4b5563;
+            line-height: 1.55;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+
+        .source-box {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #eef0f3;
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .source-label {
+            font-weight: 800;
+            color: #374151;
+        }
+
+        .original-link {
+            display: inline-flex;
+            margin-top: 14px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 44px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 800;
+            transition: 0.2s ease;
+        }
+
+        .original-link:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================================
+           DOKUMENTI
+           ================================ */
+
+        .documents-box {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid #eef0f3;
+        }
+
+        .documents-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .documents-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .documents-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .documents-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .document-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            transition: 0.2s ease;
+        }
+
+        .document-link:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+            transform: translateY(-1px);
+        }
+
+        .document-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .document-icon {
+            flex: 0 0 auto;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .document-content {
+            min-width: 0;
+        }
+
+        .document-name {
+            font-weight: 800;
+            color: #1f2937;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .document-type {
+            display: inline-block;
+            margin-top: 4px;
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .document-description {
+            margin-top: 4px;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .document-arrow {
+            flex: 0 0 auto;
+            font-size: 18px;
+            color: #2563eb;
+            font-weight: 800;
+        }
+
+        .loading,
+        .empty {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .empty {
+            display: none;
+        }
+
+        footer {
+            border-top: 1px solid #e5e7eb;
+            background: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+        }
 
         @media (max-width: 850px) {
-
-            .filters {
-
-                grid-template-columns:
-                    1fr 1fr;
-
+            .grant-grid {
+                grid-template-columns: 1fr;
             }
 
-            .search-box {
-
-                grid-column:
-                    1 / -1;
-
+            .filter-grid {
+                grid-template-columns: 1fr;
             }
-
         }
 
+        @media (max-width: 600px) {
+            main {
+                padding: 22px 12px 45px;
+            }
 
-        @media (max-width: 700px) {
+            header {
+                padding: 15px 12px;
+            }
 
-            .header {
-
-                padding: 18px;
-
+            .header-inner {
+                align-items: flex-start;
                 flex-direction: column;
-
-                align-items: stretch;
             }
-
-
-            .back-btn {
-
-                text-align: center;
-            }
-
-
-            .hero {
-
-                padding: 25px;
-            }
-
 
             .hero h1 {
-
-                font-size: 26px;
+                font-size: 28px;
             }
 
-
-            .filters {
-
-                grid-template-columns: 1fr;
+            .grant-card {
+                padding: 17px;
             }
 
-
-            .search-box {
-
-                grid-column: auto;
+            .grant-card h2 {
+                font-size: 20px;
             }
 
-
-            .grid {
-
-                grid-template-columns: 1fr;
+            .document-link {
+                padding: 11px;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+<header>
+    <div class="header-inner">
+        <div class="brand">📊 DocBizHub</div>
 
-<header class="header">
-
-    <div class="logo">
-        📊 DocBizHub
+        <a
+            class="back-link"
+            href="https://docbizhub.com/DASHBOARD.html"
+        >
+            ← Nazad na Dashboard
+        </a>
     </div>
-
-
-    <a
-        href="DASHBOARD.html"
-        class="back-btn"
-    >
-        ← Nazad na Dashboard
-    </a>
-
 </header>
 
-
-<main class="container">
-
+<main>
 
     <section class="hero">
-
-        <h1>
-            💰 Grantovi & Fondovi
-        </h1>
-
+        <h1>💰 Grantovi &amp; Fondovi</h1>
 
         <p>
-            Pronađite dostupne grantove,
-            fondove, javne pozive i programe
-            podrške za razvoj poslovanja.
+            Pronađite dostupne grantove, fondove, javne pozive i programe podrške
+            za razvoj poslovanja.
         </p>
+    </section>
 
+    <section class="filters">
 
-        <div class="filters">
+        <div class="filter-grid">
 
-
-            <!-- PRETRAGA -->
-
-            <div class="search-box">
-
-                <input
-                    type="search"
-                    id="search"
-                    name="grant_search"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="none"
-                    spellcheck="false"
-                    inputmode="search"
-                    placeholder="🔎 Pretraži grantove, institucije..."
-                >
-
-            </div>
-
-
-            <!-- KATEGORIJA -->
-
-            <select
-                id="categoryFilter"
-                name="grant_category"
-                class="filter-select"
+            <input
+                id="search"
+                class="filter-input"
+                type="search"
+                placeholder="🔎 Pretraži grantove..."
                 autocomplete="off"
             >
 
-                <option value="">
-                    📁 Sve kategorije
-                </option>
-
-                <option value="FEDERALNI">
-                    Federalni
-                </option>
-
-                <option value="POLJOPRIVREDA">
-                    Poljoprivreda
-                </option>
-
-                <option value="KANTONALNI">
-                    Kanton Sarajevo
-                </option>
-
+            <select id="categoryFilter" class="filter-select">
+                <option value="">📁 Sve kategorije</option>
+                <option value="FEDERALNI">Federalni</option>
+                <option value="POLJOPRIVREDA">Poljoprivreda</option>
+                <option value="KANTONALNI">Kanton Sarajevo</option>
             </select>
 
-
-            <!-- STATUS -->
-
-            <select
-                id="statusFilter"
-                name="grant_status"
-                class="filter-select"
-                autocomplete="off"
-            >
-
-                <option value="AKTIVAN">
-                    🟢 Aktivni
-                </option>
-
-                <option value="ISTEKAO">
-                    🔴 Istekli
-                </option>
-
-                <option value="SVE">
-                    ⚪ Svi
-                </option>
-
+            <select id="statusFilter" class="filter-select">
+                <option value="AKTIVAN">🟢 Aktivni</option>
+                <option value="ISTEKAO">🔴 Istekli</option>
+                <option value="SVE">⚪ Svi</option>
             </select>
 
-
-        </div>
-
-
-        <div
-            class="result-info"
-            id="resultInfo"
-        >
-            Učitavanje...
         </div>
 
     </section>
 
-
-    <section
-        class="grid"
-        id="grantGrid"
-    >
-
-        <div
-            class="loading"
-            id="loading"
-        >
-            ⏳ Učitavanje grantova...
-        </div>
-
-    </section>
-
-
-    <div
-        class="empty"
-        id="empty"
-    >
-        Nema rezultata za odabrane filtere.
+    <div id="resultInfo" class="result-info">
+        Učitavanje...
     </div>
 
+    <div id="loading" class="loading">
+        Učitavanje grantova...
+    </div>
+
+    <div id="empty" class="empty">
+        Nema grantova koji odgovaraju odabranim filterima.
+    </div>
+
+    <section id="grantGrid" class="grant-grid"></section>
 
 </main>
 
-
-<footer class="footer">
-
-    © 2026 DocBizHub —
-    Grantovi & Fondovi
-
+<footer>
+    © 2026 DocBizHub — Grantovi &amp; Fondovi
 </footer>
 
-
 <script>
-
-
-/* =========================================================
-   SUPABASE
-   ========================================================= */
-
-
-const SUPABASE_URL =
-    "https://uduwpvdjmanrgpumdrfh.supabase.co";
-
-
-const SUPABASE_ANON_KEY =
-    "sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45";
-
-
-/* =========================================================
-   SVI GRANTOVI
-   ========================================================= */
-
-
-let SVI_GRANTOVI = [];
-
-
-/* =========================================================
-   SVI DOKUMENTI
-   ========================================================= */
-
-
-let SVI_DOKUMENTI = [];
-
-
-/* =========================================================
-   MAPA DOKUMENATA
-   ========================================================= */
-
-
-let DOKUMENTI_PO_GRANTU = {};
-
-
-/* =========================================================
-   SIGURAN TEKST
-   ========================================================= */
-
-
-function SIGURAN_TEKST(TEKST) {
-
-    const DIV =
-        document.createElement("div");
-
-
-    DIV.textContent =
-        TEKST === null ||
-        TEKST === undefined
-            ? ""
-            : String(TEKST);
-
-
-    return DIV.innerHTML;
-
-}
-
-
-/* =========================================================
-   SIGURAN URL
-   ========================================================= */
-
-
-function SIGURAN_URL(URL_VRIJEDNOST) {
-
-    if (
-        URL_VRIJEDNOST === null ||
-        URL_VRIJEDNOST === undefined
-    ) {
-
-        return null;
-
-    }
-
-
-    let SIROVI_URL =
-        String(URL_VRIJEDNOST).trim();
-
-
-    if (!SIROVI_URL) {
-
-        return null;
-
-    }
-
-
-    SIROVI_URL =
-        SIROVI_URL
-            .replace(
-                /^["']+|["']+$/g,
-                ""
-            )
-            .trim();
-
-
-    if (!SIROVI_URL) {
-
-        return null;
-
-    }
-
-
-    if (
-        !/^https?:\/\//i.test(
-            SIROVI_URL
-        )
-    ) {
-
-        console.warn(
-            "URL NIJE HTTP/HTTPS:",
-            SIROVI_URL
-        );
-
-        return null;
-
-    }
-
-
-    try {
-
-        const TEST =
-            new URL(
-                SIROVI_URL
-            );
-
-
-        if (
-            TEST.protocol === "http:" ||
-            TEST.protocol === "https:"
-        ) {
-
-            return TEST.href;
-
-        }
-
-    }
-
-    catch (GRESKA) {
-
-        console.warn(
-            "NEISPRAVAN URL:",
-            SIROVI_URL,
-            GRESKA
-        );
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =========================================================
-   DATUM
-   ========================================================= */
-
-
-function FORMAT_DATUMA(DATUM) {
-
-    if (!DATUM) {
-
-        return "Nije navedeno";
-
-    }
-
-
-    const TEST =
-        new Date(DATUM);
-
-
-    if (
-        Number.isNaN(
-            TEST.getTime()
-        )
-    ) {
-
-        return "Nije navedeno";
-
-    }
-
-
-    return TEST.toLocaleDateString(
-        "bs-BA"
-    );
-
-}
-
-
-/* =========================================================
-   NORMALIZUJ STATUS
-   ========================================================= */
-
-
-function NORMALIZUJ_STATUS(STATUS) {
-
-    return String(
-        STATUS || "AKTIVAN"
-    )
-        .trim()
-        .toUpperCase();
-
-}
-
-
-/* =========================================================
-   STATUS NAZIV
-   ========================================================= */
-
-
-function STATUS_NAZIV(STATUS) {
-
-    const NORMALIZOVANI_STATUS =
-        NORMALIZUJ_STATUS(STATUS);
-
-
-    if (
-        NORMALIZOVANI_STATUS ===
-        "ISTEKAO"
-    ) {
-
-        return "Istekao";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_STATUS ===
-        "ZATVOREN"
-    ) {
-
-        return "Zatvoren";
-
-    }
-
-
-    return "Aktivan";
-
-}
-
-
-/* =========================================================
-   STATUS KLASA
-   ========================================================= */
-
-
-function STATUS_KLASA(STATUS) {
-
-    const NORMALIZOVANI_STATUS =
-        NORMALIZUJ_STATUS(STATUS);
-
-
-    if (
-        NORMALIZOVANI_STATUS ===
-        "ISTEKAO"
-    ) {
-
-        return "status-istekao";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_STATUS ===
-        "ZATVOREN"
-    ) {
-
-        return "status-zatvoren";
-
-    }
-
-
-    return "status-aktivan";
-
-}
-
-
-/* =========================================================
-   NORMALIZUJ TIP DOKUMENTA
-   ========================================================= */
-
-
-function NORMALIZUJ_TIP_DOKUMENTA(TIP) {
-
-    return String(
-        TIP || "DOKUMENT"
-    )
-        .trim()
-        .toUpperCase();
-
-}
-
-
-/* =========================================================
-   IKONA DOKUMENTA
-   ========================================================= */
-
-
-function IKONA_DOKUMENTA(TIP) {
-
-    const NORMALIZOVANI_TIP =
-        NORMALIZUJ_TIP_DOKUMENTA(
-            TIP
-        );
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "JAVNI_POZIV"
-    ) {
-
-        return "📢";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "PRAVILNIK"
-    ) {
-
-        return "📘";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "OBRAZAC"
-    ) {
-
-        return "📋";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "VODIC"
-    ) {
-
-        return "📕";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "PROGRAM"
-    ) {
-
-        return "📑";
-
-    }
-
-
-    if (
-        NORMALIZOVANI_TIP ===
-        "PDF"
-    ) {
-
-        return "📄";
-
-    }
-
-
-    return "📎";
-
-}
-
-
-/* =========================================================
-   NAZIV TIPA DOKUMENTA
-   ========================================================= */
-
-
-function NAZIV_TIPA_DOKUMENTA(TIP) {
-
-    const NORMALIZOVANI_TIP =
-        NORMALIZUJ_TIP_DOKUMENTA(
-            TIP
-        );
-
-
-    const NAZIVI = {
-
-        "JAVNI_POZIV":
-            "Javni poziv",
-
-        "PRAVILNIK":
-            "Pravilnik",
-
-        "OBRAZAC":
-            "Obrazac",
-
-        "VODIC":
-            "Vodič",
-
-        "PROGRAM":
-            "Program",
-
-        "PDF":
-            "PDF dokument",
-
-        "OSTALO":
-            "Ostalo",
-
-        "DOKUMENT":
-            "Dokument"
-
-    };
-
-
-    return (
-        NAZIVI[
-            NORMALIZOVANI_TIP
-        ] ||
-        NORMALIZOVANI_TIP
-    );
-
-}
-
-
-/* =========================================================
-   UČITAJ GRANTOVE
-   ========================================================= */
-
-
-async function UCITAJ_GRANTOVE() {
-
-    const URL =
-        `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`;
-
-
-    console.log(
-        "UČITAVAM GRANTOVE:",
-        URL
-    );
-
-
-    const ODGOVOR =
-        await fetch(
-            URL,
-            {
-
-                method: "GET",
-
-                headers: {
-
-                    "apikey":
-                        SUPABASE_ANON_KEY,
-
-                    "Accept":
-                        "application/json"
-
-                }
-
-            }
-        );
-
-
-    console.log(
-        "GRANTOVI STATUS:",
-        ODGOVOR.status
-    );
-
-
-    if (!ODGOVOR.ok) {
-
-        const TEKST_GRESKE =
-            await ODGOVOR.text();
-
-
-        throw new Error(
-            `Supabase greška pri učitavanju grantova ${ODGOVOR.status}: ${TEKST_GRESKE}`
-        );
-
-    }
-
-
-    const PODACI =
-        await ODGOVOR.json();
-
-
-    if (!Array.isArray(PODACI)) {
-
-        throw new Error(
-            "Supabase nije vratio niz grantova."
-        );
-
-    }
-
-
-    SVI_GRANTOVI =
-        PODACI;
-
-
-    console.log(
-        "GRANTOVI UČITANI:",
-        SVI_GRANTOVI.length
-    );
-
-}
-
-
-/* =========================================================
-   UČITAJ DOKUMENTE
-   ========================================================= */
-
-
-async function UCITAJ_DOKUMENTE() {
-
-    const URL =
-        `${SUPABASE_URL}/rest/v1/GRANT_DOKUMENTI?select=*&AKTIVAN=eq.true&order=GRANT_ID.asc,REDOSLIJED.asc,ID.asc`;
-
-
-    console.log(
-        "UČITAVAM DOKUMENTE:",
-        URL
-    );
-
-
-    const ODGOVOR =
-        await fetch(
-            URL,
-            {
-
-                method: "GET",
-
-                headers: {
-
-                    "apikey":
-                        SUPABASE_ANON_KEY,
-
-                    "Accept":
-                        "application/json"
-
-                }
-
-            }
-        );
-
-
-    console.log(
-        "DOKUMENTI STATUS:",
-        ODGOVOR.status
-    );
-
-
-    if (!ODGOVOR.ok) {
-
-        const TEKST_GRESKE =
-            await ODGOVOR.text();
-
-
-        throw new Error(
-            `Supabase greška pri učitavanju dokumenata ${ODGOVOR.status}: ${TEKST_GRESKE}`
-        );
-
-    }
-
-
-    const PODACI =
-        await ODGOVOR.json();
-
-
-    if (!Array.isArray(PODACI)) {
-
-        throw new Error(
-            "Supabase nije vratio niz dokumenata."
-        );
-
-    }
-
-
-    SVI_DOKUMENTI =
-        PODACI;
-
-
-    console.log(
-        "DOKUMENTI UČITANI:",
-        SVI_DOKUMENTI.length
-    );
-
-
-    /* =====================================================
-       NAPRAVI MAPU:
-       GRANT_ID -> DOKUMENTI
-       ===================================================== */
-
-
-    DOKUMENTI_PO_GRANTU = {};
-
-
-    SVI_DOKUMENTI.forEach(
-        DOKUMENT => {
-
-            const GRANT_ID =
-                String(
-                    DOKUMENT.GRANT_ID
-                );
-
-
-            if (
-                !DOKUMENTI_PO_GRANTU[
-                    GRANT_ID
-                ]
-            ) {
-
-                DOKUMENTI_PO_GRANTU[
-                    GRANT_ID
-                ] = [];
-
-            }
-
-
-            DOKUMENTI_PO_GRANTU[
-                GRANT_ID
-            ].push(
-                DOKUMENT
-            );
-
-        }
-    );
-
-
-    console.log(
-        "MAPA DOKUMENATA:",
-        DOKUMENTI_PO_GRANTU
-    );
-
-}
-
-
-/* =========================================================
-   UČITAJ SVE
-   ========================================================= */
-
-
-async function UCITAJ_SVE() {
-
-    const GRID =
-        document.getElementById(
-            "grantGrid"
-        );
-
-
-    const RESULT_INFO =
-        document.getElementById(
-            "resultInfo"
-        );
-
-
-    try {
-
-        console.log(
-            "===================================="
-        );
-
-
-        console.log(
-            "POČETAK UČITAVANJA DOCBIZHUB GRANTOVA"
-        );
-
-
-        console.log(
-            "===================================="
-        );
-
-
-        /*
-           Učitavamo grantove i dokumente
-           paralelno.
-        */
-
-        await Promise.all(
-            [
-
-                UCITAJ_GRANTOVE(),
-
-                UCITAJ_DOKUMENTE()
-
-            ]
-        );
-
-
-        const LOADING =
-            document.getElementById(
-                "loading"
-            );
-
-
-        if (LOADING) {
-
-            LOADING.remove();
-
-        }
-
-
-        PRIKAZI_GRANTOVE();
-
-    }
-
-
-    catch (GRESKA) {
-
-        console.error(
-            "GREŠKA PRI UČITAVANJU:",
-            GRESKA
-        );
-
-
-        if (GRID) {
-
-            GRID.innerHTML = `
-
-                <div class="error">
-
-                    ❌ Podaci trenutno nisu dostupni.
-
-                    <br><br>
-
-                    ${SIGURAN_TEKST(
-                        GRESKA.message ||
-                        "Nepoznata greška."
-                    )}
-
-                </div>
-
-            `;
-
-        }
-
-
-        if (RESULT_INFO) {
-
-            RESULT_INFO.textContent =
-                "Greška pri učitavanju podataka.";
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   NAPRAVI HTML ZA DOKUMENTE
-   ========================================================= */
-
-
-function NAPRAVI_DOKUMENTE_HTML(GRANT_ID) {
-
-    const KLJUC =
-        String(
-            GRANT_ID
-        );
-
-
-    const DOKUMENTI =
-        DOKUMENTI_PO_GRANTU[
-            KLJUC
-        ] || [];
-
-
-    /*
-       Ako nema dokumenata,
-       ne prikazujemo ništa.
-    */
-
-    if (
-        DOKUMENTI.length === 0
-    ) {
-
-        return "";
-
-    }
-
-
-    const VALIDNI_DOKUMENTI =
-        DOKUMENTI
-            .map(
-                DOKUMENT => {
-
-                    const URL_VRIJEDNOST =
-                        DOKUMENT.URL ??
-                        DOKUMENT.url ??
-                        DOKUMENT["URL"] ??
-                        "";
-
-
-                    const SIGURNI_URL =
-                        SIGURAN_URL(
-                            URL_VRIJEDNOST
-                        );
-
-
-                    return {
-
-                        DOKUMENT,
-
-                        SIGURNI_URL
-
-                    };
-
-                }
-            )
-            .filter(
-                STAVKA =>
-                    STAVKA.SIGURNI_URL
-            );
-
-
-    if (
-        VALIDNI_DOKUMENTI.length === 0
-    ) {
-
-        return "";
-
-    }
-
-
-    let HTML = `
-
-        <div class="documents-box">
-
-            <div class="documents-title">
-
-                <span>
-                    📄 Dokumenti
-                </span>
-
-                <span class="documents-count">
-                    ${VALIDNI_DOKUMENTI.length}
-                </span>
-
-            </div>
-
-
-            <div class="documents-list">
-
-    `;
-
-
-    VALIDNI_DOKUMENTI.forEach(
-        STAVKA => {
-
-            const DOKUMENT =
-                STAVKA.DOKUMENT;
-
-
-            const URL =
-                STAVKA.SIGURNI_URL;
-
-
-            const NAZIV =
-                DOKUMENT.NAZIV ||
-                "Dokument";
-
-
-            const TIP =
-                DOKUMENT.TIP_DOKUMENTA ||
-                "DOKUMENT";
-
-
-            const OPIS =
-                DOKUMENT.OPIS ||
-                "";
-
-
-            HTML += `
-
-                <a
-                    href="${SIGURAN_TEKST(URL)}"
-                    class="document-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="${SIGURAN_TEKST(
-                        OPIS ||
-                        "Otvori dokument"
-                    )}"
-                >
-
-                    <div class="document-left">
-
-                        <span class="document-icon">
-
-                            ${IKONA_DOKUMENTA(TIP)}
-
-                        </span>
-
-
-                        <div>
-
-                            <div class="document-name">
-
-                                ${SIGURAN_TEKST(
-                                    NAZIV
-                                )}
-
-                            </div>
-
-
-                            <div class="document-type">
-
-                                ${SIGURAN_TEKST(
-                                    NAZIV_TIPA_DOKUMENTA(
-                                        TIP
-                                    )
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <span class="document-arrow">
-
-                        ↗
-
-                    </span>
-
-                </a>
-
-            `;
-
-        }
-    );
-
-
-    HTML += `
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    return HTML;
-
-}
-
-
-/* =========================================================
-   PRIKAŽI GRANTOVE
-   ========================================================= */
-
-
-function PRIKAZI_GRANTOVE() {
-
-    const GRID =
-        document.getElementById(
-            "grantGrid"
-        );
-
-
-    const EMPTY =
-        document.getElementById(
-            "empty"
-        );
-
-
-    const RESULT_INFO =
-        document.getElementById(
-            "resultInfo"
-        );
-
-
-    const SEARCH_ELEMENT =
-        document.getElementById(
-            "search"
-        );
-
-
-    const CATEGORY_ELEMENT =
-        document.getElementById(
-            "categoryFilter"
-        );
-
-
-    const STATUS_ELEMENT =
-        document.getElementById(
-            "statusFilter"
-        );
-
-
-    const SEARCH =
-        SEARCH_ELEMENT
-            ? SEARCH_ELEMENT.value
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const KATEGORIJA =
-        CATEGORY_ELEMENT
-            ? CATEGORY_ELEMENT.value
-            : "";
-
-
-    const STATUS_FILTER =
-        STATUS_ELEMENT
-            ? STATUS_ELEMENT.value
-            : "AKTIVAN";
+    /* =========================================================
+       SUPABASE
+       ========================================================= */
+
+    const SUPABASE_URL =
+        "https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45";
 
 
     /* =========================================================
-       FILTRIRANJE
+       GLOBALNI PODACI
        ========================================================= */
 
+    let SVI_GRANTOVI = [];
 
-    const FILTRIRANI =
-        SVI_GRANTOVI.filter(
-            GRANT => {
+    let SVI_DOKUMENTI = [];
 
-                /* -----------------------------------------
-                   PRETRAGA
-                   ----------------------------------------- */
+    let DOKUMENTI_PO_GRANTU = {};
 
 
-                const TEKST = [
 
-                    GRANT.NASLOV,
+    /* =========================================================
+       SIGURAN URL
+       ========================================================= */
 
-                    GRANT.OPIS,
+    function SIGURAN_URL(VRIJEDNOST) {
 
-                    GRANT.KATEGORIJA,
+        if (!VRIJEDNOST) {
+            return null;
+        }
 
-                    GRANT.INSTITUCIJA,
+        try {
 
-                    GRANT.IZVOR,
+            const URL_OBJEKAT =
+                new URL(String(VRIJEDNOST).trim());
 
-                    GRANT.KO_MOZE_APLICIRATI,
+            if (
+                URL_OBJEKAT.protocol === "http:" ||
+                URL_OBJEKAT.protocol === "https:"
+            ) {
+                return URL_OBJEKAT.href;
+            }
 
-                    GRANT.STA_SE_FINANSIRA,
+            return null;
 
-                    GRANT.IZNOS_PODRSKE,
+        } catch (GRESKA) {
 
-                    GRANT.SUFINANSIRANJE,
+            return null;
+        }
+    }
 
-                    GRANT.PROJEKAT,
 
-                    GRANT.POTREBNA_DOKUMENTACIJA
 
-                ]
-                    .filter(
-                        VRIJEDNOST =>
-                            VRIJEDNOST !== null &&
-                            VRIJEDNOST !== undefined
-                    )
+    /* =========================================================
+       SIGURAN TEKST
+       ========================================================= */
+
+    function SIGURAN_TEKST(VRIJEDNOST) {
+
+        if (
+            VRIJEDNOST === null ||
+            VRIJEDNOST === undefined
+        ) {
+            return "";
+        }
+
+        return String(VRIJEDNOST)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+
+    /* =========================================================
+       TIP DOKUMENTA
+       ========================================================= */
+
+    function NORMALIZUJ_TIP_DOKUMENTA(TIP) {
+
+        return String(TIP || "")
+            .trim()
+            .toUpperCase();
+    }
+
+
+
+    function IKONA_DOKUMENTA(TIP) {
+
+        const NORMALIZOVANI_TIP =
+            NORMALIZUJ_TIP_DOKUMENTA(TIP);
+
+        if (NORMALIZOVANI_TIP === "JAVNI_POZIV") {
+            return "📄";
+        }
+
+        if (NORMALIZOVANI_TIP === "PRAVILNIK") {
+            return "📋";
+        }
+
+        if (NORMALIZOVANI_TIP === "PROGRAM") {
+            return "📘";
+        }
+
+        if (NORMALIZOVANI_TIP === "OBRAZAC") {
+            return "📝";
+        }
+
+        if (NORMALIZOVANI_TIP === "VODIC") {
+            return "📕";
+        }
+
+        if (NORMALIZOVANI_TIP === "UGOVOR") {
+            return "📜";
+        }
+
+        if (NORMALIZOVANI_TIP === "PDF") {
+            return "📕";
+        }
+
+        return "📎";
+    }
+
+
+
+    function NAZIV_TIPA_DOKUMENTA(TIP) {
+
+        const NORMALIZOVANI_TIP =
+            NORMALIZUJ_TIP_DOKUMENTA(TIP);
+
+        const TIPOVI = {
+
+            "JAVNI_POZIV": "Javni poziv",
+
+            "PRAVILNIK": "Pravilnik",
+
+            "PROGRAM": "Program",
+
+            "OBRAZAC": "Obrazac",
+
+            "VODIC": "Vodič",
+
+            "UGOVOR": "Ugovor",
+
+            "PDF": "PDF dokument"
+        };
+
+        return (
+            TIPOVI[NORMALIZOVANI_TIP] ||
+            TIP ||
+            "Dokument"
+        );
+    }
+
+
+
+    /* =========================================================
+       UČITAJ GRANTOVE
+       ========================================================= */
+
+    async function UCITAJ_GRANTOVE() {
+
+        const URL =
+            `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`;
+
+        try {
+
+            const ODGOVOR =
+                await fetch(URL, {
+
+                    method: "GET",
+
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+            if (!ODGOVOR.ok) {
+
+                const TEKST =
+                    await ODGOVOR.text();
+
+                throw new Error(
+                    `GRANTOVI ${ODGOVOR.status}: ${TEKST}`
+                );
+            }
+
+            const PODACI =
+                await ODGOVOR.json();
+
+            SVI_GRANTOVI =
+                Array.isArray(PODACI)
+                    ? PODACI
+                    : [];
+
+        } catch (GRESKA) {
+
+            console.error(
+                "Greška pri učitavanju grantova:",
+                GRESKA
+            );
+
+            SVI_GRANTOVI = [];
+
+            throw GRESKA;
+        }
+    }
+
+
+
+    /* =========================================================
+       UČITAJ DOKUMENTE
+       ========================================================= */
+
+    async function UCITAJ_DOKUMENTE() {
+
+        /*
+         * NAMJERNO koristimo select=*.
+         *
+         * Tako ne zavisimo od pojedinačnih naziva kolona
+         * u query parametrima.
+         *
+         * Nakon toga dokumente filtriramo u JavaScriptu.
+         */
+
+        const URL =
+            `${SUPABASE_URL}/rest/v1/GRANT_DOKUMENTI?select=*`;
+
+        try {
+
+            const ODGOVOR =
+                await fetch(URL, {
+
+                    method: "GET",
+
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+            if (!ODGOVOR.ok) {
+
+                const TEKST =
+                    await ODGOVOR.text();
+
+                throw new Error(
+                    `GRANT_DOKUMENTI ${ODGOVOR.status}: ${TEKST}`
+                );
+            }
+
+            const PODACI =
+                await ODGOVOR.json();
+
+            SVI_DOKUMENTI =
+                Array.isArray(PODACI)
+                    ? PODACI
+                    : [];
+
+            /*
+             * Reset mape.
+             */
+
+            DOKUMENTI_PO_GRANTU = {};
+
+            /*
+             * Grupisanje dokumenata po GRANT_ID.
+             */
+
+            SVI_DOKUMENTI.forEach(DOKUMENT => {
+
+                if (!DOKUMENT) {
+                    return;
+                }
+
+                /*
+                 * Prikazujemo samo aktivne dokumente.
+                 */
+
+                if (DOKUMENT.AKTIVAN !== true) {
+                    return;
+                }
+
+                const GRANT_ID =
+                    String(DOKUMENT.GRANT_ID);
+
+                if (!GRANT_ID || GRANT_ID === "undefined") {
+                    return;
+                }
+
+                if (!DOKUMENTI_PO_GRANTU[GRANT_ID]) {
+
+                    DOKUMENTI_PO_GRANTU[GRANT_ID] = [];
+                }
+
+                DOKUMENTI_PO_GRANTU[GRANT_ID]
+                    .push(DOKUMENT);
+            });
+
+
+            /*
+             * Sortiranje:
+             *
+             * 1. REDOSLIJED
+             * 2. ID
+             */
+
+            Object.keys(DOKUMENTI_PO_GRANTU)
+                .forEach(GRANT_ID => {
+
+                    DOKUMENTI_PO_GRANTU[GRANT_ID]
+                        .sort((A, B) => {
+
+                            const REDOSLIJED_A =
+                                Number(A.REDOSLIJED ?? 999999);
+
+                            const REDOSLIJED_B =
+                                Number(B.REDOSLIJED ?? 999999);
+
+                            if (
+                                REDOSLIJED_A !==
+                                REDOSLIJED_B
+                            ) {
+                                return (
+                                    REDOSLIJED_A -
+                                    REDOSLIJED_B
+                                );
+                            }
+
+                            return (
+                                Number(A.ID ?? 0) -
+                                Number(B.ID ?? 0)
+                            );
+                        });
+                });
+
+
+            console.log(
+                "Učitani dokumenti:",
+                SVI_DOKUMENTI.length
+            );
+
+            console.log(
+                "Dokumenti po grantu:",
+                DOKUMENTI_PO_GRANTU
+            );
+
+        } catch (GRESKA) {
+
+            console.error(
+                "Greška pri učitavanju dokumenata:",
+                GRESKA
+            );
+
+            SVI_DOKUMENTI = [];
+
+            DOKUMENTI_PO_GRANTU = {};
+
+            throw GRESKA;
+        }
+    }
+
+
+
+    /* =========================================================
+       UČITAJ SVE
+       ========================================================= */
+
+    async function UCITAJ_SVE() {
+
+        const LOADING =
+            document.getElementById("loading");
+
+        try {
+
+            await Promise.all([
+                UCITAJ_GRANTOVE(),
+                UCITAJ_DOKUMENTE()
+            ]);
+
+            LOADING.style.display = "none";
+
+            PRIKAZI_GRANTOVE();
+
+        } catch (GRESKA) {
+
+            console.error(
+                "Greška pri učitavanju podataka:",
+                GRESKA
+            );
+
+            LOADING.style.display = "block";
+
+            LOADING.innerHTML = `
+                <strong>Greška pri učitavanju podataka.</strong>
+                <br><br>
+                Otvori Developer Console u browseru
+                da vidiš detalj greške.
+            `;
+
+            document.getElementById("resultInfo")
+                .textContent =
+                "Greška pri učitavanju podataka.";
+        }
+    }
+
+
+
+    /* =========================================================
+       DATUM
+       ========================================================= */
+
+    function FORMATIRAJ_DATUM(DATUM) {
+
+        if (!DATUM) {
+            return "Nije navedeno";
+        }
+
+        try {
+
+            const DATUM_OBJEKAT =
+                new Date(DATUM);
+
+            if (Number.isNaN(DATUM_OBJEKAT.getTime())) {
+                return SIGURAN_TEKST(DATUM);
+            }
+
+            return DATUM_OBJEKAT
+                .toISOString()
+                .slice(0, 10);
+
+        } catch (GRESKA) {
+
+            return SIGURAN_TEKST(DATUM);
+        }
+    }
+
+
+
+    /* =========================================================
+       DOKUMENTI HTML
+       ========================================================= */
+
+    function NAPRAVI_DOKUMENTE_HTML(GRANT_ID) {
+
+        const KLJUC =
+            String(GRANT_ID);
+
+        const DOKUMENTI =
+            DOKUMENTI_PO_GRANTU[KLJUC] || [];
+
+        /*
+         * Ako nema dokumenata,
+         * ne prikazujemo praznu kutiju.
+         */
+
+        if (!DOKUMENTI.length) {
+            return "";
+        }
+
+
+        const VALIDNI_DOKUMENTI =
+            DOKUMENTI.filter(DOKUMENT => {
+
+                const SIGURAN_LINK =
+                    SIGURAN_URL(DOKUMENT.URL);
+
+                return Boolean(SIGURAN_LINK);
+            });
+
+
+        if (!VALIDNI_DOKUMENTI.length) {
+            return "";
+        }
+
+
+        const DOKUMENTI_HTML =
+            VALIDNI_DOKUMENTI
+                .map(DOKUMENT => {
+
+                    const LINK =
+                        SIGURAN_URL(DOKUMENT.URL);
+
+                    const NAZIV =
+                        SIGURAN_TEKST(
+                            DOKUMENT.NAZIV ||
+                            "Dokument"
+                        );
+
+                    const TIP =
+                        SIGURAN_TEKST(
+                            NAZIV_TIPA_DOKUMENTA(
+                                DOKUMENT.TIP_DOKUMENTA
+                            )
+                        );
+
+                    const IKONA =
+                        IKONA_DOKUMENTA(
+                            DOKUMENT.TIP_DOKUMENTA
+                        );
+
+                    const OPIS =
+                        SIGURAN_TEKST(
+                            DOKUMENT.OPIS || ""
+                        );
+
+                    return `
+                        <a
+                            class="document-link"
+                            href="${SIGURAN_TEKST(LINK)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Otvori dokument"
+                        >
+
+                            <div class="document-left">
+
+                                <div class="document-icon">
+                                    ${IKONA}
+                                </div>
+
+                                <div class="document-content">
+
+                                    <div class="document-name">
+                                        ${NAZIV}
+                                    </div>
+
+                                    <div class="document-type">
+                                        ${TIP}
+                                    </div>
+
+                                    ${
+                                        OPIS
+                                            ? `
+                                                <div class="document-description">
+                                                    ${OPIS}
+                                                </div>
+                                              `
+                                            : ""
+                                    }
+
+                                </div>
+
+                            </div>
+
+                            <div class="document-arrow">
+                                →
+                            </div>
+
+                        </a>
+                    `;
+                })
+                .join("");
+
+
+        return `
+            <div class="documents-box">
+
+                <div class="documents-header">
+
+                    <h3 class="documents-title">
+                        📎 Dokumenti
+                    </h3>
+
+                    <span class="documents-count">
+                        ${VALIDNI_DOKUMENTI.length}
+                    </span>
+
+                </div>
+
+                <div class="documents-list">
+                    ${DOKUMENTI_HTML}
+                </div>
+
+            </div>
+        `;
+    }
+
+
+
+    /* =========================================================
+       STATUS
+       ========================================================= */
+
+    function NORMALIZUJ_STATUS(GRANT) {
+
+        const STATUS =
+            String(GRANT.STATUS || "")
+                .trim()
+                .toUpperCase();
+
+        if (STATUS === "AKTIVAN") {
+            return "AKTIVAN";
+        }
+
+        if (STATUS === "ISTEKAO") {
+            return "ISTEKAO";
+        }
+
+        /*
+         * Ako STATUS nije popunjen,
+         * pokušavamo preko roka.
+         */
+
+        if (GRANT.ROK) {
+
+            const ROK =
+                new Date(GRANT.ROK);
+
+            if (
+                !Number.isNaN(ROK.getTime()) &&
+                ROK < new Date()
+            ) {
+                return "ISTEKAO";
+            }
+        }
+
+        return "AKTIVAN";
+    }
+
+
+
+    /* =========================================================
+       PRIKAZ GRANTOVA
+       ========================================================= */
+
+    function PRIKAZI_GRANTOVE() {
+
+        const GRID =
+            document.getElementById("grantGrid");
+
+        const EMPTY =
+            document.getElementById("empty");
+
+        const RESULT_INFO =
+            document.getElementById("resultInfo");
+
+        const SEARCH =
+            document.getElementById("search")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const KATEGORIJA =
+            document.getElementById("categoryFilter")
+                .value
+                .trim()
+                .toUpperCase();
+
+        const STATUS_FILTER =
+            document.getElementById("statusFilter")
+                .value
+                .trim()
+                .toUpperCase();
+
+
+        const FILTRIRANI =
+            SVI_GRANTOVI.filter(GRANT => {
+
+                const STATUS =
+                    NORMALIZUJ_STATUS(GRANT);
+
+                const TEKST =
+                    [
+                        GRANT.NASLOV,
+                        GRANT.OPIS,
+                        GRANT.KATEGORIJA,
+                        GRANT.INSTITUCIJA,
+                        GRANT.IZVOR,
+                        GRANT.KO_MOZE_APLICIRATI,
+                        GRANT.STA_SE_FINANSIRA,
+                        GRANT.IZNOS_PODRSKE,
+                        GRANT.SUFINANSIRANJE,
+                        GRANT.PROJEKAT,
+                        GRANT.POTREBNA_DOKUMENTACIJA
+                    ]
+                    .filter(Boolean)
                     .join(" ")
                     .toLowerCase();
 
 
                 const ODGOVARA_PRETRAZI =
                     !SEARCH ||
-                    TEKST.includes(
-                        SEARCH
-                    );
-
-
-                /* -----------------------------------------
-                   KATEGORIJA
-                   ----------------------------------------- */
-
-
-                const GRANT_KATEGORIJA =
-                    String(
-                        GRANT.KATEGORIJA || ""
-                    )
-                        .trim()
-                        .toUpperCase();
-
-
-                const FILTER_KATEGORIJA =
-                    String(
-                        KATEGORIJA || ""
-                    )
-                        .trim()
-                        .toUpperCase();
+                    TEKST.includes(SEARCH);
 
 
                 const ODGOVARA_KATEGORIJI =
-                    !FILTER_KATEGORIJA ||
-                    GRANT_KATEGORIJA ===
-                        FILTER_KATEGORIJA;
-
-
-                /* -----------------------------------------
-                   STATUS
-                   ----------------------------------------- */
-
-
-                const GRANT_STATUS =
-                    NORMALIZUJ_STATUS(
-                        GRANT.STATUS
-                    );
+                    !KATEGORIJA ||
+                    String(GRANT.KATEGORIJA || "")
+                        .trim()
+                        .toUpperCase() === KATEGORIJA;
 
 
                 const ODGOVARA_STATUSU =
                     STATUS_FILTER === "SVE" ||
-                    GRANT_STATUS ===
-                        STATUS_FILTER;
+                    STATUS === STATUS_FILTER;
 
 
                 return (
@@ -1946,614 +1213,335 @@ function PRIKAZI_GRANTOVE() {
                     ODGOVARA_KATEGORIJI &&
                     ODGOVARA_STATUSU
                 );
-
-            }
-        );
-
-
-    /* =========================================================
-       OBRIŠI STARE CARDOVE
-       ========================================================= */
-
-
-    GRID.innerHTML = "";
-
-
-    /* =========================================================
-       NEMA REZULTATA
-       ========================================================= */
-
-
-    if (
-        FILTRIRANI.length === 0
-    ) {
-
-        EMPTY.style.display =
-            "block";
+            });
 
 
         RESULT_INFO.textContent =
-            "Nema pronađenih grantova.";
+            `Prikazano ${FILTRIRANI.length} ` +
+            `${
+                FILTRIRANI.length === 1
+                    ? "aktivnog granta"
+                    : "aktivnih grantova"
+            }.`;
 
 
-        return;
 
-    }
+        if (!FILTRIRANI.length) {
 
+            GRID.innerHTML = "";
 
-    EMPTY.style.display =
-        "none";
+            EMPTY.style.display = "block";
 
-
-    /* =========================================================
-       TEKST STATUSA
-       ========================================================= */
-
-
-    let TEKST_STATUSA =
-        "svih";
-
-
-    if (
-        STATUS_FILTER ===
-        "AKTIVAN"
-    ) {
-
-        TEKST_STATUSA =
-            "aktivnih";
-
-    }
-
-
-    if (
-        STATUS_FILTER ===
-        "ISTEKAO"
-    ) {
-
-        TEKST_STATUSA =
-            "isteklih";
-
-    }
-
-
-    if (
-        STATUS_FILTER ===
-        "ZATVOREN"
-    ) {
-
-        TEKST_STATUSA =
-            "zatvorenih";
-
-    }
-
-
-    RESULT_INFO.textContent =
-        `Prikazano ${FILTRIRANI.length} ${TEKST_STATUSA} grantova.`;
-
-
-    /* =========================================================
-       KREIRAJ SVAKI CARD
-       ========================================================= */
-
-
-    FILTRIRANI.forEach(
-        GRANT => {
-
-            const CARD =
-                document.createElement(
-                    "article"
-                );
-
-
-            CARD.className =
-                "card";
-
-
-            /* -----------------------------------------
-               DATUM
-               ----------------------------------------- */
-
-
-            const DATUM =
-                FORMAT_DATUMA(
-                    GRANT.DATUM_OBJAVE
-                );
-
-
-            /* -----------------------------------------
-               ROK
-               ----------------------------------------- */
-
-
-            const ROK =
-                FORMAT_DATUMA(
-                    GRANT.ROK
-                );
-
-
-            /* -----------------------------------------
-               STATUS
-               ----------------------------------------- */
-
-
-            const STATUS =
-                NORMALIZUJ_STATUS(
-                    GRANT.STATUS
-                );
-
-
-            /* -----------------------------------------
-               DOKUMENTI
-               ----------------------------------------- */
-
-
-            const DOKUMENTI_HTML =
-                NAPRAVI_DOKUMENTE_HTML(
-                    GRANT.ID
-                );
-
-
-            /* =================================================
-               CARD SADRŽAJ
-               ================================================= */
-
-
-            CARD.innerHTML = `
-
-                <div class="icon">
-                    💰
-                </div>
-
-
-                <span
-                    class="status ${STATUS_KLASA(STATUS)}"
-                >
-                    ${STATUS_NAZIV(STATUS)}
-                </span>
-
-
-                <h2>
-                    ${SIGURAN_TEKST(
-                        GRANT.NASLOV
-                    )}
-                </h2>
-
-
-                <p>
-                    ${SIGURAN_TEKST(
-                        GRANT.OPIS ||
-                        "Informacije o javnom pozivu."
-                    )}
-                </p>
-
-
-                <div class="meta">
-
-
-                    <div class="meta-row">
-
-                        📁
-
-                        <strong>
-                            Kategorija:
-                        </strong>
-
-                        ${SIGURAN_TEKST(
-                            GRANT.KATEGORIJA ||
-                            "Nije navedeno"
-                        )}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        🏛️
-
-                        <strong>
-                            Institucija:
-                        </strong>
-
-                        ${SIGURAN_TEKST(
-                            GRANT.INSTITUCIJA ||
-                            "Nije navedeno"
-                        )}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        📅
-
-                        <strong>
-                            Objavljeno:
-                        </strong>
-
-                        ${DATUM}
-
-                    </div>
-
-
-                    <div class="meta-row">
-
-                        ⏰
-
-                        <strong>
-                            Rok:
-                        </strong>
-
-                        ${ROK}
-
-                    </div>
-
-
-                    <!-- =================================================
-                         DETALJI GRANTA
-                         ================================================= -->
-
-
-                    <div
-                        style="
-                            margin-top:20px;
-                            padding-top:18px;
-                            border-top:1px solid #e5e7eb;
-                        "
-                    >
-
-
-                        <div class="meta-row">
-
-                            👤
-
-                            <strong>
-                                Ko može aplicirati:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.KO_MOZE_APLICIRATI ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="meta-row">
-
-                            🎯
-
-                            <strong>
-                                Šta se finansira:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.STA_SE_FINANSIRA ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="meta-row">
-
-                            💰
-
-                            <strong>
-                                Iznos podrške:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.IZNOS_PODRSKE ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="meta-row">
-
-                            🤝
-
-                            <strong>
-                                Sufinansiranje:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.SUFINANSIRANJE ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="meta-row">
-
-                            📋
-
-                            <strong>
-                                Projekat:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.PROJEKAT ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="meta-row">
-
-                            📎
-
-                            <strong>
-                                Potrebna dokumentacija:
-                            </strong>
-
-                            <div style="margin-top:5px;">
-
-                                ${SIGURAN_TEKST(
-                                    GRANT.POTREBNA_DOKUMENTACIJA ||
-                                    "Nije navedeno."
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- =================================================
-                         DOKUMENTI
-                         ================================================= -->
-
-
-                    ${DOKUMENTI_HTML}
-
-
-                    <div class="source">
-
-                        Izvor:
-
-                        ${SIGURAN_TEKST(
-                            GRANT.IZVOR ||
-                            "DocBizHub"
-                        )}
-
-                    </div>
-
-
-                </div>
-
-            `;
-
-
-            /* =================================================
-               META ELEMENT
-               ================================================= */
-
-
-            const META =
-                CARD.querySelector(
-                    ".meta"
-                );
-
-
-            /* =================================================
-               URL GRANTA
-               ================================================= */
-
-
-            const VRIJEDNOST_URL =
-                GRANT.URL ??
-                GRANT.url ??
-                GRANT["URL"] ??
-                "";
-
-
-            console.log(
-                "GRANT URL:",
-                GRANT.NASLOV,
-                VRIJEDNOST_URL
-            );
-
-
-            const IZVOR_URL =
-                SIGURAN_URL(
-                    VRIJEDNOST_URL
-                );
-
-
-            /* =================================================
-               AKO URL GRANTA POSTOJI
-               ================================================= */
-
-
-            if (
-                IZVOR_URL
-            ) {
-
-                const LINK =
-                    document.createElement(
-                        "a"
-                    );
-
-
-                LINK.href =
-                    IZVOR_URL;
-
-
-                LINK.target =
-                    "_blank";
-
-
-                LINK.rel =
-                    "noopener noreferrer";
-
-
-                LINK.className =
-                    "btn";
-
-
-                LINK.textContent =
-                    "Saznaj više →";
-
-
-                LINK.title =
-                    "Otvori originalni javni poziv";
-
-
-                const SOURCE =
-                    META.querySelector(
-                        ".source"
-                    );
-
-
-                META.insertBefore(
-                    LINK,
-                    SOURCE
-                );
-
-            }
-
-
-            /* =================================================
-               AKO URL GRANTA NE POSTOJI
-               ================================================= */
-
-
-            else {
-
-                const LINK =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                LINK.className =
-                    "btn btn-disabled";
-
-
-                LINK.textContent =
-                    "Link nije dostupan";
-
-
-                LINK.title =
-                    "Za ovaj grant trenutno nema ispravnog URL-a";
-
-
-                const SOURCE =
-                    META.querySelector(
-                        ".source"
-                    );
-
-
-                META.insertBefore(
-                    LINK,
-                    SOURCE
-                );
-
-
-                console.warn(
-                    "GRANT NEMA ISPRAVAN URL:",
-                    GRANT
-                );
-
-            }
-
-
-            /* =================================================
-               DODAJ CARD
-               ================================================= */
-
-
-            GRID.appendChild(
-                CARD
-            );
-
+            return;
         }
-    );
-
-}
 
 
-/* =========================================================
-   PRETRAGA
-   ========================================================= */
+        EMPTY.style.display = "none";
 
 
-document
-    .getElementById(
-        "search"
-    )
-    .addEventListener(
-        "input",
-        PRIKAZI_GRANTOVE
-    );
+        GRID.innerHTML =
+            FILTRIRANI
+                .map(GRANT => {
+
+                    const STATUS =
+                        NORMALIZUJ_STATUS(GRANT);
+
+                    const JE_AKTIVAN =
+                        STATUS === "AKTIVAN";
+
+                    const STATUS_TEXT =
+                        JE_AKTIVAN
+                            ? "Aktivan"
+                            : "Istekao";
+
+                    const STATUS_CLASS =
+                        JE_AKTIVAN
+                            ? "status-active"
+                            : "status-expired";
 
 
-/* =========================================================
-   FILTER KATEGORIJE
-   ========================================================= */
+                    const ORIGINALNI_URL =
+                        SIGURAN_URL(GRANT.URL);
 
 
-document
-    .getElementById(
-        "categoryFilter"
-    )
-    .addEventListener(
-        "change",
-        PRIKAZI_GRANTOVE
-    );
+                    const DOKUMENTI_HTML =
+                        NAPRAVI_DOKUMENTE_HTML(
+                            GRANT.ID
+                        );
 
 
-/* =========================================================
-   FILTER STATUSA
-   ========================================================= */
+                    return `
+                        <article class="grant-card">
+
+                            <div class="grant-top">
+
+                                <div class="grant-icon">
+                                    💰
+                                </div>
+
+                                <span
+                                    class="status-badge ${STATUS_CLASS}"
+                                >
+                                    ${JE_AKTIVAN ? "🟢" : "🔴"}
+                                    ${STATUS_TEXT}
+                                </span>
+
+                            </div>
 
 
-document
-    .getElementById(
-        "statusFilter"
-    )
-    .addEventListener(
-        "change",
-        PRIKAZI_GRANTOVE
-    );
+                            <h2>
+                                ${SIGURAN_TEKST(
+                                    GRANT.NASLOV ||
+                                    "Grant bez naslova"
+                                )}
+                            </h2>
 
 
-/* =========================================================
-   START APLIKACIJE
-   ========================================================= */
+                            ${
+                                GRANT.OPIS
+                                    ? `
+                                        <div class="grant-description">
+                                            ${SIGURAN_TEKST(
+                                                GRANT.OPIS
+                                            )}
+                                        </div>
+                                      `
+                                    : ""
+                            }
 
 
-UCITAJ_SVE();
+                            <div class="meta-list">
 
+                                <div class="meta-item">
+                                    📁
+                                    <span class="meta-label">
+                                        Kategorija:
+                                    </span>
+                                    ${SIGURAN_TEKST(
+                                        GRANT.KATEGORIJA ||
+                                        "Nije navedeno"
+                                    )}
+                                </div>
+
+                                <div class="meta-item">
+                                    🏛️
+                                    <span class="meta-label">
+                                        Institucija:
+                                    </span>
+                                    ${SIGURAN_TEKST(
+                                        GRANT.INSTITUCIJA ||
+                                        "Nije navedeno"
+                                    )}
+                                </div>
+
+                                <div class="meta-item">
+                                    📅
+                                    <span class="meta-label">
+                                        Objavljeno:
+                                    </span>
+                                    ${FORMATIRAJ_DATUM(
+                                        GRANT.DATUM_OBJAVE
+                                    )}
+                                </div>
+
+                                <div class="meta-item">
+                                    ⏰
+                                    <span class="meta-label">
+                                        Rok:
+                                    </span>
+                                    ${
+                                        GRANT.ROK
+                                            ? FORMATIRAJ_DATUM(
+                                                GRANT.ROK
+                                              )
+                                            : "Nije navedeno"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="details">
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        👤 Ko može aplicirati:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.KO_MOZE_APLICIRATI ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        🎯 Šta se finansira:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.STA_SE_FINANSIRA ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        💰 Iznos podrške:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.IZNOS_PODRSKE ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        🤝 Sufinansiranje:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.SUFINANSIRANJE ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        📋 Projekat:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.PROJEKAT ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-title">
+                                        📎 Potrebna dokumentacija:
+                                    </div>
+
+                                    <div class="detail-text">
+                                        ${SIGURAN_TEKST(
+                                            GRANT.POTREBNA_DOKUMENTACIJA ||
+                                            "Nije navedeno."
+                                        )}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            ${DOKUMENTI_HTML}
+
+
+                            ${
+                                ORIGINALNI_URL
+                                    ? `
+                                        <a
+                                            class="original-link"
+                                            href="${SIGURAN_TEKST(
+                                                ORIGINALNI_URL
+                                            )}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            title="Otvori originalni javni poziv"
+                                        >
+                                            Saznaj više →
+                                        </a>
+                                      `
+                                    : ""
+                            }
+
+
+                            ${
+                                GRANT.IZVOR
+                                    ? `
+                                        <div class="source-box">
+                                            <span class="source-label">
+                                                Izvor:
+                                            </span>
+                                            ${SIGURAN_TEKST(
+                                                GRANT.IZVOR
+                                            )}
+                                        </div>
+                                      `
+                                    : ""
+                            }
+
+                        </article>
+                    `;
+                })
+                .join("");
+    }
+
+
+
+    /* =========================================================
+       FILTERI
+       ========================================================= */
+
+    document
+        .getElementById("search")
+        .addEventListener(
+            "input",
+            PRIKAZI_GRANTOVE
+        );
+
+
+    document
+        .getElementById("categoryFilter")
+        .addEventListener(
+            "change",
+            PRIKAZI_GRANTOVE
+        );
+
+
+    document
+        .getElementById("statusFilter")
+        .addEventListener(
+            "change",
+            PRIKAZI_GRANTOVE
+        );
+
+
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    UCITAJ_SVE();
 
 </script>
-
 
 </body>
 </html>
