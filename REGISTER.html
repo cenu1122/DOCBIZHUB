@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -9,6 +10,7 @@
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body { 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
       background-color: #f4f6f9; 
@@ -27,7 +29,15 @@
       align-items: center; 
       box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
     }
-    .logo { font-size: 1.5rem; font-weight: bold; color: #fff; text-decoration: none; transition: color 0.3s; }
+
+    .logo { 
+      font-size: 1.5rem; 
+      font-weight: bold; 
+      color: #fff; 
+      text-decoration: none; 
+      transition: color 0.3s; 
+    }
+
     .logo:hover { color: #d90429; }
     
     .main-container { 
@@ -37,31 +47,76 @@
       align-items: center; 
       padding: 40px 20px; 
     }
+
     .login-card { 
       background: #fff; 
       width: 100%; 
-      max-width: 420px; 
+      max-width: 500px; 
       padding: 35px; 
       border-radius: 20px; 
       box-shadow: 0 10px 25px rgba(43, 45, 66, 0.08); 
       border-top: 5px solid #2b2d42; 
     }
-    .login-card h2 { text-align: center; color: #2b2d42; margin-bottom: 8px; font-size: 1.8rem; }
-    .subtitle { text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 25px; }
 
-    .form-group { margin-bottom: 18px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #2b2d42; }
+    .login-card h2 { 
+      text-align: center; 
+      color: #2b2d42; 
+      margin-bottom: 8px; 
+      font-size: 1.8rem; 
+    }
+
+    .subtitle { 
+      text-align: center; 
+      color: #666; 
+      font-size: 0.95rem; 
+      margin-bottom: 25px; 
+    }
+
+    .form-group { 
+      margin-bottom: 18px; 
+      text-align: left; 
+    }
+
+    .form-group label { 
+      display: block; 
+      font-weight: 600; 
+      margin-bottom: 6px; 
+      color: #2b2d42; 
+    }
+
+    .form-group small {
+      display: block;
+      color: #777;
+      font-size: 0.82rem;
+      margin-top: 5px;
+    }
     
-    .input-wrapper { position: relative; }
-    .form-group input { 
+    .input-wrapper { 
+      position: relative; 
+    }
+
+    .form-group input,
+    .form-group textarea { 
       width: 100%; 
-      padding: 12px 40px 12px 12px; 
+      padding: 12px; 
       border: 1px solid #ddd; 
       border-radius: 10px; 
       font-size: 1rem; 
-      outline: none; 
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.3s;
     }
-    .form-group input:focus { border-color: #d90429; }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus { 
+      border-color: #d90429; 
+    }
 
     .toggle-password { 
       position: absolute; 
@@ -73,6 +128,26 @@
       cursor: pointer; 
       font-size: 1.1rem; 
       color: #666; 
+    }
+
+    .info-box {
+      background: #f4f6f9;
+      border-left: 4px solid #d90429;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #2b2d42;
+      margin: 25px 0 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eee;
     }
 
     .btn-submit { 
@@ -88,17 +163,50 @@
       transition: background 0.3s; 
       margin-top: 10px;
     }
-    .btn-submit:hover { background-color: #b50322; }
 
-    #statusMessage { margin-top: 15px; text-align: center; font-weight: bold; word-break: break-word; font-size: 0.95rem; }
+    .btn-submit:hover { 
+      background-color: #b50322; 
+    }
+
+    .btn-submit:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+
+    #statusMessage { 
+      margin-top: 15px; 
+      text-align: center; 
+      font-weight: bold; 
+      word-break: break-word; 
+      font-size: 0.95rem; 
+    }
     
-    .footer-links { text-align: center; margin-top: 20px; font-size: 0.95rem; }
-    .footer-links a { color: #d90429; text-decoration: none; font-weight: bold; }
-    .footer-links a:hover { text-decoration: underline; }
+    .footer-links { 
+      text-align: center; 
+      margin-top: 20px; 
+      font-size: 0.95rem; 
+    }
 
-    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; }
+    .footer-links a { 
+      color: #d90429; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+
+    .footer-links a:hover { 
+      text-decoration: underline; 
+    }
+
+    footer { 
+      background-color: #2b2d42; 
+      color: #fff; 
+      text-align: center; 
+      padding: 20px 0; 
+      margin-top: auto; 
+    }
   </style>
 </head>
+
 <body>
 
   <header>
@@ -106,42 +214,134 @@
   </header>
 
   <div class="main-container">
+
     <div class="login-card">
+
       <h2>Kreirajte profil</h2>
       <p class="subtitle">Registrujte se na DocBizHub platformu</p>
 
+      <div class="info-box">
+        Popunite svoj profil kako bi drugi korisnici mogli vidjeti
+        <strong>ko ste, šta nudite i šta tražite</strong>.
+      </div>
+
       <form id="registerForm" onsubmit="event.preventDefault(); handleRegister();">
-        <div class="form-group">
-          <label>Ime i prezime / Naziv firme</label>
-          <input type="text" id="fullName" placeholder="Vaše ime ili naziv" required>
+
+        <!-- OSNOVNI PODACI -->
+        <div class="section-title">
+          👤 Osnovni podaci
         </div>
 
         <div class="form-group">
-          <label>E-mail Adresa</label>
-          <input type="email" id="email" placeholder="vas@email.com" required>
+          <label for="fullName">Ime i prezime / Naziv firme</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            placeholder="Vaše ime ili naziv firme" 
+            required
+          >
         </div>
 
         <div class="form-group">
-          <label>Broj telefona</label>
-          <input type="text" id="phone" placeholder="+387..." required>
+          <label for="email">E-mail adresa</label>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="vas@email.com" 
+            required
+          >
         </div>
 
         <div class="form-group">
-          <label>Lozinka</label>
+          <label for="phone">Broj telefona</label>
+          <input 
+            type="text" 
+            id="phone" 
+            placeholder="+387..." 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Lozinka</label>
+
           <div class="input-wrapper">
-            <input type="password" id="password" placeholder="Kreirajte lozinku" required>
-            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" title="Prikaži/Sakrij lozinku">👁️</button>
+            <input 
+              type="password" 
+              id="password" 
+              placeholder="Kreirajte lozinku" 
+              required
+            >
+
+            <button 
+              type="button" 
+              class="toggle-password" 
+              onclick="togglePasswordVisibility()" 
+              title="Prikaži/Sakrij lozinku"
+            >
+              👁️
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn-submit" id="registerBtn">REGISTRUJ SE</button>
+
+        <!-- JA -->
+        <div class="section-title">
+          🙋 JA
+        </div>
+
+        <div class="form-group">
+          <label for="ja">O meni / Šta nudim?</label>
+
+          <textarea 
+            id="ja" 
+            placeholder="Npr. Bavim se izradom web stranica, marketingom i grafičkim dizajnom. Nudim usluge izrade web shopova..."
+            required
+          ></textarea>
+
+          <small>
+            Opišite sebe, svoju firmu, znanje, usluge ili ono što nudite.
+          </small>
+        </div>
+
+
+        <!-- TRAŽIM -->
+        <div class="section-title">
+          🔎 TRAŽIM
+        </div>
+
+        <div class="form-group">
+          <label for="trazim">Šta tražim?</label>
+
+          <textarea 
+            id="trazim" 
+            placeholder="Npr. Tražim programera za izradu aplikacije, marketinšku agenciju, poslovne partnere ili klijente..."
+            required
+          ></textarea>
+
+          <small>
+            Napišite šta tražite od drugih korisnika ili kakvu saradnju želite.
+          </small>
+        </div>
+
+
+        <button 
+          type="submit" 
+          class="btn-submit" 
+          id="registerBtn"
+        >
+          REGISTRUJ SE
+        </button>
+
       </form>
 
       <div id="statusMessage"></div>
 
       <div class="footer-links">
-        Već imate profil? <a href="LOGIN.html">Prijavite se ovdje</a>
+        Već imate profil? 
+        <a href="LOGIN.html">Prijavite se ovdje</a>
       </div>
+
     </div>
   </div>
 
@@ -149,23 +349,48 @@
     <p>© 2026 DocBizHub. Sva prava zadržana.</p>
   </footer>
 
+
   <script>
+
     const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
 
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
 
+    const _supabase = supabase.createClient(
+      SUPABASE_URL, 
+      SUPABASE_ANON_KEY
+    );
+
+
+    // PRIKAŽI / SAKRIJ LOZINKU
     function togglePasswordVisibility() {
+
       const passwordInput = document.getElementById('password');
+
       if (passwordInput.type === 'password') {
+
         passwordInput.type = 'text';
+
       } else {
+
         passwordInput.type = 'password';
+
       }
     }
 
-    async function posaljiNotifikacijuUBazu(vrsta, ime, firma, telefon, email, linkStranice) {
+
+    // SLANJE NOTIFIKACIJE
+    async function posaljiNotifikacijuUBazu(
+      vrsta, 
+      ime, 
+      firma, 
+      telefon, 
+      email, 
+      linkStranice
+    ) {
+
       try {
+
         const { error } = await _supabase
           .from('NOTIFIKACIJE')
           .insert([
@@ -178,84 +403,208 @@
               "LINK_STRANICE": linkStranice
             }
           ]);
-          
+
         if (error) {
-          console.error("Greška pri upisu u NOTIFIKACIJE:", error.message);
+
+          console.error(
+            "Greška pri upisu u NOTIFIKACIJE:",
+            error.message
+          );
+
         }
+
       } catch (err) {
-        console.error('Neočekivana greška pri slanju notifikacije:', err);
+
+        console.error(
+          'Neočekivana greška pri slanju notifikacije:',
+          err
+        );
+
       }
     }
 
+
+    // REGISTRACIJA
     async function handleRegister() {
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const password = document.getElementById('password').value;
+
+      const fullName = document
+        .getElementById('fullName')
+        .value
+        .trim();
+
+      const email = document
+        .getElementById('email')
+        .value
+        .trim();
+
+      const phone = document
+        .getElementById('phone')
+        .value
+        .trim();
+
+      const password = document
+        .getElementById('password')
+        .value;
+
+      // NOVA POLJA
+      const ja = document
+        .getElementById('ja')
+        .value
+        .trim();
+
+      const trazim = document
+        .getElementById('trazim')
+        .value
+        .trim();
+
+
       const statusDiv = document.getElementById('statusMessage');
+
       const registerBtn = document.getElementById('registerBtn');
 
-      if (!fullName || !email || !phone || !password) {
+
+      // PROVJERA
+      if (
+        !fullName || 
+        !email || 
+        !phone || 
+        !password ||
+        !ja ||
+        !trazim
+      ) {
+
         statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Molimo popunite sva polja!';
+
+        statusDiv.textContent = 
+          'Molimo popunite sva polja!';
+
         return;
       }
 
+
       statusDiv.style.color = '#0056b3';
-      statusDiv.textContent = 'Registracija u toku...';
+
+      statusDiv.textContent = 
+        'Registracija u toku...';
+
       registerBtn.disabled = true;
 
+
       try {
-        // 1. Kreiranje korisnika preko Supabase Auth
-        const { data: authData, error: authError } = await _supabase.auth.signUp({
-          email: email,
-          password: password
-        });
 
-        if (authError) throw authError;
+        // 1. KREIRANJE KORISNIKA
+        const { data: authData, error: authError } =
+          await _supabase.auth.signUp({
 
-        const userId = authData.user ? authData.user.id : null;
+            email: email,
 
-        // 2. Upis u POSAO_KORISNICI
-        if (userId) {
-          await _supabase
-            .from('POSAO_KORISNICI')
-            .insert([
-              { 
-                USER: userId, 
-                IME: fullName, 
-                MAIL: email, 
-                TELEFON: phone, 
-                IS_ONLINE: true, 
-                LAST_SEEN: new Date().toLocaleDateString() 
-              }
-            ]);
+            password: password
+
+          });
+
+
+        if (authError) {
+
+          throw authError;
+
         }
 
-        // 3. Slanje obavijesti u tabelu NOTIFIKACIJE (sa tačnim nazivima kolona)
+
+        const userId = 
+          authData.user 
+            ? authData.user.id 
+            : null;
+
+
+        // 2. UPIS U POSAO_KORISNICI
+        if (userId) {
+
+          const { error: korisnikError } = 
+            await _supabase
+              .from('POSAO_KORISNICI')
+              .insert([
+                { 
+
+                  USER: userId, 
+
+                  IME: fullName, 
+
+                  MAIL: email, 
+
+                  TELEFON: phone,
+
+                  // NOVO
+                  JA: ja,
+
+                  TRAZIM: trazim,
+
+                  IS_ONLINE: true, 
+
+                  LAST_SEEN: new Date().toLocaleDateString()
+
+                }
+              ]);
+
+
+          if (korisnikError) {
+
+            throw korisnikError;
+
+          }
+
+        }
+
+
+        // 3. NOTIFIKACIJA
         await posaljiNotifikacijuUBazu(
+
           'NOVI_CLAN',
+
           fullName,
+
           fullName,
+
           phone,
+
           email,
+
           `DASHBOARD.html?korisnik=${encodeURIComponent(email)}`
+
         );
 
+
+        // 4. USPJEH
         statusDiv.style.color = 'green';
-        statusDiv.textContent = 'Registracija uspješna! Preusmjeravanje...';
+
+        statusDiv.textContent = 
+          'Registracija uspješna! Preusmjeravanje...';
+
 
         setTimeout(() => {
-         // window.location.href = 'DASHBOARD.html';
+
+          // OVDJE MOŽEŠ AKTIVIRATI PREUSMJERAVANJE
+          // window.location.href = 'DASHBOARD.html';
+
         }, 1500);
 
+
       } catch (err) {
+
+        console.error(err);
+
         statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Greška: ' + err.message;
+
+        statusDiv.textContent = 
+          'Greška: ' + err.message;
+
         registerBtn.disabled = false;
+
       }
+
     }
+
   </script>
 
 </body>
 </html>
+```
