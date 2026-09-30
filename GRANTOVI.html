@@ -368,6 +368,173 @@
         }
 
 
+        /* =========================================================
+           DOKUMENTI
+           ========================================================= */
+
+
+        .documents-box {
+
+            margin-top: 20px;
+
+            padding-top: 18px;
+
+            border-top:
+                1px solid #e5e7eb;
+        }
+
+
+        .documents-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #0f172a;
+
+            margin-bottom: 12px;
+        }
+
+
+        .documents-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 9px;
+        }
+
+
+        .document-link {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            text-decoration: none;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            padding: 11px 13px;
+
+            transition:
+                background 0.2s,
+                border-color 0.2s,
+                transform 0.2s;
+        }
+
+
+        .document-link:hover {
+
+            background: #eff6ff;
+
+            border-color: #bfdbfe;
+
+            transform:
+                translateX(2px);
+        }
+
+
+        .document-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            min-width: 0;
+        }
+
+
+        .document-icon {
+
+            font-size: 20px;
+
+            flex-shrink: 0;
+        }
+
+
+        .document-name {
+
+            color: #1e3a8a;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            line-height: 1.35;
+        }
+
+
+        .document-type {
+
+            display: inline-block;
+
+            margin-top: 3px;
+
+            font-size: 10px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+        }
+
+
+        .document-arrow {
+
+            color: #2563eb;
+
+            font-size: 17px;
+
+            flex-shrink: 0;
+        }
+
+
+        .documents-count {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 22px;
+
+            height: 22px;
+
+            padding: 0 6px;
+
+            border-radius: 20px;
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+
         .empty {
 
             display: none;
@@ -660,6 +827,7 @@
 
 </footer>
 
+
 <script>
 
 
@@ -682,6 +850,22 @@ const SUPABASE_ANON_KEY =
 
 
 let SVI_GRANTOVI = [];
+
+
+/* =========================================================
+   SVI DOKUMENTI
+   ========================================================= */
+
+
+let SVI_DOKUMENTI = [];
+
+
+/* =========================================================
+   MAPA DOKUMENATA
+   ========================================================= */
+
+
+let DOKUMENTI_PO_GRANTU = {};
 
 
 /* =========================================================
@@ -735,11 +919,6 @@ function SIGURAN_URL(URL_VRIJEDNOST) {
     }
 
 
-    /*
-       Ako je URL slučajno spremljen
-       sa navodnicima, ukloni ih.
-    */
-
     SIROVI_URL =
         SIROVI_URL
             .replace(
@@ -756,10 +935,6 @@ function SIGURAN_URL(URL_VRIJEDNOST) {
     }
 
 
-    /*
-       Prihvati samo HTTP i HTTPS.
-    */
-
     if (
         !/^https?:\/\//i.test(
             SIROVI_URL
@@ -767,7 +942,7 @@ function SIGURAN_URL(URL_VRIJEDNOST) {
     ) {
 
         console.warn(
-            "GRANT URL NIJE HTTP/HTTPS:",
+            "URL NIJE HTTP/HTTPS:",
             SIROVI_URL
         );
 
@@ -798,7 +973,7 @@ function SIGURAN_URL(URL_VRIJEDNOST) {
     catch (GRESKA) {
 
         console.warn(
-            "NEISPRAVAN GRANT URL:",
+            "NEISPRAVAN URL:",
             SIROVI_URL,
             GRESKA
         );
@@ -936,11 +1111,368 @@ function STATUS_KLASA(STATUS) {
 
 
 /* =========================================================
-   UČITAJ SVE GRANTOVE
+   NORMALIZUJ TIP DOKUMENTA
+   ========================================================= */
+
+
+function NORMALIZUJ_TIP_DOKUMENTA(TIP) {
+
+    return String(
+        TIP || "DOKUMENT"
+    )
+        .trim()
+        .toUpperCase();
+
+}
+
+
+/* =========================================================
+   IKONA DOKUMENTA
+   ========================================================= */
+
+
+function IKONA_DOKUMENTA(TIP) {
+
+    const NORMALIZOVANI_TIP =
+        NORMALIZUJ_TIP_DOKUMENTA(
+            TIP
+        );
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "JAVNI_POZIV"
+    ) {
+
+        return "📢";
+
+    }
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "PRAVILNIK"
+    ) {
+
+        return "📘";
+
+    }
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "OBRAZAC"
+    ) {
+
+        return "📋";
+
+    }
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "VODIC"
+    ) {
+
+        return "📕";
+
+    }
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "PROGRAM"
+    ) {
+
+        return "📑";
+
+    }
+
+
+    if (
+        NORMALIZOVANI_TIP ===
+        "PDF"
+    ) {
+
+        return "📄";
+
+    }
+
+
+    return "📎";
+
+}
+
+
+/* =========================================================
+   NAZIV TIPA DOKUMENTA
+   ========================================================= */
+
+
+function NAZIV_TIPA_DOKUMENTA(TIP) {
+
+    const NORMALIZOVANI_TIP =
+        NORMALIZUJ_TIP_DOKUMENTA(
+            TIP
+        );
+
+
+    const NAZIVI = {
+
+        "JAVNI_POZIV":
+            "Javni poziv",
+
+        "PRAVILNIK":
+            "Pravilnik",
+
+        "OBRAZAC":
+            "Obrazac",
+
+        "VODIC":
+            "Vodič",
+
+        "PROGRAM":
+            "Program",
+
+        "PDF":
+            "PDF dokument",
+
+        "OSTALO":
+            "Ostalo",
+
+        "DOKUMENT":
+            "Dokument"
+
+    };
+
+
+    return (
+        NAZIVI[
+            NORMALIZOVANI_TIP
+        ] ||
+        NORMALIZOVANI_TIP
+    );
+
+}
+
+
+/* =========================================================
+   UČITAJ GRANTOVE
    ========================================================= */
 
 
 async function UCITAJ_GRANTOVE() {
+
+    const URL =
+        `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`;
+
+
+    console.log(
+        "UČITAVAM GRANTOVE:",
+        URL
+    );
+
+
+    const ODGOVOR =
+        await fetch(
+            URL,
+            {
+
+                method: "GET",
+
+                headers: {
+
+                    "apikey":
+                        SUPABASE_ANON_KEY,
+
+                    "Accept":
+                        "application/json"
+
+                }
+
+            }
+        );
+
+
+    console.log(
+        "GRANTOVI STATUS:",
+        ODGOVOR.status
+    );
+
+
+    if (!ODGOVOR.ok) {
+
+        const TEKST_GRESKE =
+            await ODGOVOR.text();
+
+
+        throw new Error(
+            `Supabase greška pri učitavanju grantova ${ODGOVOR.status}: ${TEKST_GRESKE}`
+        );
+
+    }
+
+
+    const PODACI =
+        await ODGOVOR.json();
+
+
+    if (!Array.isArray(PODACI)) {
+
+        throw new Error(
+            "Supabase nije vratio niz grantova."
+        );
+
+    }
+
+
+    SVI_GRANTOVI =
+        PODACI;
+
+
+    console.log(
+        "GRANTOVI UČITANI:",
+        SVI_GRANTOVI.length
+    );
+
+}
+
+
+/* =========================================================
+   UČITAJ DOKUMENTE
+   ========================================================= */
+
+
+async function UCITAJ_DOKUMENTE() {
+
+    const URL =
+        `${SUPABASE_URL}/rest/v1/GRANT_DOKUMENTI?select=*&AKTIVAN=eq.true&order=GRANT_ID.asc,REDOSLIJED.asc,ID.asc`;
+
+
+    console.log(
+        "UČITAVAM DOKUMENTE:",
+        URL
+    );
+
+
+    const ODGOVOR =
+        await fetch(
+            URL,
+            {
+
+                method: "GET",
+
+                headers: {
+
+                    "apikey":
+                        SUPABASE_ANON_KEY,
+
+                    "Accept":
+                        "application/json"
+
+                }
+
+            }
+        );
+
+
+    console.log(
+        "DOKUMENTI STATUS:",
+        ODGOVOR.status
+    );
+
+
+    if (!ODGOVOR.ok) {
+
+        const TEKST_GRESKE =
+            await ODGOVOR.text();
+
+
+        throw new Error(
+            `Supabase greška pri učitavanju dokumenata ${ODGOVOR.status}: ${TEKST_GRESKE}`
+        );
+
+    }
+
+
+    const PODACI =
+        await ODGOVOR.json();
+
+
+    if (!Array.isArray(PODACI)) {
+
+        throw new Error(
+            "Supabase nije vratio niz dokumenata."
+        );
+
+    }
+
+
+    SVI_DOKUMENTI =
+        PODACI;
+
+
+    console.log(
+        "DOKUMENTI UČITANI:",
+        SVI_DOKUMENTI.length
+    );
+
+
+    /* =====================================================
+       NAPRAVI MAPU:
+       GRANT_ID -> DOKUMENTI
+       ===================================================== */
+
+
+    DOKUMENTI_PO_GRANTU = {};
+
+
+    SVI_DOKUMENTI.forEach(
+        DOKUMENT => {
+
+            const GRANT_ID =
+                String(
+                    DOKUMENT.GRANT_ID
+                );
+
+
+            if (
+                !DOKUMENTI_PO_GRANTU[
+                    GRANT_ID
+                ]
+            ) {
+
+                DOKUMENTI_PO_GRANTU[
+                    GRANT_ID
+                ] = [];
+
+            }
+
+
+            DOKUMENTI_PO_GRANTU[
+                GRANT_ID
+            ].push(
+                DOKUMENT
+            );
+
+        }
+    );
+
+
+    console.log(
+        "MAPA DOKUMENATA:",
+        DOKUMENTI_PO_GRANTU
+    );
+
+}
+
+
+/* =========================================================
+   UČITAJ SVE
+   ========================================================= */
+
+
+async function UCITAJ_SVE() {
 
     const GRID =
         document.getElementById(
@@ -957,87 +1489,34 @@ async function UCITAJ_GRANTOVE() {
     try {
 
         console.log(
-            "POČETAK UČITAVANJA GRANTOVA..."
+            "===================================="
         );
-
-
-        const URL =
-            `${SUPABASE_URL}/rest/v1/GRANTOVI?select=*&order=ROK.asc.nullslast,DATUM_OBJAVE.desc`;
 
 
         console.log(
-            "SUPABASE URL:",
-            URL
+            "POČETAK UČITAVANJA DOCBIZHUB GRANTOVA"
         );
-
-
-        const ODGOVOR =
-            await fetch(
-                URL,
-                {
-
-                    method: "GET",
-
-                    headers: {
-
-                        "apikey":
-                            SUPABASE_ANON_KEY,
-
-                        "Accept":
-                            "application/json"
-
-                    }
-
-                }
-            );
 
 
         console.log(
-            "SUPABASE STATUS:",
-            ODGOVOR.status
+            "===================================="
         );
 
 
-        if (!ODGOVOR.ok) {
+        /*
+           Učitavamo grantove i dokumente
+           paralelno.
+        */
 
-            const TEKST_GRESKE =
-                await ODGOVOR.text();
+        await Promise.all(
+            [
 
+                UCITAJ_GRANTOVE(),
 
-            console.error(
-                "SUPABASE GREŠKA:",
-                TEKST_GRESKE
-            );
+                UCITAJ_DOKUMENTE()
 
-
-            throw new Error(
-                `Supabase greška ${ODGOVOR.status}: ${TEKST_GRESKE}`
-            );
-
-        }
-
-
-        const PODACI =
-            await ODGOVOR.json();
-
-
-        console.log(
-            "GRANTOVI UČITANI:",
-            PODACI
+            ]
         );
-
-
-        if (!Array.isArray(PODACI)) {
-
-            throw new Error(
-                "Supabase nije vratio niz grantova."
-            );
-
-        }
-
-
-        SVI_GRANTOVI =
-            PODACI;
 
 
         const LOADING =
@@ -1061,7 +1540,7 @@ async function UCITAJ_GRANTOVE() {
     catch (GRESKA) {
 
         console.error(
-            "GREŠKA PRI UČITAVANJU GRANTOVA:",
+            "GREŠKA PRI UČITAVANJU:",
             GRESKA
         );
 
@@ -1072,7 +1551,7 @@ async function UCITAJ_GRANTOVE() {
 
                 <div class="error">
 
-                    ❌ Grantovi trenutno nisu dostupni.
+                    ❌ Podaci trenutno nisu dostupni.
 
                     <br><br>
 
@@ -1091,11 +1570,211 @@ async function UCITAJ_GRANTOVE() {
         if (RESULT_INFO) {
 
             RESULT_INFO.textContent =
-                "Greška pri učitavanju grantova.";
+                "Greška pri učitavanju podataka.";
 
         }
 
     }
+
+}
+
+
+/* =========================================================
+   NAPRAVI HTML ZA DOKUMENTE
+   ========================================================= */
+
+
+function NAPRAVI_DOKUMENTE_HTML(GRANT_ID) {
+
+    const KLJUC =
+        String(
+            GRANT_ID
+        );
+
+
+    const DOKUMENTI =
+        DOKUMENTI_PO_GRANTU[
+            KLJUC
+        ] || [];
+
+
+    /*
+       Ako nema dokumenata,
+       ne prikazujemo ništa.
+    */
+
+    if (
+        DOKUMENTI.length === 0
+    ) {
+
+        return "";
+
+    }
+
+
+    const VALIDNI_DOKUMENTI =
+        DOKUMENTI
+            .map(
+                DOKUMENT => {
+
+                    const URL_VRIJEDNOST =
+                        DOKUMENT.URL ??
+                        DOKUMENT.url ??
+                        DOKUMENT["URL"] ??
+                        "";
+
+
+                    const SIGURNI_URL =
+                        SIGURAN_URL(
+                            URL_VRIJEDNOST
+                        );
+
+
+                    return {
+
+                        DOKUMENT,
+
+                        SIGURNI_URL
+
+                    };
+
+                }
+            )
+            .filter(
+                STAVKA =>
+                    STAVKA.SIGURNI_URL
+            );
+
+
+    if (
+        VALIDNI_DOKUMENTI.length === 0
+    ) {
+
+        return "";
+
+    }
+
+
+    let HTML = `
+
+        <div class="documents-box">
+
+            <div class="documents-title">
+
+                <span>
+                    📄 Dokumenti
+                </span>
+
+                <span class="documents-count">
+                    ${VALIDNI_DOKUMENTI.length}
+                </span>
+
+            </div>
+
+
+            <div class="documents-list">
+
+    `;
+
+
+    VALIDNI_DOKUMENTI.forEach(
+        STAVKA => {
+
+            const DOKUMENT =
+                STAVKA.DOKUMENT;
+
+
+            const URL =
+                STAVKA.SIGURNI_URL;
+
+
+            const NAZIV =
+                DOKUMENT.NAZIV ||
+                "Dokument";
+
+
+            const TIP =
+                DOKUMENT.TIP_DOKUMENTA ||
+                "DOKUMENT";
+
+
+            const OPIS =
+                DOKUMENT.OPIS ||
+                "";
+
+
+            HTML += `
+
+                <a
+                    href="${SIGURAN_TEKST(URL)}"
+                    class="document-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="${SIGURAN_TEKST(
+                        OPIS ||
+                        "Otvori dokument"
+                    )}"
+                >
+
+                    <div class="document-left">
+
+                        <span class="document-icon">
+
+                            ${IKONA_DOKUMENTA(TIP)}
+
+                        </span>
+
+
+                        <div>
+
+                            <div class="document-name">
+
+                                ${SIGURAN_TEKST(
+                                    NAZIV
+                                )}
+
+                            </div>
+
+
+                            <div class="document-type">
+
+                                ${SIGURAN_TEKST(
+                                    NAZIV_TIPA_DOKUMENTA(
+                                        TIP
+                                    )
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="document-arrow">
+
+                        ↗
+
+                    </span>
+
+                </a>
+
+            `;
+
+        }
+    );
+
+
+    HTML += `
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return HTML;
 
 }
 
@@ -1403,6 +2082,17 @@ function PRIKAZI_GRANTOVE() {
                 );
 
 
+            /* -----------------------------------------
+               DOKUMENTI
+               ----------------------------------------- */
+
+
+            const DOKUMENTI_HTML =
+                NAPRAVI_DOKUMENTE_HTML(
+                    GRANT.ID
+                );
+
+
             /* =================================================
                CARD SADRŽAJ
                ================================================= */
@@ -1635,6 +2325,14 @@ function PRIKAZI_GRANTOVE() {
                     </div>
 
 
+                    <!-- =================================================
+                         DOKUMENTI
+                         ================================================= -->
+
+
+                    ${DOKUMENTI_HTML}
+
+
                     <div class="source">
 
                         Izvor:
@@ -1668,13 +2366,6 @@ function PRIKAZI_GRANTOVE() {
                ================================================= */
 
 
-            /*
-               POPRAVKA:
-               Provjeravamo i URL i url kako bi
-               link radio bez obzira kako je
-               Supabase vratio naziv polja.
-            */
-
             const VRIJEDNOST_URL =
                 GRANT.URL ??
                 GRANT.url ??
@@ -1696,7 +2387,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               AKO URL POSTOJI
+               AKO URL GRANTA POSTOJI
                ================================================= */
 
 
@@ -1749,7 +2440,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               AKO URL NE POSTOJI
+               AKO URL GRANTA NE POSTOJI
                ================================================= */
 
 
@@ -1794,7 +2485,7 @@ function PRIKAZI_GRANTOVE() {
 
 
             /* =================================================
-               DODAJ CARD NA STRANICU
+               DODAJ CARD
                ================================================= */
 
 
@@ -1858,9 +2549,11 @@ document
    ========================================================= */
 
 
-UCITAJ_GRANTOVE();
+UCITAJ_SVE();
 
 
 </script>
+
+
 </body>
 </html>
