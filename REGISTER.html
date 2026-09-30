@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -9,125 +8,72 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body { 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      background-color: #f4f6f9; 
-      color: #2b2d42; 
-      display: flex; 
-      flex-direction: column; 
-      min-height: 100vh; 
-    }
-    
-    header { 
-      background-color: #2b2d42; 
-      color: #fff; 
-      padding: 15px 5%; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .logo { 
-      font-size: 1.5rem; 
-      font-weight: bold; 
-      color: #fff; 
-      text-decoration: none; 
-      transition: color 0.3s; 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      color: #2b2d42;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    .logo:hover { color: #d90429; }
-    
-    .main-container { 
-      flex: 1; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 40px 20px; 
+    header {
+      background-color: #2b2d42;
+      color: #fff;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
-    .login-card { 
-      background: #fff; 
-      width: 100%; 
-      max-width: 500px; 
-      padding: 35px; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 25px rgba(43, 45, 66, 0.08); 
-      border-top: 5px solid #2b2d42; 
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
     }
 
-    .login-card h2 { 
-      text-align: center; 
-      color: #2b2d42; 
-      margin-bottom: 8px; 
-      font-size: 1.8rem; 
+    .logo:hover {
+      color: #d90429;
     }
 
-    .subtitle { 
-      text-align: center; 
-      color: #666; 
-      font-size: 0.95rem; 
-      margin-bottom: 25px; 
+    .main-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
     }
 
-    .form-group { 
-      margin-bottom: 18px; 
-      text-align: left; 
+    .login-card {
+      background: #fff;
+      width: 100%;
+      max-width: 550px;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(43, 45, 66, 0.08);
+      border-top: 5px solid #2b2d42;
     }
 
-    .form-group label { 
-      display: block; 
-      font-weight: 600; 
-      margin-bottom: 6px; 
-      color: #2b2d42; 
+    .login-card h2 {
+      text-align: center;
+      color: #2b2d42;
+      margin-bottom: 8px;
+      font-size: 1.8rem;
     }
 
-    .form-group small {
-      display: block;
-      color: #777;
-      font-size: 0.82rem;
-      margin-top: 5px;
-    }
-    
-    .input-wrapper { 
-      position: relative; 
-    }
-
-    .form-group input,
-    .form-group textarea { 
-      width: 100%; 
-      padding: 12px; 
-      border: 1px solid #ddd; 
-      border-radius: 10px; 
-      font-size: 1rem; 
-      outline: none;
-      font-family: inherit;
-      transition: border-color 0.3s;
-    }
-
-    .form-group textarea {
-      min-height: 110px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus { 
-      border-color: #d90429; 
-    }
-
-    .toggle-password { 
-      position: absolute; 
-      right: 12px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      background: none; 
-      border: none; 
-      cursor: pointer; 
-      font-size: 1.1rem; 
-      color: #666; 
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 25px;
     }
 
     .info-box {
@@ -150,22 +96,86 @@
       border-bottom: 2px solid #eee;
     }
 
-    .btn-submit { 
-      width: 100%; 
-      background-color: #d90429; 
-      color: #fff; 
-      padding: 14px; 
-      border: none; 
-      border-radius: 10px; 
-      font-size: 1.1rem; 
-      font-weight: bold; 
-      cursor: pointer; 
-      transition: background 0.3s; 
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #2b2d42;
+    }
+
+    .form-group small {
+      display: block;
+      color: #777;
+      font-size: 0.82rem;
+      margin-top: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #d90429;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      padding-right: 45px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #666;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: #d90429;
+      color: #fff;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
       margin-top: 10px;
     }
 
-    .btn-submit:hover { 
-      background-color: #b50322; 
+    .btn-submit:hover {
+      background-color: #b50322;
     }
 
     .btn-submit:disabled {
@@ -173,438 +183,844 @@
       cursor: not-allowed;
     }
 
-    #statusMessage { 
-      margin-top: 15px; 
-      text-align: center; 
-      font-weight: bold; 
-      word-break: break-word; 
-      font-size: 0.95rem; 
-    }
-    
-    .footer-links { 
-      text-align: center; 
-      margin-top: 20px; 
-      font-size: 0.95rem; 
+    #statusMessage {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+      word-break: break-word;
+      font-size: 0.95rem;
     }
 
-    .footer-links a { 
-      color: #d90429; 
-      text-decoration: none; 
-      font-weight: bold; 
+    .footer-links {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.95rem;
     }
 
-    .footer-links a:hover { 
-      text-decoration: underline; 
+    .footer-links a {
+      color: #d90429;
+      text-decoration: none;
+      font-weight: bold;
     }
 
-    footer { 
-      background-color: #2b2d42; 
-      color: #fff; 
-      text-align: center; 
-      padding: 20px 0; 
-      margin-top: auto; 
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #2b2d42;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: auto;
+    }
+
+    .required {
+      color: #d90429;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <a href="index.html" class="logo">📄 DocBizHub</a>
-  </header>
+<header>
+  <a href="index.html" class="logo">📄 DocBizHub</a>
+</header>
 
-  <div class="main-container">
 
-    <div class="login-card">
+<div class="main-container">
 
-      <h2>Kreirajte profil</h2>
-      <p class="subtitle">Registrujte se na DocBizHub platformu</p>
+  <div class="login-card">
 
-      <div class="info-box">
-        Popunite svoj profil kako bi drugi korisnici mogli vidjeti
-        <strong>ko ste, šta nudite i šta tražite</strong>.
+    <h2>Kreirajte profil</h2>
+
+    <p class="subtitle">
+      Registrujte se na DocBizHub platformu
+    </p>
+
+
+    <div class="info-box">
+      Popunite svoj profil kako bi drugi korisnici mogli
+      vidjeti <strong>ko ste, šta nudite i šta tražite</strong>.
+    </div>
+
+
+    <form id="registerForm"
+          onsubmit="event.preventDefault(); handleRegister();">
+
+
+      <!-- ========================= -->
+      <!-- OSNOVNI PODACI -->
+      <!-- ========================= -->
+
+      <div class="section-title">
+        👤 Osnovni podaci
       </div>
 
-      <form id="registerForm" onsubmit="event.preventDefault(); handleRegister();">
 
-        <!-- OSNOVNI PODACI -->
-        <div class="section-title">
-          👤 Osnovni podaci
-        </div>
+      <div class="form-group">
 
-        <div class="form-group">
-          <label for="fullName">Ime i prezime / Naziv firme</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            placeholder="Vaše ime ili naziv firme" 
-            required
-          >
-        </div>
+        <label for="fullName">
+          Ime i prezime / Naziv firme
+          <span class="required">*</span>
+        </label>
 
-        <div class="form-group">
-          <label for="email">E-mail adresa</label>
-          <input 
-            type="email" 
-            id="email" 
-            placeholder="vas@email.com" 
-            required
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Broj telefona</label>
-          <input 
-            type="text" 
-            id="phone" 
-            placeholder="+387..." 
-            required
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="password">Lozinka</label>
-
-          <div class="input-wrapper">
-            <input 
-              type="password" 
-              id="password" 
-              placeholder="Kreirajte lozinku" 
-              required
-            >
-
-            <button 
-              type="button" 
-              class="toggle-password" 
-              onclick="togglePasswordVisibility()" 
-              title="Prikaži/Sakrij lozinku"
-            >
-              👁️
-            </button>
-          </div>
-        </div>
-
-
-        <!-- JA -->
-        <div class="section-title">
-          🙋 JA
-        </div>
-
-        <div class="form-group">
-          <label for="ja">O meni / Šta nudim?</label>
-
-          <textarea 
-            id="ja" 
-            placeholder="Npr. Bavim se izradom web stranica, marketingom i grafičkim dizajnom. Nudim usluge izrade web shopova..."
-            required
-          ></textarea>
-
-          <small>
-            Opišite sebe, svoju firmu, znanje, usluge ili ono što nudite.
-          </small>
-        </div>
-
-
-        <!-- TRAŽIM -->
-        <div class="section-title">
-          🔎 TRAŽIM
-        </div>
-
-        <div class="form-group">
-          <label for="trazim">Šta tražim?</label>
-
-          <textarea 
-            id="trazim" 
-            placeholder="Npr. Tražim programera za izradu aplikacije, marketinšku agenciju, poslovne partnere ili klijente..."
-            required
-          ></textarea>
-
-          <small>
-            Napišite šta tražite od drugih korisnika ili kakvu saradnju želite.
-          </small>
-        </div>
-
-
-        <button 
-          type="submit" 
-          class="btn-submit" 
-          id="registerBtn"
+        <input
+          type="text"
+          id="fullName"
+          placeholder="Vaše ime ili naziv firme"
+          required
         >
-          REGISTRUJ SE
-        </button>
 
-      </form>
-
-      <div id="statusMessage"></div>
-
-      <div class="footer-links">
-        Već imate profil? 
-        <a href="LOGIN.html">Prijavite se ovdje</a>
       </div>
+
+
+      <div class="form-group">
+
+        <label for="email">
+          E-mail adresa
+          <span class="required">*</span>
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="vas@email.com"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="phone">
+          Broj telefona
+          <span class="required">*</span>
+        </label>
+
+        <input
+          type="text"
+          id="phone"
+          placeholder="+387..."
+          required
+        >
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- LOKACIJA -->
+      <!-- ========================= -->
+
+      <div class="form-group">
+
+        <label for="grad">
+          📍 Grad
+          <span class="required">*</span>
+        </label>
+
+        <input
+          type="text"
+          id="grad"
+          placeholder="Npr. Travnik, Sarajevo, Mostar..."
+          required
+        >
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- DJELATNOST -->
+      <!-- ========================= -->
+
+      <div class="form-group">
+
+        <label for="djelatnost">
+          💼 Djelatnost
+          <span class="required">*</span>
+        </label>
+
+        <select id="djelatnost" required>
+
+          <option value="">
+            -- Odaberite djelatnost --
+          </option>
+
+          <option value="IT i programiranje">
+            IT i programiranje
+          </option>
+
+          <option value="Marketing i reklama">
+            Marketing i reklama
+          </option>
+
+          <option value="Dizajn">
+            Dizajn
+          </option>
+
+          <option value="Građevina">
+            Građevina
+          </option>
+
+          <option value="Trgovina">
+            Trgovina
+          </option>
+
+          <option value="Proizvodnja">
+            Proizvodnja
+          </option>
+
+          <option value="Ugostiteljstvo">
+            Ugostiteljstvo
+          </option>
+
+          <option value="Transport i logistika">
+            Transport i logistika
+          </option>
+
+          <option value="Finansije i računovodstvo">
+            Finansije i računovodstvo
+          </option>
+
+          <option value="Pravne usluge">
+            Pravne usluge
+          </option>
+
+          <option value="Edukacija">
+            Edukacija
+          </option>
+
+          <option value="Zdravstvo">
+            Zdravstvo
+          </option>
+
+          <option value="Nekretnine">
+            Nekretnine
+          </option>
+
+          <option value="Turizam">
+            Turizam
+          </option>
+
+          <option value="Ostalo">
+            Ostalo
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- VRSTA SARADNJE -->
+      <!-- ========================= -->
+
+      <div class="form-group">
+
+        <label for="vrstaSaradnje">
+          🤝 Vrsta saradnje
+          <span class="required">*</span>
+        </label>
+
+        <select id="vrstaSaradnje" required>
+
+          <option value="">
+            -- Šta tražite / nudite? --
+          </option>
+
+          <option value="Tražim klijente">
+            Tražim klijente
+          </option>
+
+          <option value="Tražim posao">
+            Tražim posao
+          </option>
+
+          <option value="Nudim usluge">
+            Nudim usluge
+          </option>
+
+          <option value="Tražim saradnika">
+            Tražim saradnika
+          </option>
+
+          <option value="Tražim poslovnog partnera">
+            Tražim poslovnog partnera
+          </option>
+
+          <option value="Nudim proizvod">
+            Nudim proizvod
+          </option>
+
+          <option value="Tražim proizvod">
+            Tražim proizvod
+          </option>
+
+          <option value="Više opcija">
+            Više opcija
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- JA -->
+      <!-- ========================= -->
+
+      <div class="section-title">
+        🙋 JA
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="ja">
+          O meni / Šta nudim?
+          <span class="required">*</span>
+        </label>
+
+        <textarea
+          id="ja"
+          placeholder="Npr. Bavim se izradom web stranica, marketingom i grafičkim dizajnom. Nudim usluge izrade web shopova..."
+          required
+        ></textarea>
+
+        <small>
+          Opišite sebe, svoju firmu, znanje, iskustvo,
+          proizvode ili usluge koje nudite.
+        </small>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- TRAŽIM -->
+      <!-- ========================= -->
+
+      <div class="section-title">
+        🔎 TRAŽIM
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="trazim">
+          Šta tražim?
+          <span class="required">*</span>
+        </label>
+
+        <textarea
+          id="trazim"
+          placeholder="Npr. Tražim programera za izradu aplikacije, marketinšku agenciju, poslovnog partnera ili nove klijente..."
+          required
+        ></textarea>
+
+        <small>
+          Napišite kakvog klijenta, partnera, saradnika,
+          radnika ili dobavljača tražite.
+        </small>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- ONLINE PROFILI -->
+      <!-- ========================= -->
+
+      <div class="section-title">
+        🌐 Online profili
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="linkedin">
+          🔗 LinkedIn profil
+        </label>
+
+        <input
+          type="url"
+          id="linkedin"
+          placeholder="https://www.linkedin.com/in/vas-profil"
+        >
+
+        <small>
+          Opciono – možete dodati svoj LinkedIn profil.
+        </small>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="webStranica">
+          🌐 Web stranica
+        </label>
+
+        <input
+          type="url"
+          id="webStranica"
+          placeholder="https://www.vasasranica.ba"
+        >
+
+        <small>
+          Opciono – web stranica vas ili vaše firme.
+        </small>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- LOZINKA -->
+      <!-- ========================= -->
+
+      <div class="section-title">
+        🔐 Sigurnost
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="password">
+          Lozinka
+          <span class="required">*</span>
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Kreirajte lozinku"
+            required
+          >
+
+          <button
+            type="button"
+            class="toggle-password"
+            onclick="togglePasswordVisibility()"
+            title="Prikaži/Sakrij lozinku"
+          >
+            👁️
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="btn-submit"
+        id="registerBtn"
+      >
+        REGISTRUJ SE
+      </button>
+
+    </form>
+
+
+    <div id="statusMessage"></div>
+
+
+    <div class="footer-links">
+
+      Već imate profil?
+
+      <a href="LOGIN.html">
+        Prijavite se ovdje
+      </a>
 
     </div>
+
   </div>
 
-  <footer>
-    <p>© 2026 DocBizHub. Sva prava zadržana.</p>
-  </footer>
+</div>
 
 
-  <script>
+<footer>
 
-    const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
+  <p>
+    © 2026 DocBizHub. Sva prava zadržana.
+  </p>
 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+</footer>
 
-    const _supabase = supabase.createClient(
-      SUPABASE_URL, 
+
+<script>
+
+  const SUPABASE_URL =
+    'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+
+  const _supabase =
+    supabase.createClient(
+      SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
 
-    // PRIKAŽI / SAKRIJ LOZINKU
-    function togglePasswordVisibility() {
+  // =====================================
+  // PRIKAŽI / SAKRIJ LOZINKU
+  // =====================================
 
-      const passwordInput = document.getElementById('password');
+  function togglePasswordVisibility() {
 
-      if (passwordInput.type === 'password') {
+    const passwordInput =
+      document.getElementById('password');
 
-        passwordInput.type = 'text';
+    if (passwordInput.type === 'password') {
 
-      } else {
+      passwordInput.type = 'text';
 
-        passwordInput.type = 'password';
+    } else {
 
-      }
+      passwordInput.type = 'password';
+
     }
 
+  }
 
-    // SLANJE NOTIFIKACIJE
-    async function posaljiNotifikacijuUBazu(
-      vrsta, 
-      ime, 
-      firma, 
-      telefon, 
-      email, 
-      linkStranice
-    ) {
 
-      try {
+  // =====================================
+  // NOTIFIKACIJA
+  // =====================================
 
-        const { error } = await _supabase
+  async function posaljiNotifikacijuUBazu(
+    vrsta,
+    ime,
+    firma,
+    telefon,
+    email,
+    linkStranice
+  ) {
+
+    try {
+
+      const { error } =
+        await _supabase
           .from('NOTIFIKACIJE')
           .insert([
             {
+
               "VRSTA_NOTIFIKACIJE": vrsta,
+
               "IME": ime,
+
               "FIRMA": firma,
+
               "TELEFON": telefon,
+
               "EMAIL": email,
+
               "LINK_STRANICE": linkStranice
+
             }
           ]);
 
-        if (error) {
 
-          console.error(
-            "Greška pri upisu u NOTIFIKACIJE:",
-            error.message
-          );
-
-        }
-
-      } catch (err) {
+      if (error) {
 
         console.error(
-          'Neočekivana greška pri slanju notifikacije:',
-          err
+          "Greška pri upisu u NOTIFIKACIJE:",
+          error.message
         );
 
       }
+
+    } catch (err) {
+
+      console.error(
+        'Neočekivana greška pri slanju notifikacije:',
+        err
+      );
+
     }
 
+  }
 
-    // REGISTRACIJA
-    async function handleRegister() {
 
-      const fullName = document
+  // =====================================
+  // REGISTRACIJA
+  // =====================================
+
+  async function handleRegister() {
+
+    // OSNOVNI PODACI
+
+    const fullName =
+      document
         .getElementById('fullName')
         .value
         .trim();
 
-      const email = document
+
+    const email =
+      document
         .getElementById('email')
         .value
         .trim();
 
-      const phone = document
+
+    const phone =
+      document
         .getElementById('phone')
         .value
         .trim();
 
-      const password = document
+
+    const password =
+      document
         .getElementById('password')
         .value;
 
-      // NOVA POLJA
-      const ja = document
+
+    // NOVI PODACI
+
+    const grad =
+      document
+        .getElementById('grad')
+        .value
+        .trim();
+
+
+    const djelatnost =
+      document
+        .getElementById('djelatnost')
+        .value;
+
+
+    const vrstaSaradnje =
+      document
+        .getElementById('vrstaSaradnje')
+        .value;
+
+
+    const ja =
+      document
         .getElementById('ja')
         .value
         .trim();
 
-      const trazim = document
+
+    const trazim =
+      document
         .getElementById('trazim')
         .value
         .trim();
 
 
-      const statusDiv = document.getElementById('statusMessage');
+    // OPCIONALNI PODACI
 
-      const registerBtn = document.getElementById('registerBtn');
-
-
-      // PROVJERA
-      if (
-        !fullName || 
-        !email || 
-        !phone || 
-        !password ||
-        !ja ||
-        !trazim
-      ) {
-
-        statusDiv.style.color = 'red';
-
-        statusDiv.textContent = 
-          'Molimo popunite sva polja!';
-
-        return;
-      }
+    const linkedin =
+      document
+        .getElementById('linkedin')
+        .value
+        .trim();
 
 
-      statusDiv.style.color = '#0056b3';
-
-      statusDiv.textContent = 
-        'Registracija u toku...';
-
-      registerBtn.disabled = true;
-
-
-      try {
-
-        // 1. KREIRANJE KORISNIKA
-        const { data: authData, error: authError } =
-          await _supabase.auth.signUp({
-
-            email: email,
-
-            password: password
-
-          });
+    const webStranica =
+      document
+        .getElementById('webStranica')
+        .value
+        .trim();
 
 
-        if (authError) {
-
-          throw authError;
-
-        }
+    const statusDiv =
+      document.getElementById('statusMessage');
 
 
-        const userId = 
-          authData.user 
-            ? authData.user.id 
-            : null;
+    const registerBtn =
+      document.getElementById('registerBtn');
 
 
-        // 2. UPIS U POSAO_KORISNICI
-        if (userId) {
+    // =====================================
+    // PROVJERA
+    // =====================================
 
-          const { error: korisnikError } = 
-            await _supabase
-              .from('POSAO_KORISNICI')
-              .insert([
-                { 
+    if (
+      !fullName ||
+      !email ||
+      !phone ||
+      !password ||
+      !grad ||
+      !djelatnost ||
+      !vrstaSaradnje ||
+      !ja ||
+      !trazim
+    ) {
 
-                  USER: userId, 
+      statusDiv.style.color = 'red';
 
-                  IME: fullName, 
+      statusDiv.textContent =
+        'Molimo popunite sva obavezna polja!';
 
-                  MAIL: email, 
-
-                  TELEFON: phone,
-
-                  // NOVO
-                  JA: ja,
-
-                  TRAZIM: trazim,
-
-                  IS_ONLINE: true, 
-
-                  LAST_SEEN: new Date().toLocaleDateString()
-
-                }
-              ]);
-
-
-          if (korisnikError) {
-
-            throw korisnikError;
-
-          }
-
-        }
-
-
-        // 3. NOTIFIKACIJA
-        await posaljiNotifikacijuUBazu(
-
-          'NOVI_CLAN',
-
-          fullName,
-
-          fullName,
-
-          phone,
-
-          email,
-
-          `DASHBOARD.html?korisnik=${encodeURIComponent(email)}`
-
-        );
-
-
-        // 4. USPJEH
-        statusDiv.style.color = 'green';
-
-        statusDiv.textContent = 
-          'Registracija uspješna! Preusmjeravanje...';
-
-
-        setTimeout(() => {
-
-          // OVDJE MOŽEŠ AKTIVIRATI PREUSMJERAVANJE
-          // window.location.href = 'DASHBOARD.html';
-
-        }, 1500);
-
-
-      } catch (err) {
-
-        console.error(err);
-
-        statusDiv.style.color = 'red';
-
-        statusDiv.textContent = 
-          'Greška: ' + err.message;
-
-        registerBtn.disabled = false;
-
-      }
+      return;
 
     }
 
-  </script>
+
+    // =====================================
+    // POČETAK
+    // =====================================
+
+    statusDiv.style.color = '#0056b3';
+
+    statusDiv.textContent =
+      'Registracija u toku...';
+
+    registerBtn.disabled = true;
+
+
+    try {
+
+
+      // =====================================
+      // 1. SUPABASE AUTH
+      // =====================================
+
+      const {
+        data: authData,
+        error: authError
+      } = await _supabase.auth.signUp({
+
+        email: email,
+
+        password: password
+
+      });
+
+
+      if (authError) {
+
+        throw authError;
+
+      }
+
+
+      const userId =
+        authData.user
+          ? authData.user.id
+          : null;
+
+
+      // =====================================
+      // 2. UPIS U POSAO_KORISNICI
+      // =====================================
+
+      if (userId) {
+
+        const {
+          error: korisnikError
+        } = await _supabase
+          .from('POSAO_KORISNICI')
+          .insert([
+            {
+
+              USER: userId,
+
+              IME: fullName,
+
+              MAIL: email,
+
+              TELEFON: phone,
+
+              GRAD: grad,
+
+              DJELATNOST: djelatnost,
+
+              VRSTA_SARADNJE: vrstaSaradnje,
+
+              JA: ja,
+
+              TRAZIM: trazim,
+
+              LINKEDIN: linkedin || null,
+
+              WEB_STRANICA: webStranica || null,
+
+              IS_ONLINE: true,
+
+              LAST_SEEN:
+                new Date().toLocaleDateString()
+
+            }
+          ]);
+
+
+        if (korisnikError) {
+
+          throw korisnikError;
+
+        }
+
+      }
+
+
+      // =====================================
+      // 3. NOTIFIKACIJA
+      // =====================================
+
+      await posaljiNotifikacijuUBazu(
+
+        'NOVI_CLAN',
+
+        fullName,
+
+        fullName,
+
+        phone,
+
+        email,
+
+        `DASHBOARD.html?korisnik=${encodeURIComponent(email)}`
+
+      );
+
+
+      // =====================================
+      // 4. USPJEŠNA REGISTRACIJA
+      // =====================================
+
+      statusDiv.style.color = 'green';
+
+      statusDiv.textContent =
+        'Registracija uspješna! Preusmjeravanje...';
+
+
+      setTimeout(() => {
+
+        // Ako želiš automatsko preusmjeravanje,
+        // samo ukloni // ispred sljedeće linije:
+
+        // window.location.href = 'DASHBOARD.html';
+
+      }, 1500);
+
+
+    } catch (err) {
+
+      console.error(err);
+
+      statusDiv.style.color = 'red';
+
+      statusDiv.textContent =
+        'Greška: ' + err.message;
+
+      registerBtn.disabled = false;
+
+    }
+
+  }
+
+</script>
 
 </body>
 </html>
-```
