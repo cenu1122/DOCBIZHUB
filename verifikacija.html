@@ -1,62 +1,784 @@
 <!DOCTYPE html>
 <html lang="bs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Verifikacija</title>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Verifikacija telefona | DocBizHub</title>
+
+
+  <style>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      font-family:
+        'Segoe UI',
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+
+      background: #f4f4f9;
+
+      color: #2b2d42;
+
+      min-height: 100vh;
+
+      display: flex;
+
+      flex-direction: column;
+
+    }
+
+
+    header {
+
+      background: #2b2d42;
+
+      color: white;
+
+      padding: 15px 5%;
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+    }
+
+
+    .logo {
+
+      color: white;
+
+      text-decoration: none;
+
+      font-size: 1.4rem;
+
+      font-weight: bold;
+
+    }
+
+
+    .main {
+
+      flex: 1;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      padding: 25px 15px;
+
+    }
+
+
+    .verification-card {
+
+      width: 100%;
+
+      max-width: 450px;
+
+      background: white;
+
+      padding: 30px;
+
+      border-radius: 20px;
+
+      box-shadow:
+        0 10px 30px
+        rgba(55,66,250,0.10);
+
+      border-top: 5px solid #3742fa;
+
+    }
+
+
+    .icon {
+
+      text-align: center;
+
+      font-size: 55px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    h2 {
+
+      text-align: center;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .description {
+
+      text-align: center;
+
+      color: #666;
+
+      line-height: 1.5;
+
+      margin-bottom: 25px;
+
+    }
+
+
+    .phone-box {
+
+      background: #f5f5f5;
+
+      padding: 14px;
+
+      border-radius: 10px;
+
+      text-align: center;
+
+      font-weight: bold;
+
+      margin-bottom: 20px;
+
+      word-break: break-word;
+
+    }
+
+
+    label {
+
+      display: block;
+
+      font-weight: 600;
+
+      margin-bottom: 7px;
+
+    }
+
+
+    input {
+
+      width: 100%;
+
+      padding: 14px;
+
+      border: 1px solid #ddd;
+
+      border-radius: 10px;
+
+      outline: none;
+
+      font-size: 1.2rem;
+
+      text-align: center;
+
+      letter-spacing: 6px;
+
+    }
+
+
+    input:focus {
+
+      border-color: #3742fa;
+
+    }
+
+
+    button {
+
+      width: 100%;
+
+      border: none;
+
+      padding: 14px;
+
+      border-radius: 10px;
+
+      cursor: pointer;
+
+      font-size: 1rem;
+
+      font-weight: bold;
+
+      margin-top: 15px;
+
+    }
+
+
+    .btn-verify {
+
+      background: #3742fa;
+
+      color: white;
+
+    }
+
+
+    .btn-verify:hover {
+
+      background: #2f37d5;
+
+    }
+
+
+    .btn-back {
+
+      background: #f0f2ff;
+
+      color: #3742fa;
+
+    }
+
+
+    button:disabled {
+
+      background: #999;
+
+      cursor: not-allowed;
+
+    }
+
+
+    #status {
+
+      min-height: 25px;
+
+      margin-top: 18px;
+
+      text-align: center;
+
+      font-weight: bold;
+
+    }
+
+
+    .success {
+
+      color: #16803c;
+
+    }
+
+
+    .error {
+
+      color: #d63031;
+
+    }
+
+
+    .info {
+
+      color: #3742fa;
+
+    }
+
+
+    .help {
+
+      margin-top: 20px;
+
+      padding: 12px;
+
+      background: #f8f9ff;
+
+      border: 1px solid #e3e5ff;
+
+      border-radius: 10px;
+
+      color: #666;
+
+      font-size: 0.85rem;
+
+      line-height: 1.5;
+
+    }
+
+
+    footer {
+
+      background: #2b2d42;
+
+      color: white;
+
+      text-align: center;
+
+      padding: 18px;
+
+      font-size: 0.9rem;
+
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
-    <h2>Verifikacija</h2>
+
+<header>
+
+  <a
+    href="DASHBOARD.html"
+    class="logo"
+  >
+    🚀 DocBizHub
+  </a>
+
+</header>
+
+
+
+<div class="main">
+
+
+  <div class="verification-card">
+
+
+    <div class="icon">
+      📱
+    </div>
+
+
+    <h2>
+      Verifikacija telefona
+    </h2>
+
+
+    <p class="description">
+
+      Poslat ćemo zahtjev za verifikaciju
+      vašeg telefona.
+
+    </p>
+
+
+    <div
+      class="phone-box"
+      id="phoneDisplay"
+    >
+      Učitavanje broja...
+
+    </div>
+
+
+    <label for="kodInput">
+
+      🔢 Verifikacijski kod
+
+    </label>
+
 
     <input
-        type="text"
-        id="kod"
-        placeholder="Unesite verifikacijski kod"
+      type="text"
+      id="kodInput"
+      maxlength="6"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      placeholder="123456"
     >
 
-    <button onclick="provjeriKod()">
-        Potvrdi
+
+    <button
+      id="verifyButton"
+      class="btn-verify"
+      onclick="provjeriKod()"
+    >
+
+      ✅ Potvrdi kod
+
     </button>
 
-    <p id="rezultat"></p>
+
+    <button
+      class="btn-back"
+      onclick="nazadNaProfil()"
+    >
+
+      ← Nazad na profil
+
+    </button>
+
+
+    <div
+      id="status"
+    ></div>
+
+
+    <div class="help">
+
+      <strong>Kako radi?</strong><br><br>
+
+      1. Vaš broj je prikazan iz profila.<br>
+
+      2. Verifikacijski kod dolazi na vaš
+      uređaj.<br>
+
+      3. Unesite šest cifara ovdje.<br>
+
+      4. Ako je kod ispravan, telefon će biti
+      označen kao verificiran.
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<footer>
+
+  © 2026 DocBizHub. Sva prava zadržana.
+
+</footer>
+
+
 
 <script>
 
-function provjeriKod() {
 
-    const uneseniKod =
-        document.getElementById("kod").value.trim();
+/* =========================================================
+   PODACI
+========================================================= */
 
-    const sacuvaniKod =
-        localStorage.getItem("verifikacioni_token");
 
-    if (!sacuvaniKod) {
+const phone =
+  localStorage.getItem(
+    "broj_za_verifikaciju"
+  );
 
-        document.getElementById("rezultat").innerText =
-            "Nema spremljenog verifikacijskog koda.";
 
-        return;
-    }
+const userId =
+  localStorage.getItem(
+    "verifikacija_user_id"
+  );
 
-    if (uneseniKod === sacuvaniKod) {
 
-        document.getElementById("rezultat").innerText =
-            "✅ Verifikacija uspješna!";
+/*
+  OVDJE JE ADRESA TVOG PHP FAJLA.
 
-        localStorage.removeItem("verifikacioni_token");
+  AKO JE:
+  https://tvojadomena.ba/spremitoken.php
 
-    } else {
+  ostavi ovako.
 
-        document.getElementById("rezultat").innerText =
-            "❌ Pogrešan kod.";
+  Ako je u nekom folderu,
+  promijeni putanju.
+*/
 
-    }
+
+const SPREMITOKEN_URL =
+  "spremitoken.php";
+
+
+/*
+  Broj prikazujemo na stranici.
+*/
+
+
+document.getElementById(
+  "phoneDisplay"
+).innerText =
+  phone || "Broj nije pronađen";
+
+
+
+/* =========================================================
+   PROVJERA DA LI POSTOJI BROJ
+========================================================= */
+
+
+if (!phone) {
+
+  prikaziStatus(
+    "❌ Broj telefona nije pronađen. Vratite se na profil.",
+    "error"
+  );
+
+
+  document.getElementById(
+    "verifyButton"
+  ).disabled = true;
+
 }
+
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+
+function prikaziStatus(
+  poruka,
+  tip
+) {
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+
+  status.className =
+    tip || "";
+
+
+  status.innerText =
+    poruka;
+
+}
+
+
+
+/* =========================================================
+   PROVJERI KOD
+========================================================= */
+
+
+async function provjeriKod() {
+
+
+  const input =
+    document.getElementById(
+      "kodInput"
+    );
+
+
+  const button =
+    document.getElementById(
+      "verifyButton"
+    );
+
+
+  const uneseniKod =
+    input.value.trim();
+
+
+
+  /* PROVJERA UNOSA */
+
+
+  if (!uneseniKod) {
+
+    prikaziStatus(
+      "❌ Unesite verifikacijski kod.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (!/^[0-9]{6}$/.test(uneseniKod)) {
+
+    prikaziStatus(
+      "❌ Kod mora imati tačno 6 cifara.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+
+  button.disabled = true;
+
+  button.innerText =
+    "Provjeravam...";
+
+
+  prikaziStatus(
+    "🔄 Provjeravam verifikacijski kod...",
+    "info"
+  );
+
+
+
+  try {
+
+
+    /*
+      UZIMAMO TOKEN KOJI JE MOBITEL
+      POSLAO / KOJI JE SPREMLJEN.
+
+      Za sada čitamo ga iz localStorage.
+    */
+
+
+    const spremljeniToken =
+      localStorage.getItem(
+        "verifikacioni_token"
+      );
+
+
+
+    /*
+      AKO TOKEN POSTOJI,
+      uspoređujemo ga sa unosom.
+    */
+
+
+    if (
+      spremljeniToken &&
+      uneseniKod === spremljeniToken
+    ) {
+
+
+      uspjesnaVerifikacija();
+
+      return;
+
+    }
+
+
+
+    /*
+      Ako token nije pronađen.
+    */
+
+
+    prikaziStatus(
+      "❌ Kod nije ispravan ili još nije primljen.",
+      "error"
+    );
+
+
+    button.disabled = false;
+
+    button.innerText =
+      "✅ Potvrdi kod";
+
+
+  } catch (error) {
+
+
+    console.error(
+      error
+    );
+
+
+    prikaziStatus(
+      "❌ Došlo je do greške pri provjeri.",
+      "error"
+    );
+
+
+    button.disabled = false;
+
+    button.innerText =
+      "✅ Potvrdi kod";
+
+  }
+
+}
+
+
+
+/* =========================================================
+   USPJEŠNA VERIFIKACIJA
+========================================================= */
+
+
+function uspjesnaVerifikacija() {
+
+
+  prikaziStatus(
+    "✅ Telefon je uspješno verificiran!",
+    "success"
+  );
+
+
+  /*
+    Spremamo potvrdu.
+  */
+
+
+  localStorage.setItem(
+    "verifikovani_telefon",
+    phone
+  );
+
+
+  /*
+    Spremamo i status.
+  */
+
+
+  localStorage.setItem(
+    "telefon_verifikovan",
+    "true"
+  );
+
+
+  /*
+    Kod više ne treba biti dostupan
+    nakon uspješne provjere.
+  */
+
+
+  localStorage.removeItem(
+    "verifikacioni_token"
+  );
+
+
+  /*
+    Nakon kratkog vremena
+    vraćamo korisnika na profil.
+  */
+
+
+  setTimeout(
+    function() {
+
+      window.location.href =
+        "PROFIL.html";
+
+    },
+    1500
+  );
+
+}
+
+
+
+/* =========================================================
+   NAZAD
+========================================================= */
+
+
+function nazadNaProfil() {
+
+  window.location.href =
+    "PROFIL.html";
+
+}
+
 
 </script>
 
+
 </body>
+
 </html>
