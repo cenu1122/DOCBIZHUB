@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -189,6 +190,7 @@
       cursor: pointer;
       font-weight: bold;
       margin-top: 5px;
+      display: inline-block;
     }
 
     .btn-email {
@@ -199,25 +201,12 @@
     .btn-phone {
       background: #2ed573;
       color: white;
+      text-decoration: none;
     }
 
     .btn-small:disabled {
       background: #aaa;
       cursor: not-allowed;
-    }
-
-    .otp-box {
-      display: none;
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px solid #ddd;
-    }
-
-    .otp-input {
-      text-align: center;
-      letter-spacing: 6px;
-      font-size: 1.3rem;
-      font-weight: bold;
     }
 
     .btn-save {
@@ -482,51 +471,24 @@
             id="phoneVerificationStatus"
             class="verification-status"
           >
-            Provjera...
+            ⚠️ Telefon nije verificiran
           </div>
 
 
-          <button
-            id="phoneSendBtn"
+          <!-- NOVA VERIFIKACIJA -->
+
+          <a
+            id="phoneVerifyBtn"
             class="btn-small btn-phone"
-            onclick="posaljiSMSKod()"
+            href="verifikacija.html"
+            onclick="pokreniVerifikaciju(event)"
           >
-            📱 Pošalji SMS kod
-          </button>
-
-
-          <div
-            id="otpBox"
-            class="otp-box"
-          >
-
-            <label for="otpInput">
-              🔢 SMS verifikacijski kod
-            </label>
-
-
-            <input
-              id="otpInput"
-              class="otp-input"
-              type="text"
-              maxlength="6"
-              inputmode="numeric"
-              placeholder="123456"
-            >
-
-
-            <button
-              class="btn-small btn-phone"
-              onclick="potvrdiSMSKod()"
-            >
-              ✅ Potvrdi kod
-            </button>
-
-          </div>
+            📱 Pokreni verifikaciju
+          </a>
 
 
           <div class="help-text">
-            Broj mora biti u međunarodnom formatu, npr. +38761123456.
+            Kliknite na dugme za pokretanje verifikacije telefona.
           </div>
 
         </div>
@@ -826,7 +788,6 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
 
-
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
@@ -839,7 +800,6 @@ const supabaseClient =
       }
     }
   );
-
 
 let currentUser = null;
 
@@ -863,26 +823,18 @@ function sakrijLoading() {
 
 
 /* =========================================================
-   PRONAĐI POSTOJEĆU SESIJU
+   SESIJA
 ========================================================= */
 
 async function ucitajAktivnuSesiju() {
 
   try {
 
-    /*
-      PRVO čitamo postojeću sesiju.
-
-      Ovo je najvažniji dio popravke.
-      Ne tražimo ponovo šifru.
-    */
-
     const {
       data,
       error
     } =
       await supabaseClient.auth.getSession();
-
 
     if (error) {
 
@@ -895,33 +847,23 @@ async function ucitajAktivnuSesiju() {
 
     }
 
-
     const session =
       data?.session;
 
-
-    /*
-      Ako postoji sesija,
-      uzimamo korisnika iz nje.
-    */
-
-    if (session && session.user) {
+    if (
+      session &&
+      session.user
+    ) {
 
       return session.user;
 
     }
-
-
-    /*
-      Dodatna provjera direktno preko Auth-a.
-    */
 
     const {
       data: userData,
       error: userError
     } =
       await supabaseClient.auth.getUser();
-
 
     if (
       !userError &&
@@ -932,7 +874,6 @@ async function ucitajAktivnuSesiju() {
       return userData.user;
 
     }
-
 
     return null;
 
@@ -956,18 +897,8 @@ async function ucitajAktivnuSesiju() {
 
 async function ucitajProfil() {
 
-  /*
-    ČEKAMO DA SE SUPABASE SESIJA UČITA.
-  */
-
   const user =
     await ucitajAktivnuSesiju();
-
-
-  /*
-    Samo ako STVARNO nema sesije,
-    vraćamo korisnika na login.
-  */
 
   if (!user) {
 
@@ -982,12 +913,6 @@ async function ucitajProfil() {
     return;
 
   }
-
-
-  /*
-    KORISNIK JE PRIJAVLJEN.
-    NEMA PONOVNOG UNOSA ŠIFRE.
-  */
 
   currentUser =
     user;
@@ -1013,11 +938,14 @@ async function ucitajProfil() {
     currentUser.email || "-";
 
 
-  /* VERIFIKACIJA */
+  /* EMAIL VERIFIKACIJA */
 
   provjeriEmail(
     currentUser
   );
+
+
+  /* TELEFON */
 
   provjeriTelefon(
     currentUser
@@ -1025,11 +953,6 @@ async function ucitajProfil() {
 
 
   try {
-
-    /*
-      UČITAJ RED KORISNIKA
-      IZ POSAO_KORISNICI.
-    */
 
     const {
       data,
@@ -1057,8 +980,6 @@ async function ucitajProfil() {
 
     if (data) {
 
-      /* IME */
-
       document.getElementById(
         "displayName"
       ).innerText =
@@ -1072,8 +993,6 @@ async function ucitajProfil() {
         data.IME || "";
 
 
-      /* TELEFON */
-
       document.getElementById(
         "phoneInput"
       ).value =
@@ -1082,15 +1001,11 @@ async function ucitajProfil() {
         "";
 
 
-      /* GRAD */
-
       document.getElementById(
         "gradInput"
       ).value =
         data.GRAD || "";
 
-
-      /* DJELATNOST */
 
       document.getElementById(
         "djelatnostInput"
@@ -1098,15 +1013,11 @@ async function ucitajProfil() {
         data.DJELATNOST || "";
 
 
-      /* SARADNJA */
-
       document.getElementById(
         "saradnjaInput"
       ).value =
         data.VRSTA_SARADNJE || "";
 
-
-      /* JA */
 
       document.getElementById(
         "jaInput"
@@ -1114,15 +1025,11 @@ async function ucitajProfil() {
         data.JA || "";
 
 
-      /* TRAŽIM */
-
       document.getElementById(
         "trazimInput"
       ).value =
         data.TRAZIM || "";
 
-
-      /* LINKEDIN */
 
       document.getElementById(
         "linkedinInput"
@@ -1130,18 +1037,11 @@ async function ucitajProfil() {
         data.LINKEDIN || "";
 
 
-      /* WEB */
-
       document.getElementById(
         "webInput"
       ).value =
         data.WEB_STRANICA || "";
 
-
-      /*
-        Ako postoji slika direktno
-        u POSAO_KORISNICI.
-      */
 
       if (data.SLIKE_URL) {
 
@@ -1155,9 +1055,7 @@ async function ucitajProfil() {
     }
 
 
-    /*
-      DODATNO PROVJERAVAMO TABELU SLIKE.
-    */
+    /* SLIKA */
 
     const {
       data: slika,
@@ -1203,11 +1101,6 @@ async function ucitajProfil() {
   }
 
 
-  /*
-    Tek kada je profil učitan,
-    sklanjamo loading ekran.
-  */
-
   sakrijLoading();
 
 }
@@ -1223,7 +1116,6 @@ function provjeriEmail(user) {
     document.getElementById(
       "emailVerificationStatus"
     );
-
 
   const button =
     document.getElementById(
@@ -1242,7 +1134,6 @@ function provjeriEmail(user) {
     status.innerText =
       "✅ E-mail je verificiran";
 
-
     button.style.display =
       "none";
 
@@ -1254,7 +1145,6 @@ function provjeriEmail(user) {
     status.innerText =
       "⚠️ E-mail nije verificiran";
 
-
     button.style.display =
       "inline-block";
 
@@ -1264,33 +1154,27 @@ function provjeriEmail(user) {
 
 
 /* =========================================================
-   POŠALJI EMAIL VERIFIKACIJU
+   EMAIL
 ========================================================= */
 
 async function posaljiEmailVerifikaciju() {
 
   if (!currentUser) {
-
     return;
-
   }
-
 
   const button =
     document.getElementById(
       "emailVerifyBtn"
     );
 
-
   const status =
     document.getElementById(
       "emailVerificationStatus"
     );
 
-
   button.disabled =
     true;
-
 
   button.innerText =
     "Šaljem...";
@@ -1312,19 +1196,15 @@ async function posaljiEmailVerifikaciju() {
 
 
     if (error) {
-
       throw error;
-
     }
 
 
     status.className =
       "verification-status verified";
 
-
     status.innerText =
       "📧 Verifikacijski e-mail je poslan.";
-
 
   } catch (error) {
 
@@ -1332,10 +1212,8 @@ async function posaljiEmailVerifikaciju() {
       error
     );
 
-
     status.className =
       "verification-status not-verified";
-
 
     status.innerText =
       "❌ " + error.message;
@@ -1346,7 +1224,6 @@ async function posaljiEmailVerifikaciju() {
   button.disabled =
     false;
 
-
   button.innerText =
     "📧 Pošalji ponovo";
 
@@ -1354,7 +1231,7 @@ async function posaljiEmailVerifikaciju() {
 
 
 /* =========================================================
-   TELEFON
+   TELEFON - NOVI SISTEM
 ========================================================= */
 
 function provjeriTelefon(user) {
@@ -1364,49 +1241,50 @@ function provjeriTelefon(user) {
       "phoneVerificationStatus"
     );
 
-
   const button =
     document.getElementById(
-      "phoneSendBtn"
+      "phoneVerifyBtn"
+    );
+
+
+  /*
+    OVDJE VIŠE NE KORISTIMO
+    Supabase SMS OTP.
+
+    Provjeravamo naš localStorage.
+  */
+
+  const verifiedPhone =
+    localStorage.getItem(
+      "verifikovani_telefon"
     );
 
 
   if (
     user &&
-    user.phone_confirmed_at
+    user.phone &&
+    verifiedPhone === user.phone
   ) {
 
     status.className =
       "verification-status verified";
 
-
     status.innerText =
       "✅ Telefon je verificiran";
 
-
-    button.disabled =
-      true;
-
-
     button.innerText =
-      "📱 Telefon je verificiran";
+      "✅ Telefon je verificiran";
 
   } else {
 
     status.className =
       "verification-status not-verified";
 
-
     status.innerText =
       "⚠️ Telefon nije verificiran";
 
-
-    button.disabled =
-      false;
-
-
     button.innerText =
-      "📱 Pošalji SMS kod";
+      "📱 Pokreni verifikaciju";
 
   }
 
@@ -1414,17 +1292,10 @@ function provjeriTelefon(user) {
 
 
 /* =========================================================
-   POŠALJI SMS
+   POKRENI VERIFIKACIJU
 ========================================================= */
 
-async function posaljiSMSKod() {
-
-  if (!currentUser) {
-
-    return;
-
-  }
-
+function pokreniVerifikaciju(event) {
 
   const phone =
     document
@@ -1435,327 +1306,65 @@ async function posaljiSMSKod() {
       .trim();
 
 
-  const status =
-    document.getElementById(
-      "phoneVerificationStatus"
-    );
-
-
-  const otpBox =
-    document.getElementById(
-      "otpBox"
-    );
-
-
-  const button =
-    document.getElementById(
-      "phoneSendBtn"
-    );
-
-
   if (!phone) {
 
-    status.className =
-      "verification-status not-verified";
+    event.preventDefault();
 
-    status.innerText =
-      "❌ Unesite broj telefona.";
+    alert(
+      "Prvo unesite broj telefona."
+    );
 
-    return;
+    return false;
 
   }
 
 
   if (!phone.startsWith("+")) {
 
-    status.className =
-      "verification-status not-verified";
+    event.preventDefault();
 
-    status.innerText =
-      "❌ Koristite međunarodni format: +387...";
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  button.innerText =
-    "Šaljem SMS...";
-
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.auth.updateUser({
-
-        phone:
-          phone
-
-      });
-
-
-    if (error) {
-
-      throw error;
-
-    }
-
-
-    otpBox.style.display =
-      "block";
-
-
-    status.className =
-      "verification-status";
-
-
-    status.style.color =
-      "#3742fa";
-
-
-    status.innerText =
-      "📱 SMS kod je poslan.";
-
-  } catch (error) {
-
-    console.error(
-      error
+    alert(
+      "Broj mora biti u međunarodnom formatu, npr. +38761123456."
     );
 
-
-    status.className =
-      "verification-status not-verified";
-
-
-    status.style.color =
-      "";
-
-
-    status.innerText =
-      "❌ " + error.message;
+    return false;
 
   }
 
 
-  button.disabled =
-    false;
+  /*
+    Broj spremamo privremeno kako bi
+    ga verifikacija.html mogla koristiti.
+  */
+
+  localStorage.setItem(
+    "broj_za_verifikaciju",
+    phone
+  );
 
 
-  button.innerText =
-    "📱 Pošalji ponovo";
+  /*
+    Zapamtimo ID trenutno prijavljenog
+    korisnika.
+  */
 
-}
+  if (currentUser) {
 
-
-/* =========================================================
-   POTVRDI SMS
-========================================================= */
-
-async function potvrdiSMSKod() {
-
-  if (!currentUser) {
-
-    return;
-
-  }
-
-
-  const phone =
-    document
-      .getElementById(
-        "phoneInput"
-      )
-      .value
-      .trim();
-
-
-  const token =
-    document
-      .getElementById(
-        "otpInput"
-      )
-      .value
-      .trim();
-
-
-  const status =
-    document.getElementById(
-      "phoneVerificationStatus"
+    localStorage.setItem(
+      "verifikacija_user_id",
+      currentUser.id
     );
 
-
-  if (!phone) {
-
-    status.innerText =
-      "❌ Nema broja telefona.";
-
-    return;
-
   }
 
 
-  if (token.length !== 6) {
+  /*
+    Link normalno vodi na:
 
-    status.innerText =
-      "❌ Kod mora imati 6 cifara.";
+    verifikacija.html
+  */
 
-    return;
-
-  }
-
-
-  status.className =
-    "verification-status";
-
-
-  status.style.color =
-    "#3742fa";
-
-
-  status.innerText =
-    "Provjeravam kod...";
-
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.auth.verifyOtp({
-
-        phone:
-          phone,
-
-        token:
-          token,
-
-        type:
-          "phone_change"
-
-      });
-
-
-    if (error) {
-
-      throw error;
-
-    }
-
-
-    if (
-      data &&
-      data.user
-    ) {
-
-      currentUser =
-        data.user;
-
-    }
-
-
-    const {
-      data: refreshed
-    } =
-      await supabaseClient.auth.getUser();
-
-
-    if (
-      refreshed &&
-      refreshed.user
-    ) {
-
-      currentUser =
-        refreshed.user;
-
-    }
-
-
-    status.className =
-      "verification-status verified";
-
-
-    status.style.color =
-      "";
-
-
-    status.innerText =
-      "✅ Telefon je uspješno verificiran!";
-
-
-    document.getElementById(
-      "otpBox"
-    ).style.display =
-      "none";
-
-
-    document.getElementById(
-      "phoneSendBtn"
-    ).disabled =
-      true;
-
-
-    document.getElementById(
-      "phoneSendBtn"
-    ).innerText =
-      "📱 Telefon je verificiran";
-
-
-    /*
-      Spremi broj i u POSAO_KORISNICI.
-    */
-
-    const {
-      error: updateError
-    } =
-      await supabaseClient
-        .from("POSAO_KORISNICI")
-        .update({
-
-          TELEFON:
-            phone
-
-        })
-        .eq(
-          "USER",
-          currentUser.id
-        );
-
-
-    if (updateError) {
-
-      console.error(
-        "Greška spremanja telefona:",
-        updateError
-      );
-
-    }
-
-  } catch (error) {
-
-    console.error(
-      error
-    );
-
-
-    status.className =
-      "verification-status not-verified";
-
-
-    status.style.color =
-      "";
-
-
-    status.innerText =
-      "❌ Kod nije ispravan ili je istekao.";
-
-  }
+  return true;
 
 }
 
@@ -1767,9 +1376,7 @@ async function potvrdiSMSKod() {
 async function updateProfile() {
 
   if (!currentUser) {
-
     return;
-
   }
 
 
@@ -1777,7 +1384,6 @@ async function updateProfile() {
     document.getElementById(
       "statusMessage"
     );
-
 
   const saveBtn =
     document.getElementById(
@@ -1869,7 +1475,6 @@ async function updateProfile() {
     status.style.color =
       "red";
 
-
     status.innerText =
       "Molimo unesite ime ili naziv firme.";
 
@@ -1881,10 +1486,8 @@ async function updateProfile() {
   saveBtn.disabled =
     true;
 
-
   status.style.color =
     "#2b2d42";
-
 
   status.innerText =
     "Spremanje...";
@@ -1934,9 +1537,7 @@ async function updateProfile() {
 
 
     if (error) {
-
       throw error;
-
     }
 
 
@@ -1949,9 +1550,9 @@ async function updateProfile() {
     status.style.color =
       "green";
 
-
     status.innerText =
       "✅ Profil uspješno sačuvan!";
+
 
   } catch (error) {
 
@@ -1959,10 +1560,8 @@ async function updateProfile() {
       error
     );
 
-
     status.style.color =
       "red";
-
 
     status.innerText =
       "❌ Greška: " +
@@ -2017,14 +1616,6 @@ supabaseClient.auth.onAuthStateChange(
     );
 
 
-    /*
-      SAMO pravi SIGNED_OUT šalje
-      korisnika na LOGIN.
-
-      Ne šaljemo ga na LOGIN samo zato
-      što se stranica ponovo učitava.
-    */
-
     if (
       event === "SIGNED_OUT"
     ) {
@@ -2056,3 +1647,4 @@ document.addEventListener(
 
 </body>
 </html>
+```
