@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Verifikacija</title>
+</head>
+
+<body>
+
+    <h2>Verifikacija</h2>
+
+    <input
+        type="text"
+        id="kod"
+        placeholder="Unesite verifikacijski kod"
+    >
+
+    <button onclick="provjeriKod()">
+        Potvrdi
+    </button>
+
+    <p id="rezultat"></p>
+
+<script>
+
+function provjeriKod() {
+
+    const uneseniKod =
+        document.getElementById("kod").value.trim();
+
+    const sacuvaniKod =
+        localStorage.getItem("verifikacioni_token");
+
+    if (!sacuvaniKod) {
+
+        document.getElementById("rezultat").innerText =
+            "Nema spremljenog verifikacijskog koda.";
+
+        return;
+    }
+
+    if (uneseniKod === sacuvaniKod) {
+
+        document.getElementById("rezultat").innerText =
+            "✅ Verifikacija uspješna!";
+
+        localStorage.removeItem("verifikacioni_token");
+
+    } else {
+
+        document.getElementById("rezultat").innerText =
+            "❌ Pogrešan kod.";
+
+    }
+}
+
+</script>
+
+</body>
+</html>
