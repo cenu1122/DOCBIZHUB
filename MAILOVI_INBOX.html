@@ -1,0 +1,705 @@
+```html
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DocBizHub - Poslani Mailovi</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .mail-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 min-h-screen text-slate-100 font-sans">
+
+    <!-- =========================================================
+         SUPABASE POSTAVKE
+         ========================================================= -->
+
+    <script>
+        const SUPABASE_URL = "OVDJE_STAVI_SVOJ_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "OVDJE_STAVI_SVOJ_SUPABASE_ANON_KEY";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+    </script>
+
+
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
+
+    <header class="border-b border-slate-800 bg-slate-900/70 sticky top-0 z-50 backdrop-blur-md">
+
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+
+            <div class="flex items-center space-x-3">
+
+                <div class="bg-blue-600 p-2 rounded-xl font-bold text-xl tracking-wider text-white">
+                    DBH
+                </div>
+
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">
+                        DocBizHub
+                    </h1>
+
+                    <p class="text-xs text-slate-400">
+                        Poslani mailovi
+                    </p>
+                </div>
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm transition"
+            >
+                ← Nazad
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         GLAVNI SADRŽAJ
+         ========================================================= -->
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+
+        <!-- NASLOV -->
+
+        <div class="mb-8">
+
+            <h2 class="text-3xl font-bold text-white">
+                Poslani mailovi
+            </h2>
+
+            <p class="text-slate-400 mt-2">
+                Pregled svih poruka evidentiranih u MAILOVI_RESEND.
+            </p>
+
+        </div>
+
+
+        <!-- STATISTIKA -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+            <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+
+                <p class="text-xs text-slate-400 uppercase tracking-wider">
+                    Ukupno mailova
+                </p>
+
+                <p
+                    id="ukupnoMailova"
+                    class="text-3xl font-bold text-blue-400 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+
+                <p class="text-xs text-slate-400 uppercase tracking-wider">
+                    Uspješno
+                </p>
+
+                <p
+                    id="uspjesnoMailova"
+                    class="text-3xl font-bold text-emerald-400 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+
+                <p class="text-xs text-slate-400 uppercase tracking-wider">
+                    Zadnje slanje
+                </p>
+
+                <p
+                    id="zadnjeSlanje"
+                    class="text-lg font-semibold text-purple-400 mt-2"
+                >
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRETRAGA -->
+
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 mb-6">
+
+            <div class="flex flex-col md:flex-row gap-4">
+
+                <input
+                    id="pretraga"
+                    type="text"
+                    placeholder="Pretraži email, naslov ili sadržaj..."
+                    class="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 outline-none focus:border-blue-500"
+                >
+
+                <button
+                    onclick="ucitajMailove()"
+                    class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition"
+                >
+                    🔄 Osvježi
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div
+            id="status"
+            class="mb-6 text-sm text-slate-400"
+        >
+            Učitavanje mailova...
+        </div>
+
+
+        <!-- LISTA MAILOVA -->
+
+        <div
+            id="listaMailova"
+            class="space-y-4"
+        >
+        </div>
+
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+         ========================================================= -->
+
+    <footer class="border-t border-slate-800 mt-12 py-6 text-center text-xs text-slate-500">
+
+        <p>
+            &copy; 2026 DocBizHub. Sva prava pridržana.
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <script>
+
+        let sviMailovi = [];
+
+
+        // ---------------------------------------------------------
+        // UČITAVANJE MAILOVA
+        // ---------------------------------------------------------
+
+        async function ucitajMailove() {
+
+            const status = document.getElementById("status");
+            const lista = document.getElementById("listaMailova");
+
+            status.innerHTML = "⏳ Učitavanje...";
+
+            lista.innerHTML = "";
+
+
+            try {
+
+                const { data, error } = await supabaseClient
+                    .from("MAILOVI_RESEND")
+                    .select("*")
+                    .order("CREATED_AT", { ascending: false });
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    status.innerHTML =
+                        "❌ Greška pri učitavanju: " + error.message;
+
+                    return;
+                }
+
+
+                sviMailovi = data || [];
+
+
+                prikaziMailove(sviMailovi);
+
+
+                // STATISTIKA
+
+                document.getElementById("ukupnoMailova").textContent =
+                    sviMailovi.length;
+
+
+                const uspjesni = sviMailovi.filter(mail =>
+                    String(mail.STATUS || "").toLowerCase().includes("sent") ||
+                    String(mail.STATUS || "").toLowerCase().includes("success") ||
+                    String(mail.STATUS || "").toLowerCase().includes("poslan")
+                );
+
+
+                document.getElementById("uspjesnoMailova").textContent =
+                    uspjesni.length;
+
+
+                if (sviMailovi.length > 0) {
+
+                    document.getElementById("zadnjeSlanje").textContent =
+                        formatirajDatum(sviMailovi[0].CREATED_AT);
+
+                } else {
+
+                    document.getElementById("zadnjeSlanje").textContent =
+                        "-";
+                }
+
+
+                status.innerHTML =
+                    `✅ Učitano ${sviMailovi.length} mailova.`;
+
+
+            } catch (err) {
+
+                console.error(err);
+
+                status.innerHTML =
+                    "❌ Došlo je do greške: " + err.message;
+            }
+
+        }
+
+
+
+        // ---------------------------------------------------------
+        // PRIKAZ MAILOVA
+        // ---------------------------------------------------------
+
+        function prikaziMailove(mailovi) {
+
+            const lista =
+                document.getElementById("listaMailova");
+
+
+            lista.innerHTML = "";
+
+
+            if (!mailovi.length) {
+
+                lista.innerHTML = `
+                    <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-8 text-center">
+                        <div class="text-4xl mb-3">📭</div>
+
+                        <p class="text-slate-400">
+                            Nema pronađenih mailova.
+                        </p>
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            mailovi.forEach((mail, index) => {
+
+                const status =
+                    mail.STATUS || "Nepoznato";
+
+
+                const statusBoja =
+                    String(status).toLowerCase().includes("sent") ||
+                    String(status).toLowerCase().includes("success") ||
+                    String(status).toLowerCase().includes("poslan")
+                    ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                    : "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+
+
+                const naslov =
+                    escapeHtml(mail.NASLOV || "(Bez naslova)");
+
+
+                const primalac =
+                    escapeHtml(mail.EMAIL_PRIMAOCA || "-");
+
+
+                const tip =
+                    escapeHtml(mail.TIP || "-");
+
+
+                const model =
+                    escapeHtml(mail.MODEL_KORISTEN || "-");
+
+
+                const sadrzaj =
+                    mail.SADRZAJ || "";
+
+
+                const id =
+                    mail.ID || "-";
+
+
+                const resendId =
+                    escapeHtml(mail.RESEND_ID || "-");
+
+
+                const datum =
+                    formatirajDatum(mail.CREATED_AT);
+
+
+                const element =
+                    document.createElement("div");
+
+
+                element.className =
+                    "bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden";
+
+
+                element.innerHTML = `
+
+                    <!-- GLAVA MAILA -->
+
+                    <div class="p-5">
+
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+                            <div class="flex-1">
+
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+
+                                    <span class="text-xs text-slate-500">
+                                        #${id}
+                                    </span>
+
+                                    <span class="px-2 py-1 rounded-full border text-xs ${statusBoja}">
+                                        ${escapeHtml(status)}
+                                    </span>
+
+                                    <span class="px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs">
+                                        ${tip}
+                                    </span>
+
+                                </div>
+
+
+                                <h3 class="text-lg font-bold text-white mb-2">
+                                    ${naslov}
+                                </h3>
+
+
+                                <div class="text-sm text-slate-300">
+                                    <span class="text-slate-500">
+                                        Prima:
+                                    </span>
+
+                                    <span class="font-medium">
+                                        ${primalac}
+                                    </span>
+                                </div>
+
+
+                                <div class="text-xs text-slate-500 mt-2">
+                                    ${datum}
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                onclick="toggleMail(${index})"
+                                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition"
+                            >
+                                👁 Prikaži
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DETALJI -->
+
+                    <div
+                        id="mail-${index}"
+                        class="hidden border-t border-slate-800 bg-slate-950/50 p-5"
+                    >
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+
+                            <div>
+
+                                <p class="text-xs text-slate-500 uppercase mb-1">
+                                    Resend ID
+                                </p>
+
+                                <p class="text-sm text-slate-300 break-all">
+                                    ${resendId}
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs text-slate-500 uppercase mb-1">
+                                    Model korišten
+                                </p>
+
+                                <p class="text-sm text-slate-300">
+                                    ${model}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-xs text-slate-500 uppercase mb-2">
+                                Sadržaj poruke
+                            </p>
+
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 text-sm text-slate-300 mail-content">
+                                ${escapeHtml(sadrzaj)}
+                            </div>
+
+                        </div>
+
+
+                        ${
+                            mail.EMAIL_POSILJAOCA
+                            ? `
+                            <div class="mt-5">
+
+                                <p class="text-xs text-slate-500 uppercase mb-1">
+                                    Pošiljalac
+                                </p>
+
+                                <p class="text-sm text-slate-300">
+                                    ${escapeHtml(mail.EMAIL_POSILJAOCA)}
+                                </p>
+
+                            </div>
+                            `
+                            : ""
+                        }
+
+
+                        ${
+                            mail.ODGOVOR_NA_ID
+                            ? `
+                            <div class="mt-5">
+
+                                <p class="text-xs text-slate-500 uppercase mb-1">
+                                    Odgovor na ID
+                                </p>
+
+                                <p class="text-sm text-slate-300 break-all">
+                                    ${escapeHtml(mail.ODGOVOR_NA_ID)}
+                                </p>
+
+                            </div>
+                            `
+                            : ""
+                        }
+
+                    </div>
+                `;
+
+
+                lista.appendChild(element);
+
+            });
+
+        }
+
+
+
+        // ---------------------------------------------------------
+        // OTVORI / ZATVORI MAIL
+        // ---------------------------------------------------------
+
+        function toggleMail(index) {
+
+            const element =
+                document.getElementById("mail-" + index);
+
+
+            if (!element) return;
+
+
+            element.classList.toggle("hidden");
+
+        }
+
+
+
+        // ---------------------------------------------------------
+        // PRETRAGA
+        // ---------------------------------------------------------
+
+        document
+            .getElementById("pretraga")
+            .addEventListener("input", function () {
+
+                const tekst =
+                    this.value.toLowerCase().trim();
+
+
+                if (!tekst) {
+
+                    prikaziMailove(sviMailovi);
+
+                    return;
+                }
+
+
+                const filtrirani =
+                    sviMailovi.filter(mail => {
+
+                        return (
+
+                            String(mail.EMAIL_PRIMAOCA || "")
+                                .toLowerCase()
+                                .includes(tekst)
+
+                            ||
+
+                            String(mail.NASLOV || "")
+                                .toLowerCase()
+                                .includes(tekst)
+
+                            ||
+
+                            String(mail.SADRZAJ || "")
+                                .toLowerCase()
+                                .includes(tekst)
+
+                            ||
+
+                            String(mail.TIP || "")
+                                .toLowerCase()
+                                .includes(tekst)
+
+                            ||
+
+                            String(mail.STATUS || "")
+                                .toLowerCase()
+                                .includes(tekst)
+
+                        );
+
+                    });
+
+
+                prikaziMailove(filtrirani);
+
+            });
+
+
+
+        // ---------------------------------------------------------
+        // DATUM
+        // ---------------------------------------------------------
+
+        function formatirajDatum(datum) {
+
+            if (!datum) return "-";
+
+
+            try {
+
+                return new Date(datum).toLocaleString(
+                    "bs-BA",
+                    {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+            } catch {
+
+                return datum;
+
+            }
+
+        }
+
+
+
+        // ---------------------------------------------------------
+        // ZAŠTITA OD HTML-A
+        // ---------------------------------------------------------
+
+        function escapeHtml(text) {
+
+            if (text === null || text === undefined) {
+                return "";
+            }
+
+
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+
+        // ---------------------------------------------------------
+        // START
+        // ---------------------------------------------------------
+
+        ucitajMailove();
+
+    </script>
+
+</body>
+</html>
+```
