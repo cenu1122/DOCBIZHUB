@@ -227,6 +227,51 @@
       cursor: not-allowed;
     }
 
+    /* =====================================================
+       PROMJENA ŠIFRE
+    ===================================================== */
+
+    .password-box {
+      margin-top: 10px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #f8f9ff;
+      border: 1px solid #e3e5ff;
+    }
+
+    .password-box .help-text {
+      margin-bottom: 12px;
+    }
+
+    .btn-password {
+      width: 100%;
+      background: #2b2d42;
+      color: white;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    .btn-password:hover {
+      opacity: 0.92;
+    }
+
+    .btn-password:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    #passwordStatus {
+      margin-top: 12px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 22px;
+    }
+
     .action-links {
       margin-top: 25px;
       display: flex;
@@ -475,8 +520,6 @@
           </div>
 
 
-          <!-- NOVA VERIFIKACIJA -->
-
           <a
             id="phoneVerifyBtn"
             class="btn-small btn-phone"
@@ -723,6 +766,68 @@
           id="webInput"
           placeholder="https://www.vasastranica.ba"
         >
+
+      </div>
+
+
+      <!-- =================================================
+           PROMJENA ŠIFRE
+      ================================================== -->
+
+      <div class="section-title">
+        🔐 Promjena šifre
+      </div>
+
+
+      <div class="password-box">
+
+        <div class="help-text">
+          Ovdje možete postaviti novu šifru za vaš DocBizHub račun.
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="newPasswordInput">
+            Nova šifra
+          </label>
+
+          <input
+            type="password"
+            id="newPasswordInput"
+            placeholder="Unesite novu šifru"
+            autocomplete="new-password"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="confirmPasswordInput">
+            Ponovite novu šifru
+          </label>
+
+          <input
+            type="password"
+            id="confirmPasswordInput"
+            placeholder="Ponovite novu šifru"
+            autocomplete="new-password"
+          >
+
+        </div>
+
+
+        <button
+          id="changePasswordBtn"
+          class="btn-password"
+          onclick="promijeniSifru()"
+        >
+          🔐 Promijeni šifru
+        </button>
+
+
+        <div id="passwordStatus"></div>
 
       </div>
 
@@ -1231,7 +1336,7 @@ async function posaljiEmailVerifikaciju() {
 
 
 /* =========================================================
-   TELEFON - NOVI SISTEM
+   TELEFON
 ========================================================= */
 
 function provjeriTelefon(user) {
@@ -1246,13 +1351,6 @@ function provjeriTelefon(user) {
       "phoneVerifyBtn"
     );
 
-
-  /*
-    OVDJE VIŠE NE KORISTIMO
-    Supabase SMS OTP.
-
-    Provjeravamo naš localStorage.
-  */
 
   const verifiedPhone =
     localStorage.getItem(
@@ -1332,21 +1430,11 @@ function pokreniVerifikaciju(event) {
   }
 
 
-  /*
-    Broj spremamo privremeno kako bi
-    ga verifikacija.html mogla koristiti.
-  */
-
   localStorage.setItem(
     "broj_za_verifikaciju",
     phone
   );
 
-
-  /*
-    Zapamtimo ID trenutno prijavljenog
-    korisnika.
-  */
 
   if (currentUser) {
 
@@ -1358,13 +1446,177 @@ function pokreniVerifikaciju(event) {
   }
 
 
-  /*
-    Link normalno vodi na:
-
-    verifikacija.html
-  */
-
   return true;
+
+}
+
+
+/* =========================================================
+   PROMJENA ŠIFRE
+========================================================= */
+
+async function promijeniSifru() {
+
+  if (!currentUser) {
+
+    return;
+
+  }
+
+
+  const novaSifra =
+    document
+      .getElementById(
+        "newPasswordInput"
+      )
+      .value;
+
+
+  const potvrdaSifre =
+    document
+      .getElementById(
+        "confirmPasswordInput"
+      )
+      .value;
+
+
+  const status =
+    document.getElementById(
+      "passwordStatus"
+    );
+
+
+  const button =
+    document.getElementById(
+      "changePasswordBtn"
+    );
+
+
+  status.style.color =
+    "#2b2d42";
+
+  status.innerText =
+    "";
+
+
+  /* PROVJERA */
+
+  if (!novaSifra) {
+
+    status.style.color =
+      "#d63031";
+
+    status.innerText =
+      "❌ Unesite novu šifru.";
+
+    return;
+
+  }
+
+
+  if (novaSifra.length < 8) {
+
+    status.style.color =
+      "#d63031";
+
+    status.innerText =
+      "❌ Šifra mora imati najmanje 8 znakova.";
+
+    return;
+
+  }
+
+
+  if (novaSifra !== potvrdaSifre) {
+
+    status.style.color =
+      "#d63031";
+
+    status.innerText =
+      "❌ Šifre se ne podudaraju.";
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.innerText =
+    "Mijenjam šifru...";
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.updateUser({
+
+        password:
+          novaSifra
+
+      });
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    console.log(
+      "Šifra uspješno promijenjena:",
+      data
+    );
+
+
+    status.style.color =
+      "#16803c";
+
+    status.innerText =
+      "✅ Šifra je uspješno promijenjena.";
+
+
+    document.getElementById(
+      "newPasswordInput"
+    ).value = "";
+
+
+    document.getElementById(
+      "confirmPasswordInput"
+    ).value = "";
+
+
+  } catch (error) {
+
+    console.error(
+      "Greška pri promjeni šifre:",
+      error
+    );
+
+
+    status.style.color =
+      "#d63031";
+
+    status.innerText =
+      "❌ " +
+      (
+        error.message ||
+        "Greška pri promjeni šifre."
+      );
+
+  }
+
+
+  button.disabled =
+    false;
+
+  button.innerText =
+    "🔐 Promijeni šifru";
 
 }
 
@@ -1647,4 +1899,3 @@ document.addEventListener(
 
 </body>
 </html>
-```
