@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -1769,10 +1768,285 @@ async function promijeniSifru() {
 }
 
 /* =========================================================
-   SAČUVAJ PROFIL
+   NE ŽELIM VIŠE KONTAKT / UKIDANJE ZABRANE
 ========================================================= */
 
-  
+async function neZelimKontakt() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  const status =
+    document.getElementById("kontaktStatus");
+
+  const button =
+    document.getElementById("kontaktBtn");
+
+  const razlogInput =
+    document.getElementById("kontaktRazlog");
+
+  const trenutnoNeZeliKontakt =
+    button.dataset.neZeliKontakt === "true";
+
+
+  /* =======================================================
+     UKIDANJE POSTOJEĆE ZABRANE
+  ======================================================= */
+
+  if (trenutnoNeZeliKontakt) {
+
+    const prvaPotvrda = confirm(
+      "✅ Želite li otkazati zabranu kontaktiranja?\n\n" +
+      "Ako otkažete zabranu:\n\n" +
+      "• ponovo možemo da vas kontaktiramo;\n" +
+      "• vaš profil ostaje sačuvan;\n" +
+      "• vaše podatke i dalje možete uređivati;\n" +
+      "• ne briše se ništa sa vašeg računa.\n\n" +
+      "Želite li nastaviti?"
+    );
+
+    if (!prvaPotvrda) {
+      return;
+    }
+
+
+    const drugaPotvrda = confirm(
+      "⚠️ ZAVRŠNA POTVRDA\n\n" +
+      "Da li zaista želite OTKAZATI zabranu kontaktiranja?\n\n" +
+      "Nakon potvrde vaš profil će ponovo biti dostupan " +
+      "za kontaktiranje u vezi poslovnih ponuda.\n\n" +
+      "Potvrdite samo ako ste sigurni."
+    );
+
+    if (!drugaPotvrda) {
+      return;
+    }
+
+
+    button.disabled = true;
+    button.innerText = "Spremam...";
+
+
+    try {
+
+      const { error } =
+        await supabaseClient
+          .from("POSAO_KORISNICI")
+          .update({
+            NE_ZELI_KONTAKT: false,
+            RAZLOG_NE_ZELI_KONTAKT: null
+          })
+          .eq(
+            "USER",
+            currentUser.id
+          );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      status.className =
+        "verification-status verified";
+
+      status.innerText =
+        "✅ Kontaktiranje je dozvoljeno";
+
+
+      button.dataset.neZeliKontakt =
+        "false";
+
+      button.innerText =
+        "🚫 Ne želim više biti kontaktiran";
+
+      button.style.background =
+        "#d63031";
+
+      button.disabled =
+        false;
+
+
+      if (razlogInput) {
+        razlogInput.value = "";
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Greška pri ukidanju zabrane kontakta:",
+        error
+      );
+
+
+      status.className =
+        "verification-status not-verified";
+
+      status.innerText =
+        "❌ Greška: " +
+        error.message;
+
+
+      button.disabled =
+        false;
+
+      button.innerText =
+        "✅ Otkaži zabranu kontaktiranja";
+    }
+
+    return;
+  }
+
+
+  /* =======================================================
+     UKLJUČIVANJE ZABRANE
+  ======================================================= */
+
+  if (!razlogInput) {
+
+    alert(
+      "Greška: polje za razlog nije pronađeno."
+    );
+
+    return;
+  }
+
+
+  const razlog =
+    razlogInput.value.trim();
+
+
+  if (!razlog) {
+
+    alert(
+      "⚠️ Molimo vas da unesete razlog zbog kojeg " +
+      "ne želite kontaktiranje."
+    );
+
+    razlogInput.focus();
+
+    return;
+  }
+
+
+  /* =======================================================
+     PRVA POTVRDA
+  ======================================================= */
+
+  const prvaPotvrda = confirm(
+    "⚠️ Jeste li sigurni?\n\n" +
+    "Ako označite da NE ŽELITE VIŠE KONTAKTIRANJE:\n\n" +
+    "• nećemo vas više kontaktirati u vezi poslovnih ponuda;\n" +
+    "• vaš profil ostaje sačuvan;\n" +
+    "• vaše podatke i dalje možete uređivati;\n" +
+    "• ne brišemo vaš račun;\n" +
+    "• ne gubite ništa drugo na svom računu.\n\n" +
+    "Ako ništa ne promijenite, sve ostaje kao i do sada.\n\n" +
+    "Vaš razlog će biti sačuvan u evidenciji.\n\n" +
+    "Želite li nastaviti?"
+  );
+
+
+  if (!prvaPotvrda) {
+    return;
+  }
+
+
+  /* =======================================================
+     DRUGA / ZAVRŠNA POTVRDA
+  ======================================================= */
+
+  const drugaPotvrda = confirm(
+    "🚫 ZAVRŠNA POTVRDA\n\n" +
+    "Da li zaista želite označiti svoj profil kao:\n\n" +
+    "\"NE ŽELIM VIŠE BITI KONTAKTIRAN\"\n\n" +
+    "Ova odluka znači da vas više nećemo kontaktirati " +
+    "u vezi poslovnih ponuda.\n\n" +
+    "Ne briše se profil i ne gubite svoje podatke.\n\n" +
+    "Vaš uneseni razlog je:\n\n" +
+    "\"" + razlog + "\"\n\n" +
+    "Potvrdite samo ako ste sigurni."
+  );
+
+
+  if (!drugaPotvrda) {
+    return;
+  }
+
+
+  button.disabled = true;
+  button.innerText = "Spremam...";
+
+
+  try {
+
+    const { error } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .update({
+          NE_ZELI_KONTAKT: true,
+          RAZLOG_NE_ZELI_KONTAKT: razlog
+        })
+        .eq(
+          "USER",
+          currentUser.id
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    status.className =
+      "verification-status not-verified";
+
+    status.innerText =
+      "🚫 Ne želi kontaktiranje";
+
+
+    button.dataset.neZeliKontakt =
+      "true";
+
+    button.innerText =
+      "✅ Otkaži zabranu kontaktiranja";
+
+    button.style.background =
+      "#777";
+
+    button.disabled =
+      false;
+
+
+  } catch (error) {
+
+    console.error(
+      "Greška pri postavljanju zabrane kontakta:",
+      error
+    );
+
+
+    status.className =
+      "verification-status not-verified";
+
+    status.innerText =
+      "❌ Greška: " +
+      error.message;
+
+
+    button.disabled =
+      false;
+
+    button.innerText =
+      "🚫 Ne želim više biti kontaktiran";
+  }
+
+}
+
+
+ 
 /* =========================================================
    SAČUVAJ PROFIL
 ========================================================= */
