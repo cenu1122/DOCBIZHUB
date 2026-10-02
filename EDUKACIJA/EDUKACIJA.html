@@ -1,1 +1,367 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>EDUKACIJA - DOCBIZHUB</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           DUGMAD ZA TEKST
+        ========================= */
+
+        .font-controls {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+
+            display: flex;
+            gap: 6px;
+
+            background: rgba(255,255,255,0.95);
+            padding: 6px;
+            border-radius: 10px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .font-controls button {
+            border: none;
+            background: #2563eb;
+            color: white;
+
+            width: 42px;
+            height: 38px;
+
+            border-radius: 7px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .font-controls button:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: linear-gradient(135deg, #111827, #2563eb);
+            color: white;
+
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 46px;
+            margin-bottom: 12px;
+        }
+
+        header p {
+            font-size: 19px;
+            opacity: 0.9;
+        }
+
+        /* =========================
+           GLAVNI SADRŽAJ
+        ========================= */
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .back {
+            display: inline-block;
+
+            margin-bottom: 30px;
+
+            padding: 11px 20px;
+
+            background: #e5e7eb;
+            color: #111827;
+
+            text-decoration: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+        .back:hover {
+            background: #d1d5db;
+        }
+
+        /* =========================
+           UVOD
+        ========================= */
+
+        .intro {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            margin-bottom: 35px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            text-align: center;
+        }
+
+        .intro h2 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .intro p {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           KARTICE
+        ========================= */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+
+            padding: 28px;
+
+            border-radius: 16px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            color: #2563eb;
+
+            margin-bottom: 12px;
+
+            font-size: 24px;
+        }
+
+        .card p {
+            margin-bottom: 20px;
+
+            flex: 1;
+        }
+
+        .card a {
+            display: inline-block;
+
+            padding: 11px 18px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            text-align: center;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+        .card a:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           AI ASISTENT
+        ========================= */
+
+        .ai-box {
+            margin-top: 40px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #374151
+                );
+
+            color: white;
+
+            padding: 35px;
+
+            border-radius: 16px;
+
+            text-align: center;
+        }
+
+        .ai-box h2 {
+            margin-bottom: 12px;
+        }
+
+        .ai-box p {
+            margin-bottom: 20px;
+        }
+
+        .ai-box a {
+            display: inline-block;
+
+            padding: 13px 25px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+        .ai-box a:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            margin-top: 50px;
+
+            padding: 25px;
+
+            background: #111827;
+
+            color: white;
+
+            text-align: center;
+        }
+
+        /* =========================
+           MOBILNI EKRAN
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 45px 15px;
+            }
+
+            header h1 {
+                font-size: 36px;
+            }
+
+            header p {
+                font-size: 17px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .font-controls {
+                top: 10px;
+                right: 10px;
+            }
+
+            .font-controls button {
+                width: 38px;
+                height: 35px;
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         KONTROLE TEKSTA
+    ========================= -->
+
+    <div class="font-controls">
+
+        <button
+            type="button"
+            onclick="changeFontSize(1)"
+            title="Povećaj tekst"
+            aria-label="Povećaj tekst">
+            A+
+        </button>
+
+        <button
+            type="button"
+            onclick="changeFontSize(-1)"
+            title="Smanji tekst"
+            aria-label="Smanji tekst">
+            A−
+        </button>
+
+        <button
+            type="button"
+            onclick="resetFontSize()"
+            title="Vrati normalnu veličinu"
+            aria-label="Vrati normalnu veličinu">
+            A
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+       
