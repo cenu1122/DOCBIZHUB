@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MENADŽMENT - DOCBIZHUB</title>
+
+    <style>
+        html {
+            font-size: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 2.4rem;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .intro,
+        .lesson {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .intro {
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .intro h2,
+        .lesson h2 {
+            color: #1e40af;
+        }
+
+        .intro h2 {
+            margin-top: 0;
+        }
+
+        .lesson {
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .lesson h2 {
+            margin-top: 0;
+        }
+
+        .lesson h3 {
+            color: #374151;
+        }
+
+        .example {
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            padding: 18px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .tip {
+            background: #f0fdf4;
+            border-left: 5px solid #16a34a;
+            padding: 18px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .task {
+            background: #fff7ed;
+            border-left: 5px solid #ea580c;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .task h2 {
+            color: #c2410c;
+            margin-top: 0;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-ai {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-ai:hover {
+            background: #6d28d9;
+        }
+
+        footer {
+            margin-top: 50px;
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        /* PRISTUPAČNOST */
+
+        .accessibility-panel {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+        }
+
+        .accessibility-toggle {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-size: 21px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.20);
+        }
+
+        .accessibility-toggle:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 7px;
+            background: rgba(255,255,255,0.97);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.20);
+        }
+
+        .font-controls.show {
+            display: flex;
+        }
+
+        .font-controls button {
+            width: 42px;
+            height: 38px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .font-controls button:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls .close-panel {
+            background: #dc2626;
+        }
+
+        .font-controls .close-panel:hover {
+            background: #b91c1c;
+        }
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 1.9rem;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRISTUPAČNOST -->
+
+    <div class="accessibility-panel">
+
+        <button
+            class="accessibility-toggle"
+            onclick="toggleAccessibility()"
+            title="Otvori kontrole"
+            aria-label="Otvori kontrole">
+            ⚙️
+        </button>
+
+        <div
+            class="font-controls"
+            id="fontControls">
+
+            <button type="button" onclick="changeFontSize(1)">
+                A+
+            </button>
+
+            <button type="button" onclick="changeFontSize(-1)">
+                A−
+            </button>
+
+            <button type="button" onclick="resetFontSize()">
+                A
+            </button>
+
+            <button
+                type="button"
+                class="close-panel"
+                onclick="toggleAccessibility()">
+                ✕
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>MENADŽMENT</h1>
+
+        <p>
+            Naučite kako organizovati ljude, zadatke i resurse
+            i voditi poslovanje prema jasnim ciljevima.
+        </p>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- UVOD -->
+
+        <section class="intro">
+
+            <h2>ŠTA JE MENADŽMENT?</h2>
+
+            <p>
+                Menadžment je proces planiranja, organizovanja,
+                vođenja i kontrole resursa kako bi se ostvarili
+                određeni poslovni ciljevi.
+            </p>
+
+            <p>
+                Menadžment se ne odnosi samo na direktore i velike kompanije.
+                Svaki vlasnik malog biznisa koji planira posao,
+                raspoređuje zadatke i prati rezultate koristi osnovne
+                principe
