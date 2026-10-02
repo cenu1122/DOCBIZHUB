@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MARKETING - DOCBIZHUB</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           PALETA ZA PRISTUPAČNOST
+        ========================= */
+
+        .accessibility-panel {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+        }
+
+        .accessibility-toggle {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-size: 21px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.20);
+        }
+
+        .accessibility-toggle:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 7px;
+            background: rgba(255,255,255,0.97);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.20);
+        }
+
+        .font-controls.show {
+            display: flex;
+        }
+
+        .font-controls button {
+            width: 42px;
+            height: 38px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .font-controls button:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls .close-panel {
+            background: #dc2626;
+        }
+
+        .font-controls .close-panel:hover {
+            background: #b91c1c;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: linear-gradient(135deg, #111827, #2563eb);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 46px;
+            margin-bottom: 12px;
+        }
+
+        header p {
+            font-size: 19px;
+            opacity: 0.9;
+        }
+
+        /* =========================
+           SADRŽAJ
+        ========================= */
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 11px 20px;
+            background: #e5e7eb;
+            color: #111827;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back:hover {
+            background: #d1d5db;
+        }
+
+        .intro {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .intro h2 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .intro p {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           LEKCIJE
+        ========================= */
+
+        .lessons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .lesson {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .lesson:hover {
+            transform: translateY(-3px);
+        }
+
+        .lesson h3 {
+            color: #2563eb;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .lesson p {
+            margin-bottom: 15px;
+        }
+
+        .lesson ul {
+            padding-left: 22px;
+        }
+
+        .lesson li {
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           PRAKTIČNI PRIMJER
+        ========================= */
+
+        .example {
+            margin-top: 30px;
+            padding: 28px;
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            border-radius: 10px;
+        }
+
+        .example h2 {
+            color: #1d4ed8;
+            margin-bottom: 15px;
+        }
+
+        .example p {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           ZADATAK
+        ========================= */
+
+        .task {
+            margin-top: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .task h2 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .task ol {
+            padding-left: 25px;
+        }
+
+        .task li {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           AI ASISTENT
+        ========================= */
+
+        .ai-box {
+            margin-top: 40px;
+            padding: 35px;
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .ai-box h2 {
+            margin-bottom: 12px;
+        }
+
+        .ai-box p {
+            margin-bottom: 20px;
+        }
+
+        .ai-box a {
+            display: inline-block;
+            padding: 13px 25px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .ai-box a:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            margin-top: 50px;
+            padding: 25px;
+            background: #111827;
+            color: white;
+            text-align: center;
+        }
+
+        /* =========================
+           MOBILNI EKRAN
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 45px 15px;
+            }
+
+            header h1 {
+                font-size: 36px;
+            }
+
+            header p {
+                font-size: 17px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .lesson {
+                padding: 22px;
+            }
+
+            .accessibility-panel {
+                top: 10px;
+                right: 10px;
+            }
+
+            .accessibility-toggle {
+                width: 44px;
+                height: 44px;
+            }
+
+            .font-controls button {
+                width: 38px;
+                height: 35px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         PALETA
+    ========================= -->
+
+    <div class="accessibility-panel">
+
+        <button
+            class="accessibility-toggle"
+            onclick="toggleAccessibility()"
+            title="Otvori kontrole"
+            aria-label="Otvori kontrole">
+            ⚙️
+        </button>
+
+        <div
+            class="font-controls"
+            id="fontControls">
+
+            <button
+                type="button"
+                onclick="changeFontSize(1)">
+                A+
+            </button>
+
+            <button
+                type="button"
+                onclick="changeFontSize(-1)">
+                A−
+            </button>
+
+            <button
+                type="button"
+                onclick="resetFontSize()">
+                A
+            </button>
+
+            <button
+                type="button"
+                class="close-panel"
+                onclick="toggleAccessibility()">
+                ✕
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <h1>MARKETING</h1>
+
+        <p>
+            Nauči kako predstaviti svoj biznis,
+            pronaći kupce i izgraditi prepoznatljiv brend.
+        </p>
+
+    </header>
+
+
+    <div class="container">
+
+        <a href="EDUKACIJA.html" class="back">
+            ← NAZAD NA EDUKACIJU
+        </a>
+
+
+        <!-- UVOD -->
+
+        <section class="intro">
+
+            <h2>OSNOVE MARKETINGA</h2>
