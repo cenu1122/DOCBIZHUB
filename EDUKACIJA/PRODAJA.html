@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PRODAJA - DOCBIZHUB</title>
+
+    <style>
+        html {
+            font-size: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 2.4rem;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .intro h2 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+
+        .lesson {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        }
+
+        .lesson h2 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+
+        .lesson h3 {
+            color: #374151;
+        }
+
+        .example {
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            padding: 18px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .tip {
+            background: #f0fdf4;
+            border-left: 5px solid #16a34a;
+            padding: 18px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .task {
+            background: #fff7ed;
+            border-left: 5px solid #ea580c;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .task h2 {
+            color: #c2410c;
+            margin-top: 0;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-ai {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-ai:hover {
+            background: #6d28d9;
+        }
+
+        footer {
+            margin-top: 50px;
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        /* PRISTUPAČNOST */
+
+        .accessibility-panel {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+        }
+
+        .accessibility-toggle {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-size: 21px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.20);
+        }
+
+        .accessibility-toggle:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 7px;
+            background: rgba(255,255,255,0.97);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.20);
+        }
+
+        .font-controls.show {
+            display: flex;
+        }
+
+        .font-controls button {
+            width: 42px;
+            height: 38px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .font-controls button:hover {
+            background: #1d4ed8;
+        }
+
+        .font-controls .close-panel {
+            background: #dc2626;
+        }
+
+        .font-controls .close-panel:hover {
+            background: #b91c1c;
+        }
+
+        @media (max-width: 700px) {
+            header h1 {
+                font-size: 1.9rem;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRISTUPAČNOST -->
+    <div class="accessibility-panel">
+
+        <button
+            class="accessibility-toggle"
+            onclick="toggleAccessibility()"
+            title="Otvori kontrole"
+            aria-label="Otvori kontrole">
+            ⚙️
+        </button>
+
+        <div
+            class="font-controls"
+            id="fontControls">
+
+            <button type="button" onclick="changeFontSize(1)">
+                A+
+            </button>
+
+            <button type="button" onclick="changeFontSize(-1)">
+                A−
+            </button>
+
+            <button type="button" onclick="resetFontSize()">
+                A
+            </button>
+
+            <button
+                type="button"
+                class="close-panel"
+                onclick="toggleAccessibility()">
+                ✕
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header>
+        <h1>PRODAJA</h1>
+        <p>Naučite kako privući kupca, predstaviti ponudu i uspješno zaključiti prodaju.</p>
+    </header>
+
+
+    <main class="container">
+
+        <!-- UVOD -->
+
+        <section class="intro">
+
+            <h2>ŠTA JE PRODAJA?</h2>
+
+            <p>
+                Prodaja je proces kroz koji poslovanje povezuje svoj proizvod
+                ili uslugu sa kupcem kojem je ta ponuda potrebna.
+            </p>
+
+            <p>
+                Dobra prodaja nije samo nagovaranje kupca da nešto kupi.
+                Cilj je razumjeti problem kupca, ponuditi odgovarajuće rješenje
+                i izgraditi povjerenje.
+            </p>
+
+            <p>
+                U ovoj lekciji naučit ćete osnovne principe prodaje,
+                komunikaciju sa kupcem, prezentaciju ponude i praćenje prodajnih rezultata.
+            </p>
+
+        </section>
+
+
+        <!-- LEKCIJA 1 -->
+
+        <section class="lesson">
+
+            <h2>1. RAZUMIJEVANJE KUPCA</h2>
+
+            <p>
+                Prvi korak u prodaji je razumjeti kome prodajete.
+                Bez jasne slike o kupcu teško je napraviti odgovarajuću ponudu.
+            </p>
+
+            <h3>Pokušajte saznati:</h3>
+
+            <ul>
+                <li>Ko je vaš kupac?</li>
+                <li>Koji problem želi riješiti?</li>
+                <li>Šta mu je najvažnije?</li>
+                <li>Koliki budžet ima?</li>
+                <li>Kako donosi odluku o kupovini?</li>
+            </ul>
+
+            <div class="tip">
+                <strong>SAVJET:</strong>
+                Ne počinjite razgovor samo pričom o proizvodu.
+                Prvo pokušajte razumjeti potrebe kupca.
+            </div>
+
+        </section>
+
+
+        <!-- LEKCIJA 2 -->
+
+        <section class="lesson">
+
+            <h2>2. POTREBA I PROBLEM KUPCA</h2>
+
+            <p>
+                Kupac najčešće ne kupuje proizvod samo zbog proizvoda.
+                On kupuje rješenje određenog problema ili ostvarenje određene potrebe.
+            </p>
+
+            <div class="example">
+
+                <strong>PRIMJER:</strong>
+
+                <p>
+                    Firma ne kupuje samo novi računarski program.
+                    Ona možda želi smanjiti administraciju,
+                    uštedjeti vrijeme i bolje organizovati posao.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEKCIJA 3 -->
+
+        <section class="lesson">
+
+            <h2>3. PREZENTACIJA PONUDE</h2>
+
+            <p>
+                Kada razumijete potrebe kupca, potrebno je objasniti
+                kako vaš proizvod ili usluga može pomoći.
+            </p>
+
+            <h3>Dobra prezentacija treba objasniti:</h3>
+
+            <ul>
+                <li>šta nudite,</li>
+                <li>koji problem rješavate,</li>
+                <li>koje su glavne koristi,</li>
+                <li>zašto je ponuda korisna za kupca.</li>
+            </ul>
+
+            <div class="example">
+
+                <strong>LOŠ PRISTUP:</strong>
+
+                <p>
+                    „Naš program ima 50 funkcija.“
+                </p>
+
+                <strong>BOLJI PRISTUP:</strong>
+
+                <p>
+                    „Program vam omogućava da na jednom mjestu pratite
+                    kupce, račune i zadatke, što može olakšati svakodnevnu organizaciju.“
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEKCIJA 4 -->
+
+        <section class="lesson">
+
+            <h2>4. KOMUNIKACIJA SA KUPCEM</h2>
+
+            <p>
+                Prodajni razgovor treba biti dvosmjeran.
+                Ne treba samo govoriti — potrebno je i slušati.
+            </p>
+
+            <h3>Korisne tehnike:</h3>
+
+            <ul>
+                <li>postavljajte otvorena pitanja,</li>
+                <li>slušajte odgovor kupca,</li>
+                <li>ne prekidajte kupca,</li>
+                <li>ponovite ključni problem koji ste razumjeli,</li>
+                <li>tek onda predstavite rješenje.</li>
+            </ul>
+
+        </section>
+
+
+        <!-- LEKCIJA 5 -->
+
+        <section class="lesson">
+
+            <h2>5. PRIGOVORI KUPCA</h2>
+
+            <p>
+                Kupac može imati određene sumnje ili pitanja prije kupovine.
+                To je normalan dio prodajnog procesa.
+            </p>
+
+            <h3>Česti prigovori:</h3>
+
+            <ul>
+                <li>„Preskupo mi je.“</li>
+                <li>„Moram razmisliti.“</li>
+                <li>„Već koristim drugo rješenje.“</li>
+                <li>„Nisam siguran da mi ovo treba.“</li>
+            </ul>
+
+            <p>
+                Umjesto rasprave, pokušajte razumjeti razlog prigovora.
+            </p>
+
+            <div class="tip">
+
+                <strong>PRIMJER:</strong>
+
+                <p>
+                    Ako kupac kaže da je cijena visoka, možete pitati:
+                    „Šta vam je najvažnije kod ovog rješenja i u odnosu na šta
+                    procjenjujete cijenu?“
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEKCIJA 6 -->
+
+        <section class="lesson">
+
+            <h2>6. ZAKLJUČIVANJE PRODAJE</h2>
+
+            <p>
+                Nakon što su potrebe kupca jasne i pitanja riješena,
+                potrebno je jasno predložiti sljedeći korak.
+            </p>
+
+            <h3>Primjeri:</h3>
+
+            <ul>
+                <li>„Da li želite da pripremimo ponudu?“</li>
+                <li>„Da li možemo dogovoriti termin?“</li>
+                <li>„Želite li
