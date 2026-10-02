@@ -1805,13 +1805,7 @@ async function neZelimKontakt() {
       "• ne briše se ništa sa vašeg računa.\n\n" +
       "Želite li nastaviti?"
     );
-
-    if (!prvaPotvrda) {
-      return;
-    }
-
-
-    const drugaPotvrda = confirm(
+alert("STIGLO JE DO SPREMANJA");sBm(
       "⚠️ ZAVRŠNA POTVRDA\n\n" +
       "Da li zaista želite OTKAZATI zabranu kontaktiranja?\n\n" +
       "Nakon potvrde vaš profil će ponovo biti dostupan " +
@@ -1823,7 +1817,8 @@ async function neZelimKontakt() {
       return;
     }
 
-
+alert("STIGLO JE DO SPREMANJA");
+    
     button.disabled = true;
     button.innerText = "Spremam...";
 
