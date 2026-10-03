@@ -1773,6 +1773,8 @@ async function promijeniSifru() {
 
 async function neZelimKontakt() {
 
+  console.log("TEST SESIJE:", await supabaseClient.auth.getSession());
+
   if (!currentUser) {
     return;
   }
