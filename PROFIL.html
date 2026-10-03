@@ -1773,9 +1773,8 @@ async function promijeniSifru() {
 
 async function neZelimKontakt() {
 
-  console.log("TEST SESIJE:", await supabaseClient.auth.getSession());
-
   if (!currentUser) {
+    alert("Korisnik nije prijavljen.");
     return;
   }
 
@@ -1807,7 +1806,13 @@ async function neZelimKontakt() {
       "• ne briše se ništa sa vašeg računa.\n\n" +
       "Želite li nastaviti?"
     );
-alert("STIGLO JE DO SPREMANJA");sBm(
+
+    if (!prvaPotvrda) {
+      return;
+    }
+
+
+    const drugaPotvrda = confirm(
       "⚠️ ZAVRŠNA POTVRDA\n\n" +
       "Da li zaista želite OTKAZATI zabranu kontaktiranja?\n\n" +
       "Nakon potvrde vaš profil će ponovo biti dostupan " +
@@ -1819,13 +1824,38 @@ alert("STIGLO JE DO SPREMANJA");sBm(
       return;
     }
 
-alert("STIGLO JE DO SPREMANJA");
-    
+
     button.disabled = true;
     button.innerText = "Spremam...";
 
 
     try {
+
+      console.log("USER ID:", currentUser.id);
+      console.log("EMAIL:", currentUser.email);
+
+
+      const {
+        data: sessionData,
+        error: sessionError
+      } = await supabaseClient.auth.getSession();
+
+
+      console.log("SESSION:", sessionData);
+      console.log("SESSION ERROR:", sessionError);
+
+
+      if (sessionError) {
+        throw sessionError;
+      }
+
+
+      if (!sessionData?.session) {
+        throw new Error(
+          "Sesija nije aktivna. Molimo prijavite se ponovo."
+        );
+      }
+
 
       const { error } =
         await supabaseClient
@@ -1883,7 +1913,10 @@ alert("STIGLO JE DO SPREMANJA");
 
       status.innerText =
         "❌ Greška: " +
-        error.message;
+        (
+          error.message ||
+          "Nepoznata greška."
+        );
 
 
       button.disabled =
@@ -2030,7 +2063,10 @@ alert("STIGLO JE DO SPREMANJA");
 
     status.innerText =
       "❌ Greška: " +
-      error.message;
+      (
+        error.message ||
+        "Nepoznata greška."
+      );
 
 
     button.disabled =
