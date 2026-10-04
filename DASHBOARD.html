@@ -207,157 +207,6 @@ header{
 
 
 /* =========================================================
-   AUTOVOX - TRI GLAVNE KARTICE
-========================================================= */
-
-.autovox-links{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-
-    margin-bottom:0;
-}
-
-.autovox-card{
-    position:relative;
-    overflow:hidden;
-
-    min-height:145px;
-
-    display:flex;
-    align-items:center;
-
-    gap:15px;
-
-    padding:22px;
-
-    background:#fff;
-
-    border:1px solid var(--line);
-
-    border-radius:20px;
-
-    box-shadow:
-        0 10px 30px rgba(20,39,76,.06);
-
-    transition:
-        transform .22s ease,
-        box-shadow .22s ease,
-        border-color .22s ease;
-}
-
-.autovox-card:before{
-    content:"";
-
-    position:absolute;
-
-    width:130px;
-    height:130px;
-
-    border-radius:50%;
-
-    right:-55px;
-    top:-60px;
-
-    background:rgba(49,85,255,.06);
-}
-
-.autovox-card:hover{
-    transform:translateY(-5px);
-
-    box-shadow:
-        0 18px 38px rgba(20,39,76,.12);
-
-    border-color:#c9d1ff;
-}
-
-.autovox-icon{
-    position:relative;
-    z-index:1;
-
-    flex:0 0 54px;
-
-    width:54px;
-    height:54px;
-
-    border-radius:16px;
-
-    display:grid;
-    place-items:center;
-
-    font-size:1.5rem;
-
-    background:#eef1ff;
-}
-
-.autovox-card > div:nth-child(2){
-    position:relative;
-    z-index:1;
-}
-
-.autovox-label{
-    color:var(--blue);
-
-    font-size:.67rem;
-
-    font-weight:900;
-
-    letter-spacing:.13em;
-
-    margin-bottom:4px;
-}
-
-.autovox-card h3{
-    font-size:1.15rem;
-    letter-spacing:-.4px;
-}
-
-.autovox-card p{
-    color:var(--muted);
-
-    font-size:.76rem;
-
-    line-height:1.45;
-
-    margin-top:4px;
-}
-
-.autovox-arrow{
-    position:relative;
-    z-index:1;
-
-    margin-left:auto;
-
-    width:34px;
-    height:34px;
-
-    border-radius:10px;
-
-    display:grid;
-    place-items:center;
-
-    background:#eef1ff;
-
-    color:var(--blue);
-
-    font-weight:900;
-    font-size:1rem;
-}
-
-.autovox-obuka{
-    border-top:4px solid #3155ff;
-}
-
-.autovox-oglasi{
-    border-top:4px solid #18a66b;
-}
-
-.autovox-izvjestaj{
-    border-top:4px solid #6d7cff;
-}
-
-
-/* =========================================================
    HERO
 ========================================================= */
 
@@ -2175,11 +2024,7 @@ footer{
 
 @media(max-width:1000px){
 
-    .hero{
-        grid-template-columns:1fr;
-    }
-
-    .hero-visual{
+       .hero-visual{
         max-width:650px;
     }
 
@@ -2192,10 +2037,7 @@ footer{
         grid-template-columns:repeat(2,1fr);
     }
 
-    .autovox-links{
-        grid-template-columns:1fr;
-    }
-
+    
     .my-dashboard-grid{
         grid-template-columns:repeat(2,1fr);
     }
@@ -2499,114 +2341,6 @@ footer{
 ========================================================= -->
 
 <main class="main-container">
-
-
-    <!-- =====================================================
-         AUTOVOX / BRZI PRISTUP
-    ===================================================== -->
-
-    <section class="autovox-links">
-
-
-        <a
-            href="OBUKA.html"
-            class="autovox-card autovox-obuka"
-        >
-
-            <div class="autovox-icon">
-                🎓
-            </div>
-
-            <div>
-
-                <div class="autovox-label">
-                    AUTOVOX
-                </div>
-
-                <h3>
-                    OBUKA
-                </h3>
-
-                <p>
-                    Otvorite stranicu za obuku i edukaciju.
-                </p>
-
-            </div>
-
-            <span class="autovox-arrow">
-                →
-            </span>
-
-        </a>
-
-
-        <a
-            href="OGLASI.html"
-            class="autovox-card autovox-oglasi"
-        >
-
-            <div class="autovox-icon">
-                📢
-            </div>
-
-            <div>
-
-                <div class="autovox-label">
-                    AUTOVOX
-                </div>
-
-                <h3>
-                    OGLASI
-                </h3>
-
-                <p>
-                    Pregledajte i pronađite poslovne oglase.
-                </p>
-
-            </div>
-
-            <span class="autovox-arrow">
-                →
-            </span>
-
-        </a>
-
-
-        <a
-            href="https://www.autovoxa.com/izvjestaj.html"
-            class="autovox-card autovox-izvjestaj"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-
-            <div class="autovox-icon">
-                📊
-            </div>
-
-            <div>
-
-                <div class="autovox-label">
-                    AUTOVOX
-                </div>
-
-                <h3>
-                    IZVJEŠTAJ
-                </h3>
-
-                <p>
-                    Otvorite AutoVoxa izvještaj.
-                </p>
-
-            </div>
-
-            <span class="autovox-arrow">
-                ↗
-            </span>
-
-        </a>
-
-
-    </section>
 
 
     <!-- =====================================================
@@ -3360,6 +3094,31 @@ footer{
 
         </div>
 
+            <a
+                href="https://www.autovoxa.com/"
+                class="dash-tile"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+
+                <div class="tile-icon">
+                    🚗
+                </div>
+
+                <h3>
+                    AUTOVOX
+                </h3>
+
+                <p>
+                    Posjetite AutoVoxa platformu.
+                </p>
+
+                <span class="tile-arrow">
+                    Otvori ↗
+                </span>
+
+            </a>
+        
     </section>
 
 
