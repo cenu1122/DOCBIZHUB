@@ -8,282 +8,1483 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      background-color: #f4f6f9; 
-      color: #2b2d42; 
-      display: flex; 
-      flex-direction: column; 
-      min-height: 100vh; 
-    }
-    
-    header { 
-      background-color: #2b2d42; 
-      color: #fff; 
-      padding: 15px 5%; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
-    }
-    .logo { font-size: 1.5rem; font-weight: bold; color: #fff; text-decoration: none; transition: color 0.3s; }
-    .logo:hover { color: #d90429; }
-    
-    .main-container { 
-      flex: 1; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 40px 20px; 
-    }
-    .login-card { 
-      background: #fff; 
-      width: 100%; 
-      max-width: 420px; 
-      padding: 35px; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 25px rgba(43, 45, 66, 0.08); 
-      border-top: 5px solid #2b2d42; 
-    }
-    .login-card h2 { text-align: center; color: #2b2d42; margin-bottom: 8px; font-size: 1.8rem; }
-    .subtitle { text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 25px; }
-
-    .form-group { margin-bottom: 18px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #2b2d42; }
-    
-    .input-wrapper { position: relative; }
-    .form-group input { 
-      width: 100%; 
-      padding: 12px 40px 12px 12px; 
-      border: 1px solid #ddd; 
-      border-radius: 10px; 
-      font-size: 1rem; 
-      outline: none; 
-    }
-    .form-group input:focus { border-color: #d90429; }
-
-    /* Dugme za prikaz/sakrivanje lozinke */
-    .toggle-password { 
-      position: absolute; 
-      right: 12px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      background: none; 
-      border: none; 
-      cursor: pointer; 
-      font-size: 1.1rem; 
-      color: #666; 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Polje za "Zapamti me" i "Zaboravljena lozinka" */
-    .extra-links { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 20px; }
-    .extra-links label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #4a4e69; }
-    .extra-links input[type="checkbox"] { width: 16px; height: 16px; accent-color: #d90429; cursor: pointer; }
-    .extra-links a { color: #d90429; text-decoration: none; font-weight: 600; }
-    .extra-links a:hover { text-decoration: underline; }
-
-    .btn-submit { 
-      width: 100%; 
-      background-color: #d90429; 
-      color: #fff; 
-      padding: 14px; 
-      border: none; 
-      border-radius: 10px; 
-      font-size: 1.1rem; 
-      font-weight: bold; 
-      cursor: pointer; 
-      transition: background 0.3s; 
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 100%);
+      min-height: 100vh;
+      color: #172033;
     }
-    .btn-submit:hover { background-color: #b50322; }
 
-    #statusMessage { margin-top: 15px; text-align: center; font-weight: bold; word-break: break-word; font-size: 0.95rem; }
-    
-    .footer-links { text-align: center; margin-top: 20px; font-size: 0.95rem; }
-    .footer-links a { color: #d90429; text-decoration: none; font-weight: bold; }
-    .footer-links a:hover { text-decoration: underline; }
+    /* =========================================================
+       LOGIN
+    ========================================================== */
 
-    footer { background-color: #2b2d42; color: #fff; text-align: center; padding: 20px 0; margin-top: auto; }
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 40px 35px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin: 0 auto 15px;
+      box-shadow: 0 10px 25px rgba(18, 97, 214, 0.25);
+    }
+
+    .logo h1 {
+      font-size: 30px;
+      color: #123d7a;
+      margin-bottom: 6px;
+    }
+
+    .logo p {
+      color: #7a8494;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #25334d;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-control {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #d8dfeb;
+      border-radius: 12px;
+      padding: 0 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      background: #fbfcff;
+    }
+
+    .form-control:focus {
+      border-color: #1261d6;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(18, 97, 214, 0.08);
+    }
+
+    .password-input {
+      padding-right: 52px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      color: #6f7b8d;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-size: 13px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #687386;
+    }
+
+    .remember input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #1261d6;
+      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .login-button {
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 10px 25px rgba(18, 97, 214, 0.22);
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(18, 97, 214, 0.28);
+    }
+
+    .login-button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 13px 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0f0;
+      color: #b42318;
+      border: 1px solid #ffd0d0;
+    }
+
+    .message.success {
+      display: block;
+      background: #effcf3;
+      color: #15703a;
+      border: 1px solid #c7f0d3;
+    }
+
+
+    /* =========================================================
+       EKRAN OBUKE
+    ========================================================== */
+
+    #trainingScreen {
+      display: none;
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(18, 97, 214, 0.10),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #f4f8ff 0%,
+          #ffffff 55%,
+          #eef4ff 100%
+        );
+
+      padding: 35px 20px 50px;
+    }
+
+    .training-container {
+      width: 100%;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .training-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .training-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 900;
+      color: #123d7a;
+      margin-bottom: 18px;
+    }
+
+    .training-logo-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+    }
+
+    .training-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 30px;
+      background: #e5efff;
+      color: #1261d6;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-bottom: 15px;
+    }
+
+    .training-header h2 {
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.05;
+      color: #172033;
+      margin-bottom: 15px;
+    }
+
+    .training-header h2 span {
+      color: #1261d6;
+    }
+
+    .training-header p {
+      max-width: 750px;
+      margin: 0 auto;
+      color: #657085;
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       SLIKA OBUKE
+    ========================================================== */
+
+    .training-image-link {
+      display: block;
+      width: 100%;
+      max-width: 950px;
+      margin: 0 auto 30px;
+      text-decoration: none;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 20px 55px rgba(16, 42, 85, 0.14);
+      border: 1px solid rgba(18, 97, 214, 0.10);
+      transition: 0.25s ease;
+    }
+
+    .training-image-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 65px rgba(16, 42, 85, 0.20);
+    }
+
+    .training-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 560px;
+      object-fit: cover;
+    }
+
+    .image-click-text {
+      text-align: center;
+      padding: 15px 20px;
+      background: #ffffff;
+      color: #1261d6;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       SARADNJA
+    ========================================================== */
+
+    .partnership-box {
+      max-width: 950px;
+      margin: 0 auto 30px;
+      padding: 22px 25px;
+      background: #ffffff;
+      border: 1px solid #dce6f5;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(20, 45, 80, 0.06);
+    }
+
+    .partnership-box .icon {
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .partnership-box p {
+      color: #687386;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .partnership-box strong {
+      color: #123d7a;
+    }
+
+
+    /* =========================================================
+       OBLASTI OBUKE
+    ========================================================== */
+
+    .training-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 0 auto 30px;
+      max-width: 950px;
+    }
+
+    .training-field {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 25px 20px;
+      text-align: center;
+      border: 1px solid #e0e7f2;
+      box-shadow: 0 8px 25px rgba(20, 45, 80, 0.05);
+    }
+
+    .training-field-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .training-field h3 {
+      font-size: 20px;
+      color: #172033;
+      margin-bottom: 7px;
+    }
+
+    .training-field p {
+      color: #7a8494;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       GLAVNA PONUDA
+    ========================================================== */
+
+    .main-offer {
+      max-width: 950px;
+      margin: 0 auto;
+      background: linear-gradient(
+        135deg,
+        #101d33,
+        #173968
+      );
+
+      border-radius: 24px;
+      padding: 38px 35px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 20px 55px rgba(15, 35, 65, 0.20);
+    }
+
+    .main-offer-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      margin-bottom: 14px;
+    }
+
+    .main-offer h2 {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .main-offer p {
+      max-width: 700px;
+      margin: 0 auto 25px;
+      color: #dbe6f7;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .offer-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .offer-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+    }
+
+    .offer-button.primary {
+      background: #ffffff;
+      color: #123d7a;
+    }
+
+    .offer-button.primary:hover {
+      transform: translateY(-2px);
+      background: #f3f7ff;
+    }
+
+    .offer-button.secondary {
+      background: rgba(255,255,255,0.10);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .offer-button.secondary:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 700px) {
+
+      #loginPage {
+        padding: 15px;
+      }
+
+      .login-card {
+        padding: 30px 22px;
+        border-radius: 20px;
+      }
+
+      #trainingScreen {
+        padding: 25px 14px 35px;
+      }
+
+      .training-header h2 {
+        font-size: 36px;
+      }
+
+      .training-header p {
+        font-size: 15px;
+      }
+
+      .training-image-link {
+        border-radius: 18px;
+      }
+
+      .training-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .main-offer {
+        padding: 30px 20px;
+        border-radius: 20px;
+      }
+
+      .main-offer h2 {
+        font-size: 25px;
+      }
+
+      .offer-buttons {
+        flex-direction: column;
+      }
+
+      .offer-button {
+        width: 100%;
+      }
+
+      .remember-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
+
+
 <body>
 
-  <header>
-    <a href="index.html" class="logo">📄 DocBizHub</a>
-  </header>
 
-  <div class="main-container">
-    <div class="login-card">
-      <h2>Dobrodošli nazad</h2>
-      <p class="subtitle">Prijavite se na svoj poslovni profil</p>
+  <!-- =========================================================
+       LOGIN
+  ========================================================== -->
 
-      <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
-        <div class="form-group">
-          <label>E-mail Adresa</label>
-          <input type="email" id="email" placeholder="vas@email.com" required>
-        </div>
+  <div id="loginPage">
 
-        <div class="form-group">
-          <label>Lozinka</label>
-          <div class="input-wrapper">
-            <input type="password" id="password" placeholder="Vaša lozinka" required>
-            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" title="Prikaži/Sakrij lozinku">👁️</button>
+    <div class="login-container">
+
+      <div class="login-card">
+
+        <div class="logo">
+
+          <div class="logo-icon">
+            📄
           </div>
+
+          <h1>DocBizHub</h1>
+
+          <p>
+            Prijavite se na svoj korisnički račun
+          </p>
+
         </div>
 
-        <div class="extra-links">
-          <label>
-            <input type="checkbox" id="rememberMe"> Zapamti me
-          </label>
-          <a href="#" onclick="forgotPassword(event)">Zaboravili ste lozinku?</a>
-        </div>
 
-        <button type="submit" class="btn-submit" id="loginBtn">PRIJAVI SE</button>
-      </form>
+        <form
+          id="loginForm"
+          onsubmit="handleLogin(event)"
+        >
 
-      <div id="statusMessage"></div>
+          <div class="form-group">
 
-      <div class="footer-links">
-        Nemate profil? <a href="REGISTRACIJA.html">Registrujte se ovdje</a>
+            <label for="email">
+              Email adresa
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              placeholder="vas@email.com"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="password">
+              Lozinka
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="password"
+                id="password"
+                class="form-control password-input"
+                placeholder="Unesite lozinku"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="password-toggle"
+                onclick="togglePasswordVisibility()"
+                aria-label="Prikaži lozinku"
+              >
+                👁
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="remember-row">
+
+            <label class="remember">
+
+              <input
+                type="checkbox"
+                id="rememberMe"
+              >
+
+              <span>
+                Zapamti email
+              </span>
+
+            </label>
+
+
+            <a
+              href="#"
+              class="forgot-link"
+              onclick="forgotPassword(event)"
+            >
+              Zaboravili ste lozinku?
+            </a>
+
+          </div>
+
+
+          <button
+            type="submit"
+            id="loginButton"
+            class="login-button"
+          >
+            PRIJAVI SE
+          </button>
+
+
+          <div
+            id="loginMessage"
+            class="message"
+          ></div>
+
+        </form>
+
       </div>
+
     </div>
+
   </div>
 
-  <footer>
-    <p>© 2026 DocBizHub. Sva prava zadržana.</p>
-  </footer>
+
+
+  <!-- =========================================================
+       EKRAN OBUKE
+    OVAJ EKRAN SE PRIKAZUJE SAMO PRVA DVA PUTA
+  ========================================================== -->
+
+  <section id="trainingScreen">
+
+    <div class="training-container">
+
+
+      <!-- HEADER -->
+
+      <div class="training-header">
+
+        <div class="training-logo">
+
+          <div class="training-logo-icon">
+            📄
+          </div>
+
+          <span>
+            DocBizHub
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <span class="training-badge">
+            NOVO · OBUKA I USAVRŠAVANJE
+          </span>
+
+        </div>
+
+
+        <h2>
+          Obuka i <span>usavršavanje</span>
+        </h2>
+
+
+        <p>
+          DocBizHub vam predstavlja svoju glavnu ponudu
+          profesionalne obuke i usavršavanja za tražena
+          zanimanja.
+        </p>
+
+      </div>
+
+
+
+      <!-- =====================================================
+           SLIKA OBUKE
+           KLIK → OBUKA.html
+      ====================================================== -->
+
+      <a
+        href="OBUKA.html"
+        class="training-image-link"
+        title="Pogledajte program obuke"
+      >
+
+        <img
+          src="OBUKA.JPG"
+          alt="DocBizHub - Program obuke"
+          class="training-image"
+        >
+
+        <div class="image-click-text">
+
+          👆 KLIKNITE NA SLIKU ZA VIŠE INFORMACIJA
+          O OBUCI
+
+        </div>
+
+      </a>
+
+
+
+      <!-- =====================================================
+           SARADNJA SA ŠKOLOM
+      ====================================================== -->
+
+      <div class="partnership-box">
+
+        <div class="icon">
+          🤝
+        </div>
+
+        <p>
+
+          Program se realizuje u saradnji sa
+
+          <strong>
+            Elektromašinskom školom u Lukavcu
+          </strong>.
+
+        </p>
+
+      </div>
+
+
+
+      <!-- =====================================================
+           VRSTE OBUKE
+      ====================================================== -->
+
+      <div class="training-fields">
+
+
+        <div class="training-field">
+
+          <div class="training-field-icon">
+            🔥
+          </div>
+
+          <h3>
+            Varioci
+          </h3>
+
+          <p>
+            Profesionalna obuka i usavršavanje
+            za zanimanje varioca.
+          </p>
+
+        </div>
+
+
+        <div class="training-field">
+
+          <div class="training-field-icon">
+            🔧
+          </div>
+
+          <h3>
+            Bravari
+          </h3>
+
+          <p>
+            Stručna obuka za bravare i praktična
+            znanja potrebna za rad u struci.
+          </p>
+
+        </div>
+
+
+        <div class="training-field">
+
+          <div class="training-field-icon">
+            ⚡
+          </div>
+
+          <h3>
+            Električari
+          </h3>
+
+          <p>
+            Obuka i usavršavanje za električare
+            kroz stručno i praktično obrazovanje.
+          </p>
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =====================================================
+           GLAVNA PONUDA
+      ====================================================== -->
+
+      <div class="main-offer">
+
+        <div class="main-offer-badge">
+          🎯 GLAVNA PONUDA DOCBIZHUB-A
+        </div>
+
+
+        <h2>
+          Postanite stručniji. Budite konkurentniji.
+        </h2>
+
+
+        <p>
+          Iskoristite mogućnost profesionalne obuke
+          i usavršavanja za zanimanja koja su tražena
+          na tržištu rada. Pogledajte kompletan program
+          i saznajte više.
+        </p>
+
+
+        <div class="offer-buttons">
+
+
+          <!-- OTVARA OBUKA.html -->
+
+          <a
+            href="OBUKA.html"
+            class="offer-button primary"
+          >
+            POGLEDAJ PROGRAM OBUKE
+          </a>
+
+
+          <!-- IDE NA DASHBOARD -->
+
+          <button
+            type="button"
+            class="offer-button secondary"
+            onclick="continueToDashboard()"
+          >
+            NASTAVI NA DASHBOARD →
+          </button>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
 
   <script>
-    // SUPABASE KONFIGURACIJA
-    const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
 
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    /* =========================================================
+       SUPABASE
+    ========================================================== */
 
-    // Učitavanje zapamćenog email-a pri pokretanju stranice
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedEmail = localStorage.getItem('saved_email');
-      if (savedEmail) {
-        document.getElementById('email').value = savedEmail;
-        document.getElementById('rememberMe').checked = true;
+    const SUPABASE_URL =
+      'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+
+    const _supabase =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+
+    /* =========================================================
+       UČITAVANJE STRANICE
+    ========================================================== */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function () {
+
+        const savedEmail =
+          localStorage.getItem('saved_email');
+
+
+        if (savedEmail) {
+
+          document.getElementById('email').value =
+            savedEmail;
+
+          document.getElementById('rememberMe').checked =
+            true;
+
+        }
+
       }
-    });
+    );
 
-    // Funkcija za prikaz/sakrivanje lozinke
+
+
+    /* =========================================================
+       PRIKAŽI / SAKRIJ LOZINKU
+    ========================================================== */
+
     function togglePasswordVisibility() {
-      const passwordInput = document.getElementById('password');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
+
+      const password =
+        document.getElementById('password');
+
+      const button =
+        document.querySelector('.password-toggle');
+
+
+      if (password.type === 'password') {
+
+        password.type = 'text';
+
+        button.textContent = '🙈';
+
       } else {
-        passwordInput.type = 'password';
+
+        password.type = 'password';
+
+        button.textContent = '👁';
+
       }
+
     }
 
-    // Funkcija za slanje linka za resetovanje lozinke
+
+
+    /* =========================================================
+       PORUKA
+    ========================================================== */
+
+    function showMessage(
+      message,
+      type
+    ) {
+
+      const messageBox =
+        document.getElementById('loginMessage');
+
+
+      messageBox.textContent =
+        message;
+
+
+      messageBox.className =
+        'message ' + type;
+
+    }
+
+
+
+    function clearMessage() {
+
+      const messageBox =
+        document.getElementById('loginMessage');
+
+
+      messageBox.textContent =
+        '';
+
+
+      messageBox.className =
+        'message';
+
+    }
+
+
+
+    /* =========================================================
+       ZABORAVLJENA LOZINKA
+    ========================================================== */
+
     async function forgotPassword(event) {
+
       event.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const statusDiv = document.getElementById('statusMessage');
+
+      clearMessage();
+
+
+      const email =
+        document.getElementById('email')
+          .value
+          .trim();
+
 
       if (!email) {
-        statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Molimo unesite vaš e-mail iznad da biste resetovali lozinku.';
+
+        showMessage(
+          'Prvo unesite svoju email adresu.',
+          'error'
+        );
+
+        document.getElementById('email').focus();
+
         return;
       }
 
-      statusDiv.style.color = '#0056b3';
-      statusDiv.textContent = 'Slanje linka za oporavak u toku...';
 
       try {
-        const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/RESET_PASSWORD.html', // Stranica za postavljanje nove lozinke (opcionalno)
-        });
 
-        if (error) throw error;
+        const { error } =
+          await _supabase.auth.resetPasswordForEmail(
+            email,
+            {
+              redirectTo:
+                window.location.origin +
+                '/RESET_PASSWORD.html'
+            }
+          );
 
-        statusDiv.style.color = 'green';
-        statusDiv.textContent = 'Link za oporavak lozinke je poslat na vaš e-mail!';
-      } catch (err) {
-        statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Greška: ' + err.message;
+
+        if (error) {
+
+          showMessage(
+            error.message,
+            'error'
+          );
+
+          return;
+        }
+
+
+        showMessage(
+          'Link za promjenu lozinke je poslan na vaš email.',
+          'success'
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+          'Došlo je do greške. Pokušajte ponovo.',
+          'error'
+        );
+
       }
+
     }
 
-    // Funkcija za prijavu korisnika i provjeru u POSAO_KORISNICI tabeli
-    async function handleLogin() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const rememberMe = document.getElementById('rememberMe').checked;
-      const statusDiv = document.getElementById('statusMessage');
-      const loginBtn = document.getElementById('loginBtn');
+
+
+    /* =========================================================
+       LOGIN
+    ========================================================== */
+
+    async function handleLogin(event) {
+
+      event.preventDefault();
+
+      clearMessage();
+
+
+      const email =
+        document.getElementById('email')
+          .value
+          .trim();
+
+
+      const password =
+        document.getElementById('password')
+          .value;
+
+
+      const rememberMe =
+        document.getElementById('rememberMe')
+          .checked;
+
+
+      const loginButton =
+        document.getElementById('loginButton');
+
+
+
+      /* =====================================================
+         VALIDACIJA
+      ====================================================== */
 
       if (!email || !password) {
-        statusDiv.style.color = 'red';
-        statusDiv.textContent = 'Molimo unesite email i lozinku!';
+
+        showMessage(
+          'Molimo unesite email i lozinku.',
+          'error'
+        );
+
         return;
+
       }
 
-      // Pamćenje ili brisanje email-a iz memorije
+
+
+      /* =====================================================
+         ZAPAMTI EMAIL
+      ====================================================== */
+
       if (rememberMe) {
-        localStorage.setItem('saved_email', email);
+
+        localStorage.setItem(
+          'saved_email',
+          email
+        );
+
       } else {
-        localStorage.removeItem('saved_email');
+
+        localStorage.removeItem(
+          'saved_email'
+        );
+
       }
 
-      statusDiv.style.color = '#0056b3';
-      statusDiv.textContent = 'Provjera podataka...';
-      loginBtn.disabled = true;
+
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        'PRIJAVA U TOKU...';
+
+
 
       try {
-        // 1. Autentifikacija preko Supabase Auth sistema
-        const { data: authData, error: authError } = await _supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
 
-        if (authError) throw authError;
 
-        const userId = authData.user.id;
+        /* ===================================================
+           SUPABASE LOGIN
+        ==================================================== */
 
-        // 2. Ažuriranje statusa u tabeli POSAO_KORISNICI
-        const { data: existingUser, error: fetchError } = await _supabase
-          .from('POSAO_KORISNICI')
-          .select('*')
-          .eq('USER', userId)
-          .maybeSingle();
+        const {
+          data: authData,
+          error: authError
+        } =
+          await _supabase.auth.signInWithPassword({
 
-        if (existingUser) {
+            email: email,
+
+            password: password
+
+          });
+
+
+
+        /* ===================================================
+           GREŠKA LOGIN
+        ==================================================== */
+
+        if (authError) {
+
+          console.error(
+            'Login error:',
+            authError
+          );
+
+
+          showMessage(
+            'Pogrešan email ili lozinka.',
+            'error'
+          );
+
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            'PRIJAVI SE';
+
+
+          return;
+
+        }
+
+
+
+        /* ===================================================
+           NEMA USERA
+        ==================================================== */
+
+        if (
+          !authData ||
+          !authData.user
+        ) {
+
+          showMessage(
+            'Prijava nije uspjela.',
+            'error'
+          );
+
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            'PRIJAVI SE';
+
+
+          return;
+
+        }
+
+
+
+        const userId =
+          authData.user.id;
+
+
+
+        /* ===================================================
+           PRONAĐI KORISNIKA
+        ==================================================== */
+
+        const {
+          data: korisnik,
+          error: fetchError
+        } =
           await _supabase
             .from('POSAO_KORISNICI')
-            .update({ 
-              IS_ONLINE: true, 
-              LAST_SEEN: new Date().toLocaleDateString() 
-            })
-            .eq('USER', userId);
+            .select('*')
+            .eq('USER', userId)
+            .maybeSingle();
+
+
+
+        if (fetchError) {
+
+          console.warn(
+            'Greška pri učitavanju korisnika:',
+            fetchError
+          );
+
         }
 
-        statusDiv.style.color = 'green';
-        statusDiv.textContent = 'Prijava uspješna! Preusmjeravanje...';
 
-        // 3. Preusmjeravanje na DASHBOARD.html
-        setTimeout(() => {
-          window.location.href = 'DASHBOARD.html';
-        }, 1200);
 
-      } catch (err) {
-        statusDiv.style.color = 'red';
-        
-        if (err.message.includes('Invalid login credentials')) {
-          statusDiv.textContent = 'Pogrešan e-mail ili lozinka!';
-        } else if (err.message.includes('Email not confirmed')) {
-          statusDiv.textContent = 'E-mail nije potvrđen. Provjerite vaš inbox!';
-        } else {
-          statusDiv.textContent = 'Greška: ' + err.message;
+        /* ===================================================
+           AŽURIRAJ ONLINE STATUS
+        ==================================================== */
+
+        if (korisnik) {
+
+          const {
+            error: updateError
+          } =
+            await _supabase
+              .from('POSAO_KORISNICI')
+              .update({
+
+                IS_ONLINE: true,
+
+                LAST_SEEN:
+                  new Date().toLocaleDateString()
+
+              })
+              .eq(
+                'USER',
+                userId
+              );
+
+
+          if (updateError) {
+
+            console.warn(
+              'Greška pri ažuriranju statusa:',
+              updateError
+            );
+
+          }
+
         }
-        
-        loginBtn.disabled = false;
+
+
+
+        /* ===================================================
+           USPJEŠNA PRIJAVA
+           
+           BROJIMO PRIJAVE U LOCAL STORAGE.
+           
+           1. prijava → OBUKA
+           2. prijava → OBUKA
+           3. prijava → DASHBOARD
+           4. prijava → DASHBOARD
+           itd.
+        ==================================================== */
+
+        showMessage(
+          'Uspješna prijava. Dobro došli u DocBizHub!',
+          'success'
+        );
+
+
+        loginButton.textContent =
+          'USPJEŠNA PRIJAVA ✓';
+
+
+
+        setTimeout(
+          function () {
+
+
+            /* =============================================
+               UZMI TRENUTNI BROJ PRIJAVA
+            ============================================== */
+
+            let loginCount =
+              parseInt(
+                localStorage.getItem(
+                  'docbiz_login_count'
+                ) || '0',
+                10
+              );
+
+
+            /* =============================================
+               POVEĆAJ BROJ PRIJAVA
+            ============================================== */
+
+            loginCount++;
+
+
+            /* =============================================
+               SAČUVAJ NOVI BROJ
+            ============================================== */
+
+            localStorage.setItem(
+              'docbiz_login_count',
+              loginCount.toString()
+            );
+
+
+            /* =============================================
+               PRVE DVIJE PRIJAVE → OBUKA
+            ============================================== */
+
+            if (loginCount <= 2) {
+
+              showTrainingScreen();
+
+            }
+
+
+            /* =============================================
+               TREĆA I SVE NAREDNE → DASHBOARD
+            ============================================== */
+
+            else {
+
+              window.location.href =
+                'DASHBOARD.html';
+
+            }
+
+          },
+          700
+        );
+
+
+      } catch (error) {
+
+
+        console.error(
+          'Unexpected login error:',
+          error
+        );
+
+
+        showMessage(
+          'Došlo je do greške prilikom prijave. Pokušajte ponovo.',
+          'error'
+        );
+
+
+        loginButton.disabled = false;
+
+
+        loginButton.textContent =
+          'PRIJAVI SE';
+
       }
+
     }
+
+
+
+    /* =========================================================
+       PRIKAŽI EKRAN OBUKE
+    ========================================================== */
+
+    function showTrainingScreen() {
+
+      document.getElementById(
+        'loginPage'
+      ).style.display = 'none';
+
+
+      document.getElementById(
+        'trainingScreen'
+      ).style.display = 'block';
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant'
+      });
+
+    }
+
+
+
+    /* =========================================================
+       NASTAVI NA DASHBOARD
+    ========================================================== */
+
+    function continueToDashboard() {
+
+      window.location.href =
+        'DASHBOARD.html';
+
+    }
+
   </script>
 
 </body>
