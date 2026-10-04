@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>OGLASI | DOCBIZHUB</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #111827;
+    }
+
+    /* HEADER */
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #2563eb;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      background: #111827;
+      color: #ffffff;
+      padding: 11px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #2563eb;
+    }
+
+    /* MAIN */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 25px 70px;
+    }
+
+    .page-title {
+      margin-bottom: 25px;
+    }
+
+    .page-title h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .page-title p {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    /* SEARCH */
+    .search-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box input,
+    .search-box select {
+      height: 45px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 14px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .search-box input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-box select {
+      min-width: 180px;
+    }
+
+    .search-box input:focus,
+    .search-box select:focus {
+      border-color: #2563eb;
+    }
+
+    /* STATUS */
+    .status {
+      margin-bottom: 20px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* OGLASI */
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .ad-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .ad-image {
+      width: 100%;
+      height: 210px;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .ad-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .no-image {
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .ad-content {
+      padding: 18px;
+    }
+
+    .ad-category {
+      display: inline-block;
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .ad-title {
+      font-size: 19px;
+      font-weight: 750;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .ad-description {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ad-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+
+    .ad-location {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .ad-date {
+      color: #9ca3af;
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    /* PRAZNO */
+    .empty {
+      grid-column: 1 / -1;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 60px 20px;
+      text-align: center;
+      color: #6b7280;
+    }
+
+    .empty h2 {
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    /* LOADING */
+    .loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px;
+      color: #6b7280;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .ads-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .header {
+        padding: 0 20px;
+      }
+
+      .ads-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .page-title h1 {
+        font-size: 30px;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .container {
+        padding: 25px 15px 50px;
+      }
+
+      .ads-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-box {
+        flex-direction: column;
+      }
+
+      .search-box input,
+      .search-box select {
+        width: 100%;
+      }
+
+      .header {
+        height: 65px;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .back-btn {
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <a href="DASHBOARD.html" class="logo">
+      DOCBIZ<span>HUB</span>
+    </a>
+
+    <a href="DASHBOARD.html" class="back-btn">
+      ← NAZAD NA DASHBOARD
+    </a>
+
+  </header>
+
+
+  <!-- MAIN -->
+  <main class="container">
+
+    <div class="page-title">
+      <h1>OGLASI</h1>
+      <p>Pregled svih aktivnih oglasa na DocBizHub platformi.</p>
+    </div>
+
+
+    <!-- PRETRAGA -->
+    <div class="search-box">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="PRETRAŽI OGLASE..."
+        autocomplete="off"
+      >
+
+      <select id="categoryFilter">
+        <option value="">SVE KATEGORIJE</option>
+      </select>
+
+      <select id="cityFilter">
+        <option value="">SVI GRADOVI</option>
+      </select>
+
+    </div>
+
+
+    <!-- STATUS -->
+    <div class="status" id="status">
+      UČITAVANJE OGLASA...
+    </div>
+
+
+    <!-- OGLASI -->
+    <div class="ads-grid" id="adsGrid">
+
+      <div class="loading">
+        UČITAVANJE OGLASA...
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    /* ==========================================
+       SUPABASE
+    ========================================== */
+
+    const SUPABASE_URL =
+      'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRtYW5yZ3B1bWRyZmgiLCJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+    const _supabase = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+    /* ==========================================
+       VARIJABLE
+    ========================================== */
+
+    let sviOglasi = [];
+
+
+    /* ==========================================
+       UČITAVANJE OGLASA
+    ========================================== */
+
+    async function ucitajOglase() {
+
+      const adsGrid = document.getElementById('adsGrid');
+      const status = document.getElementById('status');
+
+      adsGrid.innerHTML = `
+        <div class="loading">
+          UČITAVANJE OGLASA...
+        </div>
+      `;
+
+      const { data, error } = await _supabase
+        .from('OGLASI')
+        .select('*')
+        .eq('AKTIVAN', true)
+        .order('DATUM_OBJAVE', {
+          ascending: false
+        });
+
+      if (error) {
+
+        console.error('GREŠKA PRI UČITAVANJU OGLASA:', error);
+
+        adsGrid.innerHTML = `
+          <div class="empty">
+            <h2>GREŠKA</h2>
+            <p>OGLASI TRENUTNO NISU MOGLI BITI UČITANI.</p>
+          </div>
+        `;
+
+        status.textContent = 'GREŠKA PRI UČITAVANJU.';
+
+        return;
+      }
+
+      sviOglasi = data || [];
+
+      napraviFiltere();
+
+      prikaziOglase(sviOglasi);
+
+    }
+
+
+    /* ==========================================
+       FILTERI
+    ========================================== */
+
+    function napraviFiltere() {
+
+      const categoryFilter =
+        document.getElementById('categoryFilter');
+
+      const cityFilter =
+        document.getElementById('cityFilter');
+
+
+      const kategorije = [
+        ...new Set(
+          sviOglasi
+            .map(oglas => oglas.KATEGORIJA)
+            .filter(Boolean)
+        )
+      ].sort();
+
+
+      const gradovi = [
+        ...new Set(
+          sviOglasi
+            .map(oglas => oglas.GRAD)
+            .filter(Boolean)
+        )
+      ].sort();
+
+
+      categoryFilter.innerHTML =
+        '<option value="">SVE KATEGORIJE</option>';
+
+
+      kategorije.forEach(kategorija => {
+
+        const option =
+          document.createElement('option');
+
+        option.value = kategorija;
+        option.textContent =
+          kategorija.toUpperCase();
+
+        categoryFilter.appendChild(option);
+
+      });
+
+
+      cityFilter.innerHTML =
+        '<option value="">SVI GRADOVI</option>';
+
+
+      gradovi.forEach(grad => {
+
+        const option =
+          document.createElement('option');
+
+        option.value = grad;
+        option.textContent =
+          grad.toUpperCase();
+
+        cityFilter.appendChild(option);
+
+      });
+
+    }
+
+
+    /* ==========================================
+       PRIKAZ OGLASA
+    ========================================== */
+
+    function prikaziOglase(oglasi) {
+
+      const adsGrid =
+        document.getElementById('adsGrid');
+
+      const status =
+        document.getElementById('status');
+
+
+      adsGrid.innerHTML = '';
+
+
+      if (!oglasi.length) {
+
+        adsGrid.innerHTML = `
+          <div class="empty">
+            <h2>NEMA OGLASA</h2>
+            <p>TRENUTNO NEMA OGLASA KOJI ODGOVARAJU PRETRAZI.</p>
+          </div>
+        `;
+
+        status.textContent =
+          'PRONAĐENO OGLASA: 0';
+
+        return;
+      }
+
+
+      status.textContent =
+        `PRONAĐENO OGLASA: ${oglasi.length}`;
+
+
+      oglasi.forEach(oglas => {
+
+        const card =
+          document.createElement('div');
+
+        card.className = 'ad-card';
+
+
+        let slikaHTML = `
+          <div class="no-image">
+            NEMA SLIKE
+          </div>
+        `;
+
+
+        if (oglas.SLIKA) {
+
+          slikaHTML = `
+            <img
+              src="${escapeHTML(oglas.SLIKA)}"
+              alt="${escapeHTML(oglas.NASLOV || 'OGLAS')}"
+              loading="lazy"
+            >
+          `;
+
+        }
+
+
+        let cijena = 'CIJENA PO DOGOVORU';
+
+        if (
+          oglas.CIJENA !== null &&
+          oglas.CIJENA !== undefined &&
+          oglas.CIJENA !== ''
+        ) {
+
+          cijena =
+            `${Number(oglas.CIJENA).toLocaleString(
+              'bs-BA',
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }
+            )} KM`;
+
+        }
+
+
+        let datum = '';
+
+        if (oglas.DATUM_OBJAVE) {
+
+          const date =
+            new Date(oglas.DATUM_OBJAVE);
+
+          datum =
+            date.toLocaleDateString(
+              'bs-BA'
+            );
+
+        }
+
+
+        card.innerHTML = `
+
+          <div class="ad-image">
+            ${slikaHTML}
+          </div>
+
+          <div class="ad-content">
+
+            ${
+              oglas.KATEGORIJA
+                ? `
+                  <div class="ad-category">
+                    ${escapeHTML(oglas.KATEGORIJA)}
+                  </div>
+                `
+                : ''
+            }
+
+            <div class="ad-title">
+              ${escapeHTML(
+                oglas.NASLOV || 'BEZ NASLOVA'
+              )}
+            </div>
+
+            ${
+              oglas.OPIS
+                ? `
+                  <div class="ad-description">
+                    ${escapeHTML(oglas.OPIS)}
+                  </div>
+                `
+                : ''
+            }
+
+            <div class="ad-price">
+              ${cijena}
+            </div>
+
+            ${
+              oglas.GRAD
+                ? `
+                  <div class="ad-location">
+                    📍 ${escapeHTML(oglas.GRAD)}
+                    ${
+                      oglas.ADRESA
+                        ? `, ${escapeHTML(oglas.ADRESA)}`
+                        : ''
+                    }
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              datum
+                ? `
+                  <div class="ad-date">
+                    OBJAVLJENO: ${datum}
+                  </div>
+                `
+                : ''
+            }
+
+          </div>
+
+        `;
+
+
+        adsGrid.appendChild(card);
+
+      });
+
+    }
+
+
+    /* ==========================================
+       PRETRAGA
+    ========================================== */
+
+    function filtrirajOglase() {
+
+      const search =
+        document
+          .getElementById('searchInput')
+          .value
+          .toLowerCase()
+          .trim();
+
+
+      const kategorija =
+        document
+          .getElementById('categoryFilter')
+          .value;
+
+
+      const grad =
+        document
+          .getElementById('cityFilter')
+          .value;
+
+
+      const filtrirani =
+        sviOglasi.filter(oglas => {
+
+          const tekst =
+            [
+              oglas.NASLOV,
+              oglas.OPIS,
+              oglas.KATEGORIJA,
+              oglas.PODKATEGORIJA,
+              oglas.GRAD,
+              oglas.ADRESA
+            ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+
+          const odgovaraPretrazi =
+            !search ||
+            tekst.includes(search);
+
+
+          const odgovaraKategoriji =
+            !kategorija ||
+            oglas.KATEGORIJA === kategorija;
+
+
+          const odgovaraGradu =
+            !grad ||
+            oglas.GRAD === grad;
+
+
+          return (
+            odgovaraPretrazi &&
+            odgovaraKategoriji &&
+            odgovaraGradu
+          );
+
+        });
+
+
+      prikaziOglase(filtrirani);
+
+    }
+
+
+    /* ==========================================
+       ZAŠTITA TEKSTA
+    ========================================== */
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* ==========================================
+       EVENT LISTENERS
+    ========================================== */
+
+    document
+      .getElementById('searchInput')
+      .addEventListener(
+        'input',
+        filtrirajOglase
+      );
+
+
+    document
+      .getElementById('categoryFilter')
+      .addEventListener(
+        'change',
+        filtrirajOglase
+      );
+
+
+    document
+      .getElementById('cityFilter')
+      .addEventListener(
+        'change',
+        filtrirajOglase
+      );
+
+
+    /* ==========================================
+       START
+    ========================================== */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      ucitajOglase
+    );
+
+  </script>
+
+</body>
+</html>
