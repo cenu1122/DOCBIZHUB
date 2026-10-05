@@ -1,25 +1,195 @@
 <!DOCTYPE html>
-<html lang="bs">
+
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prijava | DocBizHub</title>
+
+  <title>Login | DocBizHub</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Google Translate -->
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages:
+            'af,ar,bg,bn,bs,ca,cs,da,de,el,en,es,et,fa,fi,fr,he,hi,hr,hu,id,is,it,ja,ka,ko,lt,lv,mk,ms,mt,nl,no,pl,pt,ro,ru,sk,sl,sq,sr,sv,sw,ta,th,tr,uk,ur,vi,zh-CN,zh-TW',
+          autoDisplay: false
+        },
+        'google_translate_element'
+      );
+    }
+  </script>
+
+  <script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+  </script>
+
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 100%);
+      background: linear-gradient(
+        135deg,
+        #eef4ff 0%,
+        #f8fbff 100%
+      );
       min-height: 100vh;
       color: #172033;
     }
+
+
+    /* =========================================================
+       LANGUAGE MENU
+    ========================================================== */
+
+    .language-area {
+      position: fixed;
+      top: 18px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+
+    .language-button {
+      height: 42px;
+      padding: 0 15px;
+      border-radius: 12px;
+      border: 1px solid #d8dfeb;
+      background: rgba(255,255,255,0.96);
+      color: #172033;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(20,45,80,0.10);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+
+    .language-button:hover {
+      border-color: #1261d6;
+    }
+
+
+    .language-menu {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      width: 285px;
+      background: #ffffff;
+      border: 1px solid #dce4f0;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(15,35,65,0.18);
+      padding: 12px;
+      overflow: hidden;
+    }
+
+
+    .language-menu.open {
+      display: block;
+    }
+
+
+    .language-search {
+      width: 100%;
+      height: 43px;
+      border: 1px solid #d8dfeb;
+      border-radius: 10px;
+      padding: 0 12px;
+      outline: none;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+
+    .language-search:focus {
+      border-color: #1261d6;
+      box-shadow: 0 0 0 3px rgba(18,97,214,0.08);
+    }
+
+
+    .language-list {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+
+    .language-item {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 10px 11px;
+      border-radius: 9px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      color: #26334b;
+    }
+
+
+    .language-item:hover {
+      background: #eef4ff;
+      color: #1261d6;
+    }
+
+
+    .language-item.popular {
+      font-weight: 800;
+    }
+
+
+    .language-divider {
+      height: 1px;
+      background: #edf1f7;
+      margin: 7px 0;
+    }
+
+
+    /* Google Translate hidden UI */
+
+    #google_translate_element {
+      position: fixed;
+      left: -99999px;
+      top: -99999px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+
+    .goog-te-banner-frame.skiptranslate {
+      display: none !important;
+    }
+
+
+    body {
+      top: 0 !important;
+    }
+
+
+    .goog-logo-link,
+    .goog-te-gadget span {
+      display: none !important;
+    }
+
+
+    .goog-te-gadget {
+      font-size: 0 !important;
+    }
+
 
     /* =========================================================
        LOGIN
@@ -33,10 +203,12 @@
       padding: 25px;
     }
 
+
     .login-container {
       width: 100%;
       max-width: 430px;
     }
+
 
     .login-card {
       background: #ffffff;
@@ -46,16 +218,22 @@
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
+
     .logo {
       text-align: center;
       margin-bottom: 30px;
     }
 
+
     .logo-icon {
       width: 70px;
       height: 70px;
       border-radius: 20px;
-      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      background: linear-gradient(
+        135deg,
+        #1261d6,
+        #0b3f91
+      );
       color: white;
       display: flex;
       align-items: center;
@@ -65,20 +243,24 @@
       box-shadow: 0 10px 25px rgba(18, 97, 214, 0.25);
     }
 
+
     .logo h1 {
       font-size: 30px;
       color: #123d7a;
       margin-bottom: 6px;
     }
 
+
     .logo p {
       color: #7a8494;
       font-size: 14px;
     }
 
+
     .form-group {
       margin-bottom: 20px;
     }
+
 
     .form-group label {
       display: block;
@@ -88,9 +270,11 @@
       color: #25334d;
     }
 
+
     .input-wrapper {
       position: relative;
     }
+
 
     .form-control {
       width: 100%;
@@ -104,15 +288,19 @@
       background: #fbfcff;
     }
 
+
     .form-control:focus {
       border-color: #1261d6;
       background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(18, 97, 214, 0.08);
+      box-shadow:
+        0 0 0 4px rgba(18, 97, 214, 0.08);
     }
+
 
     .password-input {
       padding-right: 52px;
     }
+
 
     .password-toggle {
       position: absolute;
@@ -126,6 +314,7 @@
       color: #6f7b8d;
     }
 
+
     .remember-row {
       display: flex;
       align-items: center;
@@ -135,6 +324,7 @@
       font-size: 13px;
     }
 
+
     .remember {
       display: flex;
       align-items: center;
@@ -142,11 +332,13 @@
       color: #687386;
     }
 
+
     .remember input {
       width: 16px;
       height: 16px;
       cursor: pointer;
     }
+
 
     .forgot-link {
       color: #1261d6;
@@ -155,16 +347,22 @@
       cursor: pointer;
     }
 
+
     .forgot-link:hover {
       text-decoration: underline;
     }
+
 
     .login-button {
       width: 100%;
       height: 54px;
       border: none;
       border-radius: 13px;
-      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      background: linear-gradient(
+        135deg,
+        #1261d6,
+        #0b3f91
+      );
       color: white;
       font-size: 16px;
       font-weight: 800;
@@ -173,16 +371,20 @@
       box-shadow: 0 10px 25px rgba(18, 97, 214, 0.22);
     }
 
+
     .login-button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(18, 97, 214, 0.28);
+      box-shadow:
+        0 14px 30px rgba(18, 97, 214, 0.28);
     }
+
 
     .login-button:disabled {
       opacity: 0.65;
       cursor: not-allowed;
       transform: none;
     }
+
 
     .message {
       display: none;
@@ -193,12 +395,14 @@
       line-height: 1.45;
     }
 
+
     .message.error {
       display: block;
       background: #fff0f0;
       color: #b42318;
       border: 1px solid #ffd0d0;
     }
+
 
     .message.success {
       display: block;
@@ -231,16 +435,19 @@
       padding: 35px 20px 50px;
     }
 
+
     .training-container {
       width: 100%;
       max-width: 1050px;
       margin: 0 auto;
     }
 
+
     .training-header {
       text-align: center;
       margin-bottom: 30px;
     }
+
 
     .training-logo {
       display: inline-flex;
@@ -252,17 +459,23 @@
       margin-bottom: 18px;
     }
 
+
     .training-logo-icon {
       width: 46px;
       height: 46px;
       border-radius: 14px;
-      background: linear-gradient(135deg, #1261d6, #0b3f91);
+      background: linear-gradient(
+        135deg,
+        #1261d6,
+        #0b3f91
+      );
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 23px;
     }
+
 
     .training-badge {
       display: inline-block;
@@ -276,6 +489,7 @@
       margin-bottom: 15px;
     }
 
+
     .training-header h2 {
       font-size: clamp(32px, 5vw, 54px);
       line-height: 1.05;
@@ -283,9 +497,11 @@
       margin-bottom: 15px;
     }
 
+
     .training-header h2 span {
       color: #1261d6;
     }
+
 
     .training-header p {
       max-width: 750px;
@@ -309,15 +525,19 @@
       border-radius: 24px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 20px 55px rgba(16, 42, 85, 0.14);
+      box-shadow:
+        0 20px 55px rgba(16, 42, 85, 0.14);
       border: 1px solid rgba(18, 97, 214, 0.10);
       transition: 0.25s ease;
     }
 
+
     .training-image-link:hover {
       transform: translateY(-5px);
-      box-shadow: 0 28px 65px rgba(16, 42, 85, 0.20);
+      box-shadow:
+        0 28px 65px rgba(16, 42, 85, 0.20);
     }
+
 
     .training-image {
       display: block;
@@ -326,6 +546,7 @@
       max-height: 560px;
       object-fit: cover;
     }
+
 
     .image-click-text {
       text-align: center;
@@ -349,19 +570,23 @@
       border: 1px solid #dce6f5;
       border-radius: 18px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(20, 45, 80, 0.06);
+      box-shadow:
+        0 10px 30px rgba(20, 45, 80, 0.06);
     }
+
 
     .partnership-box .icon {
       font-size: 25px;
       margin-bottom: 8px;
     }
 
+
     .partnership-box p {
       color: #687386;
       font-size: 15px;
       line-height: 1.6;
     }
+
 
     .partnership-box strong {
       color: #123d7a;
@@ -380,25 +605,30 @@
       max-width: 950px;
     }
 
+
     .training-field {
       background: #ffffff;
       border-radius: 18px;
       padding: 25px 20px;
       text-align: center;
       border: 1px solid #e0e7f2;
-      box-shadow: 0 8px 25px rgba(20, 45, 80, 0.05);
+      box-shadow:
+        0 8px 25px rgba(20, 45, 80, 0.05);
     }
+
 
     .training-field-icon {
       font-size: 36px;
       margin-bottom: 12px;
     }
 
+
     .training-field h3 {
       font-size: 20px;
       color: #172033;
       margin-bottom: 7px;
     }
+
 
     .training-field p {
       color: #7a8494;
@@ -419,13 +649,14 @@
         #101d33,
         #173968
       );
-
       border-radius: 24px;
       padding: 38px 35px;
       color: white;
       text-align: center;
-      box-shadow: 0 20px 55px rgba(15, 35, 65, 0.20);
+      box-shadow:
+        0 20px 55px rgba(15, 35, 65, 0.20);
     }
+
 
     .main-offer-badge {
       display: inline-block;
@@ -439,10 +670,12 @@
       margin-bottom: 14px;
     }
 
+
     .main-offer h2 {
       font-size: 30px;
       margin-bottom: 12px;
     }
+
 
     .main-offer p {
       max-width: 700px;
@@ -452,6 +685,7 @@
       font-size: 15px;
     }
 
+
     .offer-buttons {
       display: flex;
       justify-content: center;
@@ -459,6 +693,7 @@
       gap: 12px;
       flex-wrap: wrap;
     }
+
 
     .offer-button {
       display: inline-flex;
@@ -475,21 +710,25 @@
       border: none;
     }
 
+
     .offer-button.primary {
       background: #ffffff;
       color: #123d7a;
     }
+
 
     .offer-button.primary:hover {
       transform: translateY(-2px);
       background: #f3f7ff;
     }
 
+
     .offer-button.secondary {
       background: rgba(255,255,255,0.10);
       color: #ffffff;
       border: 1px solid rgba(255,255,255,0.25);
     }
+
 
     .offer-button.secondary:hover {
       background: rgba(255,255,255,0.18);
@@ -503,63 +742,143 @@
 
     @media (max-width: 700px) {
 
+      .language-area {
+        top: 10px;
+        right: 10px;
+      }
+
+
+      .language-button {
+        height: 38px;
+        padding: 0 11px;
+        font-size: 12px;
+      }
+
+
+      .language-menu {
+        width: 260px;
+        right: 0;
+      }
+
+
       #loginPage {
         padding: 15px;
       }
+
 
       .login-card {
         padding: 30px 22px;
         border-radius: 20px;
       }
 
+
       #trainingScreen {
         padding: 25px 14px 35px;
       }
+
 
       .training-header h2 {
         font-size: 36px;
       }
 
+
       .training-header p {
         font-size: 15px;
       }
+
 
       .training-image-link {
         border-radius: 18px;
       }
 
+
       .training-fields {
         grid-template-columns: 1fr;
       }
+
 
       .main-offer {
         padding: 30px 20px;
         border-radius: 20px;
       }
 
+
       .main-offer h2 {
         font-size: 25px;
       }
+
 
       .offer-buttons {
         flex-direction: column;
       }
 
+
       .offer-button {
         width: 100%;
       }
+
 
       .remember-row {
         align-items: flex-start;
         flex-direction: column;
       }
-    }
-  </style>
-</head>
 
+    }
+
+  </style>
+
+</head>
 
 <body>
 
+  <!-- =========================================================
+       LANGUAGE SELECTOR
+  ========================================================== -->
+
+  <div class="language-area">
+
+```
+<button
+  type="button"
+  class="language-button"
+  onclick="toggleLanguageMenu()"
+  aria-label="Select language"
+>
+  🌐
+  <span id="currentLanguageName">
+    English
+  </span>
+  ▾
+</button>
+
+
+<div
+  id="languageMenu"
+  class="language-menu"
+>
+
+  <input
+    type="text"
+    id="languageSearch"
+    class="language-search"
+    placeholder="Search language..."
+    oninput="filterLanguages()"
+  >
+
+
+  <div
+    id="languageList"
+    class="language-list"
+  ></div>
+
+</div>
+```
+
+  </div>
+
+  <!-- Hidden Google Translate -->
+
+  <div id="google_translate_element"></div>
 
   <!-- =========================================================
        LOGIN
@@ -567,123 +886,307 @@
 
   <div id="loginPage">
 
-    <div class="login-container">
+```
+<div class="login-container">
 
-      <div class="login-card">
+  <div class="login-card">
 
-        <div class="logo">
+    <div class="logo">
 
-          <div class="logo-icon">
-            📄
-          </div>
-
-          <h1>DocBizHub</h1>
-
-          <p>
-            Prijavite se na svoj korisnički račun
-          </p>
-
-        </div>
+      <div class="logo-icon">
+        📄
+      </div>
 
 
-        <form
-          id="loginForm"
-          onsubmit="handleLogin(event)"
+      <h1>
+        DocBizHub
+      </h1>
+
+
+      <p data-i18n="login_subtitle">
+        Sign in to your account
+      </p>
+
+    </div>
+
+
+    <form
+      id="loginForm"
+      onsubmit="handleLogin(event)"
+    >
+
+      <div class="form-group">
+
+        <label
+          for="email"
+          data-i18n="email_label"
+        >
+          Email address
+        </label>
+
+
+        <input
+          type="email"
+          id="email"
+          class="form-control"
+          placeholder="your@email.com"
+          data-i18n-placeholder="email_placeholder"
+          autocomplete="email"
+          required
         >
 
-          <div class="form-group">
-
-            <label for="email">
-              Email adresa
-            </label>
-
-            <input
-              type="email"
-              id="email"
-              class="form-control"
-              placeholder="vas@email.com"
-              autocomplete="email"
-              required
-            >
-
-          </div>
+      </div>
 
 
-          <div class="form-group">
+      <div class="form-group">
 
-            <label for="password">
-              Lozinka
-            </label>
-
-            <div class="input-wrapper">
-
-              <input
-                type="password"
-                id="password"
-                class="form-control password-input"
-                placeholder="Unesite lozinku"
-                autocomplete="current-password"
-                required
-              >
-
-              <button
-                type="button"
-                class="password-toggle"
-                onclick="togglePasswordVisibility()"
-                aria-label="Prikaži lozinku"
-              >
-                👁
-              </button>
-
-            </div>
-
-          </div>
+        <label
+          for="password"
+          data-i18n="password_label"
+        >
+          Password
+        </label>
 
 
-          <div class="remember-row">
+        <div class="input-wrapper">
 
-            <label class="remember">
-
-              <input
-                type="checkbox"
-                id="rememberMe"
-              >
-
-              <span>
-                Zapamti email
-              </span>
-
-            </label>
-
-
-            <a
-              href="#"
-              class="forgot-link"
-              onclick="forgotPassword(event)"
-            >
-              Zaboravili ste lozinku?
-            </a>
-
-          </div>
+          <input
+            type="password"
+            id="password"
+            class="form-control password-input"
+            placeholder="Enter password"
+            data-i18n-placeholder="password_placeholder"
+            autocomplete="current-password"
+            required
+          >
 
 
           <button
-            type="submit"
-            id="loginButton"
-            class="login-button"
+            type="button"
+            class="password-toggle"
+            onclick="togglePasswordVisibility()"
+            aria-label="Show password"
           >
-            PRIJAVI SE
+            👁
           </button>
 
-
-          <div
-            id="loginMessage"
-            class="message"
-          ></div>
-
-        </form>
+        </div>
 
       </div>
+
+
+      <div class="remember-row">
+
+        <label class="remember">
+
+          <input
+            type="checkbox"
+            id="rememberMe"
+          >
+
+          <span data-i18n="remember">
+            Remember email
+          </span>
+
+        </label>
+
+
+        <a
+          href="#"
+          class="forgot-link"
+          onclick="forgotPassword(event)"
+          data-i18n="forgot"
+        >
+          Forgot password?
+        </a>
+
+      </div>
+
+
+      <button
+        type="submit"
+        id="loginButton"
+        class="login-button"
+        data-i18n="login_button"
+      >
+        SIGN IN
+      </button>
+
+
+      <div
+        id="loginMessage"
+        class="message"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <!-- =========================================================
+       EKRAN OBUKE
+  ========================================================== -->
+
+  <section id="trainingScreen">
+
+```
+<div class="training-container">
+
+
+  <div class="training-header">
+
+    <div class="training-logo">
+
+      <div class="training-logo-icon">
+        📄
+      </div>
+
+      <span>
+        DocBizHub
+      </span>
+
+    </div>
+
+
+    <div>
+
+      <span
+        class="training-badge"
+        data-i18n="training_badge"
+      >
+        NEW · TRAINING AND DEVELOPMENT
+      </span>
+
+    </div>
+
+
+    <h2 data-i18n-html="training_title">
+      Training and <span>development</span>
+    </h2>
+
+
+    <p data-i18n="training_description">
+      DocBizHub presents its main offer of
+      professional training and development
+      for in-demand occupations.
+    </p>
+
+  </div>
+
+
+
+  <!-- SLIKA -->
+
+  <a
+    href="OBUKA.html"
+    class="training-image-link"
+    title="View training program"
+  >
+
+    <img
+      src="OBUKA.JPG"
+      alt="DocBizHub - Training program"
+      class="training-image"
+    >
+
+
+    <div
+      class="image-click-text"
+      data-i18n="image_click"
+    >
+      👆 CLICK THE IMAGE FOR MORE INFORMATION
+      ABOUT THE TRAINING
+    </div>
+
+  </a>
+
+
+
+  <!-- SARADNJA -->
+
+  <div class="partnership-box">
+
+    <div class="icon">
+      🤝
+    </div>
+
+
+    <p data-i18n-html="partnership">
+      The program is carried out in cooperation with
+      <strong>
+        Elektromašinska škola u Lukavcu
+      </strong>.
+    </p>
+
+  </div>
+
+
+
+  <!-- VRSTE OBUKE -->
+
+  <div class="training-fields">
+
+
+    <div class="training-field">
+
+      <div class="training-field-icon">
+        🔥
+      </div>
+
+
+      <h3 data-i18n="welders">
+        Welders
+      </h3>
+
+
+      <p data-i18n="welders_text">
+        Professional training and development
+        for the welding profession.
+      </p>
+
+    </div>
+
+
+    <div class="training-field">
+
+      <div class="training-field-icon">
+        🔧
+      </div>
+
+
+      <h3 data-i18n="locksmiths">
+        Locksmiths
+      </h3>
+
+
+      <p data-i18n="locksmiths_text">
+        Professional training for locksmiths
+        and practical skills required for the profession.
+      </p>
+
+    </div>
+
+
+    <div class="training-field">
+
+      <div class="training-field-icon">
+        ⚡
+      </div>
+
+
+      <h3 data-i18n="electricians">
+        Electricians
+      </h3>
+
+
+      <p data-i18n="electricians_text">
+        Training and development for electricians
+        through professional and practical education.
+      </p>
 
     </div>
 
@@ -691,233 +1194,63 @@
 
 
 
-  <!-- =========================================================
-       EKRAN OBUKE
-    OVAJ EKRAN SE PRIKAZUJE SAMO PRVA DVA PUTA
-  ========================================================== -->
+  <!-- GLAVNA PONUDA -->
 
-  <section id="trainingScreen">
+  <div class="main-offer">
 
-    <div class="training-container">
-
-
-      <!-- HEADER -->
-
-      <div class="training-header">
-
-        <div class="training-logo">
-
-          <div class="training-logo-icon">
-            📄
-          </div>
-
-          <span>
-            DocBizHub
-          </span>
-
-        </div>
+    <div
+      class="main-offer-badge"
+      data-i18n="main_offer_badge"
+    >
+      🎯 DOCBIZHUB MAIN OFFER
+    </div>
 
 
-        <div>
-
-          <span class="training-badge">
-            NOVO · OBUKA I USAVRŠAVANJE
-          </span>
-
-        </div>
+    <h2 data-i18n="main_offer_title">
+      Become more skilled. Be more competitive.
+    </h2>
 
 
-        <h2>
-          Obuka i <span>usavršavanje</span>
-        </h2>
+    <p data-i18n="main_offer_text">
+      Take advantage of professional training
+      and development for occupations that are
+      in demand on the labour market. View the
+      complete program and learn more.
+    </p>
 
 
-        <p>
-          DocBizHub vam predstavlja svoju glavnu ponudu
-          profesionalne obuke i usavršavanja za tražena
-          zanimanja.
-        </p>
+    <div class="offer-buttons">
 
-      </div>
-
-
-
-      <!-- =====================================================
-           SLIKA OBUKE
-           KLIK → OBUKA.html
-      ====================================================== -->
 
       <a
         href="OBUKA.html"
-        class="training-image-link"
-        title="Pogledajte program obuke"
+        class="offer-button primary"
+        data-i18n="view_training"
       >
-
-        <img
-          src="OBUKA.JPG"
-          alt="DocBizHub - Program obuke"
-          class="training-image"
-        >
-
-        <div class="image-click-text">
-
-          👆 KLIKNITE NA SLIKU ZA VIŠE INFORMACIJA
-          O OBUCI
-
-        </div>
-
+        VIEW TRAINING PROGRAM
       </a>
 
 
-
-      <!-- =====================================================
-           SARADNJA SA ŠKOLOM
-      ====================================================== -->
-
-      <div class="partnership-box">
-
-        <div class="icon">
-          🤝
-        </div>
-
-        <p>
-
-          Program se realizuje u saradnji sa
-
-          <strong>
-            Elektromašinskom školom u Lukavcu
-          </strong>.
-
-        </p>
-
-      </div>
-
-
-
-      <!-- =====================================================
-           VRSTE OBUKE
-      ====================================================== -->
-
-      <div class="training-fields">
-
-
-        <div class="training-field">
-
-          <div class="training-field-icon">
-            🔥
-          </div>
-
-          <h3>
-            Varioci
-          </h3>
-
-          <p>
-            Profesionalna obuka i usavršavanje
-            za zanimanje varioca.
-          </p>
-
-        </div>
-
-
-        <div class="training-field">
-
-          <div class="training-field-icon">
-            🔧
-          </div>
-
-          <h3>
-            Bravari
-          </h3>
-
-          <p>
-            Stručna obuka za bravare i praktična
-            znanja potrebna za rad u struci.
-          </p>
-
-        </div>
-
-
-        <div class="training-field">
-
-          <div class="training-field-icon">
-            ⚡
-          </div>
-
-          <h3>
-            Električari
-          </h3>
-
-          <p>
-            Obuka i usavršavanje za električare
-            kroz stručno i praktično obrazovanje.
-          </p>
-
-        </div>
-
-
-      </div>
-
-
-
-      <!-- =====================================================
-           GLAVNA PONUDA
-      ====================================================== -->
-
-      <div class="main-offer">
-
-        <div class="main-offer-badge">
-          🎯 GLAVNA PONUDA DOCBIZHUB-A
-        </div>
-
-
-        <h2>
-          Postanite stručniji. Budite konkurentniji.
-        </h2>
-
-
-        <p>
-          Iskoristite mogućnost profesionalne obuke
-          i usavršavanja za zanimanja koja su tražena
-          na tržištu rada. Pogledajte kompletan program
-          i saznajte više.
-        </p>
-
-
-        <div class="offer-buttons">
-
-
-          <!-- OTVARA OBUKA.html -->
-
-          <a
-            href="OBUKA.html"
-            class="offer-button primary"
-          >
-            POGLEDAJ PROGRAM OBUKE
-          </a>
-
-
-          <!-- IDE NA DASHBOARD -->
-
-          <button
-            type="button"
-            class="offer-button secondary"
-            onclick="continueToDashboard()"
-          >
-            NASTAVI NA DASHBOARD →
-          </button>
-
-
-        </div>
-
-      </div>
+      <button
+        type="button"
+        class="offer-button secondary"
+        onclick="continueToDashboard()"
+        data-i18n="dashboard"
+      >
+        CONTINUE TO DASHBOARD →
+      </button>
 
     </div>
 
+  </div>
+
+</div>
+```
+
   </section>
 
-
-
   <script>
+
 
     /* =========================================================
        SUPABASE
@@ -925,6 +1258,7 @@
 
     const SUPABASE_URL =
       'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
 
     const SUPABASE_ANON_KEY =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
@@ -939,23 +1273,1042 @@
 
 
     /* =========================================================
-       UČITAVANJE STRANICE
+       JEZICI
+    ========================================================== */
+
+    const languages = [
+
+      {
+        code: 'en',
+        name: 'English',
+        native: 'English',
+        google: 'en'
+      },
+
+      {
+        code: 'bs',
+        name: 'Bosnian',
+        native: 'Bosanski',
+        google: 'bs'
+      },
+
+      {
+        code: 'hr',
+        name: 'Croatian',
+        native: 'Hrvatski',
+        google: 'hr'
+      },
+
+      {
+        code: 'sr',
+        name: 'Serbian',
+        native: 'Srpski',
+        google: 'sr'
+      },
+
+      {
+        code: 'de',
+        name: 'German',
+        native: 'Deutsch',
+        google: 'de'
+      },
+
+      {
+        code: 'fr',
+        name: 'French',
+        native: 'Français',
+        google: 'fr'
+      },
+
+      {
+        code: 'es',
+        name: 'Spanish',
+        native: 'Español',
+        google: 'es'
+      },
+
+      {
+        code: 'it',
+        name: 'Italian',
+        native: 'Italiano',
+        google: 'it'
+      },
+
+      {
+        code: 'pt',
+        name: 'Portuguese',
+        native: 'Português',
+        google: 'pt'
+      },
+
+      {
+        code: 'ru',
+        name: 'Russian',
+        native: 'Русский',
+        google: 'ru'
+      },
+
+      {
+        code: 'zh-CN',
+        name: 'Chinese',
+        native: '中文',
+        google: 'zh-CN'
+      },
+
+      {
+        code: 'ja',
+        name: 'Japanese',
+        native: '日本語',
+        google: 'ja'
+      },
+
+      {
+        code: 'ko',
+        name: 'Korean',
+        native: '한국어',
+        google: 'ko'
+      },
+
+      {
+        code: 'ar',
+        name: 'Arabic',
+        native: 'العربية',
+        google: 'ar'
+      },
+
+      {
+        code: 'tr',
+        name: 'Turkish',
+        native: 'Türkçe',
+        google: 'tr'
+      },
+
+      {
+        code: 'nl',
+        name: 'Dutch',
+        native: 'Nederlands',
+        google: 'nl'
+      },
+
+      {
+        code: 'pl',
+        name: 'Polish',
+        native: 'Polski',
+        google: 'pl'
+      },
+
+      {
+        code: 'uk',
+        name: 'Ukrainian',
+        native: 'Українська',
+        google: 'uk'
+      },
+
+      {
+        code: 'sv',
+        name: 'Swedish',
+        native: 'Svenska',
+        google: 'sv'
+      },
+
+      {
+        code: 'no',
+        name: 'Norwegian',
+        native: 'Norsk',
+        google: 'no'
+      },
+
+      {
+        code: 'da',
+        name: 'Danish',
+        native: 'Dansk',
+        google: 'da'
+      },
+
+      {
+        code: 'fi',
+        name: 'Finnish',
+        native: 'Suomi',
+        google: 'fi'
+      },
+
+      {
+        code: 'cs',
+        name: 'Czech',
+        native: 'Čeština',
+        google: 'cs'
+      },
+
+      {
+        code: 'sk',
+        name: 'Slovak',
+        native: 'Slovenčina',
+        google: 'sk'
+      },
+
+      {
+        code: 'sl',
+        name: 'Slovenian',
+        native: 'Slovenščina',
+        google: 'sl'
+      },
+
+      {
+        code: 'hu',
+        name: 'Hungarian',
+        native: 'Magyar',
+        google: 'hu'
+      },
+
+      {
+        code: 'ro',
+        name: 'Romanian',
+        native: 'Română',
+        google: 'ro'
+      },
+
+      {
+        code: 'bg',
+        name: 'Bulgarian',
+        native: 'Български',
+        google: 'bg'
+      },
+
+      {
+        code: 'el',
+        name: 'Greek',
+        native: 'Ελληνικά',
+        google: 'el'
+      },
+
+      {
+        code: 'he',
+        name: 'Hebrew',
+        native: 'עברית',
+        google: 'he'
+      },
+
+      {
+        code: 'hi',
+        name: 'Hindi',
+        native: 'हिन्दी',
+        google: 'hi'
+      },
+
+      {
+        code: 'bn',
+        name: 'Bengali',
+        native: 'বাংলা',
+        google: 'bn'
+      },
+
+      {
+        code: 'id',
+        name: 'Indonesian',
+        native: 'Bahasa Indonesia',
+        google: 'id'
+      },
+
+      {
+        code: 'ms',
+        name: 'Malay',
+        native: 'Bahasa Melayu',
+        google: 'ms'
+      },
+
+      {
+        code: 'th',
+        name: 'Thai',
+        native: 'ไทย',
+        google: 'th'
+      },
+
+      {
+        code: 'vi',
+        name: 'Vietnamese',
+        native: 'Tiếng Việt',
+        google: 'vi'
+      },
+
+      {
+        code: 'fa',
+        name: 'Persian',
+        native: 'فارسی',
+        google: 'fa'
+      },
+
+      {
+        code: 'sq',
+        name: 'Albanian',
+        native: 'Shqip',
+        google: 'sq'
+      },
+
+      {
+        code: 'mk',
+        name: 'Macedonian',
+        native: 'Македонски',
+        google: 'mk'
+      },
+
+      {
+        code: 'ca',
+        name: 'Catalan',
+        native: 'Català',
+        google: 'ca'
+      },
+
+      {
+        code: 'et',
+        name: 'Estonian',
+        native: 'Eesti',
+        google: 'et'
+      },
+
+      {
+        code: 'lv',
+        name: 'Latvian',
+        native: 'Latviešu',
+        google: 'lv'
+      },
+
+      {
+        code: 'lt',
+        name: 'Lithuanian',
+        native: 'Lietuvių',
+        google: 'lt'
+      },
+
+      {
+        code: 'is',
+        name: 'Icelandic',
+        native: 'Íslenska',
+        google: 'is'
+      },
+
+      {
+        code: 'sw',
+        name: 'Swahili',
+        native: 'Kiswahili',
+        google: 'sw'
+      },
+
+      {
+        code: 'ta',
+        name: 'Tamil',
+        native: 'தமிழ்',
+        google: 'ta'
+      },
+
+      {
+        code: 'ur',
+        name: 'Urdu',
+        native: 'اردو',
+        google: 'ur'
+      },
+
+      {
+        code: 'af',
+        name: 'Afrikaans',
+        native: 'Afrikaans',
+        google: 'af'
+      },
+
+      {
+        code: 'ka',
+        name: 'Georgian',
+        native: 'ქართული',
+        google: 'ka'
+      },
+
+      {
+        code: 'mt',
+        name: 'Maltese',
+        native: 'Malti',
+        google: 'mt'
+      }
+
+    ];
+
+
+
+    /* =========================================================
+       UGRAĐENI PREVODI
+       ENGLISH + BOSNIAN
+    ========================================================== */
+
+    const translations = {
+
+      en: {
+
+        login_subtitle:
+          'Sign in to your account',
+
+        email_label:
+          'Email address',
+
+        email_placeholder:
+          'your@email.com',
+
+        password_label:
+          'Password',
+
+        password_placeholder:
+          'Enter password',
+
+        remember:
+          'Remember email',
+
+        forgot:
+          'Forgot password?',
+
+        login_button:
+          'SIGN IN',
+
+        training_badge:
+          'NEW · TRAINING AND DEVELOPMENT',
+
+        training_title:
+          'Training and <span>development</span>',
+
+        training_description:
+          'DocBizHub presents its main offer of professional training and development for in-demand occupations.',
+
+        image_click:
+          '👆 CLICK THE IMAGE FOR MORE INFORMATION ABOUT THE TRAINING',
+
+        partnership:
+          'The program is carried out in cooperation with <strong>Elektromašinska škola u Lukavcu</strong>.',
+
+        welders:
+          'Welders',
+
+        welders_text:
+          'Professional training and development for the welding profession.',
+
+        locksmiths:
+          'Locksmiths',
+
+        locksmiths_text:
+          'Professional training for locksmiths and practical skills required for the profession.',
+
+        electricians:
+          'Electricians',
+
+        electricians_text:
+          'Training and development for electricians through professional and practical education.',
+
+        main_offer_badge:
+          '🎯 DOCBIZHUB MAIN OFFER',
+
+        main_offer_title:
+          'Become more skilled. Be more competitive.',
+
+        main_offer_text:
+          'Take advantage of professional training and development for occupations that are in demand on the labour market. View the complete program and learn more.',
+
+        view_training:
+          'VIEW TRAINING PROGRAM',
+
+        dashboard:
+          'CONTINUE TO DASHBOARD →'
+
+      },
+
+
+      bs: {
+
+        login_subtitle:
+          'Prijavite se na svoj korisnički račun',
+
+        email_label:
+          'Email adresa',
+
+        email_placeholder:
+          'vas@email.com',
+
+        password_label:
+          'Lozinka',
+
+        password_placeholder:
+          'Unesite lozinku',
+
+        remember:
+          'Zapamti email',
+
+        forgot:
+          'Zaboravili ste lozinku?',
+
+        login_button:
+          'PRIJAVI SE',
+
+        training_badge:
+          'NOVO · OBUKA I USAVRŠAVANJE',
+
+        training_title:
+          'Obuka i <span>usavršavanje</span>',
+
+        training_description:
+          'DocBizHub vam predstavlja svoju glavnu ponudu profesionalne obuke i usavršavanja za tražena zanimanja.',
+
+        image_click:
+          '👆 KLIKNITE NA SLIKU ZA VIŠE INFORMACIJA O OBUCI',
+
+        partnership:
+          'Program se realizuje u saradnji sa <strong>Elektromašinskom školom u Lukavcu</strong>.',
+
+        welders:
+          'Varioci',
+
+        welders_text:
+          'Profesionalna obuka i usavršavanje za zanimanje varioca.',
+
+        locksmiths:
+          'Bravari',
+
+        locksmiths_text:
+          'Stručna obuka za bravare i praktična znanja potrebna za rad u struci.',
+
+        electricians:
+          'Električari',
+
+        electricians_text:
+          'Obuka i usavršavanje za električare kroz stručno i praktično obrazovanje.',
+
+        main_offer_badge:
+          '🎯 GLAVNA PONUDA DOCBIZHUB-A',
+
+        main_offer_title:
+          'Postanite stručniji. Budite konkurentniji.',
+
+        main_offer_text:
+          'Iskoristite mogućnost profesionalne obuke i usavršavanja za zanimanja koja su tražena na tržištu rada. Pogledajte kompletan program i saznajte više.',
+
+        view_training:
+          'POGLEDAJ PROGRAM OBUKE',
+
+        dashboard:
+          'NASTAVI NA DASHBOARD →'
+
+      }
+
+    };
+
+
+
+    /* =========================================================
+       JEZIČNI MENI
+    ========================================================== */
+
+    function renderLanguageList(
+      search = ''
+    ) {
+
+      const list =
+        document.getElementById(
+          'languageList'
+        );
+
+
+      list.innerHTML = '';
+
+
+      const query =
+        search
+          .toLowerCase()
+          .trim();
+
+
+      languages
+        .filter(function(language) {
+
+          return (
+            language.name
+              .toLowerCase()
+              .includes(query) ||
+
+            language.native
+              .toLowerCase()
+              .includes(query) ||
+
+            language.code
+              .toLowerCase()
+              .includes(query)
+          );
+
+        })
+        .forEach(function(language) {
+
+          const button =
+            document.createElement('button');
+
+
+          button.type =
+            'button';
+
+
+          button.className =
+            'language-item';
+
+
+          button.innerHTML =
+            language.native +
+            ' <span style="opacity:.55">(' +
+            language.name +
+            ')</span>';
+
+
+          button.onclick =
+            function() {
+
+              selectLanguage(
+                language
+              );
+
+            };
+
+
+          list.appendChild(
+            button
+          );
+
+        });
+
+    }
+
+
+
+    function filterLanguages() {
+
+      const search =
+        document.getElementById(
+          'languageSearch'
+        ).value;
+
+
+      renderLanguageList(
+        search
+      );
+
+    }
+
+
+
+    function toggleLanguageMenu() {
+
+      const menu =
+        document.getElementById(
+          'languageMenu'
+        );
+
+
+      menu.classList.toggle(
+        'open'
+      );
+
+
+      if (
+        menu.classList.contains(
+          'open'
+        )
+      ) {
+
+        document.getElementById(
+          'languageSearch'
+        ).focus();
+
+      }
+
+    }
+
+
+
+    document.addEventListener(
+      'click',
+      function(event) {
+
+        const area =
+          document.querySelector(
+            '.language-area'
+          );
+
+
+        if (
+          area &&
+          !area.contains(
+            event.target
+          )
+        ) {
+
+          document
+            .getElementById(
+              'languageMenu'
+            )
+            .classList.remove(
+              'open'
+            );
+
+        }
+
+      }
+    );
+
+
+
+    /* =========================================================
+       PREVOD EN / BS
+    ========================================================== */
+
+    function applyBuiltInLanguage(
+      languageCode
+    ) {
+
+      const dictionary =
+        translations[
+          languageCode
+        ];
+
+
+      if (!dictionary) {
+        return;
+      }
+
+
+      document
+        .querySelectorAll(
+          '[data-i18n]'
+        )
+        .forEach(function(element) {
+
+          const key =
+            element.dataset.i18n;
+
+
+          if (
+            dictionary[key] !== undefined
+          ) {
+
+            element.textContent =
+              dictionary[key];
+
+          }
+
+        });
+
+
+      document
+        .querySelectorAll(
+          '[data-i18n-html]'
+        )
+        .forEach(function(element) {
+
+          const key =
+            element.dataset.i18nHtml;
+
+
+          if (
+            dictionary[key] !== undefined
+          ) {
+
+            element.innerHTML =
+              dictionary[key];
+
+          }
+
+        });
+
+
+      document
+        .querySelectorAll(
+          '[data-i18n-placeholder]'
+        )
+        .forEach(function(element) {
+
+          const key =
+            element.dataset.i18nPlaceholder;
+
+
+          if (
+            dictionary[key] !== undefined
+          ) {
+
+            element.placeholder =
+              dictionary[key];
+
+          }
+
+        });
+
+
+      document.documentElement.lang =
+        languageCode === 'bs'
+          ? 'bs'
+          : 'en';
+
+    }
+
+
+
+    /* =========================================================
+       GOOGLE TRANSLATE
+    ========================================================== */
+
+    function changeGoogleLanguage(
+      languageCode
+    ) {
+
+      const select =
+        document.querySelector(
+          '.goog-te-combo'
+        );
+
+
+      if (!select) {
+
+        setTimeout(
+          function() {
+
+            changeGoogleLanguage(
+              languageCode
+            );
+
+          },
+          500
+        );
+
+        return;
+
+      }
+
+
+      select.value =
+        languageCode;
+
+
+      select.dispatchEvent(
+        new Event(
+          'change'
+        )
+      );
+
+    }
+
+
+
+    function resetGoogleTranslate() {
+
+      const cookieName =
+        'googtrans';
+
+
+      document.cookie =
+        cookieName +
+        '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+
+
+      document.cookie =
+        cookieName +
+        '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' +
+        location.hostname +
+        ';';
+
+    }
+
+
+
+    /* =========================================================
+       ODABIR JEZIKA
+    ========================================================== */
+
+    function selectLanguage(
+      language
+    ) {
+
+      localStorage.setItem(
+        'docbiz_language',
+        language.code
+      );
+
+
+      document.getElementById(
+        'currentLanguageName'
+      ).textContent =
+        language.native;
+
+
+      document
+        .getElementById(
+          'languageMenu'
+        )
+        .classList.remove(
+          'open'
+        );
+
+
+      if (
+        language.code === 'en' ||
+        language.code === 'bs'
+      ) {
+
+        resetGoogleTranslate();
+
+
+        applyBuiltInLanguage(
+          language.code
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+        Za ostale jezike koristimo
+        Google Translate.
+      */
+
+      applyBuiltInLanguage(
+        'en'
+      );
+
+
+      setTimeout(
+        function() {
+
+          changeGoogleLanguage(
+            language.google
+          );
+
+        },
+        300
+      );
+
+    }
+
+
+
+    /* =========================================================
+       UČITAVANJE JEZIKA
+       
+       DEFAULT = ENGLISH
+    ========================================================== */
+
+    function initializeLanguage() {
+
+      let savedLanguage =
+        localStorage.getItem(
+          'docbiz_language'
+        );
+
+
+      /*
+        Ako korisnik još nikada
+        nije birao jezik,
+        automatski je ENGLISH.
+      */
+
+      if (!savedLanguage) {
+
+        savedLanguage =
+          'en';
+
+        localStorage.setItem(
+          'docbiz_language',
+          'en'
+        );
+
+      }
+
+
+      const selected =
+        languages.find(
+          function(language) {
+
+            return (
+              language.code ===
+              savedLanguage
+            );
+
+          }
+        );
+
+
+      const language =
+        selected ||
+        languages[0];
+
+
+      document.getElementById(
+        'currentLanguageName'
+      ).textContent =
+        language.native;
+
+
+      if (
+        language.code === 'en' ||
+        language.code === 'bs'
+      ) {
+
+        applyBuiltInLanguage(
+          language.code
+        );
+
+      } else {
+
+        applyBuiltInLanguage(
+          'en'
+        );
+
+
+        setTimeout(
+          function() {
+
+            changeGoogleLanguage(
+              language.google
+            );
+
+          },
+          1000
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       DOM READY
     ========================================================== */
 
     document.addEventListener(
       'DOMContentLoaded',
-      function () {
+      function() {
+
+        renderLanguageList();
+
+
+        initializeLanguage();
+
 
         const savedEmail =
-          localStorage.getItem('saved_email');
+          localStorage.getItem(
+            'saved_email'
+          );
 
 
         if (savedEmail) {
 
-          document.getElementById('email').value =
+          document.getElementById(
+            'email'
+          ).value =
             savedEmail;
 
-          document.getElementById('rememberMe').checked =
+
+          document.getElementById(
+            'rememberMe'
+          ).checked =
             true;
 
         }
@@ -972,23 +2325,37 @@
     function togglePasswordVisibility() {
 
       const password =
-        document.getElementById('password');
+        document.getElementById(
+          'password'
+        );
+
 
       const button =
-        document.querySelector('.password-toggle');
+        document.querySelector(
+          '.password-toggle'
+        );
 
 
-      if (password.type === 'password') {
+      if (
+        password.type ===
+        'password'
+      ) {
 
-        password.type = 'text';
+        password.type =
+          'text';
 
-        button.textContent = '🙈';
+
+        button.textContent =
+          '🙈';
 
       } else {
 
-        password.type = 'password';
+        password.type =
+          'password';
 
-        button.textContent = '👁';
+
+        button.textContent =
+          '👁';
 
       }
 
@@ -1006,7 +2373,9 @@
     ) {
 
       const messageBox =
-        document.getElementById('loginMessage');
+        document.getElementById(
+          'loginMessage'
+        );
 
 
       messageBox.textContent =
@@ -1014,7 +2383,8 @@
 
 
       messageBox.className =
-        'message ' + type;
+        'message ' +
+        type;
 
     }
 
@@ -1023,7 +2393,9 @@
     function clearMessage() {
 
       const messageBox =
-        document.getElementById('loginMessage');
+        document.getElementById(
+          'loginMessage'
+        );
 
 
       messageBox.textContent =
@@ -1041,43 +2413,58 @@
        ZABORAVLJENA LOZINKA
     ========================================================== */
 
-    async function forgotPassword(event) {
+    async function forgotPassword(
+      event
+    ) {
 
       event.preventDefault();
+
 
       clearMessage();
 
 
       const email =
-        document.getElementById('email')
-          .value
-          .trim();
+        document.getElementById(
+          'email'
+        )
+        .value
+        .trim();
 
 
       if (!email) {
 
         showMessage(
-          'Prvo unesite svoju email adresu.',
+          'Please enter your email address first.',
           'error'
         );
 
-        document.getElementById('email').focus();
+
+        document
+          .getElementById(
+            'email'
+          )
+          .focus();
+
 
         return;
+
       }
 
 
       try {
 
-        const { error } =
-          await _supabase.auth.resetPasswordForEmail(
-            email,
-            {
-              redirectTo:
-                window.location.origin +
-                '/RESET_PASSWORD.html'
-            }
-          );
+        const {
+          error
+        } =
+          await _supabase.auth
+            .resetPasswordForEmail(
+              email,
+              {
+                redirectTo:
+                  window.location.origin +
+                  '/RESET_PASSWORD.html'
+              }
+            );
 
 
         if (error) {
@@ -1087,23 +2474,27 @@
             'error'
           );
 
+
           return;
+
         }
 
 
         showMessage(
-          'Link za promjenu lozinke je poslan na vaš email.',
+          'A password reset link has been sent to your email.',
           'success'
         );
 
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          error
+        );
 
 
         showMessage(
-          'Došlo je do greške. Pokušajte ponovo.',
+          'An error occurred. Please try again.',
           'error'
         );
 
@@ -1117,44 +2508,53 @@
        LOGIN
     ========================================================== */
 
-    async function handleLogin(event) {
+    async function handleLogin(
+      event
+    ) {
 
       event.preventDefault();
+
 
       clearMessage();
 
 
       const email =
-        document.getElementById('email')
-          .value
-          .trim();
+        document.getElementById(
+          'email'
+        )
+        .value
+        .trim();
 
 
       const password =
-        document.getElementById('password')
-          .value;
+        document.getElementById(
+          'password'
+        )
+        .value;
 
 
       const rememberMe =
-        document.getElementById('rememberMe')
-          .checked;
+        document.getElementById(
+          'rememberMe'
+        ).checked;
 
 
       const loginButton =
-        document.getElementById('loginButton');
+        document.getElementById(
+          'loginButton'
+        );
 
 
-
-      /* =====================================================
-         VALIDACIJA
-      ====================================================== */
-
-      if (!email || !password) {
+      if (
+        !email ||
+        !password
+      ) {
 
         showMessage(
-          'Molimo unesite email i lozinku.',
+          'Please enter your email and password.',
           'error'
         );
+
 
         return;
 
@@ -1183,10 +2583,12 @@
 
 
 
-      loginButton.disabled = true;
+      loginButton.disabled =
+        true;
+
 
       loginButton.textContent =
-        'PRIJAVA U TOKU...';
+        'SIGNING IN...';
 
 
 
@@ -1201,19 +2603,18 @@
           data: authData,
           error: authError
         } =
-          await _supabase.auth.signInWithPassword({
+          await _supabase.auth
+            .signInWithPassword({
 
-            email: email,
+              email:
+                email,
 
-            password: password
+              password:
+                password
 
-          });
+            });
 
 
-
-        /* ===================================================
-           GREŠKA LOGIN
-        ==================================================== */
 
         if (authError) {
 
@@ -1224,15 +2625,17 @@
 
 
           showMessage(
-            'Pogrešan email ili lozinka.',
+            'Incorrect email or password.',
             'error'
           );
 
 
-          loginButton.disabled = false;
+          loginButton.disabled =
+            false;
+
 
           loginButton.textContent =
-            'PRIJAVI SE';
+            'SIGN IN';
 
 
           return;
@@ -1241,25 +2644,23 @@
 
 
 
-        /* ===================================================
-           NEMA USERA
-        ==================================================== */
-
         if (
           !authData ||
           !authData.user
         ) {
 
           showMessage(
-            'Prijava nije uspjela.',
+            'Login failed.',
             'error'
           );
 
 
-          loginButton.disabled = false;
+          loginButton.disabled =
+            false;
+
 
           loginButton.textContent =
-            'PRIJAVI SE';
+            'SIGN IN';
 
 
           return;
@@ -1282,9 +2683,14 @@
           error: fetchError
         } =
           await _supabase
-            .from('POSAO_KORISNICI')
+            .from(
+              'POSAO_KORISNICI'
+            )
             .select('*')
-            .eq('USER', userId)
+            .eq(
+              'USER',
+              userId
+            )
             .maybeSingle();
 
 
@@ -1292,7 +2698,7 @@
         if (fetchError) {
 
           console.warn(
-            'Greška pri učitavanju korisnika:',
+            'User loading error:',
             fetchError
           );
 
@@ -1301,7 +2707,7 @@
 
 
         /* ===================================================
-           AŽURIRAJ ONLINE STATUS
+           ONLINE STATUS
         ==================================================== */
 
         if (korisnik) {
@@ -1310,13 +2716,17 @@
             error: updateError
           } =
             await _supabase
-              .from('POSAO_KORISNICI')
+              .from(
+                'POSAO_KORISNICI'
+              )
               .update({
 
-                IS_ONLINE: true,
+                IS_ONLINE:
+                  true,
 
                 LAST_SEEN:
-                  new Date().toLocaleDateString()
+                  new Date()
+                    .toLocaleDateString()
 
               })
               .eq(
@@ -1328,7 +2738,7 @@
           if (updateError) {
 
             console.warn(
-              'Greška pri ažuriranju statusa:',
+              'Status update error:',
               updateError
             );
 
@@ -1339,55 +2749,35 @@
 
 
         /* ===================================================
-           USPJEŠNA PRIJAVA
-           
-           BROJIMO PRIJAVE U LOCAL STORAGE.
-           
-           1. prijava → OBUKA
-           2. prijava → OBUKA
-           3. prijava → DASHBOARD
-           4. prijava → DASHBOARD
-           itd.
+           LOGIN BROJAČ
         ==================================================== */
 
         showMessage(
-          'Uspješna prijava. Dobro došli u DocBizHub!',
+          'Login successful. Welcome to DocBizHub!',
           'success'
         );
 
 
         loginButton.textContent =
-          'USPJEŠNA PRIJAVA ✓';
+          'LOGIN SUCCESSFUL ✓';
 
 
 
         setTimeout(
-          function () {
-
-
-            /* =============================================
-               UZMI TRENUTNI BROJ PRIJAVA
-            ============================================== */
+          function() {
 
             let loginCount =
               parseInt(
                 localStorage.getItem(
                   'docbiz_login_count'
-                ) || '0',
+                ) ||
+                '0',
                 10
               );
 
 
-            /* =============================================
-               POVEĆAJ BROJ PRIJAVA
-            ============================================== */
-
             loginCount++;
 
-
-            /* =============================================
-               SAČUVAJ NOVI BROJ
-            ============================================== */
 
             localStorage.setItem(
               'docbiz_login_count',
@@ -1395,22 +2785,19 @@
             );
 
 
-            /* =============================================
-               PRVE DVIJE PRIJAVE → OBUKA
-            ============================================== */
+            /*
+              1. prijava → OBUKA
+              2. prijava → OBUKA
+              3+ prijava → DASHBOARD
+            */
 
-            if (loginCount <= 2) {
+            if (
+              loginCount <= 2
+            ) {
 
               showTrainingScreen();
 
-            }
-
-
-            /* =============================================
-               TREĆA I SVE NAREDNE → DASHBOARD
-            ============================================== */
-
-            else {
+            } else {
 
               window.location.href =
                 'DASHBOARD.html';
@@ -1424,7 +2811,6 @@
 
       } catch (error) {
 
-
         console.error(
           'Unexpected login error:',
           error
@@ -1432,16 +2818,17 @@
 
 
         showMessage(
-          'Došlo je do greške prilikom prijave. Pokušajte ponovo.',
+          'An error occurred during login. Please try again.',
           'error'
         );
 
 
-        loginButton.disabled = false;
+        loginButton.disabled =
+          false;
 
 
         loginButton.textContent =
-          'PRIJAVI SE';
+          'SIGN IN';
 
       }
 
@@ -1450,19 +2837,21 @@
 
 
     /* =========================================================
-       PRIKAŽI EKRAN OBUKE
+       PRIKAŽI OBUKU
     ========================================================== */
 
     function showTrainingScreen() {
 
       document.getElementById(
         'loginPage'
-      ).style.display = 'none';
+      ).style.display =
+        'none';
 
 
       document.getElementById(
         'trainingScreen'
-      ).style.display = 'block';
+      ).style.display =
+        'block';
 
 
       window.scrollTo({
@@ -1475,7 +2864,7 @@
 
 
     /* =========================================================
-       NASTAVI NA DASHBOARD
+       DASHBOARD
     ========================================================== */
 
     function continueToDashboard() {
