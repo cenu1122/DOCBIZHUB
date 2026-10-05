@@ -1,287 +1,354 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBUKA | DocBizHub</title>
 
-    <title>OBUKA</title>
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+    color:#1e293b;
+    line-height:1.6;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f2f4f7;
-            color: #222;
-        }
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px;
-        }
+/* HEADER */
+header{
+    background:#ffffff;
+    padding:18px 0;
+    border-bottom:1px solid #e2e8f0;
+}
 
-        /* SLIKA NA VRHU */
-        .hero-slika {
-            width: 100%;
-            height: 420px;
-            object-fit: cover;
-            border-radius: 20px;
-            display: block;
-            margin-bottom: 35px;
-        }
+.header-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
 
-        h1 {
-            text-align: center;
-            font-size: 42px;
-            margin: 10px 0;
-        }
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:#0f4c81;
+}
 
-        .uvod {
-            text-align: center;
-            font-size: 20px;
-            color: #666;
-            margin-bottom: 40px;
-        }
+.back-btn{
+    text-decoration:none;
+    background:#0f4c81;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:700;
+    transition:0.2s;
+}
 
-        /* KARTICE */
-        .obuke {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 22px;
-        }
+.back-btn:hover{
+    background:#0b3a63;
+}
 
-        .kartica {
-            background: white;
-            padding: 28px;
-            border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: transform 0.25s, box-shadow 0.25s;
-        }
+/* HERO */
+.hero{
+    padding:50px 0 35px;
+    text-align:center;
+}
 
-        .kartica:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-        }
+.hero h1{
+    font-size:42px;
+    color:#0f4c81;
+    margin-bottom:15px;
+}
 
-        .ikona {
-            font-size: 45px;
-            margin-bottom: 15px;
-        }
+.hero p{
+    max-width:800px;
+    margin:auto;
+    color:#64748b;
+    font-size:18px;
+}
 
-        .kartica h2 {
-            margin: 0 0 15px 0;
-            font-size: 25px;
-        }
+/* HERO IMAGE */
+.hero-image{
+    margin:30px auto 40px;
+    max-width:1000px;
+}
 
-        .kartica p {
-            color: #666;
-            line-height: 1.6;
-            font-size: 16px;
-        }
+.hero-image img{
+    width:100%;
+    display:block;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(15,76,129,0.15);
+}
 
-        .dugme {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 20px;
-            background: #111;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
+/* TRAINING GRID */
+.obuke{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:25px;
+    margin-bottom:40px;
+}
 
-        .dugme:hover {
-            background: #333;
-        }
+.kartica{
+    background:#ffffff;
+    border-radius:16px;
+    padding:28px;
+    box-shadow:0 6px 20px rgba(15,23,42,0.08);
+    border:1px solid #e2e8f0;
+    transition:transform 0.2s, box-shadow 0.2s;
+}
 
-        /* =====================================================
-           DETALJI O OBUCI
-        ====================================================== */
+.kartica:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 30px rgba(15,23,42,0.12);
+}
 
-        .detalji {
-            display: none;
-            margin-top: 30px;
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
-            animation: pojaviSe 0.3s ease;
-        }
+.kartica h2{
+    color:#0f4c81;
+    margin-bottom:12px;
+    font-size:25px;
+}
 
-        .detalji.active {
-            display: block;
-        }
+.kartica p{
+    color:#64748b;
+    margin-bottom:20px;
+}
 
-        .detalji h2 {
-            margin-top: 0;
-            font-size: 30px;
-            color: #111;
-        }
+.dugme{
+    display:inline-block;
+    border:none;
+    cursor:pointer;
+    background:#0f4c81;
+    color:white;
+    padding:11px 20px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:15px;
+    transition:0.2s;
+}
 
-        .detalji p {
-            color: #555;
-            line-height: 1.7;
-            font-size: 17px;
-        }
+.dugme:hover{
+    background:#0b3a63;
+}
 
-        .detalji ul {
-            color: #555;
-            line-height: 1.8;
-            padding-left: 22px;
-        }
+/* DETAILS */
+.detalji{
+    display:none;
+    background:#ffffff;
+    border-radius:16px;
+    padding:35px;
+    margin:0 0 30px;
+    border-left:5px solid #0f4c81;
+    box-shadow:0 8px 25px rgba(15,23,42,0.08);
+    animation:otvori 0.3s ease;
+}
 
-        .zatvori {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 11px 18px;
-            background: #e9edf2;
-            color: #222;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.detalji.active{
+    display:block;
+}
 
-        .zatvori:hover {
-            background: #dce1e7;
-        }
+.detalji h2{
+    color:#0f4c81;
+    margin-bottom:15px;
+    font-size:30px;
+}
 
-        @keyframes pojaviSe {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+.detalji p{
+    color:#475569;
+    margin-bottom:18px;
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.detalji ul{
+    padding-left:25px;
+    margin-bottom:25px;
+}
 
-        /* =====================================================
-           GLAVNO DUGME ZA PONUDU
-        ====================================================== */
+.detalji li{
+    margin-bottom:9px;
+    color:#334155;
+}
 
-        .ponuda {
-            text-align: center;
-            margin-top: 45px;
-        }
+.zatvori{
+    border:none;
+    cursor:pointer;
+    background:#64748b;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:700;
+}
 
-        .ponuda-dugme {
-            display: inline-block;
-            padding: 17px 35px;
-            background: #111;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-size: 19px;
-            font-weight: bold;
-            transition: 0.25s;
-        }
+.zatvori:hover{
+    background:#475569;
+}
 
-        .ponuda-dugme:hover {
-            transform: translateY(-3px);
-            background: #333;
-        }
+@keyframes otvori{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
 
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 25px;
-            color: #777;
-        }
+/* OFFER */
+.ponuda{
+    text-align:center;
+    background:#0f4c81;
+    color:white;
+    border-radius:18px;
+    padding:40px 25px;
+    margin:50px 0;
+}
 
-        /* TABLET */
-        @media (max-width: 900px) {
+.ponuda h2{
+    font-size:30px;
+    margin-bottom:12px;
+}
 
-            .obuke {
-                grid-template-columns: repeat(2, 1fr);
-            }
+.ponuda p{
+    max-width:700px;
+    margin:0 auto 25px;
+    color:#e2e8f0;
+}
 
-            .hero-slika {
-                height: 320px;
-            }
-        }
+.ponuda-dugme{
+    display:inline-block;
+    text-decoration:none;
+    background:white;
+    color:#0f4c81;
+    padding:13px 25px;
+    border-radius:9px;
+    font-weight:800;
+    transition:0.2s;
+}
 
-        /* MOBILNI */
-        @media (max-width: 600px) {
+.ponuda-dugme:hover{
+    background:#e2e8f0;
+}
 
-            .container {
-                padding: 15px;
-            }
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:30px 0;
+    color:#64748b;
+    font-size:14px;
+}
 
-            .obuke {
-                grid-template-columns: 1fr;
-            }
+/* LANGUAGE */
+#google_translate_element{
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:9999;
+}
 
-            .hero-slika {
-                height: 230px;
-                border-radius: 12px;
-            }
+.goog-te-banner-frame.skiptranslate{
+    display:none !important;
+}
 
-            h1 {
-                font-size: 32px;
-            }
+body{
+    top:0 !important;
+}
 
-            .uvod {
-                font-size: 17px;
-            }
+.goog-te-gadget{
+    font-size:0 !important;
+}
 
-            .ponuda-dugme {
-                width: 100%;
-                padding: 16px 15px;
-            }
+.goog-te-gadget .goog-te-combo{
+    font-size:14px !important;
+    padding:8px 10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    background:white;
+    color:#1e293b;
+}
 
-            .detalji {
-                padding: 25px 20px;
-            }
+/* RESPONSIVE */
+@media(max-width:768px){
 
-            .detalji h2 {
-                font-size: 25px;
-            }
-        }
-    </style>
+    .obuke{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+    .header-inner{
+        flex-direction:column;
+    }
+
+    .detalji{
+        padding:25px;
+    }
+
+    #google_translate_element{
+        top:10px;
+        right:10px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- LANGUAGE SELECTOR -->
+<div id="google_translate_element"></div>
 
-    <!-- SLIKA -->
-    <img
-        id="heroSlika"
-        class="hero-slika"
-        src="OBUKA.png"
-        alt="Obuka"
-    >
+<header>
+    <div class="container header-inner">
+        <div class="logo">DocBizHub</div>
 
-    <!-- NASLOV -->
-    <h1 id="naslov">
-        OBUKA
-    </h1>
+        <a href="LOGIN.html" class="back-btn" id="nazadDugme">
+            Nazad
+        </a>
+    </div>
+</header>
 
-    <p id="uvod" class="uvod">
-        Stručna i praktična obuka za zanatska zanimanja.
-    </p>
+<main>
+
+<section class="hero">
+    <div class="container">
+
+        <h1 id="naslov">
+            Stručna obuka
+        </h1>
+
+        <p id="podnaslov">
+            Praktična stručna obuka za siguran, kvalitetan i profesionalan rad.
+        </p>
+
+        <div class="hero-image">
+            <img id="slikaObuke" src="OBUKA.png" alt="Obuka">
+        </div>
+
+    </div>
+</section>
 
 
-    <!-- =====================================================
-         OBUKE
-    ====================================================== -->
+<section class="container">
 
     <div class="obuke">
 
         <!-- ELEKTRIČAR -->
         <div class="kartica">
-
-            <div class="ikona">⚡</div>
 
             <h2 id="elektricarNaslov">
                 Električar
@@ -293,11 +360,9 @@
             </p>
 
             <button
-                type="button"
                 class="dugme"
                 id="elektricarDugme"
-                onclick="prikaziDetalje('elektricar')"
-            >
+                onclick="prikaziDetalje('elektricar')">
                 Saznaj više
             </button>
 
@@ -306,8 +371,6 @@
 
         <!-- ZAVARIVAČ -->
         <div class="kartica">
-
-            <div class="ikona">🔥</div>
 
             <h2 id="zavarivacNaslov">
                 Zavarivač / Varioc
@@ -319,11 +382,9 @@
             </p>
 
             <button
-                type="button"
                 class="dugme"
                 id="zavarivacDugme"
-                onclick="prikaziDetalje('zavarivac')"
-            >
+                onclick="prikaziDetalje('zavarivac')">
                 Saznaj više
             </button>
 
@@ -332,8 +393,6 @@
 
         <!-- BRAVAR -->
         <div class="kartica">
-
-            <div class="ikona">🔧</div>
 
             <h2 id="bravarNaslov">
                 Bravar
@@ -345,11 +404,9 @@
             </p>
 
             <button
-                type="button"
                 class="dugme"
                 id="bravarDugme"
-                onclick="prikaziDetalje('bravar')"
-            >
+                onclick="prikaziDetalje('bravar')">
                 Saznaj više
             </button>
 
@@ -358,8 +415,6 @@
 
         <!-- KLIMA -->
         <div class="kartica">
-
-            <div class="ikona">❄️</div>
 
             <h2 id="klimeNaslov">
                 Majstor za klime
@@ -371,11 +426,9 @@
             </p>
 
             <button
-                type="button"
                 class="dugme"
                 id="klimeDugme"
-                onclick="prikaziDetalje('klime')"
-            >
+                onclick="prikaziDetalje('klime')">
                 Saznaj više
             </button>
 
@@ -384,476 +437,968 @@
     </div>
 
 
-    <!-- =====================================================
-         DETALJI - ELEKTRIČAR
-    ====================================================== -->
+    <!-- ========================= -->
+    <!-- DETALJI ELEKTRIČAR -->
+    <!-- ========================= -->
 
-    <div
-        id="detaljiElektricar"
-        class="detalji"
-    >
+    <div class="detalji" id="detaljiElektricar">
 
-        <h2 id="detaljiElektricarNaslov">
-            ⚡ Obuka za električara
+        <h2 id="detElektricarNaslov">
+            Obuka za električara
         </h2>
 
-        <p id="detaljiElektricarTekst">
-            Program obuke za električara namijenjen je osobama
-            koje žele steći praktična i stručna znanja potrebna
-            za siguran i kvalitetan rad.
+        <p id="detElektricarTekst">
+            Program obuke je namijenjen osobama koje žele steći praktično
+            znanje za rad sa električnim instalacijama i osnovnim
+            elektro-sistemima.
         </p>
 
-        <ul id="detaljiElektricarLista">
-
-            <li>Električne instalacije</li>
-            <li>Spajanje električnih komponenti</li>
-            <li>Mjerenje i ispitivanje</li>
+        <ul id="detElektricarLista">
+            <li>Osnove električnih instalacija</li>
+            <li>Spajanje kablova i električnih elemenata</li>
             <li>Čitanje električnih šema</li>
-            <li>Pravila sigurnog rada</li>
-
+            <li>Mjerenje napona, struje i otpora</li>
+            <li>Korištenje osnovnog električarskog alata</li>
+            <li>Prepoznavanje kvarova</li>
+            <li>Pravila zaštite na radu</li>
+            <li>Praktičan rad</li>
         </ul>
 
-        <button
-            type="button"
-            class="zatvori"
-            onclick="zatvoriDetalje()"
-            id="zatvoriElektricar"
-        >
+        <button class="zatvori" onclick="zatvoriDetalje()" id="zatvoriElektricar">
             Zatvori
         </button>
 
     </div>
 
 
-    <!-- =====================================================
-         DETALJI - ZAVARIVAČ
-    ====================================================== -->
+    <!-- ========================= -->
+    <!-- DETALJI ZAVARIVAČ -->
+    <!-- ========================= -->
 
-    <div
-        id="detaljiZavarivac"
-        class="detalji"
-    >
+    <div class="detalji" id="detaljiZavarivac">
 
-        <h2 id="detaljiZavarivacNaslov">
-            🔥 Obuka za zavarivača / varioca
+        <h2 id="detZavarivacNaslov">
+            Obuka za zavarivača / varioca
         </h2>
 
-        <p id="detaljiZavarivacTekst">
-            Praktična obuka za zavarivanje namijenjena je
-            kandidatima koji žele razviti znanje i vještine
-            potrebne za kvalitetan rad sa metalima.
+        <p id="detZavarivacTekst">
+            Praktična obuka za siguran i kvalitetan rad sa opremom
+            za zavarivanje i različitim vrstama metala.
         </p>
 
-        <ul id="detaljiZavarivacLista">
-
+        <ul id="detZavarivacLista">
+            <li>Osnove zavarivanja</li>
             <li>Priprema materijala za zavarivanje</li>
+            <li>Rad sa opremom za zavarivanje</li>
             <li>Osnovne tehnike zavarivanja</li>
-            <li>Korištenje opreme i alata</li>
-            <li>Praktičan rad sa metalima</li>
-            <li>Zaštita na radu i sigurnost</li>
-
+            <li>Prepoznavanje grešaka na zavaru</li>
+            <li>Pravilno korištenje zaštitne opreme</li>
+            <li>Sigurnost i zaštita na radu</li>
+            <li>Praktičan rad</li>
         </ul>
 
-        <button
-            type="button"
-            class="zatvori"
-            onclick="zatvoriDetalje()"
-            id="zatvoriZavarivac"
-        >
+        <button class="zatvori" onclick="zatvoriDetalje()" id="zatvoriZavarivac">
             Zatvori
         </button>
 
     </div>
 
 
-    <!-- =====================================================
-         DETALJI - BRAVAR
-    ====================================================== -->
+    <!-- ========================= -->
+    <!-- DETALJI BRAVAR -->
+    <!-- ========================= -->
 
-    <div
-        id="detaljiBravar"
-        class="detalji"
-    >
+    <div class="detalji" id="detaljiBravar">
 
-        <h2 id="detaljiBravarNaslov">
-            🔧 Obuka za bravara
+        <h2 id="detBravarNaslov">
+            Obuka za bravara
         </h2>
 
-        <p id="detaljiBravarTekst">
-            Obuka za bravara obuhvata praktične vještine
-            obrade metala i izrade različitih metalnih
-            konstrukcija.
+        <p id="detBravarTekst">
+            Obuka obuhvata praktične vještine potrebne za obradu metala,
+            izradu i sastavljanje metalnih elemenata i konstrukcija.
         </p>
 
-        <ul id="detaljiBravarLista">
-
+        <ul id="detBravarLista">
             <li>Mjerenje i označavanje materijala</li>
-            <li>Rezanje i bušenje</li>
-            <li>Obrada metala</li>
-            <li>Sastavljanje konstrukcija</li>
-            <li>Rad sa ručnim i mašinskim alatima</li>
-
+            <li>Rezanje metala</li>
+            <li>Bušenje i obrada materijala</li>
+            <li>Osnovni ručni i električni alati</li>
+            <li>Sastavljanje metalnih elemenata</li>
+            <li>Izrada metalnih konstrukcija</li>
+            <li>Osnove održavanja alata</li>
+            <li>Siguran rad i zaštita na radu</li>
         </ul>
 
-        <button
-            type="button"
-            class="zatvori"
-            onclick="zatvoriDetalje()"
-            id="zatvoriBravar"
-        >
+        <button class="zatvori" onclick="zatvoriDetalje()" id="zatvoriBravar">
             Zatvori
         </button>
 
     </div>
 
 
-    <!-- =====================================================
-         DETALJI - KLIMA
-    ====================================================== -->
+    <!-- ========================= -->
+    <!-- DETALJI KLIME -->
+    <!-- ========================= -->
 
-    <div
-        id="detaljiKlime"
-        class="detalji"
-    >
+    <div class="detalji" id="detaljiKlime">
 
-        <h2 id="detaljiKlimeNaslov">
-            ❄️ Obuka za HVAC tehničara
+        <h2 id="detKlimeNaslov">
+            Obuka za majstora klima uređaja
         </h2>
 
-        <p id="detaljiKlimeTekst">
-            Obuka je namijenjena osobama koje žele steći
-            praktična znanja za instalaciju, održavanje
-            i servis klima uređaja i sistema hlađenja.
+        <p id="detKlimeTekst">
+            Obuka je namijenjena osobama koje žele naučiti instalaciju,
+            održavanje i osnovni servis klima uređaja i sistema hlađenja.
         </p>
 
-        <ul id="detaljiKlimeLista">
-
+        <ul id="detKlimeLista">
+            <li>Osnove klima sistema</li>
             <li>Instalacija klima uređaja</li>
-            <li>Održavanje sistema</li>
-            <li>Servis klima uređaja</li>
-            <li>Sistemi hlađenja i klimatizacije</li>
-            <li>Siguran rad i pravilno korištenje opreme</li>
-
+            <li>Priprema i povezivanje sistema</li>
+            <li>Osnovno održavanje</li>
+            <li>Prepoznavanje problema i kvarova</li>
+            <li>Servisiranje klima uređaja</li>
+            <li>Siguran rad sa opremom</li>
+            <li>Praktičan rad</li>
         </ul>
 
-        <button
-            type="button"
-            class="zatvori"
-            onclick="zatvoriDetalje()"
-            id="zatvoriKlime"
-        >
+        <button class="zatvori" onclick="zatvoriDetalje()" id="zatvoriKlime">
             Zatvori
         </button>
 
     </div>
 
 
-    <!-- =====================================================
-         REQUEST / PONUDA
-    ====================================================== -->
+    <!-- ========================= -->
+    <!-- OFFER -->
+    <!-- ========================= -->
 
     <div class="ponuda">
+
+        <h2 id="ponudaNaslov">
+            Želite profesionalnu obuku?
+        </h2>
+
+        <p id="ponudaTekst">
+            Pošaljite nam upit i zatražite ponudu za obuku koja vam odgovara.
+        </p>
 
         <a
             href="KONTAKT.html"
             class="ponuda-dugme"
-            id="ponudaDugme"
-        >
+            id="ponudaDugme">
             Zatraži ponudu za obuku
         </a>
 
     </div>
 
+</section>
 
-    <!-- FOOTER -->
+</main>
 
-    <footer id="footer">
-        Praktična stručna obuka za siguran i kvalitetan rad.
-    </footer>
 
-</div>
+<footer>
+    <div class="container">
+
+        <p id="footerTekst">
+            Praktična stručna obuka za siguran i kvalitetan rad.
+        </p>
+
+    </div>
+</footer>
 
 
 <script>
 
-    /*
-    ============================================================
-       AUTOMATSKO PREPOZNAVANJE JEZIKA
-    ============================================================
+/* =========================================================
+   JEZIK
+   ========================================================= */
 
-       Bosanski / Hrvatski / Srpski
-       -> OBUKA.png
+/*
+   PRIORITET:
 
-       Ostali jezici
-       -> OBUKAEN.png
-    */
+   1. Jezik koji je korisnik već izabrao u DocBizHub
+      -> localStorage: docbiz_language
 
+   2. Jezik browsera korisnika
 
-    const jezik = (
-        navigator.language ||
-        navigator.userLanguage ||
-        "en"
-    ).toLowerCase();
+   3. Bosanski kao zadnja opcija
+*/
 
+let spremljeniJezik = localStorage.getItem("docbiz_language");
 
-    const lokalniJezik =
-        jezik.startsWith("bs") ||
-        jezik.startsWith("hr") ||
-        jezik.startsWith("sr");
+let browserJezik = (
+    navigator.language ||
+    navigator.userLanguage ||
+    "bs"
+).toLowerCase();
 
 
-    const heroSlika =
-        document.getElementById("heroSlika");
+/* Normalizacija jezika */
 
+function odrediJezik(){
 
-    if (lokalniJezik) {
+    if(spremljeniJezik){
 
-        heroSlika.src = "OBUKA.png";
+        let jezik = spremljeniJezik.toLowerCase();
 
-        document.documentElement.lang =
-            jezik.substring(0, 2);
+        /*
+          Ako je spremljena vrijednost npr.
+          "en-US", "de-DE", "bs-BA"
+        */
 
-    }
+        if(jezik.includes("-")){
+            jezik = jezik.split("-")[0];
+        }
 
-    else {
+        if(jezik.includes("_")){
+            jezik = jezik.split("_")[0];
+        }
 
-        heroSlika.src = "OBUKAEN.png";
-
-        document.documentElement.lang = "en";
-
-        document.title = "TRAINING";
-
-
-        document.getElementById("naslov").textContent =
-            "TRAINING";
-
-
-        document.getElementById("uvod").textContent =
-            "Professional and practical training for skilled trades.";
-
-
-        /* =====================================================
-           ELECTRICIAN
-        ====================================================== */
-
-        document.getElementById("elektricarNaslov").textContent =
-            "Electrician";
-
-        document.getElementById("elektricarTekst").textContent =
-            "Training in electrical installations, wiring, measurements, electrical diagrams and safe working practices.";
-
-        document.getElementById("elektricarDugme").textContent =
-            "Learn more";
-
-
-        document.getElementById("detaljiElektricarNaslov").textContent =
-            "⚡ Electrician Training";
-
-        document.getElementById("detaljiElektricarTekst").textContent =
-            "The electrician training program is designed for people who want to develop practical and professional skills required for safe and quality work.";
-
-        document.getElementById("detaljiElektricarLista").innerHTML = `
-            <li>Electrical installations</li>
-            <li>Connecting electrical components</li>
-            <li>Measurements and testing</li>
-            <li>Reading electrical diagrams</li>
-            <li>Workplace safety</li>
-        `;
-
-
-        /* =====================================================
-           WELDER
-        ====================================================== */
-
-        document.getElementById("zavarivacNaslov").textContent =
-            "Welder";
-
-        document.getElementById("zavarivacTekst").textContent =
-            "Practical welding training covering metal preparation, welding equipment and workplace safety.";
-
-        document.getElementById("zavarivacDugme").textContent =
-            "Learn more";
-
-
-        document.getElementById("detaljiZavarivacNaslov").textContent =
-            "🔥 Welder Training";
-
-        document.getElementById("detaljiZavarivacTekst").textContent =
-            "Practical welding training for candidates who want to develop the knowledge and skills required for professional metalworking.";
-
-        document.getElementById("detaljiZavarivacLista").innerHTML = `
-            <li>Preparing materials for welding</li>
-            <li>Basic welding techniques</li>
-            <li>Using welding equipment and tools</li>
-            <li>Practical metalworking</li>
-            <li>Workplace safety</li>
-        `;
-
-
-        /* =====================================================
-           METALWORKER
-        ====================================================== */
-
-        document.getElementById("bravarNaslov").textContent =
-            "Metalworker";
-
-        document.getElementById("bravarTekst").textContent =
-            "Training in metalworking, measuring, cutting, drilling, assembly and metal construction.";
-
-        document.getElementById("bravarDugme").textContent =
-            "Learn more";
-
-
-        document.getElementById("detaljiBravarNaslov").textContent =
-            "🔧 Metalworker Training";
-
-        document.getElementById("detaljiBravarTekst").textContent =
-            "Metalworker training focuses on practical skills for metal processing and production of various metal structures.";
-
-        document.getElementById("detaljiBravarLista").innerHTML = `
-            <li>Measuring and marking materials</li>
-            <li>Cutting and drilling</li>
-            <li>Metal processing</li>
-            <li>Assembly of structures</li>
-            <li>Working with hand and machine tools</li>
-        `;
-
-
-        /* =====================================================
-           HVAC
-        ====================================================== */
-
-        document.getElementById("klimeNaslov").textContent =
-            "HVAC Technician";
-
-        document.getElementById("klimeTekst").textContent =
-            "Training for installation, maintenance and servicing of air-conditioning and cooling systems.";
-
-        document.getElementById("klimeDugme").textContent =
-            "Learn more";
-
-
-        document.getElementById("detaljiKlimeNaslov").textContent =
-            "❄️ HVAC Technician Training";
-
-        document.getElementById("detaljiKlimeTekst").textContent =
-            "Training for people who want to develop practical skills for installation, maintenance and servicing of air-conditioning and cooling systems.";
-
-        document.getElementById("detaljiKlimeLista").innerHTML = `
-            <li>Air-conditioning installation</li>
-            <li>System maintenance</li>
-            <li>Air-conditioning servicing</li>
-            <li>Cooling and HVAC systems</li>
-            <li>Safe operation and equipment use</li>
-        `;
-
-
-        /* =====================================================
-           REQUEST OFFER
-        ====================================================== */
-
-        document.getElementById("ponudaDugme").textContent =
-            "Request a Training Offer";
-
-
-        document.getElementById("footer").textContent =
-            "Practical professional training for safe and high-quality work.";
-
-
-        document.querySelectorAll(".zatvori").forEach(
-            function(button) {
-                button.textContent = "Close";
-            }
-        );
-
+        return jezik;
     }
 
 
-    /* ============================================================
-       LEARN MORE
-    ============================================================ */
-
-    function prikaziDetalje(tip) {
-
-        zatvoriDetalje();
+    if(browserJezik.includes("-")){
+        return browserJezik.split("-")[0];
+    }
 
 
-        let detalji;
+    if(browserJezik.includes("_")){
+        return browserJezik.split("_")[0];
+    }
 
 
-        if (tip === "elektricar") {
-
-            detalji =
-                document.getElementById(
-                    "detaljiElektricar"
-                );
-
-        }
-
-        else if (tip === "zavarivac") {
-
-            detalji =
-                document.getElementById(
-                    "detaljiZavarivac"
-                );
-
-        }
-
-        else if (tip === "bravar") {
-
-            detalji =
-                document.getElementById(
-                    "detaljiBravar"
-                );
-
-        }
-
-        else if (tip === "klime") {
-
-            detalji =
-                document.getElementById(
-                    "detaljiKlime"
-                );
-
-        }
+    return browserJezik;
+}
 
 
-        if (!detalji) {
-            return;
-        }
+let aktivniJezik = odrediJezik();
 
 
-        detalji.classList.add("active");
+/* =========================================================
+   SLIKE
+   ========================================================= */
+
+const slikePoJeziku = {
+
+    bs: "OBUKA.png",
+    hr: "OBUKA.png",
+    sr: "OBUKA.png",
+    me: "OBUKA.png",
+
+    en: "OBUKAEN.png",
+
+    de: "OBUKAEN.png",
+    fr: "OBUKAEN.png",
+    es: "OBUKAEN.png",
+    it: "OBUKAEN.png",
+    pt: "OBUKAEN.png",
+    nl: "OBUKAEN.png",
+    sv: "OBUKAEN.png",
+    no: "OBUKAEN.png",
+    da: "OBUKAEN.png",
+    fi: "OBUKAEN.png",
+
+    tr: "OBUKAEN.png",
+    ru: "OBUKAEN.png",
+    uk: "OBUKAEN.png",
+
+    pl: "OBUKAEN.png",
+    cs: "OBUKAEN.png",
+    sk: "OBUKAEN.png",
+
+    ar: "OBUKAEN.png",
+    hi: "OBUKAEN.png",
+
+    zh: "OBUKAEN.png",
+    ja: "OBUKAEN.png",
+    ko: "OBUKAEN.png"
+};
 
 
-        setTimeout(function() {
+/* =========================================================
+   PREVODI
+   ========================================================= */
 
-            detalji.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
+const prevodi = {
+
+    bs: {
+
+        naslov: "Stručna obuka",
+
+        podnaslov:
+        "Praktična stručna obuka za siguran, kvalitetan i profesionalan rad.",
+
+        elektricarNaslov: "Električar",
+
+        elektricarTekst:
+        "Obuka za električara obuhvata električne instalacije, spajanje, mjerenje, čitanje električnih šema i siguran rad.",
+
+        zavarivacNaslov:
+        "Zavarivač / Varioc",
+
+        zavarivacTekst:
+        "Praktična obuka za zavarivanje metala, pripremu materijala, korištenje opreme i siguran rad.",
+
+        bravarNaslov:
+        "Bravar",
+
+        bravarTekst:
+        "Obuka za bravara uključuje obradu metala, mjerenje, rezanje, bušenje, sastavljanje i izradu metalnih konstrukcija.",
+
+        klimeNaslov:
+        "Majstor za klime",
+
+        klimeTekst:
+        "Obuka za instalaciju, održavanje i servis klima uređaja i sistema hlađenja i klimatizacije.",
+
+        dugme:
+        "Saznaj više",
+
+        detElektricarNaslov:
+        "Obuka za električara",
+
+        detElektricarTekst:
+        "Program obuke je namijenjen osobama koje žele steći praktično znanje za rad sa električnim instalacijama i osnovnim elektro-sistemima.",
+
+        detElektricarLista: [
+            "Osnove električnih instalacija",
+            "Spajanje kablova i električnih elemenata",
+            "Čitanje električnih šema",
+            "Mjerenje napona, struje i otpora",
+            "Korištenje osnovnog električarskog alata",
+            "Prepoznavanje kvarova",
+            "Pravila zaštite na radu",
+            "Praktičan rad"
+        ],
+
+        detZavarivacNaslov:
+        "Obuka za zavarivača / varioca",
+
+        detZavarivacTekst:
+        "Praktična obuka za siguran i kvalitetan rad sa opremom za zavarivanje i različitim vrstama metala.",
+
+        detZavarivacLista: [
+            "Osnove zavarivanja",
+            "Priprema materijala za zavarivanje",
+            "Rad sa opremom za zavarivanje",
+            "Osnovne tehnike zavarivanja",
+            "Prepoznavanje grešaka na zavaru",
+            "Pravilno korištenje zaštitne opreme",
+            "Sigurnost i zaštita na radu",
+            "Praktičan rad"
+        ],
+
+        detBravarNaslov:
+        "Obuka za bravara",
+
+        detBravarTekst:
+        "Obuka obuhvata praktične vještine potrebne za obradu metala, izradu i sastavljanje metalnih elemenata i konstrukcija.",
+
+        detBravarLista: [
+            "Mjerenje i označavanje materijala",
+            "Rezanje metala",
+            "Bušenje i obrada materijala",
+            "Osnovni ručni i električni alati",
+            "Sastavljanje metalnih elemenata",
+            "Izrada metalnih konstrukcija",
+            "Osnove održavanja alata",
+            "Siguran rad i zaštita na radu"
+        ],
+
+        detKlimeNaslov:
+        "Obuka za majstora klima uređaja",
+
+        detKlimeTekst:
+        "Obuka je namijenjena osobama koje žele naučiti instalaciju, održavanje i osnovni servis klima uređaja i sistema hlađenja.",
+
+        detKlimeLista: [
+            "Osnove klima sistema",
+            "Instalacija klima uređaja",
+            "Priprema i povezivanje sistema",
+            "Osnovno održavanje",
+            "Prepoznavanje problema i kvarova",
+            "Servisiranje klima uređaja",
+            "Siguran rad sa opremom",
+            "Praktičan rad"
+        ],
+
+        zatvori:
+        "Zatvori",
+
+        ponudaNaslov:
+        "Želite profesionalnu obuku?",
+
+        ponudaTekst:
+        "Pošaljite nam upit i zatražite ponudu za obuku koja vam odgovara.",
+
+        ponudaDugme:
+        "Zatraži ponudu za obuku",
+
+        nazad:
+        "Nazad",
+
+        footer:
+        "Praktična stručna obuka za siguran i kvalitetan rad."
+    },
+
+
+    en: {
+
+        naslov:
+        "Professional Training",
+
+        podnaslov:
+        "Practical professional training for safe, high-quality and professional work.",
+
+        elektricarNaslov:
+        "Electrician",
+
+        elektricarTekst:
+        "Training in electrical installations, wiring, measurements, electrical diagrams and safe working practices.",
+
+        zavarivacNaslov:
+        "Welder",
+
+        zavarivacTekst:
+        "Practical welding training covering metal preparation, welding equipment and workplace safety.",
+
+        bravarNaslov:
+        "Metalworker",
+
+        bravarTekst:
+        "Training in metalworking, measuring, cutting, drilling, assembly and metal construction.",
+
+        klimeNaslov:
+        "HVAC Technician",
+
+        klimeTekst:
+        "Training for installation, maintenance and servicing of air-conditioning and cooling systems.",
+
+        dugme:
+        "Learn More",
+
+        detElektricarNaslov:
+        "Electrician Training",
+
+        detElektricarTekst:
+        "The training program is designed for people who want to gain practical knowledge in electrical installations and basic electrical systems.",
+
+        detElektricarLista: [
+            "Electrical installation basics",
+            "Connecting cables and electrical components",
+            "Reading electrical diagrams",
+            "Measuring voltage, current and resistance",
+            "Using basic electrician tools",
+            "Identifying faults",
+            "Workplace safety rules",
+            "Practical training"
+        ],
+
+        detZavarivacNaslov:
+        "Welder Training",
+
+        detZavarivacTekst:
+        "Practical training for safe and professional work with welding equipment and different types of metal.",
+
+        detZavarivacLista: [
+            "Welding fundamentals",
+            "Preparing materials for welding",
+            "Using welding equipment",
+            "Basic welding techniques",
+            "Identifying welding defects",
+            "Proper use of protective equipment",
+            "Workplace safety",
+            "Practical training"
+        ],
+
+        detBravarNaslov:
+        "Metalworker Training",
+
+        detBravarTekst:
+        "The training covers practical skills required for metalworking, manufacturing and assembling metal elements and structures.",
+
+        detBravarLista: [
+            "Measuring and marking materials",
+            "Metal cutting",
+            "Drilling and material processing",
+            "Basic hand and power tools",
+            "Assembling metal components",
+            "Metal structure construction",
+            "Basic tool maintenance",
+            "Workplace safety"
+        ],
+
+        detKlimeNaslov:
+        "HVAC Technician Training",
+
+        detKlimeTekst:
+        "Training for people who want to learn installation, maintenance and basic servicing of air-conditioning and cooling systems.",
+
+        detKlimeLista: [
+            "HVAC system fundamentals",
+            "Air-conditioner installation",
+            "System preparation and connections",
+            "Basic maintenance",
+            "Identifying problems and faults",
+            "Air-conditioner servicing",
+            "Safe equipment handling",
+            "Practical training"
+        ],
+
+        zatvori:
+        "Close",
+
+        ponudaNaslov:
+        "Looking for professional training?",
+
+        ponudaTekst:
+        "Send us an inquiry and request an offer for the training that suits you.",
+
+        ponudaDugme:
+        "Request a Training Offer",
+
+        nazad:
+        "Back",
+
+        footer:
+        "Practical professional training for safe and high-quality work."
+    },
+
+
+    de: {
+
+        naslov: "Professionelle Schulung",
+
+        podnaslov:
+        "Praktische professionelle Schulung für sicheres und hochwertiges Arbeiten.",
+
+        elektricarNaslov: "Elektriker",
+
+        elektricarTekst:
+        "Schulung in Elektroinstallationen, Verkabelung, Messungen, Schaltplänen und sicherem Arbeiten.",
+
+        zavarivacNaslov: "Schweißer",
+
+        zavarivacTekst:
+        "Praktische Schweißausbildung, Materialvorbereitung, Schweißgeräte und Arbeitssicherheit.",
+
+        bravarNaslov: "Metallbauer",
+
+        bravarTekst:
+        "Ausbildung in Metallbearbeitung, Messen, Schneiden, Bohren, Montage und Metallkonstruktionen.",
+
+        klimeNaslov: "Klimatechniker",
+
+        klimeTekst:
+        "Ausbildung zur Installation, Wartung und Reparatur von Klimaanlagen und Kühlsystemen.",
+
+        dugme: "Mehr erfahren",
+
+        detElektricarNaslov: "Elektriker-Schulung",
+
+        detElektricarTekst:
+        "Das Schulungsprogramm vermittelt praktische Kenntnisse für Elektroinstallationen und grundlegende elektrische Systeme.",
+
+        detElektricarLista: [
+            "Grundlagen der Elektroinstallation",
+            "Anschließen von Kabeln und elektrischen Komponenten",
+            "Lesen elektrischer Schaltpläne",
+            "Messen von Spannung, Strom und Widerstand",
+            "Verwendung grundlegender Elektrikerwerkzeuge",
+            "Fehlererkennung",
+            "Arbeitsschutz",
+            "Praktische Ausbildung"
+        ],
+
+        detZavarivacNaslov: "Schweißerschulung",
+
+        detZavarivacTekst:
+        "Praktische Schulung für sicheres und professionelles Arbeiten mit Schweißgeräten und verschiedenen Metallen.",
+
+        detZavarivacLista: [
+            "Grundlagen des Schweißens",
+            "Vorbereitung der Schweißmaterialien",
+            "Arbeiten mit Schweißgeräten",
+            "Grundlegende Schweißtechniken",
+            "Erkennen von Schweißfehlern",
+            "Schutzausrüstung",
+            "Arbeitssicherheit",
+            "Praktische Ausbildung"
+        ],
+
+        detBravarNaslov: "Metallbauer-Schulung",
+
+        detBravarTekst:
+        "Die Schulung vermittelt praktische Fähigkeiten für Metallbearbeitung, Herstellung und Montage von Metallteilen und Konstruktionen.",
+
+        detBravarLista: [
+            "Messen und Markieren von Materialien",
+            "Metallschneiden",
+            "Bohren und Materialbearbeitung",
+            "Hand- und Elektrowerkzeuge",
+            "Montage von Metallteilen",
+            "Herstellung von Metallkonstruktionen",
+            "Werkzeugpflege",
+            "Arbeitssicherheit"
+        ],
+
+        detKlimeNaslov: "Klimatechniker-Schulung",
+
+        detKlimeTekst:
+        "Schulung für Installation, Wartung und grundlegende Reparatur von Klimaanlagen und Kühlsystemen.",
+
+        detKlimeLista: [
+            "Grundlagen von Klimasystemen",
+            "Installation von Klimaanlagen",
+            "Vorbereitung und Anschluss",
+            "Grundlegende Wartung",
+            "Fehlererkennung",
+            "Klimaanlagen-Service",
+            "Sicherer Umgang mit Geräten",
+            "Praktische Ausbildung"
+        ],
+
+        zatvori: "Schließen",
+
+        ponudaNaslov:
+        "Sie suchen eine professionelle Schulung?",
+
+        ponudaTekst:
+        "Senden Sie uns eine Anfrage und erhalten Sie ein Angebot für die passende Schulung.",
+
+        ponudaDugme:
+        "Schulungsangebot anfordern",
+
+        nazad: "Zurück",
+
+        footer:
+        "Praktische professionelle Schulung für sicheres und hochwertiges Arbeiten."
+    }
+
+};
+
+
+/* =========================================================
+   AUTOMATSKI FALLBACK ZA SVE OSTALE JEZIKE
+   ========================================================= */
+
+/*
+   Ako korisnik izabere neki od svjetskih jezika koji nemamo
+   posebno napisane tekstove iznad, Google Translate će prevesti
+   stranicu na izabrani jezik.
+
+   Osnovni sadržaj se prikazuje na English kao međunarodni fallback.
+*/
+
+if(!prevodi[aktivniJezik]){
+    aktivniJezik = "en";
+}
+
+
+/* =========================================================
+   POSTAVI TEKST
+   ========================================================= */
+
+function postaviTekst(){
+
+    const t = prevodi[aktivniJezik];
+
+
+    document.documentElement.lang = aktivniJezik;
+
+
+    document.getElementById("naslov").textContent =
+        t.naslov;
+
+    document.getElementById("podnaslov").textContent =
+        t.podnaslov;
+
+
+    document.getElementById("elektricarNaslov").textContent =
+        t.elektricarNaslov;
+
+    document.getElementById("elektricarTekst").textContent =
+        t.elektricarTekst;
+
+
+    document.getElementById("zavarivacNaslov").textContent =
+        t.zavarivacNaslov;
+
+    document.getElementById("zavarivacTekst").textContent =
+        t.zavarivacTekst;
+
+
+    document.getElementById("bravarNaslov").textContent =
+        t.bravarNaslov;
+
+    document.getElementById("bravarTekst").textContent =
+        t.bravarTekst;
+
+
+    document.getElementById("klimeNaslov").textContent =
+        t.klimeNaslov;
+
+    document.getElementById("klimeTekst").textContent =
+        t.klimeTekst;
+
+
+    document.getElementById("elektricarDugme").textContent =
+        t.dugme;
+
+    document.getElementById("zavarivacDugme").textContent =
+        t.dugme;
+
+    document.getElementById("bravarDugme").textContent =
+        t.dugme;
+
+    document.getElementById("klimeDugme").textContent =
+        t.dugme;
+
+
+    /* ELEKTRIČAR DETALJI */
+
+    document.getElementById("detElektricarNaslov").textContent =
+        t.detElektricarNaslov;
+
+    document.getElementById("detElektricarTekst").textContent =
+        t.detElektricarTekst;
+
+    postaviListu(
+        "detElektricarLista",
+        t.detElektricarLista
+    );
+
+
+    /* ZAVARIVAČ DETALJI */
+
+    document.getElementById("detZavarivacNaslov").textContent =
+        t.detZavarivacNaslov;
+
+    document.getElementById("detZavarivacTekst").textContent =
+        t.detZavarivacTekst;
+
+    postaviListu(
+        "detZavarivacLista",
+        t.detZavarivacLista
+    );
+
+
+    /* BRAVAR DETALJI */
+
+    document.getElementById("detBravarNaslov").textContent =
+        t.detBravarNaslov;
+
+    document.getElementById("detBravarTekst").textContent =
+        t.detBravarTekst;
+
+    postaviListu(
+        "detBravarLista",
+        t.detBravarLista
+    );
+
+
+    /* KLIME DETALJI */
+
+    document.getElementById("detKlimeNaslov").textContent =
+        t.detKlimeNaslov;
+
+    document.getElementById("detKlimeTekst").textContent =
+        t.detKlimeTekst;
+
+    postaviListu(
+        "detKlimeLista",
+        t.detKlimeLista
+    );
+
+
+    /* OSTALO */
+
+    document.getElementById("zatvoriElektricar").textContent =
+        t.zatvori;
+
+    document.getElementById("zatvoriZavarivac").textContent =
+        t.zatvori;
+
+    document.getElementById("zatvoriBravar").textContent =
+        t.zatvori;
+
+    document.getElementById("zatvoriKlime").textContent =
+        t.zatvori;
+
+
+    document.getElementById("ponudaNaslov").textContent =
+        t.ponudaNaslov;
+
+    document.getElementById("ponudaTekst").textContent =
+        t.ponudaTekst;
+
+    document.getElementById("ponudaDugme").textContent =
+        t.ponudaDugme;
+
+    document.getElementById("nazadDugme").textContent =
+        t.nazad;
+
+    document.getElementById("footerTekst").textContent =
+        t.footer;
+
+
+    /* SLIKA */
+
+    const slika =
+        slikePoJeziku[aktivniJezik] ||
+        "OBUKAEN.png";
+
+    document.getElementById("slikaObuke").src =
+        slika;
+}
+
+
+/* =========================================================
+   LISTE
+   ========================================================= */
+
+function postaviListu(id, lista){
+
+    const element =
+        document.getElementById(id);
+
+    element.innerHTML = "";
+
+    lista.forEach(function(stavka){
+
+        const li =
+            document.createElement("li");
+
+        li.textContent =
+            stavka;
+
+        element.appendChild(li);
+
+    });
+}
+
+
+/* =========================================================
+   LEARN MORE / SAZNAJ VIŠE
+   ========================================================= */
+
+function prikaziDetalje(tip){
+
+    const sviDetalji =
+        document.querySelectorAll(".detalji");
+
+    sviDetalji.forEach(function(element){
+
+        element.classList.remove("active");
+
+    });
+
+
+    let odabrani = null;
+
+
+    if(tip === "elektricar"){
+
+        odabrani =
+            document.getElementById("detaljiElektricar");
+
+    }
+
+
+    if(tip === "zavarivac"){
+
+        odabrani =
+            document.getElementById("detaljiZavarivac");
+
+    }
+
+
+    if(tip === "bravar"){
+
+        odabrani =
+            document.getElementById("detaljiBravar");
+
+    }
+
+
+    if(tip === "klime"){
+
+        odabrani =
+            document.getElementById("detaljiKlime");
+
+    }
+
+
+    if(odabrani){
+
+        odabrani.classList.add("active");
+
+        setTimeout(function(){
+
+            odabrani.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
             });
 
-        }, 50);
+        },50);
 
     }
 
+}
 
-    /* ============================================================
-       ZATVORI DETALJE
-    ============================================================ */
 
-    function zatvoriDetalje() {
+/* =========================================================
+   ZATVORI DETALJE
+   ========================================================= */
 
-        document
-            .querySelectorAll(".detalji")
-            .forEach(function(element) {
+function zatvoriDetalje(){
 
-                element.classList.remove("active");
+    const sviDetalji =
+        document.querySelectorAll(".detalji");
 
-            });
+    sviDetalji.forEach(function(element){
 
-    }
+        element.classList.remove("active");
 
+    });
+
+}
+
+
+/* =========================================================
+   GOOGLE TRANSLATE
+   ========================================================= */
+
+function googleTranslateElementInit(){
+
+    new google.translate.TranslateElement({
+
+        pageLanguage:"bs",
+
+        includedLanguages:
+        "af,ar,bg,bn,bs,ca,cs,da,de,el,en,es,et,fa,fi,fr,he,hi,hr,hu,id,is,it,ja,ka,ko,lt,lv,mk,ms,mt,nl,no,pl,pt,ro,ru,sk,sl,sq,sr,sv,sw,ta,th,tr,uk,ur,vi,zh-CN,zh-TW",
+
+        autoDisplay:false
+
+    }, "google_translate_element");
+
+}
+
+
+/* =========================================================
+   POKRENI
+   ========================================================= */
+
+postaviTekst();
+
+</script>
+
+
+<script
+src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
 
 </body>
