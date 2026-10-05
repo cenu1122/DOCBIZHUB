@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -94,13 +93,82 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
+            cursor: pointer;
+            border: none;
         }
 
         .dugme:hover {
             background: #333;
         }
 
-        /* GLAVNO DUGME ZA PONUDU */
+        /* =====================================================
+           DETALJI O OBUCI
+        ====================================================== */
+
+        .detalji {
+            display: none;
+            margin-top: 30px;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+            animation: pojaviSe 0.3s ease;
+        }
+
+        .detalji.active {
+            display: block;
+        }
+
+        .detalji h2 {
+            margin-top: 0;
+            font-size: 30px;
+            color: #111;
+        }
+
+        .detalji p {
+            color: #555;
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        .detalji ul {
+            color: #555;
+            line-height: 1.8;
+            padding-left: 22px;
+        }
+
+        .zatvori {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 18px;
+            background: #e9edf2;
+            color: #222;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .zatvori:hover {
+            background: #dce1e7;
+        }
+
+        @keyframes pojaviSe {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =====================================================
+           GLAVNO DUGME ZA PONUDU
+        ====================================================== */
+
         .ponuda {
             text-align: center;
             margin-top: 45px;
@@ -170,6 +238,14 @@
                 width: 100%;
                 padding: 16px 15px;
             }
+
+            .detalji {
+                padding: 25px 20px;
+            }
+
+            .detalji h2 {
+                font-size: 25px;
+            }
         }
     </style>
 </head>
@@ -178,7 +254,7 @@
 
 <div class="container">
 
-    <!-- SLIKA SE AUTOMATSKI MIJENJA PREMA JEZIKU -->
+    <!-- SLIKA -->
     <img
         id="heroSlika"
         class="hero-slika"
@@ -187,14 +263,19 @@
     >
 
     <!-- NASLOV -->
-    <h1 id="naslov">OBUKA</h1>
+    <h1 id="naslov">
+        OBUKA
+    </h1>
 
     <p id="uvod" class="uvod">
         Stručna i praktična obuka za zanatska zanimanja.
     </p>
 
 
-    <!-- OBUKE -->
+    <!-- =====================================================
+         OBUKE
+    ====================================================== -->
+
     <div class="obuke">
 
         <!-- ELEKTRIČAR -->
@@ -211,9 +292,14 @@
                 spajanje, mjerenje, čitanje električnih šema i siguran rad.
             </p>
 
-            <a href="#" class="dugme" id="elektricarDugme">
+            <button
+                type="button"
+                class="dugme"
+                id="elektricarDugme"
+                onclick="prikaziDetalje('elektricar')"
+            >
                 Saznaj više
-            </a>
+            </button>
 
         </div>
 
@@ -232,9 +318,14 @@
                 korištenje opreme i siguran rad.
             </p>
 
-            <a href="#" class="dugme" id="zavarivacDugme">
+            <button
+                type="button"
+                class="dugme"
+                id="zavarivacDugme"
+                onclick="prikaziDetalje('zavarivac')"
+            >
                 Saznaj više
-            </a>
+            </button>
 
         </div>
 
@@ -253,9 +344,14 @@
                 rezanje, bušenje, sastavljanje i izradu metalnih konstrukcija.
             </p>
 
-            <a href="#" class="dugme" id="bravarDugme">
+            <button
+                type="button"
+                class="dugme"
+                id="bravarDugme"
+                onclick="prikaziDetalje('bravar')"
+            >
                 Saznaj više
-            </a>
+            </button>
 
         </div>
 
@@ -274,20 +370,192 @@
                 i sistema hlađenja i klimatizacije.
             </p>
 
-            <a href="#" class="dugme" id="klimeDugme">
+            <button
+                type="button"
+                class="dugme"
+                id="klimeDugme"
+                onclick="prikaziDetalje('klime')"
+            >
                 Saznaj više
-            </a>
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- DUGME ZA PONUDU -->
+    <!-- =====================================================
+         DETALJI - ELEKTRIČAR
+    ====================================================== -->
+
+    <div
+        id="detaljiElektricar"
+        class="detalji"
+    >
+
+        <h2 id="detaljiElektricarNaslov">
+            ⚡ Obuka za električara
+        </h2>
+
+        <p id="detaljiElektricarTekst">
+            Program obuke za električara namijenjen je osobama
+            koje žele steći praktična i stručna znanja potrebna
+            za siguran i kvalitetan rad.
+        </p>
+
+        <ul id="detaljiElektricarLista">
+
+            <li>Električne instalacije</li>
+            <li>Spajanje električnih komponenti</li>
+            <li>Mjerenje i ispitivanje</li>
+            <li>Čitanje električnih šema</li>
+            <li>Pravila sigurnog rada</li>
+
+        </ul>
+
+        <button
+            type="button"
+            class="zatvori"
+            onclick="zatvoriDetalje()"
+            id="zatvoriElektricar"
+        >
+            Zatvori
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         DETALJI - ZAVARIVAČ
+    ====================================================== -->
+
+    <div
+        id="detaljiZavarivac"
+        class="detalji"
+    >
+
+        <h2 id="detaljiZavarivacNaslov">
+            🔥 Obuka za zavarivača / varioca
+        </h2>
+
+        <p id="detaljiZavarivacTekst">
+            Praktična obuka za zavarivanje namijenjena je
+            kandidatima koji žele razviti znanje i vještine
+            potrebne za kvalitetan rad sa metalima.
+        </p>
+
+        <ul id="detaljiZavarivacLista">
+
+            <li>Priprema materijala za zavarivanje</li>
+            <li>Osnovne tehnike zavarivanja</li>
+            <li>Korištenje opreme i alata</li>
+            <li>Praktičan rad sa metalima</li>
+            <li>Zaštita na radu i sigurnost</li>
+
+        </ul>
+
+        <button
+            type="button"
+            class="zatvori"
+            onclick="zatvoriDetalje()"
+            id="zatvoriZavarivac"
+        >
+            Zatvori
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         DETALJI - BRAVAR
+    ====================================================== -->
+
+    <div
+        id="detaljiBravar"
+        class="detalji"
+    >
+
+        <h2 id="detaljiBravarNaslov">
+            🔧 Obuka za bravara
+        </h2>
+
+        <p id="detaljiBravarTekst">
+            Obuka za bravara obuhvata praktične vještine
+            obrade metala i izrade različitih metalnih
+            konstrukcija.
+        </p>
+
+        <ul id="detaljiBravarLista">
+
+            <li>Mjerenje i označavanje materijala</li>
+            <li>Rezanje i bušenje</li>
+            <li>Obrada metala</li>
+            <li>Sastavljanje konstrukcija</li>
+            <li>Rad sa ručnim i mašinskim alatima</li>
+
+        </ul>
+
+        <button
+            type="button"
+            class="zatvori"
+            onclick="zatvoriDetalje()"
+            id="zatvoriBravar"
+        >
+            Zatvori
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         DETALJI - KLIMA
+    ====================================================== -->
+
+    <div
+        id="detaljiKlime"
+        class="detalji"
+    >
+
+        <h2 id="detaljiKlimeNaslov">
+            ❄️ Obuka za HVAC tehničara
+        </h2>
+
+        <p id="detaljiKlimeTekst">
+            Obuka je namijenjena osobama koje žele steći
+            praktična znanja za instalaciju, održavanje
+            i servis klima uređaja i sistema hlađenja.
+        </p>
+
+        <ul id="detaljiKlimeLista">
+
+            <li>Instalacija klima uređaja</li>
+            <li>Održavanje sistema</li>
+            <li>Servis klima uređaja</li>
+            <li>Sistemi hlađenja i klimatizacije</li>
+            <li>Siguran rad i pravilno korištenje opreme</li>
+
+        </ul>
+
+        <button
+            type="button"
+            class="zatvori"
+            onclick="zatvoriDetalje()"
+            id="zatvoriKlime"
+        >
+            Zatvori
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         REQUEST / PONUDA
+    ====================================================== -->
+
     <div class="ponuda">
 
         <a
-            href="mailto:vas@email.com?subject=Zahtjev%20za%20ponudu%20za%20obuku"
+            href="KONTAKT.html"
             class="ponuda-dugme"
             id="ponudaDugme"
         >
@@ -298,6 +566,7 @@
 
 
     <!-- FOOTER -->
+
     <footer id="footer">
         Praktična stručna obuka za siguran i kvalitetan rad.
     </footer>
@@ -312,11 +581,11 @@
        AUTOMATSKO PREPOZNAVANJE JEZIKA
     ============================================================
 
-       Bosanski  -> OBUKA.png
-       Hrvatski  -> OBUKA.png
-       Srpski    -> OBUKA.png
+       Bosanski / Hrvatski / Srpski
+       -> OBUKA.png
 
-       Svi ostali jezici -> OBUKAEN.png
+       Ostali jezici
+       -> OBUKAEN.png
     */
 
 
@@ -337,10 +606,6 @@
         document.getElementById("heroSlika");
 
 
-    /*
-       BOSANSKI / HRVATSKI / SRPSKI
-    */
-
     if (lokalniJezik) {
 
         heroSlika.src = "OBUKA.png";
@@ -349,11 +614,6 @@
             jezik.substring(0, 2);
 
     }
-
-
-    /*
-       SVI OSTALI JEZICI
-    */
 
     else {
 
@@ -372,7 +632,9 @@
             "Professional and practical training for skilled trades.";
 
 
-        /* ELECTRICIAN */
+        /* =====================================================
+           ELECTRICIAN
+        ====================================================== */
 
         document.getElementById("elektricarNaslov").textContent =
             "Electrician";
@@ -384,7 +646,24 @@
             "Learn more";
 
 
-        /* WELDER */
+        document.getElementById("detaljiElektricarNaslov").textContent =
+            "⚡ Electrician Training";
+
+        document.getElementById("detaljiElektricarTekst").textContent =
+            "The electrician training program is designed for people who want to develop practical and professional skills required for safe and quality work.";
+
+        document.getElementById("detaljiElektricarLista").innerHTML = `
+            <li>Electrical installations</li>
+            <li>Connecting electrical components</li>
+            <li>Measurements and testing</li>
+            <li>Reading electrical diagrams</li>
+            <li>Workplace safety</li>
+        `;
+
+
+        /* =====================================================
+           WELDER
+        ====================================================== */
 
         document.getElementById("zavarivacNaslov").textContent =
             "Welder";
@@ -396,7 +675,24 @@
             "Learn more";
 
 
-        /* METALWORKER */
+        document.getElementById("detaljiZavarivacNaslov").textContent =
+            "🔥 Welder Training";
+
+        document.getElementById("detaljiZavarivacTekst").textContent =
+            "Practical welding training for candidates who want to develop the knowledge and skills required for professional metalworking.";
+
+        document.getElementById("detaljiZavarivacLista").innerHTML = `
+            <li>Preparing materials for welding</li>
+            <li>Basic welding techniques</li>
+            <li>Using welding equipment and tools</li>
+            <li>Practical metalworking</li>
+            <li>Workplace safety</li>
+        `;
+
+
+        /* =====================================================
+           METALWORKER
+        ====================================================== */
 
         document.getElementById("bravarNaslov").textContent =
             "Metalworker";
@@ -408,7 +704,24 @@
             "Learn more";
 
 
-        /* HVAC */
+        document.getElementById("detaljiBravarNaslov").textContent =
+            "🔧 Metalworker Training";
+
+        document.getElementById("detaljiBravarTekst").textContent =
+            "Metalworker training focuses on practical skills for metal processing and production of various metal structures.";
+
+        document.getElementById("detaljiBravarLista").innerHTML = `
+            <li>Measuring and marking materials</li>
+            <li>Cutting and drilling</li>
+            <li>Metal processing</li>
+            <li>Assembly of structures</li>
+            <li>Working with hand and machine tools</li>
+        `;
+
+
+        /* =====================================================
+           HVAC
+        ====================================================== */
 
         document.getElementById("klimeNaslov").textContent =
             "HVAC Technician";
@@ -420,7 +733,24 @@
             "Learn more";
 
 
-        /* REQUEST OFFER */
+        document.getElementById("detaljiKlimeNaslov").textContent =
+            "❄️ HVAC Technician Training";
+
+        document.getElementById("detaljiKlimeTekst").textContent =
+            "Training for people who want to develop practical skills for installation, maintenance and servicing of air-conditioning and cooling systems.";
+
+        document.getElementById("detaljiKlimeLista").innerHTML = `
+            <li>Air-conditioning installation</li>
+            <li>System maintenance</li>
+            <li>Air-conditioning servicing</li>
+            <li>Cooling and HVAC systems</li>
+            <li>Safe operation and equipment use</li>
+        `;
+
+
+        /* =====================================================
+           REQUEST OFFER
+        ====================================================== */
 
         document.getElementById("ponudaDugme").textContent =
             "Request a Training Offer";
@@ -429,10 +759,102 @@
         document.getElementById("footer").textContent =
             "Practical professional training for safe and high-quality work.";
 
+
+        document.querySelectorAll(".zatvori").forEach(
+            function(button) {
+                button.textContent = "Close";
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       LEARN MORE
+    ============================================================ */
+
+    function prikaziDetalje(tip) {
+
+        zatvoriDetalje();
+
+
+        let detalji;
+
+
+        if (tip === "elektricar") {
+
+            detalji =
+                document.getElementById(
+                    "detaljiElektricar"
+                );
+
+        }
+
+        else if (tip === "zavarivac") {
+
+            detalji =
+                document.getElementById(
+                    "detaljiZavarivac"
+                );
+
+        }
+
+        else if (tip === "bravar") {
+
+            detalji =
+                document.getElementById(
+                    "detaljiBravar"
+                );
+
+        }
+
+        else if (tip === "klime") {
+
+            detalji =
+                document.getElementById(
+                    "detaljiKlime"
+                );
+
+        }
+
+
+        if (!detalji) {
+            return;
+        }
+
+
+        detalji.classList.add("active");
+
+
+        setTimeout(function() {
+
+            detalji.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 50);
+
+    }
+
+
+    /* ============================================================
+       ZATVORI DETALJE
+    ============================================================ */
+
+    function zatvoriDetalje() {
+
+        document
+            .querySelectorAll(".detalji")
+            .forEach(function(element) {
+
+                element.classList.remove("active");
+
+            });
+
     }
 
 </script>
 
 </body>
 </html>
-```
