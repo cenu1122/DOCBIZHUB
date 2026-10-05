@@ -1,0 +1,438 @@
+```html
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OBUKA</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f4f7;
+            color: #222;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        /* SLIKA NA VRHU */
+        .hero-slika {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            margin: 10px 0;
+        }
+
+        .uvod {
+            text-align: center;
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* KARTICE */
+        .obuke {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .kartica {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .kartica:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .ikona {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .kartica h2 {
+            margin: 0 0 15px 0;
+            font-size: 25px;
+        }
+
+        .kartica p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .dugme {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .dugme:hover {
+            background: #333;
+        }
+
+        /* GLAVNO DUGME ZA PONUDU */
+        .ponuda {
+            text-align: center;
+            margin-top: 45px;
+        }
+
+        .ponuda-dugme {
+            display: inline-block;
+            padding: 17px 35px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 19px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .ponuda-dugme:hover {
+            transform: translateY(-3px);
+            background: #333;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #777;
+        }
+
+        /* TABLET */
+        @media (max-width: 900px) {
+
+            .obuke {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-slika {
+                height: 320px;
+            }
+        }
+
+        /* MOBILNI */
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 15px;
+            }
+
+            .obuke {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-slika {
+                height: 230px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .uvod {
+                font-size: 17px;
+            }
+
+            .ponuda-dugme {
+                width: 100%;
+                padding: 16px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SLIKA SE AUTOMATSKI MIJENJA PREMA JEZIKU -->
+    <img
+        id="heroSlika"
+        class="hero-slika"
+        src="OBUKA.png"
+        alt="Obuka"
+    >
+
+    <!-- NASLOV -->
+    <h1 id="naslov">OBUKA</h1>
+
+    <p id="uvod" class="uvod">
+        Stručna i praktična obuka za zanatska zanimanja.
+    </p>
+
+
+    <!-- OBUKE -->
+    <div class="obuke">
+
+        <!-- ELEKTRIČAR -->
+        <div class="kartica">
+
+            <div class="ikona">⚡</div>
+
+            <h2 id="elektricarNaslov">
+                Električar
+            </h2>
+
+            <p id="elektricarTekst">
+                Obuka za električara obuhvata električne instalacije,
+                spajanje, mjerenje, čitanje električnih šema i siguran rad.
+            </p>
+
+            <a href="#" class="dugme" id="elektricarDugme">
+                Saznaj više
+            </a>
+
+        </div>
+
+
+        <!-- ZAVARIVAČ -->
+        <div class="kartica">
+
+            <div class="ikona">🔥</div>
+
+            <h2 id="zavarivacNaslov">
+                Zavarivač / Varioc
+            </h2>
+
+            <p id="zavarivacTekst">
+                Praktična obuka za zavarivanje metala, pripremu materijala,
+                korištenje opreme i siguran rad.
+            </p>
+
+            <a href="#" class="dugme" id="zavarivacDugme">
+                Saznaj više
+            </a>
+
+        </div>
+
+
+        <!-- BRAVAR -->
+        <div class="kartica">
+
+            <div class="ikona">🔧</div>
+
+            <h2 id="bravarNaslov">
+                Bravar
+            </h2>
+
+            <p id="bravarTekst">
+                Obuka za bravara uključuje obradu metala, mjerenje,
+                rezanje, bušenje, sastavljanje i izradu metalnih konstrukcija.
+            </p>
+
+            <a href="#" class="dugme" id="bravarDugme">
+                Saznaj više
+            </a>
+
+        </div>
+
+
+        <!-- KLIMA -->
+        <div class="kartica">
+
+            <div class="ikona">❄️</div>
+
+            <h2 id="klimeNaslov">
+                Majstor za klime
+            </h2>
+
+            <p id="klimeTekst">
+                Obuka za instalaciju, održavanje i servis klima uređaja
+                i sistema hlađenja i klimatizacije.
+            </p>
+
+            <a href="#" class="dugme" id="klimeDugme">
+                Saznaj više
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- DUGME ZA PONUDU -->
+    <div class="ponuda">
+
+        <a
+            href="mailto:vas@email.com?subject=Zahtjev%20za%20ponudu%20za%20obuku"
+            class="ponuda-dugme"
+            id="ponudaDugme"
+        >
+            Zatraži ponudu za obuku
+        </a>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        Praktična stručna obuka za siguran i kvalitetan rad.
+    </footer>
+
+</div>
+
+
+<script>
+
+    /*
+    ============================================================
+       AUTOMATSKO PREPOZNAVANJE JEZIKA
+    ============================================================
+
+       Bosanski  -> OBUKA.png
+       Hrvatski  -> OBUKA.png
+       Srpski    -> OBUKA.png
+
+       Svi ostali jezici -> OBUKAEN.png
+    */
+
+
+    const jezik = (
+        navigator.language ||
+        navigator.userLanguage ||
+        "en"
+    ).toLowerCase();
+
+
+    const lokalniJezik =
+        jezik.startsWith("bs") ||
+        jezik.startsWith("hr") ||
+        jezik.startsWith("sr");
+
+
+    const heroSlika =
+        document.getElementById("heroSlika");
+
+
+    /*
+       BOSANSKI / HRVATSKI / SRPSKI
+    */
+
+    if (lokalniJezik) {
+
+        heroSlika.src = "OBUKA.png";
+
+        document.documentElement.lang =
+            jezik.substring(0, 2);
+
+    }
+
+
+    /*
+       SVI OSTALI JEZICI
+    */
+
+    else {
+
+        heroSlika.src = "OBUKAEN.png";
+
+        document.documentElement.lang = "en";
+
+        document.title = "TRAINING";
+
+
+        document.getElementById("naslov").textContent =
+            "TRAINING";
+
+
+        document.getElementById("uvod").textContent =
+            "Professional and practical training for skilled trades.";
+
+
+        /* ELECTRICIAN */
+
+        document.getElementById("elektricarNaslov").textContent =
+            "Electrician";
+
+        document.getElementById("elektricarTekst").textContent =
+            "Training in electrical installations, wiring, measurements, electrical diagrams and safe working practices.";
+
+        document.getElementById("elektricarDugme").textContent =
+            "Learn more";
+
+
+        /* WELDER */
+
+        document.getElementById("zavarivacNaslov").textContent =
+            "Welder";
+
+        document.getElementById("zavarivacTekst").textContent =
+            "Practical welding training covering metal preparation, welding equipment and workplace safety.";
+
+        document.getElementById("zavarivacDugme").textContent =
+            "Learn more";
+
+
+        /* METALWORKER */
+
+        document.getElementById("bravarNaslov").textContent =
+            "Metalworker";
+
+        document.getElementById("bravarTekst").textContent =
+            "Training in metalworking, measuring, cutting, drilling, assembly and metal construction.";
+
+        document.getElementById("bravarDugme").textContent =
+            "Learn more";
+
+
+        /* HVAC */
+
+        document.getElementById("klimeNaslov").textContent =
+            "HVAC Technician";
+
+        document.getElementById("klimeTekst").textContent =
+            "Training for installation, maintenance and servicing of air-conditioning and cooling systems.";
+
+        document.getElementById("klimeDugme").textContent =
+            "Learn more";
+
+
+        /* REQUEST OFFER */
+
+        document.getElementById("ponudaDugme").textContent =
+            "Request a Training Offer";
+
+
+        document.getElementById("footer").textContent =
+            "Practical professional training for safe and high-quality work.";
+
+    }
+
+</script>
+
+</body>
+</html>
+```
