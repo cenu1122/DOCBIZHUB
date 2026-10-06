@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>DocBizHub – Oglasi Njemačka</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fb;
+        color: #1f2937;
+        line-height: 1.5;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+        font: inherit;
+    }
+
+    .header {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: 800;
+        color: #111827;
+        white-space: nowrap;
+    }
+
+    .logo span {
+        color: #2563eb;
+    }
+
+    .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .nav a {
+        color: #4b5563;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .nav a:hover {
+        color: #2563eb;
+    }
+
+    .language-select {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 7px 10px;
+        background: #fff;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: #ffffff;
+        padding: 55px 20px;
+    }
+
+    .hero-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+        line-height: 1.1;
+        margin-bottom: 14px;
+    }
+
+    .hero p {
+        max-width: 760px;
+        font-size: 17px;
+        opacity: 0.94;
+    }
+
+    .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .stat {
+        min-width: 150px;
+        background: rgba(255,255,255,0.14);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 12px;
+        padding: 16px 20px;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+    }
+
+    .filters {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+
+    .search-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 12px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #6b7280;
+    }
+
+    .field input,
+    .field select {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+        padding: 11px 12px;
+        background: #ffffff;
+        color: #111827;
+        outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    .checkbox-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    .checkbox-label input {
+        width: 16px;
+        height: 16px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .section-header h2 {
+        font-size: 24px;
+        color: #111827;
+    }
+
+    .results-count {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .ads-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .ad-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ad-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .ad-top {
+        padding: 16px 16px 10px;
+    }
+
+    .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #eef2ff;
+        color: #3730a3;
+    }
+
+    .badge.new {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge.company {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .badge.priority {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .ad-title {
+        font-size: 18px;
+        line-height: 1.3;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 10px;
+    }
+
+    .ad-location {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .company-box {
+        margin: 0 16px 12px;
+        padding: 10px 12px;
+        border-radius: 9px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+    }
+
+    .company-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9ca3af;
+        font-weight: 700;
+    }
+
+    .company-name {
+        margin-top: 3px;
+        font-weight: 700;
+        color: #1d4ed8;
+        font-size: 14px;
+    }
+
+    .ad-body {
+        padding: 0 16px 16px;
+        flex: 1;
+    }
+
+    .description {
+        color: #4b5563;
+        font-size: 14px;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .ad-footer {
+        border-top: 1px solid #eef0f3;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .date {
+        font-size: 11px;
+        color: #9ca3af;
+    }
+
+    .details-button {
+        border: 0;
+        background: #2563eb;
+        color: #ffffff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .details-button:hover {
+        background: #1d4ed8;
+    }
+
+    .state {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 35px;
+        text-align: center;
+        color: #6b7280;
+    }
+
+    .state.error {
+        color: #b91c1c;
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* MODAL */
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 2000;
+    }
+
+    .modal {
+        width: min(850px, 100%);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+        padding: 22px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 25px;
+        line-height: 1.25;
+        color: #111827;
+    }
+
+    .close-button {
+        border: 0;
+        background: #f3f4f6;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        color: #374151;
+        flex-shrink: 0;
+    }
+
+    .modal-body {
+        padding: 22px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .detail-item {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .detail-label {
+        display: block;
+        color: #9ca3af;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .detail-value {
+        color: #111827;
+        font-size: 14px;
+        word-break: break-word;
+    }
+
+    .modal-section {
+        margin-top: 22px;
+    }
+
+    .modal-section h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .modal-section p {
+        white-space: pre-wrap;
+        color: #4b5563;
+        font-size: 14px;
+    }
+
+    .modal-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    .action-button.primary {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .action-button:hover {
+        opacity: 0.9;
+    }
+
+    footer {
+        background: #111827;
+        color: #9ca3af;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    @media (max-width: 1000px) {
+        .ads-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .search-row {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .header-inner {
+            flex-wrap: wrap;
+        }
+
+        .nav {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+        }
+
+        .ads-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-row {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+
+```
+    <a href="index.html" class="logo">
+        DocBiz<span>Hub</span>
+    </a>
+
+    <nav class="nav">
+        <a href="index.html" data-i18n="home">Početna</a>
+        <a href="OBUKA.html" data-i18n="training">Obuka</a>
+
+        <select id="languageSelect" class="language-select">
+            <option value="bs">BS</option>
+            <option value="en">EN</option>
+            <option value="de">DE</option>
+        </select>
+    </nav>
+
+</div>
+```
+
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+
+```
+    <h1 data-i18n="heroTitle">
+        Oglasi i poslovi u Njemačkoj
+    </h1>
+
+    <p data-i18n="heroText">
+        Pregled aktuelnih poslovnih oglasa, projekata i prilika za podizvođače i poslovne partnere u Njemačkoj.
+    </p>
+
+    <div class="stats">
+
+        <div class="stat">
+            <span class="stat-number" id="statTotal">0</span>
+            <span class="stat-label" data-i18n="totalAds">Ukupno oglasa</span>
+        </div>
+
+        <div class="stat">
+            <span class="stat-number" id="statNew">0</span>
+            <span class="stat-label" data-i18n="newAds">Novi oglasi</span>
+        </div>
+
+        <div class="stat">
+            <span class="stat-number" id="statCities">0</span>
+            <span class="stat-label" data-i18n="cities">Gradovi</span>
+        </div>
+
+        <div class="stat">
+            <span class="stat-number" id="statCompanies">0</span>
+            <span class="stat-label" data-i18n="companies">Povezane firme</span>
+        </div>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<main class="container">
+
+```
+<section class="filters">
+
+    <div class="search-row">
+
+        <div class="field">
+            <label for="searchInput" data-i18n="search">
+                Pretraga
+            </label>
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Traži po naslovu, gradu, opisu, firmi..."
+            >
+        </div>
+
+
+        <div class="field">
+            <label for="cityFilter" data-i18n="city">
+                Grad
+            </label>
+
+            <select id="cityFilter">
+                <option value="">Svi gradovi</option>
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="jobFilter" data-i18n="jobType">
+                Vrsta posla
+            </label>
+
+            <select id="jobFilter">
+                <option value="">Sve vrste poslova</option>
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="statusFilter" data-i18n="status">
+                Status
+            </label>
+
+            <select id="statusFilter">
+                <option value="">Svi statusi</option>
+                <option value="NOV">NOV</option>
+                <option value="AKTIVAN">AKTIVAN</option>
+                <option value="ZATVOREN">ZATVOREN</option>
+            </select>
+        </div>
+
+    </div>
+
+
+    <div class="checkbox-row">
+
+        <label class="checkbox-label">
+            <input type="checkbox" id="onlyNew">
+            <span data-i18n="onlyNew">Samo novi</span>
+        </label>
+
+        <label class="checkbox-label">
+            <input type="checkbox" id="onlyCompanies">
+            <span data-i18n="onlyCompanies">Samo oglasi sa potvrđenom firmom</span>
+        </label>
+
+    </div>
+
+</section>
+
+
+<div class="section-header">
+
+    <h2 data-i18n="adsTitle">
+        Aktuelni oglasi
+    </h2>
+
+    <div class="results-count" id="resultsCount">
+        0 oglasa
+    </div>
+
+</div>
+
+
+<div id="loadingState" class="state">
+    <span data-i18n="loading">
+        Učitavanje oglasa...
+    </span>
+</div>
+
+
+<div id="errorState" class="state error hidden">
+    <strong data-i18n="errorTitle">
+        Greška
+    </strong>
+
+    <p id="errorMessage"></p>
+</div>
+
+
+<div id="emptyState" class="state hidden">
+    <span data-i18n="empty">
+        Nema oglasa koji odgovaraju kriterijima.
+    </span>
+</div>
+
+
+<div id="adsGrid" class="ads-grid hidden"></div>
+```
+
+</main>
+
+<footer>
+    © <span id="currentYear"></span> DocBizHub
+</footer>
+
+<!-- MODAL -->
+
+<div id="modalOverlay" class="modal-overlay hidden">
+
+```
+<div class="modal">
+
+    <div class="modal-header">
+
+        <h2 id="modalTitle">
+            Oglas
+        </h2>
+
+        <button
+            type="button"
+            class="close-button"
+            id="closeModal"
+            aria-label="Close"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+        <div id="modalDetails" class="detail-grid"></div>
+
+        <div id="modalCompany"></div>
+
+        <div class="modal-section">
+            <h3 data-i18n="whatTheySeek">
+                Šta traže
+            </h3>
+
+            <p id="modalStaTraze">-</p>
+        </div>
+
+
+        <div class="modal-section">
+            <h3 data-i18n="description">
+                Opis
+            </h3>
+
+            <p id="modalDescription">-</p>
+        </div>
+
+
+        <div class="modal-actions">
+
+            <a
+                href="#"
+                id="modalOriginalUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="action-button primary"
+            >
+                <span data-i18n="openOriginal">
+                    Otvori originalni oglas
+                </span>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+    /*
+     * ============================================================
+     * SUPABASE
+     * ============================================================
+     */
+
+    const SUPABASE_URL =
+        'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+    /*
+     * OVDJE KOPIRAJ ISTI PUNI SUPABASE_ANON_KEY
+     * KOJI VEĆ KORISTIŠ U LOGIN.html
+     *
+     * Ne stavljaj "..." u ključ.
+     */
+
+    const SUPABASE_ANON_KEY =
+        'OVDJE_UBACI_PUNI_SUPABASE_ANON_KEY_IZ_LOGIN_HTML';
+
+
+    const _supabase =
+        supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+    /*
+     * ============================================================
+     * GLOBALNI PODACI
+     * ============================================================
+     */
+
+    let allAds = [];
+    let allCompanies = [];
+
+
+    /*
+     * ============================================================
+     * PREVODI
+     * ============================================================
+     */
+
+    const translations = {
+
+        bs: {
+            home: "Početna",
+            training: "Obuka",
+            heroTitle: "Oglasi i poslovi u Njemačkoj",
+            heroText: "Pregled aktuelnih poslovnih oglasa, projekata i prilika za podizvođače i poslovne partnere u Njemačkoj.",
+            totalAds: "Ukupno oglasa",
+            newAds: "Novi oglasi",
+            cities: "Gradovi",
+            companies: "Povezane firme",
+            search: "Pretraga",
+            city: "Grad",
+            jobType: "Vrsta posla",
+            status: "Status",
+            onlyNew: "Samo novi",
+            onlyCompanies: "Samo oglasi sa potvrđenom firmom",
+            adsTitle: "Aktuelni oglasi",
+            loading: "Učitavanje oglasa...",
+            errorTitle: "Greška",
+            empty: "Nema oglasa koji odgovaraju kriterijima.",
+            whatTheySeek: "Šta traže",
+            description: "Opis",
+            openOriginal: "Otvori originalni oglas",
+            company: "Firma",
+            contactPerson: "Kontakt osoba",
+            email: "Email",
+            phone: "Telefon",
+            website: "Web stranica",
+            targetMarket: "Ciljano tržište",
+            publishDate: "Datum oglasa",
+            expiryDate: "Datum isteka",
+            statusLabel: "Status oglasa",
+            priority: "Prioritet",
+            leadScore: "Lead score",
+            source: "Izvor",
+            adId: "ID oglasa",
+            databaseId: "DB ID",
+            postalCode: "Poštanski broj",
+            adType: "Tip oglasa",
+            jobTypeDetail: "Vrsta posla"
+        },
+
+        en: {
+            home: "Home",
+            training: "Training",
+            heroTitle: "Jobs and Business Opportunities in Germany",
+            heroText: "Current business advertisements, projects and opportunities for subcontractors and business partners in Germany.",
+            totalAds: "Total ads",
+            newAds: "New ads",
+            cities: "Cities",
+            companies: "Linked companies",
+            search: "Search",
+            city: "City",
+            jobType: "Job type",
+            status: "Status",
+            onlyNew: "New only",
+            onlyCompanies: "Only ads with confirmed company",
+            adsTitle: "Current advertisements",
+            loading: "Loading advertisements...",
+            errorTitle: "Error",
+            empty: "No advertisements match the selected criteria.",
+            whatTheySeek: "What they are looking for",
+            description: "Description",
+            openOriginal: "Open original advertisement",
+            company: "Company",
+            contactPerson: "Contact person",
+            email: "Email",
+            phone: "Phone",
+            website: "Website",
+            targetMarket: "Target market",
+            publishDate: "Advertisement date",
+            expiryDate: "Expiry date",
+            statusLabel: "Advertisement status",
+            priority: "Priority",
+            leadScore: "Lead score",
+            source: "Source",
+            adId: "Advertisement ID",
+            databaseId: "DB ID",
+            postalCode: "Postal code",
+            adType: "Advertisement type",
+            jobTypeDetail: "Job type"
+        },
+
+        de: {
+            home: "Startseite",
+            training: "Schulung",
+            heroTitle: "Anzeigen und Aufträge in Deutschland",
+            heroText: "Aktuelle Geschäftsanzeigen, Projekte und Möglichkeiten für Nachunternehmer und Geschäftspartner in Deutschland.",
+            totalAds: "Anzeigen insgesamt",
+            newAds: "Neue Anzeigen",
+            cities: "Städte",
+            companies: "Verknüpfte Firmen",
+            search: "Suche",
+            city: "Stadt",
+            jobType: "Arbeitsart",
+            status: "Status",
+            onlyNew: "Nur neue",
+            onlyCompanies: "Nur Anzeigen mit bestätigter Firma",
+            adsTitle: "Aktuelle Anzeigen",
+            loading: "Anzeigen werden geladen...",
+            errorTitle: "Fehler",
+            empty: "Keine Anzeigen entsprechen den Kriterien.",
+            whatTheySeek: "Was wird gesucht",
+            description: "Beschreibung",
+            openOriginal: "Originalanzeige öffnen",
+            company: "Firma",
+            contactPerson: "Kontaktperson",
+            email: "E-Mail",
+            phone: "Telefon",
+            website: "Webseite",
+            targetMarket: "Zielmarkt",
+            publishDate: "Anzeigendatum",
+            expiryDate: "Ablaufdatum",
+            statusLabel: "Anzeigenstatus",
+            priority: "Priorität",
+            leadScore: "Lead Score",
+            source: "Quelle",
+            adId: "Anzeigen-ID",
+            databaseId: "DB-ID",
+            postalCode: "Postleitzahl",
+            adType: "Anzeigentyp",
+            jobTypeDetail: "Arbeitsart"
+        }
+
+    };
+
+
+    /*
+     * ============================================================
+     * JEZIK
+     * ============================================================
+     */
+
+    function getLanguage() {
+
+        return localStorage.getItem("docbiz_language") || "bs";
+
+    }
+
+
+    function setLanguage(language) {
+
+        if (!translations[language]) {
+            language = "bs";
+        }
+
+        localStorage.setItem(
+            "docbiz_language",
+            language
+        );
+
+        document.documentElement.lang = language;
+
+        document
+            .getElementById("languageSelect")
+            .value = language;
+
+        document
+            .querySelectorAll("[data-i18n]")
+            .forEach(element => {
+
+                const key = element.dataset.i18n;
+
+                if (translations[language][key]) {
+                    element.textContent =
+                        translations[language][key];
+                }
+
+            });
+
+        updateSearchPlaceholder();
+
+        renderAds();
+
+    }
+
+
+    function updateSearchPlaceholder() {
+
+        const language = getLanguage();
+
+        const input =
+            document.getElementById("searchInput");
+
+        const placeholders = {
+
+            bs: "Traži po naslovu, gradu, opisu, firmi...",
+            en: "Search by title, city, description, company...",
+            de: "Nach Titel, Stadt, Beschreibung, Firma suchen..."
+
+        };
+
+        input.placeholder =
+            placeholders[language] || placeholders.bs;
+
+    }
+
+
+    /*
+     * ============================================================
+     * POMOĆNE FUNKCIJE
+     * ============================================================
+     */
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+        const date =
+            new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return escapeHtml(value);
+        }
+
+        return date.toLocaleDateString(
+            getLanguage() === "de"
+                ? "de-DE"
+                : getLanguage() === "en"
+                    ? "en-GB"
+                    : "bs-BA"
+        );
+
+    }
+
+
+    function uniqueSorted(values) {
+
+        return [...new Set(
+            values
+                .filter(Boolean)
+                .map(value => String(value).trim())
+                .filter(Boolean)
+        )].sort((a, b) =>
+            a.localeCompare(b, undefined, {
+                sensitivity: "base"
+            })
+        );
+
+    }
+
+
+    function getCompanyForAd(ad) {
+
+        if (!ad.FIRMA_ID) {
+            return null;
+        }
+
+        return allCompanies.find(
+            company =>
+                Number(company.id) === Number(ad.FIRMA_ID)
+        ) || null;
+
+    }
+
+
+    /*
+     * ============================================================
+     * UČITAVANJE PODATAKA
+     * ============================================================
+     */
+
+    async function loadAds() {
+
+        showLoading();
+
+        try {
+
+            const {
+                data: ads,
+                error: adsError
+            } = await _supabase
+                .from("OGLASI_NJEMACKA")
+                .select("*")
+                .order(
+                    "KREIRANO",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+            if (adsError) {
+                throw adsError;
+            }
+
+
+            allAds = ads || [];
+
+
+            /*
+             * Uzimamo samo firme koje su stvarno povezane
+             * preko FIRMA_ID.
+             */
+
+            const companyIds =
+                [...new Set(
+                    allAds
+                        .map(ad => ad.FIRMA_ID)
+                        .filter(
+                            id =>
+                                id !== null &&
+                                id !== undefined
+                        )
+                        .map(Number)
+                )];
+
+
+            allCompanies = [];
+
+
+            if (companyIds.length > 0) {
+
+                const {
+                    data: companies,
+                    error: companiesError
+                } = await _supabase
+                    .from("POSAO_KORISNICI")
+                    .select(`
+                        id,
+                        IME,
+                        MAIL,
+                        TELEFON,
+                        SITE,
+                        NADIMAK
+                    `)
+                    .in(
+                        "id",
+                        companyIds
+                    );
+
+
+                if (companiesError) {
+                    console.warn(
+                        "Firme nisu učitane:",
+                        companiesError
+                    );
+                } else {
+
+                    allCompanies =
+                        companies || [];
+
+                }
+
+            }
+
+
+            populateFilters();
+
+            updateStats();
+
+            hideLoading();
+
+            renderAds();
+
+        } catch (error) {
+
+            console.error(
+                "Supabase error:",
+                error
+            );
+
+            showError(
+                error.message ||
+                "Greška prilikom učitavanja podataka."
+            );
+
+        }
+
+    }
+
+
+    /*
+     * ============================================================
+     * FILTERI
+     * ============================================================
+     */
+
+    function populateFilters() {
+
+        const citySelect =
+            document.getElementById("cityFilter");
+
+        const jobSelect =
+            document.getElementById("jobFilter");
+
+
+        const currentCity =
+            citySelect.value;
+
+        const currentJob =
+            jobSelect.value;
+
+
+        citySelect.innerHTML =
+            '<option value="">Svi gradovi</option>';
+
+        jobSelect.innerHTML =
+            '<option value="">Sve vrste poslova</option>';
+
+
+        const cities =
+            uniqueSorted(
+                allAds.map(
+                    ad => ad.GRAD
+                )
+            );
+
+
+        const jobTypes =
+            uniqueSorted(
+                allAds.map(
+                    ad => ad.VRSTA_POSLA
+                )
+            );
+
+
+        cities.forEach(city => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = city;
+            option.textContent = city;
+
+            citySelect.appendChild(option);
+
+        });
+
+
+        jobTypes.forEach(job => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = job;
+            option.textContent = job;
+
+            jobSelect.appendChild(option);
+
+        });
+
+
+        if (cities.includes(currentCity)) {
+            citySelect.value = currentCity;
+        }
+
+        if (jobTypes.includes(currentJob)) {
+            jobSelect.value = currentJob;
+        }
+
+    }
+
+
+    function getFilteredAds() {
+
+        const search =
+            document
+                .getElementById("searchInput")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const city =
+            document
+                .getElementById("cityFilter")
+                .value;
+
+
+        const job =
+            document
+                .getElementById("jobFilter")
+                .value;
+
+
+        const status =
+            document
+                .getElementById("statusFilter")
+                .value;
+
+
+        const onlyNew =
+            document
+                .getElementById("onlyNew")
+                .checked;
+
+
+        const onlyCompanies =
+            document
+                .getElementById("onlyCompanies")
+                .checked;
+
+
+        return allAds.filter(ad => {
+
+            const company =
+                getCompanyForAd(ad);
+
+
+            if (city && ad.GRAD !== city) {
+                return false;
+            }
+
+
+            if (
+                job &&
+                ad.VRSTA_POSLA !== job
+            ) {
+                return false;
+            }
+
+
+            if (
+                status &&
+                String(ad.STATUS_OGLASA || "")
+                    .toUpperCase() !==
+                status.toUpperCase()
+            ) {
+                return false;
+            }
+
+
+            if (
+                onlyNew &&
+                String(ad.STATUS_OGLASA || "")
+                    .toUpperCase() !== "NOV"
+            ) {
+                return false;
+            }
+
+
+            if (
+                onlyCompanies &&
+                !company
+            ) {
+                return false;
+            }
+
+
+            if (search) {
+
+                const searchable = [
+
+                    ad.NASLOV,
+                    ad.OPIS,
+                    ad.STA_TRAZE,
+                    ad.TIP_OGLASA,
+                    ad.VRSTA_POSLA,
+                    ad.GRAD,
+                    ad.POSTANSKI_BROJ,
+                    ad.DRZAVA,
+                    ad.IZVOR,
+                    ad.CILJANO_TRZISTE,
+                    ad.KONTAKT_EMAIL,
+                    ad.KONTAKT_TELEFON,
+                    ad.KONTAKT_OSOBA,
+                    company?.IME,
+                    company?.NADIMAK,
+                    company?.MAIL,
+                    company?.TELEFON,
+                    company?.SITE
+
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+
+                if (!searchable.includes(search)) {
+                    return false;
+                }
+
+            }
+
+
+            return true;
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * STATISTIKA
+     * ============================================================
+     */
+
+    function updateStats() {
+
+        document
+            .getElementById("statTotal")
+            .textContent =
+            allAds.length;
+
+
+        document
+            .getElementById("statNew")
+            .textContent =
+            allAds.filter(
+                ad =>
+                    String(ad.STATUS_OGLASA || "")
+                        .toUpperCase() === "NOV"
+            ).length;
+
+
+        document
+            .getElementById("statCities")
+            .textContent =
+            uniqueSorted(
+                allAds.map(
+                    ad => ad.GRAD
+                )
+            ).length;
+
+
+        document
+            .getElementById("statCompanies")
+            .textContent =
+            new Set(
+                allAds
+                    .map(
+                        ad => ad.FIRMA_ID
+                    )
+                    .filter(Boolean)
+            ).size;
+
+    }
+
+
+    /*
+     * ============================================================
+     * RENDER OGLASA
+     * ============================================================
+     */
+
+    function renderAds() {
+
+        const grid =
+            document.getElementById("adsGrid");
+
+        const empty =
+            document.getElementById("emptyState");
+
+        const count =
+            document.getElementById("resultsCount");
+
+
+        const ads =
+            getFilteredAds();
+
+
+        count.textContent =
+            `${ads.length} ${getLanguage() === "de" ? "Anzeigen" : getLanguage() === "en" ? "ads" : "oglasa"}`;
+
+
+        grid.innerHTML = "";
+
+
+        if (ads.length === 0) {
+
+            grid.classList.add("hidden");
+            empty.classList.remove("hidden");
+
+            return;
+
+        }
+
+
+        empty.classList.add("hidden");
+        grid.classList.remove("hidden");
+
+
+        ads.forEach(ad => {
+
+            const company =
+                getCompanyForAd(ad);
+
+
+            const card =
+                document.createElement("article");
+
+            card.className = "ad-card";
+
+
+            const status =
+                String(
+                    ad.STATUS_OGLASA || ""
+                ).toUpperCase();
+
+
+            const isNew =
+                status === "NOV";
+
+
+            card.innerHTML = `
+
+                <div class="ad-top">
+
+                    <div class="badges">
+
+                        ${
+                            isNew
+                                ? `<span class="badge new">NOV</span>`
+                                : ""
+                        }
+
+                        ${
+                            company
+                                ? `<span class="badge company">
+                                    ${escapeHtml(
+                                        getLanguage() === "de"
+                                            ? "Firma bestätigt"
+                                            : getLanguage() === "en"
+                                                ? "Confirmed company"
+                                                : "Potvrđena firma"
+                                    )}
+                                   </span>`
+                                : ""
+                        }
+
+                        ${
+                            ad.PRIORITET
+                                ? `<span class="badge priority">
+                                    ${escapeHtml(
+                                        getLanguage() === "de"
+                                            ? "Priorität"
+                                            : getLanguage() === "en"
+                                                ? "Priority"
+                                                : "Prioritet"
+                                    )}: ${escapeHtml(ad.PRIORITET)}
+                                   </span>`
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <h3 class="ad-title">
+                        ${escapeHtml(ad.NASLOV || "Oglas")}
+                    </h3>
+
+
+                    <div class="ad-location">
+                        📍 ${escapeHtml(ad.GRAD || "Njemačka")}
+
+                        ${
+                            ad.POSTANSKI_BROJ
+                                ? ` · ${escapeHtml(ad.POSTANSKI_BROJ)}`
+                                : ""
+                        }
+                    </div>
+
+                </div>
+
+
+                ${
+                    company
+                        ? `
+                            <div class="company-box">
+
+                                <div class="company-label">
+                                    ${escapeHtml(
+                                        translations[
+                                            getLanguage()
+                                        ].company
+                                    )}
+                                </div>
+
+                                <div class="company-name">
+                                    ${escapeHtml(
+                                        company.IME
+                                    )}
+                                </div>
+
+                            </div>
+                          `
+                        : ""
+                }
+
+
+                <div class="ad-body">
+
+                    ${
+                        ad.VRSTA_POSLA
+                            ? `
+                                <div style="
+                                    font-size:12px;
+                                    font-weight:700;
+                                    color:#2563eb;
+                                    margin-bottom:8px;
+                                ">
+                                    ${escapeHtml(
+                                        ad.VRSTA_POSLA
+                                    )}
+                                </div>
+                              `
+                            : ""
+                    }
+
+
+                    <p class="description">
+                        ${escapeHtml(
+                            ad.STA_TRAZE ||
+                            ad.OPIS ||
+                            ""
+                        )}
+                    </p>
+
+                </div>
+
+
+                <div class="ad-footer">
+
+                    <span class="date">
+                        ${formatDate(
+                            ad.DATUM_OGLASA ||
+                            ad.KREIRANO
+                        )}
+                    </span>
+
+
+                    <button
+                        type="button"
+                        class="details-button"
+                        data-ad-id="${escapeHtml(ad.id)}"
+                    >
+                        ${escapeHtml(
+                            getLanguage() === "de"
+                                ? "Details"
+                                : getLanguage() === "en"
+                                    ? "Details"
+                                    : "Detalji"
+                        )}
+                    </button>
+
+                </div>
+
+            `;
+
+
+            const button =
+                card.querySelector(
+                    ".details-button"
+                );
+
+
+            button.addEventListener(
+                "click",
+                () => openModal(ad.id)
+            );
+
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * MODAL
+     * ============================================================
+     */
+
+    function openModal(id) {
+
+        const ad =
+            allAds.find(
+                item =>
+                    Number(item.id) === Number(id)
+            );
+
+
+        if (!ad) {
+            return;
+        }
+
+
+        const company =
+            getCompanyForAd(ad);
+
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+            ad.NASLOV || "Oglas";
+
+
+        const t =
+            translations[
+                getLanguage()
+            ];
+
+
+        const details =
+            document.getElementById(
+                "modalDetails"
+            );
+
+
+        const detailItems = [
+
+            [t.company, company?.IME || "-"],
+
+            [t.contactPerson,
+                ad.KONTAKT_OSOBA ||
+                company?.NADIMAK ||
+                "-"
+            ],
+
+            [t.email,
+                ad.KONTAKT_EMAIL ||
+                company?.MAIL ||
+                "-"
+            ],
+
+            [t.phone,
+                ad.KONTAKT_TELEFON ||
+                company?.TELEFON ||
+                "-"
+            ],
+
+            [t.website,
+                ad.SITE ||
+                company?.SITE ||
+                "-"
+            ],
+
+            [t.city,
+                ad.GRAD ||
+                "-"
+            ],
+
+            [t.postalCode,
+                ad.POSTANSKI_BROJ ||
+                "-"
+            ],
+
+            [t.jobTypeDetail,
+                ad.VRSTA_POSLA ||
+                "-"
+            ],
+
+            [t.adType,
+                ad.TIP_OGLASA ||
+                "-"
+            ],
+
+            [t.targetMarket,
+                ad.CILJANO_TRZISTE ||
+                "-"
+            ],
+
+            [t.publishDate,
+                formatDate(
+                    ad.DATUM_OGLASA
+                )
+            ],
+
+            [t.expiryDate,
+                formatDate(
+                    ad.DATUM_ISTEKA
+                )
+            ],
+
+            [t.statusLabel,
+                ad.STATUS_OGLASA ||
+                "-"
+            ],
+
+            [t.priority,
+                ad.PRIORITET ??
+                "-"
+            ],
+
+            [t.leadScore,
+                ad.LEAD_SCORE ??
+                0
+            ],
+
+            [t.source,
+                ad.IZVOR ||
+                "-"
+            ],
+
+            [t.adId,
+                ad.ID_OGLASA ||
+                "-"
+            ],
+
+            [t.databaseId,
+                ad.id ??
+                "-"
+            ]
+
+        ];
+
+
+        details.innerHTML =
+            detailItems
+                .map(
+                    ([label, value]) => `
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                ${escapeHtml(label)}
+                            </span>
+
+                            <div class="detail-value">
+                                ${escapeHtml(value)}
+                            </div>
+
+                        </div>
+                    `
+                )
+                .join("");
+
+
+        const companyContainer =
+            document.getElementById(
+                "modalCompany"
+            );
+
+
+        if (company) {
+
+            companyContainer.innerHTML = `
+
+                <div class="modal-section">
+
+                    <h3>
+                        ${escapeHtml(
+                            t.company
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHtml(
+                            company.IME
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+        } else {
+
+            companyContainer.innerHTML = "";
+
+        }
+
+
+        document
+            .getElementById("modalStaTraze")
+            .textContent =
+            ad.STA_TRAZE ||
+            "-";
+
+
+        document
+            .getElementById("modalDescription")
+            .textContent =
+            ad.OPIS ||
+            "-";
+
+
+        const originalUrl =
+            document.getElementById(
+                "modalOriginalUrl"
+            );
+
+
+        if (ad.URL_OGLASA) {
+
+            originalUrl.href =
+                ad.URL_OGLASA;
+
+            originalUrl.classList.remove(
+                "hidden"
+            );
+
+        } else {
+
+            originalUrl.href = "#";
+
+            originalUrl.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        document
+            .getElementById("modalOverlay")
+            .classList.remove("hidden");
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    function closeModal() {
+
+        document
+            .getElementById("modalOverlay")
+            .classList.add("hidden");
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /*
+     * ============================================================
+     * UI STATE
+     * ============================================================
+     */
+
+    function showLoading() {
+
+        document
+            .getElementById("loadingState")
+            .classList.remove("hidden");
+
+
+        document
+            .getElementById("errorState")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("emptyState")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("adsGrid")
+            .classList.add("hidden");
+
+    }
+
+
+    function hideLoading() {
+
+        document
+            .getElementById("loadingState")
+            .classList.add("hidden");
+
+    }
+
+
+    function showError(message) {
+
+        document
+            .getElementById("loadingState")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("adsGrid")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("emptyState")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("errorState")
+            .classList.remove("hidden");
+
+
+        document
+            .getElementById("errorMessage")
+            .textContent =
+            message;
+
+    }
+
+
+    /*
+     * ============================================================
+     * EVENTI
+     * ============================================================
+     */
+
+    document
+        .getElementById("languageSelect")
+        .addEventListener(
+            "change",
+            event => {
+
+                setLanguage(
+                    event.target.value
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById("searchInput")
+        .addEventListener(
+            "input",
+            renderAds
+        );
+
+
+    document
+        .getElementById("cityFilter")
+        .addEventListener(
+            "change",
+            renderAds
+        );
+
+
+    document
+        .getElementById("jobFilter")
+        .addEventListener(
+            "change",
+            renderAds
+        );
+
+
+    document
+        .getElementById("statusFilter")
+        .addEventListener(
+            "change",
+            renderAds
+        );
+
+
+    document
+        .getElementById("onlyNew")
+        .addEventListener(
+            "change",
+            renderAds
+        );
+
+
+    document
+        .getElementById("onlyCompanies")
+        .addEventListener(
+            "change",
+            renderAds
+        );
+
+
+    document
+        .getElementById("closeModal")
+        .addEventListener(
+            "click",
+            closeModal
+        );
+
+
+    document
+        .getElementById("modalOverlay")
+        .addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target.id ===
+                    "modalOverlay"
+                ) {
+                    closeModal();
+                }
+
+            }
+        );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+    /*
+     * ============================================================
+     * START
+     * ============================================================
+     */
+
+    document
+        .getElementById("currentYear")
+        .textContent =
+        new Date().getFullYear();
+
+
+    document
+        .getElementById("languageSelect")
+        .value =
+        getLanguage();
+
+
+    setLanguage(
+        getLanguage()
+    );
+
+
+    loadAds();
+
+</script>
+
+</body>
+</html>
