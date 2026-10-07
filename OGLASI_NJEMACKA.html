@@ -2020,8 +2020,9 @@ contactButton.onclick = function () {
 
     if (String(kontaktEmail).trim()) {
 
-        window.location.href =
-            "OGLASI_NJEMACKA_MAIL.html";
+     window.location.href =
+    "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+    encodeURIComponent(ad.id);
 
         return;
     }
