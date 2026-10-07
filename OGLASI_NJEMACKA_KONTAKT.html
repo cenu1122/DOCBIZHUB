@@ -12,6 +12,9 @@
 
     <title>DocBizHub – Pošalji upit</title>
 
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
 
         * {
@@ -366,6 +369,15 @@
         }
 
 
+        .submit-button:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
         .back-button {
 
             display: inline-flex;
@@ -447,6 +459,287 @@
         }
 
 
+        /* ======================================================
+           AI BLOK
+        ====================================================== */
+
+        .ai-box {
+
+            margin-bottom: 25px;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #dbe3ec;
+
+        }
+
+
+        .ai-box h3 {
+
+            font-size: 17px;
+
+            color: #111827;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .ai-description {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .ad-preview {
+
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 14px;
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            border:
+                1px solid #e5e7eb;
+
+        }
+
+
+        .ad-preview-title {
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: #111827;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .ad-preview-info {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+        }
+
+
+        .generate-button,
+        .confirm-button {
+
+            border: 0;
+
+            border-radius: 9px;
+
+            padding: 11px 16px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .generate-button {
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+        }
+
+
+        .generate-button:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .confirm-button {
+
+            background: #16a34a;
+
+            color: #ffffff;
+
+        }
+
+
+        .confirm-button:hover {
+
+            background: #15803d;
+
+        }
+
+
+        .generate-button:disabled,
+        .confirm-button:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .generated-message-box {
+
+            display: none;
+
+            margin-top: 18px;
+
+        }
+
+
+        .generated-message-box label {
+
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #374151;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        #generatedMessage {
+
+            width: 100%;
+
+            min-height: 170px;
+
+            resize: vertical;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 9px;
+
+            padding: 12px 13px;
+
+            background: #ffffff;
+
+            color: #111827;
+
+            outline: none;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        #generatedMessage:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+
+        }
+
+
+        .language-info {
+
+            display: none;
+
+            margin-bottom: 12px;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            background: #eff6ff;
+
+            color: #1e40af;
+
+            font-size: 13px;
+
+        }
+
+
+        .ai-status {
+
+            display: none;
+
+            margin-top: 14px;
+
+            padding: 11px 13px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        .ai-status.info {
+
+            display: block;
+
+            background: #eff6ff;
+
+            border:
+                1px solid #bfdbfe;
+
+            color: #1e40af;
+
+        }
+
+
+        .ai-status.success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            border:
+                1px solid #bbf7d0;
+
+            color: #166534;
+
+        }
+
+
+        .ai-status.error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            border:
+                1px solid #fecaca;
+
+            color: #991b1b;
+
+        }
+
+
         footer {
 
             background: #111827;
@@ -503,6 +796,22 @@
 
         }
 
+.ad-preview-description,
+.ad-preview-looking {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.ad-preview-label {
+    display: block;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+}
+        
     </style>
 
 </head>
@@ -614,6 +923,116 @@
         </div>
 
 
+        <!-- ==================================================
+             AI GENERATOR
+        =================================================== -->
+
+
+        <!-- ==================================================
+     PREGLED OGLASA + AI PORUKA
+=================================================== -->
+
+<div class="ai-box">
+
+    <h3>
+        Oglas na koji se javljate
+    </h3>
+
+    <!-- PREGLED ODABRANOG OGLASA -->
+
+    <div
+        id="adPreview"
+        class="ad-preview"
+    >
+
+        <div
+            id="adPreviewTitle"
+            class="ad-preview-title"
+        ></div>
+
+        <div
+            id="adPreviewInfo"
+            class="ad-preview-info"
+        ></div>
+
+        <div
+            id="adPreviewDescription"
+            class="ad-preview-description"
+        ></div>
+
+        <div
+            id="adPreviewLookingFor"
+            class="ad-preview-looking"
+        ></div>
+
+    </div>
+
+
+    <!-- AI GENERATOR -->
+
+    <h3 style="margin-top:22px;">
+        Pripremi poruku
+    </h3>
+
+
+    <p class="ai-description">
+        Generisat ćemo prijedlog poruke na jeziku korisnika
+        koji je povezan sa oglasom. Nakon potvrde poruka će
+        biti prevedena na jezik države oglasa i automatski
+        unesena u polje „Poruka“.
+    </p>
+
+
+    <button
+        type="button"
+        id="generateButton"
+        class="generate-button"
+    >
+        Generiši poruku
+    </button>
+
+
+    <div
+        id="aiStatus"
+        class="ai-status"
+    ></div>
+
+
+    <div
+        id="generatedMessageBox"
+        class="generated-message-box"
+    >
+
+        <div
+            id="languageInfo"
+            class="language-info"
+        ></div>
+
+
+        <label for="generatedMessage">
+            Pregled poruke
+        </label>
+
+
+        <textarea
+            id="generatedMessage"
+        ></textarea>
+
+
+        <button
+            type="button"
+            id="confirmButton"
+            class="confirm-button"
+        >
+            Potvrdi i prevedi
+        </button>
+
+    </div>
+
+</div>
+        <!-- ==================================================
+             ORIGINALNA KONTAKT FORMA
+        =================================================== -->
 
         <form id="contactForm">
 
@@ -791,12 +1210,37 @@
 
 <script>
 
+    /* ============================================================
+       SUPABASE
+    ============================================================ */
 
-    /*
-     * ============================================================
-     * PREVODI
-     * ============================================================
-     */
+    const SUPABASE_URL =
+        'https://uduwpvdjmanrgpumdrfh.supabase.co';
+
+
+    const SUPABASE_ANON_KEY =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+
+
+    const _supabase =
+        supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+    /* ============================================================
+       EDGE FUNCTION
+    ============================================================ */
+
+    const EDGE_FUNCTION_URL =
+        SUPABASE_URL +
+        '/functions/v1/GROQ_GENERATOR_PORUKA';
+
+
+    /* ============================================================
+       PREVODI
+    ============================================================ */
 
     const translations = {
 
@@ -947,12 +1391,9 @@
     };
 
 
-
-    /*
-     * ============================================================
-     * JEZIK
-     * ============================================================
-     */
+    /* ============================================================
+       JEZIK STRANICE
+    ============================================================ */
 
     function getLanguage() {
 
@@ -963,7 +1404,6 @@
         );
 
     }
-
 
 
     function setLanguage(language) {
@@ -1041,12 +1481,683 @@
     }
 
 
+    /* ============================================================
+       ID OGLASA
+    ============================================================ */
 
-    /*
-     * ============================================================
-     * FORMA
-     * ============================================================
-     */
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const adId =
+        urlParams.get("id");
+
+
+    /* ============================================================
+       ELEMENTI
+    ============================================================ */
+
+    const generateButton =
+        document.getElementById(
+            "generateButton"
+        );
+
+
+    const confirmButton =
+        document.getElementById(
+            "confirmButton"
+        );
+
+
+    const generatedMessageBox =
+        document.getElementById(
+            "generatedMessageBox"
+        );
+
+
+    const generatedMessage =
+        document.getElementById(
+            "generatedMessage"
+        );
+
+
+    const messageField =
+        document.getElementById(
+            "message"
+        );
+
+
+    const aiStatus =
+        document.getElementById(
+            "aiStatus"
+        );
+
+
+    const languageInfo =
+        document.getElementById(
+            "languageInfo"
+        );
+
+
+    const adPreview =
+        document.getElementById(
+            "adPreview"
+        );
+
+
+    const adPreviewTitle =
+        document.getElementById(
+            "adPreviewTitle"
+        );
+
+
+    const adPreviewInfo =
+        document.getElementById(
+            "adPreviewInfo"
+        );
+
+const adPreviewDescription =
+    document.getElementById(
+        "adPreviewDescription"
+    );
+
+
+const adPreviewLookingFor =
+    document.getElementById(
+        "adPreviewLookingFor"
+    );
+    
+    let currentAd = null;
+
+
+    /* ============================================================
+       STATUS
+    ============================================================ */
+
+    function showAiStatus(
+        text,
+        type = "info"
+    ) {
+
+        aiStatus.textContent =
+            text;
+
+        aiStatus.className =
+            "ai-status " + type;
+
+    }
+
+
+    function hideAiStatus() {
+
+        aiStatus.textContent =
+            "";
+
+        aiStatus.className =
+            "ai-status";
+
+    }
+
+
+    /* ============================================================
+       ESCAPE HTML
+    ============================================================ */
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* ============================================================
+       UČITAJ OGLAS
+    ============================================================ */
+
+    async function loadAd() {
+
+        if (!adId) {
+
+            showAiStatus(
+                "Nedostaje ID oglasa u URL adresi.",
+                "error"
+            );
+
+            generateButton.disabled =
+                true;
+
+            return;
+
+        }
+
+
+        try {
+
+            const {
+                data,
+                error
+            } = await _supabase
+
+                .from(
+                    "OGLASI_NJEMACKA"
+                )
+
+                .select(`
+                    id,
+                    FIRMA_ID,
+                    NASLOV,
+                    OPIS,
+                    STA_TRAZE,
+                    TIP_OGLASA,
+                    VRSTA_POSLA,
+                    GRAD,
+                    POSTANSKI_BROJ,
+                    DRZAVA
+                `)
+
+                .eq(
+                    "id",
+                    adId
+                )
+
+                .single();
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            if (!data) {
+
+                throw new Error(
+                    "Oglas nije pronađen."
+                );
+
+            }
+
+
+            currentAd =
+                data;
+
+
+            adPreviewTitle.textContent =
+                data.NASLOV ||
+                "Oglas";
+
+
+            let info = "";
+
+
+            if (data.VRSTA_POSLA) {
+
+                info +=
+                    "Vrsta posla: " +
+                    data.VRSTA_POSLA +
+                    " • ";
+
+            }
+
+
+            if (data.GRAD) {
+
+                info +=
+                    "Grad: " +
+                    data.GRAD +
+                    " • ";
+
+            }
+
+
+            if (data.DRZAVA) {
+
+                info +=
+                    "Država: " +
+                    data.DRZAVA;
+
+            }
+
+
+            adPreviewInfo.textContent =
+    info;
+
+
+/* OPIS OGLASA */
+
+if (data.OPIS) {
+
+    adPreviewDescription.innerHTML =
+        '<span class="ad-preview-label">Opis oglasa</span>' +
+        escapeHtml(data.OPIS);
+
+    adPreviewDescription.style.display =
+        "block";
+
+} else {
+
+    adPreviewDescription.style.display =
+        "none";
+
+}
+
+
+/* ŠTA TRAŽE */
+
+if (data.STA_TRAZE) {
+
+    adPreviewLookingFor.innerHTML =
+        '<span class="ad-preview-label">Šta traže</span>' +
+        escapeHtml(data.STA_TRAZE);
+
+    adPreviewLookingFor.style.display =
+        "block";
+
+} else {
+
+    adPreviewLookingFor.style.display =
+        "none";
+
+}
+
+
+adPreview.style.display =
+    "block";
+
+
+        } catch (error) {
+
+            console.error(
+                "Greška pri učitavanju oglasa:",
+                error
+            );
+
+
+            showAiStatus(
+                "Oglas nije moguće učitati.",
+                "error"
+            );
+
+
+            generateButton.disabled =
+                true;
+
+        }
+
+    }
+
+
+    /* ============================================================
+       POZIV EDGE FUNCTION
+    ============================================================ */
+
+    async function callGenerator(payload) {
+
+        const response =
+            await fetch(
+                EDGE_FUNCTION_URL,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "apikey":
+                            SUPABASE_ANON_KEY,
+
+                        "Authorization":
+                            "Bearer " +
+                            SUPABASE_ANON_KEY
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            payload
+                        )
+
+                }
+            );
+
+
+        let result = null;
+
+
+        try {
+
+            result =
+                await response.json();
+
+        } catch (error) {
+
+            result = null;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                result?.error ||
+                result?.message ||
+                "Greška Edge Function-a."
+
+            );
+
+        }
+
+
+        return result;
+
+    }
+
+
+    /* ============================================================
+       1. GENERIŠI PRVU PORUKU
+       
+       JEZIK:
+       POSAO_KORISNICI.DRZAVA
+    ============================================================ */
+
+    generateButton.addEventListener(
+        "click",
+        async function() {
+
+            if (!currentAd) {
+
+                showAiStatus(
+                    "Oglas još nije učitan.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            generateButton.disabled =
+                true;
+
+
+            confirmButton.disabled =
+                true;
+
+
+            generatedMessageBox.style.display =
+                "none";
+
+
+            showAiStatus(
+                "Generišem poruku...",
+                "info"
+            );
+
+
+            try {
+
+                const result =
+                    await callGenerator({
+
+                        action:
+                            "generate_native",
+
+                        ad_id:
+                            currentAd.id
+
+                    });
+
+
+                if (
+                    !result ||
+                    !result.message
+                ) {
+
+                    throw new Error(
+                        "Generator nije vratio poruku."
+                    );
+
+                }
+
+
+                generatedMessage.value =
+                    result.message;
+
+
+                languageInfo.textContent =
+                    "Poruka je generisana na jeziku korisnika: " +
+                    (
+                        result.language_name ||
+                        result.user_country ||
+                        result.language ||
+                        ""
+                    );
+
+
+                languageInfo.style.display =
+                    "block";
+
+
+                generatedMessageBox.style.display =
+                    "block";
+
+
+                showAiStatus(
+                    "Poruka je generisana. Pregledajte je prije potvrde.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Greška generatora:",
+                    error
+                );
+
+
+                showAiStatus(
+                    "Greška pri generisanju poruke: " +
+                    error.message,
+                    "error"
+                );
+
+            } finally {
+
+                generateButton.disabled =
+                    false;
+
+                confirmButton.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* ============================================================
+       2. POTVRDI I PREVEDI
+       
+       JEZIK:
+       OGLASI_NJEMACKA.DRZAVA
+    ============================================================ */
+
+    confirmButton.addEventListener(
+        "click",
+        async function() {
+
+            const approvedText =
+                generatedMessage
+                    .value
+                    .trim();
+
+
+            if (!approvedText) {
+
+                showAiStatus(
+                    "Poruka je prazna.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!currentAd) {
+
+                showAiStatus(
+                    "Oglas nije učitan.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            confirmButton.disabled =
+                true;
+
+
+            generateButton.disabled =
+                true;
+
+
+            showAiStatus(
+                "Prevodi potvrđenu poruku na jezik države oglasa...",
+                "info"
+            );
+
+
+            try {
+
+                const result =
+                    await callGenerator({
+
+                        action:
+                            "translate",
+
+                        ad_id:
+                            currentAd.id,
+
+                        approved_text:
+                            approvedText
+
+                    });
+
+
+                if (
+                    !result ||
+                    !result.message
+                ) {
+
+                    throw new Error(
+                        "Prevod nije vraćen."
+                    );
+
+                }
+
+
+                /*
+                 * OVDJE SE PREVEDENA PORUKA
+                 * AUTOMATSKI UBACUJE U
+                 * POSTOJEĆE POLJE "PORUKA".
+                 */
+
+                messageField.value =
+                    result.message;
+
+
+                showAiStatus(
+                    "Prevod je završen i ubačen u polje „Poruka“.",
+                    "success"
+                );
+
+
+                messageField.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+
+                messageField.focus();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Greška prevođenja:",
+                    error
+                );
+
+
+                showAiStatus(
+                    "Greška pri prevođenju: " +
+                    error.message,
+                    "error"
+                );
+
+            } finally {
+
+                confirmButton.disabled =
+                    false;
+
+                generateButton.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* ============================================================
+       ORIGINALNA FORMA
+    ============================================================ */
 
     document
         .getElementById(
@@ -1091,6 +2202,11 @@
                 }
 
 
+                /*
+                 * TVOJ POSTOJEĆI SISTEM
+                 * OVDJE OSTAVLJAMO KAKAV JE BIO.
+                 */
+
                 document
                     .getElementById(
                         "successMessage"
@@ -1119,12 +2235,9 @@
         );
 
 
-
-    /*
-     * ============================================================
-     * EVENTI
-     * ============================================================
-     */
+    /* ============================================================
+       PROMJENA JEZIKA STRANICE
+    ============================================================ */
 
     document
         .getElementById(
@@ -1142,12 +2255,9 @@
         );
 
 
-
-    /*
-     * ============================================================
-     * START
-     * ============================================================
-     */
+    /* ============================================================
+       START
+    ============================================================ */
 
     document
         .getElementById(
@@ -1161,6 +2271,8 @@
         getLanguage()
     );
 
+
+    loadAd();
 
 </script>
 
