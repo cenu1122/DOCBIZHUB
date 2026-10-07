@@ -513,6 +513,16 @@
         opacity: 0.9;
     }
 
+.contact-button {
+    background: #16a34a;
+    color: #ffffff;
+    border-color: #16a34a;
+}
+
+.contact-button:hover {
+    background: #15803d;
+}
+    
     footer {
         background: #111827;
         color: #9ca3af;
@@ -803,21 +813,29 @@
         </div>
 
 
-        <div class="modal-actions">
+       <div class="modal-actions">
 
-            <a
-                href="#"
-                id="modalOriginalUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="action-button primary"
-            >
-                <span data-i18n="openOriginal">
-                    Otvori originalni oglas
-                </span>
-            </a>
+    <a
+        href="#"
+        id="modalOriginalUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="action-button primary"
+    >
+        <span data-i18n="openOriginal">
+            Otvori originalni oglas
+        </span>
+    </a>
 
-        </div>
+    <button
+        type="button"
+        id="modalContactButton"
+        class="action-button contact-button"
+    >
+        Pošalji upit
+    </button>
+
+</div>
 
     </div>
 
@@ -1981,7 +1999,38 @@
 
         }
 
+/*
+ * ========================================================
+ * DUGME ZA SLANJE UPITA
+ * ========================================================
+ */
 
+const contactButton =
+    document.getElementById(
+        "modalContactButton"
+    );
+
+
+contactButton.onclick = function () {
+
+    const kontaktEmail =
+        ad.KONTAKT_EMAIL ||
+        company?.MAIL ||
+        "";
+
+    if (String(kontaktEmail).trim()) {
+
+        window.location.href =
+            "OGLASI_NJEMACKA_MAIL.html";
+
+        return;
+    }
+
+    window.location.href =
+        "OGLASI_NJEMACKA_KONTAKT.html";
+
+};
+        
         document
             .getElementById("modalOverlay")
             .classList.remove("hidden");
