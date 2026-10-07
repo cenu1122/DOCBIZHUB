@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kontaktiraj oglašivača - DocBizHub</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6fa;
+            color: #1f2937;
+        }
+
+        .container {
+            width: min(1000px, 94%);
+            margin: 30px auto;
+        }
+
+        .top {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .what-they-want {
+            margin-top: 16px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .what-they-want strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #9a3412;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        select,
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 13px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        select:focus,
+        input:focus,
+        textarea:focus {
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 300px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            padding: 13px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-generate {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-translate {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-send {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-back {
+            background: #64748b;
+            color: white;
+        }
+
+        .status {
+            display: none;
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .status.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .small {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .user-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 18px;
+        }
+
+        .user-info strong {
+            color: #1d4ed8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 18px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 700px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="loadingBox" class="loading">
+        Učitavam podatke...
+    </div>
+
+    <div id="mainContent" class="hidden">
+
+        <div class="top">
+            <h1>Kontaktiraj oglašivača</h1>
+
+            <p class="subtitle">
+                Napiši profesionalnu poruku oglašivaču.
+                Poruku možeš automatski generisati, prevesti na njemački,
+                zatim je još jednom urediti prije slanja.
+            </p>
+        </div>
+
+        <div id="statusBox" class="status"></div>
+
+        <!-- OGLAS -->
+        <div class="card">
+
+            <h2>Podaci o oglasu</h2>
+
+            <div class="info-grid">
+
+                <div class="info-box">
+                    <div class="info-label">Naslov oglasa</div>
+                    <div id="adTitle" class="info-value">-</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Firma</div>
+                    <div id="companyName" class="info-value">-</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Kontakt osoba</div>
+                    <div id="contactPerson" class="info-value">-</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Email oglašivača</div>
+                    <div id="advertiserEmail" class="info-value">-</div>
+                </div>
+
+            </div>
+
+            <div class="what-they-want">
+
+                <strong>ŠTA TRAŽE:</strong>
+
+                <div id="staTraze">
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KORISNIK -->
+        <div class="card">
+
+            <h2>Tvoji podaci</h2>
+
+            <div class="user-info">
+
+                <div>
+                    <strong>Ime:</strong>
+                    <span id="userName">-</span>
+                </div>
+
+                <div>
+                    <strong>Email:</strong>
+                    <span id="userEmail">-</span>
+                </div>
+
+                <div>
+                    <strong>Telefon:</strong>
+                    <span id="userPhone">-</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- GENERISANJE -->
+        <div class="card">
+
+            <h2>1. Izaberi jezik poruke</h2>
+
+            <div class="field">
+
+                <label for="languageSelect">
+                    Jezik
+                </label>
+
+                <select id="languageSelect">
+
+                    <option value="bs">
+                        Bosanski
+                    </option>
+
+                    <option value="de">
+                        Njemački
+                    </option>
+
+                    <option value="en">
+                        Engleski
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    id="generateButton"
+                    class="btn-generate"
+                    onclick="GROQ_GENERATOR_PORUKA()"
+                >
+                    🤖 GROQ - GENERIŠI PORUKU
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- PORUKA -->
+        <div class="card">
+
+            <h2>2. Poruka</h2>
+
+            <div class="field">
+
+                <label for="subjectInput">
+                    Naslov emaila
+                </label>
+
+                <input
+                    id="subjectInput"
+                    type="text"
+                    value="Interesse an Ihrem Inserat"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="messageInput">
+                    Poruka
+                </label>
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Ovdje će se pojaviti generisana poruka..."
+                ></textarea>
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    id="translateButton"
+                    class="btn-translate"
+                    onclick="GROQ_PREVEDI_NJEMACKI()"
+                >
+                    🇩🇪 GROQ - PREVEDI NA NJEMAČKI
+                </button>
+
+            </div>
+
+            <p class="small">
+                Nakon prevođenja možeš slobodno promijeniti njemački tekst
+                prije slanja.
+            </p>
+
+        </div>
+
+        <!-- SLANJE -->
+        <div class="card">
+
+            <h2>3. Pošalji poruku</h2>
+
+            <p class="small">
+                Završna poruka će biti poslana oglašivaču.
+                Kopija će biti poslana i na tvoj email.
+            </p>
+
+            <div class="buttons">
+
+                <button
+                    id="sendButton"
+                    class="btn-send"
+                    onclick="MAIL_GENERATOR()"
+                >
+                    ✉️ POŠALJI MAIL
+                </button>
+
+                <button
+                    class="btn-back"
+                    onclick="history.back()"
+                >
+                    ← NAZAD
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================================================
+       SUPABASE
+    ========================================================= */
+
+    const SUPABASE_URL =
+        "https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+        "OVDJE_STAVI_SVOJ_SUPABASE_ANON_KEY";
+
+    const _supabase =
+        supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+    /* =========================================================
+       GLOBALNI PODACI
+    ========================================================= */
+
+    let currentUser = null;
+    let currentUserData = null;
+    let currentAd = null;
+    let currentCompany = null;
+
+
+    /* =========================================================
+       URL PARAMETRI
+    ========================================================= */
+
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const adId =
+        urlParams.get("ad_id");
+
+
+    /* =========================================================
+       ELEMENTI
+    ========================================================= */
+
+    const loadingBox =
+        document.getElementById("loadingBox");
+
+    const mainContent =
+        document.getElementById("mainContent");
+
+    const statusBox =
+        document.getElementById("statusBox");
+
+    const adTitle =
+        document.getElementById("adTitle");
+
+    const companyName =
+        document.getElementById("companyName");
+
+    const contactPerson =
+        document.getElementById("contactPerson");
+
+    const advertiserEmail =
+        document.getElementById("advertiserEmail");
+
+    const staTraze =
+        document.getElementById("staTraze");
+
+    const userName =
+        document.getElementById("userName");
+
+    const userEmail =
+        document.getElementById("userEmail");
+
+    const userPhone =
+        document.getElementById("userPhone");
+
+    const languageSelect =
+        document.getElementById("languageSelect");
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const subjectInput =
+        document.getElementById("subjectInput");
+
+    const generateButton =
+        document.getElementById("generateButton");
+
+    const translateButton =
+        document.getElementById("translateButton");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+
+    /* =========================================================
+       STATUS
+    ========================================================= */
+
+    function showStatus(message, type = "info") {
+
+        statusBox.textContent = message;
+
+        statusBox.className =
+            "status " + type;
+
+    }
+
+
+    /* =========================================================
+       ESCAPE
+    ========================================================= */
+
+    function safeValue(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return "-";
+        }
+
+        return String(value);
+    }
+
+
+    /* =========================================================
+       LOAD USER
+    ========================================================= */
+
+    async function loadCurrentUser() {
+
+        const {
+            data,
+            error
+        } = await _supabase.auth.getUser();
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || !data.user) {
+
+            throw new Error(
+                "Nisi prijavljen. Molimo prijavi se."
+            );
+
+        }
+
+        currentUser =
+            data.user;
+
+
+        /* ---------------------------------------------
+           PROFIL
+        --------------------------------------------- */
+
+        const {
+            data: profile,
+            error: profileError
+        } = await _supabase
+            .from("POSAO_KORISNICI")
+            .select(`
+                id,
+                IME,
+                MAIL,
+                TELEFON,
+                NADIMAK,
+                SITE
+            `)
+            .eq("id", currentUser.id)
+            .maybeSingle();
+
+
+        if (profileError) {
+            throw profileError;
+        }
+
+
+        currentUserData = {
+
+            authId:
+                currentUser.id,
+
+            name:
+                profile?.IME ||
+                currentUser.user_metadata?.name ||
+                "",
+
+            email:
+                profile?.MAIL ||
+                currentUser.email ||
+                "",
+
+            phone:
+                profile?.TELEFON ||
+                "",
+
+            nickname:
+                profile?.NADIMAK ||
+                "",
+
+            site:
+                profile?.SITE ||
+                ""
+
+        };
+
+
+        userName.textContent =
+            safeValue(currentUserData.name);
+
+        userEmail.textContent =
+            safeValue(currentUserData.email);
+
+        userPhone.textContent =
+            safeValue(currentUserData.phone);
+
+    }
+
+
+    /* =========================================================
+       LOAD OGLAS
+    ========================================================= */
+
+    async function loadAd() {
+
+        if (!adId) {
+
+            throw new Error(
+                "Nedostaje ad_id u URL-u."
+            );
+
+        }
+
+
+        const {
+            data: ad,
+            error: adError
+        } = await _supabase
+            .from("OGLASI_NJEMACKA")
+            .select(`
+                id,
+                NASLOV,
+                STA_TRAZE,
+                FIRMA_ID,
+                KONTAKT_EMAIL,
+                KONTAKT_OSOBA,
+                URL_OGLASA
+            `)
+            .eq("id", adId)
+            .maybeSingle();
+
+
+        if (adError) {
+            throw adError;
+        }
+
+        if (!ad) {
+
+            throw new Error(
+                "Oglas nije pronađen."
+            );
+
+        }
+
+
+        currentAd =
+            ad;
+
+
+        /* ---------------------------------------------
+           FIRMA
+        --------------------------------------------- */
+
+        let company = null;
+
+
+        if (ad.FIRMA_ID) {
+
+            const {
+                data: companyData,
+                error: companyError
+            } = await _supabase
+                .from("POSAO_KORISNICI")
+                .select(`
+                    id,
+                    IME,
+                    MAIL,
+                    TELEFON,
+                    NADIMAK,
+                    SITE
+                `)
+                .eq("id", ad.FIRMA_ID)
+                .maybeSingle();
+
+
+            if (companyError) {
+                console.warn(
+                    "Firma nije pronađena:",
+                    companyError
+                );
+            }
+
+            company =
+                companyData;
+
+        }
+
+
+        currentCompany =
+            company;
+
+
+        /* ---------------------------------------------
+           EMAIL
+        --------------------------------------------- */
+
+        const recipientEmail =
+            ad.KONTAKT_EMAIL ||
+            company?.MAIL ||
+            "";
+
+
+        /* ---------------------------------------------
+           PODACI NA EKRAN
+        --------------------------------------------- */
+
+        adTitle.textContent =
+            safeValue(ad.NASLOV);
+
+        companyName.textContent =
+            safeValue(
+                company?.IME ||
+                company?.NADIMAK
+            );
+
+        contactPerson.textContent =
+            safeValue(
+                ad.KONTAKT_OSOBA ||
+                company?.IME
+            );
+
+        advertiserEmail.textContent =
+            safeValue(recipientEmail);
+
+        staTraze.textContent =
+            safeValue(ad.STA_TRAZE);
+
+
+        if (!recipientEmail) {
+
+            showStatus(
+                "Ovaj oglas nema email adresu. Kontaktiraj oglašivača preko originalnog oglasa.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       GROQ_GENERATOR_PORUKA
+    ========================================================= */
+
+    async function GROQ_GENERATOR_PORUKA() {
+
+        try {
+
+            if (!currentAd) {
+
+                throw new Error(
+                    "Oglas još nije učitan."
+                );
+
+            }
+
+            if (!currentUserData) {
+
+                throw new Error(
+                    "Podaci korisnika nisu učitani."
+                );
+
+            }
+
+
+            generateButton.disabled =
+                true;
+
+            translateButton.disabled =
+                true;
+
+            sendButton.disabled =
+                true;
+
+
+            showStatus(
+                "Groq priprema profesionalnu poruku...",
+                "info"
+            );
+
+
+            const language =
+                languageSelect.value;
+
+
+            const {
+                data,
+                error
+            } = await _supabase.functions.invoke(
+                "GROQ_GENERATOR_PORUKA",
+                {
+                    body: {
+
+                        ad_id:
+                            currentAd.id,
+
+                        language:
+                            language
+
+                    }
+                }
+            );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (!data || !data.success) {
+
+                throw new Error(
+                    data?.error ||
+                    "Groq nije uspio generisati poruku."
+                );
+
+            }
+
+
+            messageInput.value =
+                data.message || "";
+
+
+            if (language === "de") {
+
+                subjectInput.value =
+                    "Interesse an Ihrem Inserat";
+
+            }
+            else if (language === "en") {
+
+                subjectInput.value =
+                    "Interest in your advertisement";
+
+            }
+            else {
+
+                subjectInput.value =
+                    "Upit u vezi vašeg oglasa";
+
+            }
+
+
+            showStatus(
+                "Poruka je generisana. Možeš je sada izmijeniti.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "GROQ_GENERATOR_PORUKA:",
+                error
+            );
+
+            showStatus(
+                error.message ||
+                "Greška kod generisanja poruke.",
+                "error"
+            );
+
+        } finally {
+
+            generateButton.disabled =
+                false;
+
+            translateButton.disabled =
+                false;
+
+            sendButton.disabled =
+                false;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       GROQ_PREVEDI_NJEMACKI
+    ========================================================= */
+
+    async function GROQ_PREVEDI_NJEMACKI() {
+
+        try {
+
+            const message =
+                messageInput.value.trim();
+
+
+            if (!message) {
+
+                throw new Error(
+                    "Prvo napiši ili generiši poruku."
+                );
+
+            }
+
+
+            translateButton.disabled =
+                true;
+
+            generateButton.disabled =
+                true;
+
+            sendButton.disabled =
+                true;
+
+
+            showStatus(
+                "Prevodim poruku na njemački...",
+                "info"
+            );
+
+
+            const {
+                data,
+                error
+            } = await _supabase.functions.invoke(
+                "GROQ_PREVEDI_NJEMACKI",
+                {
+                    body: {
+
+                        message:
+                            message,
+
+                        ad_title:
+                            currentAd?.NASLOV || "",
+
+                        company:
+                            currentCompany?.IME ||
+                            currentCompany?.NADIMAK ||
+                            "",
+
+                        contact_person:
+                            currentAd?.KONTAKT_OSOBA ||
+                            currentCompany?.IME ||
+                            ""
+
+                    }
+                }
+            );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (!data || !data.success) {
+
+                throw new Error(
+                    data?.error ||
+                    "Prevod nije uspio."
+                );
+
+            }
+
+
+            messageInput.value =
+                data.message || "";
+
+
+            subjectInput.value =
+                "Interesse an Ihrem Inserat";
+
+
+            showStatus(
+                "Poruka je prevedena na njemački. Možeš je sada još jednom urediti.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "GROQ_PREVEDI_NJEMACKI:",
+                error
+            );
+
+            showStatus(
+                error.message ||
+                "Greška kod prevođenja.",
+                "error"
+            );
+
+        } finally {
+
+            translateButton.disabled =
+                false;
+
+            generateButton.disabled =
+                false;
+
+            sendButton.disabled =
+                false;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       MAIL_GENERATOR
+    ========================================================= */
+
+    async function MAIL_GENERATOR() {
+
+        try {
+
+            const message =
+                messageInput.value.trim();
+
+            const subject =
+                subjectInput.value.trim();
+
+
+            if (!message) {
+
+                throw new Error(
+                    "Poruka je prazna."
+                );
+
+            }
+
+
+            if (!subject) {
+
+                throw new Error(
+                    "Unesi naslov emaila."
+                );
+
+            }
+
+
+            if (!currentAd?.id) {
+
+                throw new Error(
+                    "Nedostaje ID oglasa."
+                );
+
+            }
+
+
+            if (
+                !confirm(
+                    "Da li želiš poslati ovu poruku oglašivaču?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            sendButton.disabled =
+                true;
+
+            generateButton.disabled =
+                true;
+
+            translateButton.disabled =
+                true;
+
+
+            showStatus(
+                "Šaljem poruku oglašivaču...",
+                "info"
+            );
+
+
+            const {
+                data,
+                error
+            } = await _supabase.functions.invoke(
+                "MAIL_GENERATOR",
+                {
+                    body: {
+
+                        ad_id:
+                            currentAd.id,
+
+                        subject:
+                            subject,
+
+                        message:
+                            message
+
+                    }
+                }
+            );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (!data || !data.success) {
+
+                throw new Error(
+                    data?.error ||
+                    "Email nije poslan."
+                );
+
+            }
+
+
+            showStatus(
+                "Email je uspješno poslan oglašivaču. Kopija je poslana i na tvoj email.",
+                "success"
+            );
+
+
+            messageInput.value =
+                message;
+
+
+        } catch (error) {
+
+            console.error(
+                "MAIL_GENERATOR:",
+                error
+            );
+
+            showStatus(
+                error.message ||
+                "Greška kod slanja emaila.",
+                "error"
+            );
+
+        } finally {
+
+            sendButton.disabled =
+                false;
+
+            generateButton.disabled =
+                false;
+
+            translateButton.disabled =
+                false;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       INIT
+    ========================================================= */
+
+    async function init() {
+
+        try {
+
+            await loadCurrentUser();
+
+            await loadAd();
+
+
+            loadingBox.classList.add(
+                "hidden"
+            );
+
+            mainContent.classList.remove(
+                "hidden"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "INIT ERROR:",
+                error
+            );
+
+
+            loadingBox.innerHTML = `
+                <div style="
+                    background:#fee2e2;
+                    color:#991b1b;
+                    padding:20px;
+                    border-radius:12px;
+                ">
+                    <strong>Greška:</strong><br>
+                    ${safeValue(error.message)}
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    init();
+
+</script>
+
+</body>
+</html>
