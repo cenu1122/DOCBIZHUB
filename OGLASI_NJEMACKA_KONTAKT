@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="bs">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>DocBizHub – Pošalji upit</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f7fb;
+
+            color: #1f2937;
+
+            line-height: 1.5;
+
+        }
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+
+        }
+
+
+        button,
+        input,
+        textarea {
+
+            font: inherit;
+
+        }
+
+
+        .header {
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+        }
+
+
+        .header-inner {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 16px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+        }
+
+
+        .logo {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            color: #111827;
+
+            white-space: nowrap;
+
+        }
+
+
+        .logo span {
+
+            color: #2563eb;
+
+        }
+
+
+        .nav {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .nav a {
+
+            color: #4b5563;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+
+        .nav a:hover {
+
+            color: #2563eb;
+
+        }
+
+
+        .language-select {
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            padding: 7px 10px;
+
+            background: #ffffff;
+
+            color: #374151;
+
+            cursor: pointer;
+
+        }
+
+
+        .hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1d4ed8,
+                    #2563eb
+                );
+
+            color: #ffffff;
+
+            padding: 45px 20px;
+
+        }
+
+
+        .hero-inner {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+        }
+
+
+        .hero h1 {
+
+            font-size: 38px;
+
+            line-height: 1.15;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .hero p {
+
+            max-width: 720px;
+
+            font-size: 16px;
+
+            opacity: 0.95;
+
+        }
+
+
+        .container {
+
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            padding: 35px 20px 60px;
+
+        }
+
+
+        .form-card {
+
+            background: #ffffff;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius: 16px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.05);
+
+        }
+
+
+        .form-card h2 {
+
+            font-size: 22px;
+
+            color: #111827;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .form-intro {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+            margin-bottom: 17px;
+
+        }
+
+
+        .field label {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #374151;
+
+        }
+
+
+        .field input,
+        .field textarea {
+
+            width: 100%;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 9px;
+
+            padding: 12px 13px;
+
+            background: #ffffff;
+
+            color: #111827;
+
+            outline: none;
+
+        }
+
+
+        .field input:focus,
+        .field textarea:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+
+        }
+
+
+        .field textarea {
+
+            min-height: 160px;
+
+            resize: vertical;
+
+        }
+
+
+        .required {
+
+            color: #dc2626;
+
+        }
+
+
+        .row {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+
+        }
+
+
+        .submit-button {
+
+            width: 100%;
+
+            border: 0;
+
+            border-radius: 10px;
+
+            padding: 13px 18px;
+
+            background: #16a34a;
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-top: 5px;
+
+        }
+
+
+        .submit-button:hover {
+
+            background: #15803d;
+
+        }
+
+
+        .back-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-top: 12px;
+
+            width: 100%;
+
+            padding: 12px 18px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 10px;
+
+            background: #ffffff;
+
+            color: #374151;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+        }
+
+
+        .back-button:hover {
+
+            background: #f9fafb;
+
+        }
+
+
+        .success {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            background: #dcfce7;
+
+            border:
+                1px solid #bbf7d0;
+
+            color: #166534;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+
+        .info-box {
+
+            margin-bottom: 22px;
+
+            padding: 14px 16px;
+
+            border-radius: 10px;
+
+            background: #eff6ff;
+
+            border:
+                1px solid #bfdbfe;
+
+            color: #1e40af;
+
+            font-size: 13px;
+
+        }
+
+
+        footer {
+
+            background: #111827;
+
+            color: #9ca3af;
+
+            padding: 28px 20px;
+
+            text-align: center;
+
+            font-size: 13px;
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .header-inner {
+
+                flex-wrap: wrap;
+
+            }
+
+
+            .nav {
+
+                width: 100%;
+
+                justify-content:
+                    space-between;
+
+            }
+
+
+            .hero h1 {
+
+                font-size: 30px;
+
+            }
+
+
+            .row {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-card {
+
+                padding: 20px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            DocBiz<span>Hub</span>
+        </a>
+
+
+        <nav class="nav">
+
+            <a
+                href="index.html"
+                data-i18n="home"
+            >
+                Početna
+            </a>
+
+
+            <a
+                href="OBUKA.html"
+                data-i18n="training"
+            >
+                Obuka
+            </a>
+
+
+            <select
+                id="languageSelect"
+                class="language-select"
+            >
+
+                <option value="bs">
+                    BS
+                </option>
+
+                <option value="en">
+                    EN
+                </option>
+
+                <option value="de">
+                    DE
+                </option>
+
+            </select>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<section class="hero">
+
+    <div class="hero-inner">
+
+        <h1 data-i18n="heroTitle">
+            Pošalji upit
+        </h1>
+
+
+        <p data-i18n="heroText">
+            Pošaljite upit u vezi sa oglasom ili poslovnom prilikom u Njemačkoj.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<main class="container">
+
+
+    <div class="form-card">
+
+
+        <h2 data-i18n="formTitle">
+            Kontakt forma
+        </h2>
+
+
+        <p
+            class="form-intro"
+            data-i18n="formIntro"
+        >
+            Molimo unesite svoje podatke i poruku. Odgovorit ćemo vam u najkraćem mogućem roku.
+        </p>
+
+
+        <div
+            class="info-box"
+            data-i18n="info"
+        >
+            Ovaj oglas nema javno dostupnu email adresu. Za kontakt koristite ovu formu.
+        </div>
+
+
+
+        <form id="contactForm">
+
+
+            <div class="row">
+
+
+                <div class="field">
+
+                    <label
+                        for="name"
+                        data-i18n="name"
+                    >
+                        Ime i prezime
+                        <span class="required">*</span>
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        autocomplete="name"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label
+                        for="company"
+                        data-i18n="company"
+                    >
+                        Firma
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        autocomplete="organization"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="row">
+
+
+                <div class="field">
+
+                    <label
+                        for="email"
+                        data-i18n="email"
+                    >
+                        Email
+                        <span class="required">*</span>
+                    </label>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        autocomplete="email"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label
+                        for="phone"
+                        data-i18n="phone"
+                    >
+                        Telefon
+                    </label>
+
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        autocomplete="tel"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="field">
+
+                <label
+                    for="message"
+                    data-i18n="message"
+                >
+                    Poruka
+                    <span class="required">*</span>
+                </label>
+
+
+                <textarea
+                    id="message"
+                    name="message"
+                    required
+                    placeholder="Napišite svoju poruku..."
+                ></textarea>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="submit-button"
+                data-i18n="send"
+            >
+                Pošalji upit
+            </button>
+
+
+        </form>
+
+
+
+        <div
+            id="successMessage"
+            class="success"
+            data-i18n="success"
+        >
+            Vaš upit je uspješno pripremljen. Hvala vam na interesovanju.
+        </div>
+
+
+
+        <a
+            href="OGLASI_NJEMACKA.html"
+            class="back-button"
+            data-i18n="back"
+        >
+            ← Nazad na oglase
+        </a>
+
+
+    </div>
+
+
+</main>
+
+
+
+<footer>
+
+    ©
+    <span id="currentYear"></span>
+    DocBizHub
+
+</footer>
+
+
+
+<script>
+
+
+    /*
+     * ============================================================
+     * PREVODI
+     * ============================================================
+     */
+
+    const translations = {
+
+        bs: {
+
+            home: "Početna",
+
+            training: "Obuka",
+
+            heroTitle: "Pošalji upit",
+
+            heroText:
+                "Pošaljite upit u vezi sa oglasom ili poslovnom prilikom u Njemačkoj.",
+
+            formTitle:
+                "Kontakt forma",
+
+            formIntro:
+                "Molimo unesite svoje podatke i poruku. Odgovorit ćemo vam u najkraćem mogućem roku.",
+
+            info:
+                "Ovaj oglas nema javno dostupnu email adresu. Za kontakt koristite ovu formu.",
+
+            name:
+                "Ime i prezime",
+
+            company:
+                "Firma",
+
+            email:
+                "Email",
+
+            phone:
+                "Telefon",
+
+            message:
+                "Poruka",
+
+            send:
+                "Pošalji upit",
+
+            success:
+                "Vaš upit je uspješno pripremljen. Hvala vam na interesovanju.",
+
+            back:
+                "← Nazad na oglase"
+
+        },
+
+
+        en: {
+
+            home: "Home",
+
+            training: "Training",
+
+            heroTitle:
+                "Send an Inquiry",
+
+            heroText:
+                "Send an inquiry regarding an advertisement or business opportunity in Germany.",
+
+            formTitle:
+                "Contact Form",
+
+            formIntro:
+                "Please enter your details and message. We will get back to you as soon as possible.",
+
+            info:
+                "This advertisement does not have a publicly available email address. Please use this form to contact us.",
+
+            name:
+                "Full name",
+
+            company:
+                "Company",
+
+            email:
+                "Email",
+
+            phone:
+                "Phone",
+
+            message:
+                "Message",
+
+            send:
+                "Send Inquiry",
+
+            success:
+                "Your inquiry has been successfully prepared. Thank you for your interest.",
+
+            back:
+                "← Back to advertisements"
+
+        },
+
+
+        de: {
+
+            home:
+                "Startseite",
+
+            training:
+                "Schulung",
+
+            heroTitle:
+                "Anfrage senden",
+
+            heroText:
+                "Senden Sie eine Anfrage zu einer Anzeige oder Geschäftsmöglichkeit in Deutschland.",
+
+            formTitle:
+                "Kontaktformular",
+
+            formIntro:
+                "Bitte geben Sie Ihre Daten und Ihre Nachricht ein. Wir werden uns schnellstmöglich bei Ihnen melden.",
+
+            info:
+                "Für diese Anzeige ist keine öffentliche E-Mail-Adresse verfügbar. Bitte verwenden Sie dieses Formular.",
+
+            name:
+                "Vor- und Nachname",
+
+            company:
+                "Firma",
+
+            email:
+                "E-Mail",
+
+            phone:
+                "Telefon",
+
+            message:
+                "Nachricht",
+
+            send:
+                "Anfrage senden",
+
+            success:
+                "Ihre Anfrage wurde erfolgreich vorbereitet. Vielen Dank für Ihr Interesse.",
+
+            back:
+                "← Zurück zu den Anzeigen"
+
+        }
+
+    };
+
+
+
+    /*
+     * ============================================================
+     * JEZIK
+     * ============================================================
+     */
+
+    function getLanguage() {
+
+        return (
+            localStorage.getItem(
+                "docbiz_language"
+            ) || "bs"
+        );
+
+    }
+
+
+
+    function setLanguage(language) {
+
+        if (!translations[language]) {
+
+            language = "bs";
+
+        }
+
+
+        localStorage.setItem(
+            "docbiz_language",
+            language
+        );
+
+
+        document.documentElement.lang =
+            language;
+
+
+        document
+            .getElementById(
+                "languageSelect"
+            )
+            .value =
+            language;
+
+
+        document
+            .querySelectorAll(
+                "[data-i18n]"
+            )
+            .forEach(element => {
+
+                const key =
+                    element.dataset.i18n;
+
+
+                if (
+                    translations[language][key]
+                ) {
+
+                    element.textContent =
+                        translations[language][key];
+
+                }
+
+            });
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        const placeholders = {
+
+            bs:
+                "Napišite svoju poruku...",
+
+            en:
+                "Write your message...",
+
+            de:
+                "Schreiben Sie Ihre Nachricht..."
+
+        };
+
+
+        message.placeholder =
+            placeholders[language];
+
+    }
+
+
+
+    /*
+     * ============================================================
+     * FORMA
+     * ============================================================
+     */
+
+    document
+        .getElementById(
+            "contactForm"
+        )
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const message =
+                    document
+                        .getElementById("message")
+                        .value
+                        .trim();
+
+
+                if (
+                    !name ||
+                    !email ||
+                    !message
+                ) {
+
+                    return;
+
+                }
+
+
+                document
+                    .getElementById(
+                        "successMessage"
+                    )
+                    .style.display =
+                    "block";
+
+
+                document
+                    .getElementById(
+                        "contactForm"
+                    )
+                    .reset();
+
+
+                document
+                    .getElementById(
+                        "successMessage"
+                    )
+                    .scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+            }
+        );
+
+
+
+    /*
+     * ============================================================
+     * EVENTI
+     * ============================================================
+     */
+
+    document
+        .getElementById(
+            "languageSelect"
+        )
+        .addEventListener(
+            "change",
+            event => {
+
+                setLanguage(
+                    event.target.value
+                );
+
+            }
+        );
+
+
+
+    /*
+     * ============================================================
+     * START
+     * ============================================================
+     */
+
+    document
+        .getElementById(
+            "currentYear"
+        )
+        .textContent =
+        new Date().getFullYear();
+
+
+    setLanguage(
+        getLanguage()
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
