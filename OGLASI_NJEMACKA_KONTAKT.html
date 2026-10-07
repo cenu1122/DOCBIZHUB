@@ -4320,501 +4320,444 @@ adPreview.style.display =
         }
     );
 
+</script>
 
+
+</body>
     /* ============================================================
-       ORIGINALNA FORMA
+       SLANJE KOMPLETNE PRIJAVE
     ============================================================ */
 
-  
+    document
+        .getElementById("contactForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                if (!currentAd) {
+
+                    showAiStatus(
+                        "Oglas nije učitan. Prijava nije moguća.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim();
+
+                const company =
+                    document
+                        .getElementById("company")
+                        .value
+                        .trim();
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+                const phone =
+                    document
+                        .getElementById("phone")
+                        .value
+                        .trim();
+
+                const message =
+                    document
+                        .getElementById("message")
+                        .value
+                        .trim();
 
 
-    /* ============================================================
-       PROMJE/* ============================================================
-   SLANJE KOMPLETNE PRIJAVE
-============================================================ */
+                if (!name || !email || !message) {
 
-document
-    .getElementById("contactForm")
-    .addEventListener(
-        "submit",
-        async function(event) {
+                    showAiStatus(
+                        "Molimo unesite ime, email i poruku.",
+                        "error"
+                    );
 
-            event.preventDefault();
+                    return;
+                }
 
 
-            /* ---------------------------------------------
-               PROVJERA OGLASA
-            --------------------------------------------- */
+                const submitButton =
+                    document.querySelector(
+                        '#contactForm button[type="submit"]'
+                    );
 
-            if (!currentAd) {
+
+                if (submitButton) {
+
+                    submitButton.disabled = true;
+
+                }
+
 
                 showAiStatus(
-                    "Oglas nije učitan. Prijava nije moguća.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            /* ---------------------------------------------
-               PODACI IZ FORME
-            --------------------------------------------- */
-
-            const name =
-                document
-                    .getElementById("name")
-                    .value
-                    .trim();
-
-
-            const company =
-                document
-                    .getElementById("company")
-                    .value
-                    .trim();
-
-
-            const email =
-                document
-                    .getElementById("email")
-                    .value
-                    .trim();
-
-
-            const phone =
-                document
-                    .getElementById("phone")
-                    .value
-                    .trim();
-
-
-            const message =
-                document
-                    .getElementById("message")
-                    .value
-                    .trim();
-
-
-            /* ---------------------------------------------
-               OBAVEZNA POLJA
-            --------------------------------------------- */
-
-            if (
-                !name ||
-                !email ||
-                !message
-            ) {
-
-                showAiStatus(
-                    "Molimo unesite ime, email i poruku.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            /* ---------------------------------------------
-               ZAŠTITA OD DVOSTRUKOG KLIKA
-            --------------------------------------------- */
-
-            const submitButton =
-                document.querySelector(
-                    '#contactForm button[type="submit"]'
+                    "Šaljem prijavu...",
+                    "info"
                 );
 
 
-            if (submitButton) {
+                try {
 
-                submitButton.disabled = true;
+                    /* -----------------------------------------
+                       PODACI FIRME
+                    ----------------------------------------- */
 
-            }
-
-
-            showAiStatus(
-                "Šaljem prijavu...",
-                "info"
-            );
+                    let firmaData = null;
 
 
-            try {
+                    if (currentAd.FIRMA_ID) {
 
-                /* -----------------------------------------
-                   1. UČITAJ PODATKE FIRME / VLASNIKA OGLASA
-                ----------------------------------------- */
+                        const {
+                            data,
+                            error
+                        } = await _supabase
 
-                let firmaData = null;
+                            .from("POSAO_KORISNICI")
+
+                            .select(`
+                                id,
+                                IME,
+                                MAIL,
+                                TELEFON,
+                                DRZAVA
+                            `)
+
+                            .eq(
+                                "id",
+                                currentAd.FIRMA_ID
+                            )
+
+                            .maybeSingle();
 
 
-                if (currentAd.FIRMA_ID) {
+                        if (error) {
+
+                            console.warn(
+                                "Podaci firme nisu učitani:",
+                                error
+                            );
+
+                        } else {
+
+                            firmaData = data;
+
+                        }
+
+                    }
+
+
+                    /* -----------------------------------------
+                       JEZIK
+                    ----------------------------------------- */
+
+                    const currentLanguage =
+                        getLanguage();
+
+
+                    let languageName =
+                        "Bosanski";
+
+
+                    if (currentLanguage === "en") {
+
+                        languageName =
+                            "English";
+
+                    }
+
+
+                    if (currentLanguage === "de") {
+
+                        languageName =
+                            "Deutsch";
+
+                    }
+
+
+                    /* -----------------------------------------
+                       KOMPLETNA PRIJAVA
+                    ----------------------------------------- */
+
+                    const prijava = {
+
+                        OGLAS_ID:
+                            currentAd.id,
+
+                        FIRMA_ID:
+                            currentAd.FIRMA_ID || null,
+
+
+                        IME:
+                            name,
+
+                        KOMPANIJA:
+                            company || null,
+
+                        EMAIL:
+                            email,
+
+                        TELEFON:
+                            phone || null,
+
+                        PORUKA:
+                            message,
+
+
+                        JEZIK_PRIJAVE:
+                            currentLanguage,
+
+                        JEZIK_NAZIV:
+                            languageName,
+
+
+                        /* SNAPSHOT OGLASA */
+
+                        NASLOV_OGLASA:
+                            currentAd.NASLOV || "",
+
+                        OPIS_OGLASA:
+                            currentAd.OPIS || null,
+
+                        STA_TRAZE_OGLAS:
+                            currentAd.STA_TRAZE || null,
+
+                        TIP_OGLASA:
+                            currentAd.TIP_OGLASA || null,
+
+                        VRSTA_POSLA_OGLASA:
+                            currentAd.VRSTA_POSLA || null,
+
+                        GRAD_OGLASA:
+                            currentAd.GRAD || null,
+
+                        POSTANSKI_BROJ_OGLASA:
+                            currentAd.POSTANSKI_BROJ || null,
+
+                        DRZAVA_OGLASA:
+                            currentAd.DRZAVA || null,
+
+
+                        /* OSTALI PODACI OGLASA */
+
+                        IZVOR_OGLASA:
+                            currentAd.IZVOR || null,
+
+                        URL_OGLASA:
+                            currentAd.URL_OGLASA || null,
+
+                        ID_OGLASA:
+                            currentAd.ID_OGLASA || null,
+
+                        DATUM_OGLASA:
+                            currentAd.DATUM_OGLASA || null,
+
+                        DATUM_ISTEKA_OGLASA:
+                            currentAd.DATUM_ISTEKA || null,
+
+
+                        /* PODACI FIRME */
+
+                        NAZIV_FIRME:
+                            firmaData?.IME ||
+                            company ||
+                            null,
+
+                        KONTAKT_OSOBA_OGLASA:
+                            firmaData?.IME ||
+                            null,
+
+                        KONTAKT_EMAIL_OGLASA:
+                            firmaData?.MAIL ||
+                            null,
+
+                        KONTAKT_TELEFON_OGLASA:
+                            firmaData?.TELEFON ||
+                            null,
+
+
+                        STATUS_PRIJAVE:
+                            "NOVA",
+
+                        PRIORITET:
+                            0,
+
+                        NAPOMENA:
+                            null
+
+                    };
+
+
+                    /* -----------------------------------------
+                       SPREMI PRIJAVU
+                    ----------------------------------------- */
 
                     const {
-                        data,
-                        error
+                        data: novaPrijava,
+                        error: prijavaError
                     } = await _supabase
 
                         .from(
-                            "POSAO_KORISNICI"
+                            "OGLASI_NJEMACKA_PRIJAVE"
                         )
 
-                        .select(`
-                            id,
-                            IME,
-                            MAIL,
-                            TELEFON,
-                            DRZAVA
-                        `)
-
-                        .eq(
-                            "id",
-                            currentAd.FIRMA_ID
+                        .insert(
+                            prijava
                         )
 
-                        .maybeSingle();
+                        .select("id")
+                        .single();
 
 
-                    if (error) {
+                    if (prijavaError) {
 
-                        console.warn(
-                            "Podaci firme nisu učitani:",
-                            error
+                        throw prijavaError;
+
+                    }
+
+
+                    /* -----------------------------------------
+                       LINK
+                    ----------------------------------------- */
+
+                    const linkStranice =
+                        "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+                        encodeURIComponent(
+                            currentAd.id
                         );
 
-                    } else {
 
-                        firmaData =
-                            data;
+                    /* -----------------------------------------
+                       ADMIN NOTIFIKACIJA
+                    ----------------------------------------- */
+
+                    const {
+                        error: notificationError
+                    } = await _supabase
+
+                        .from("NOTIFIKACIJE")
+
+                        .insert({
+
+                            VRSTA_NOTIFIKACIJE:
+                                "NOVA PRIJAVA",
+
+                            IME:
+                                name,
+
+                            FIRMA:
+                                company ||
+                                firmaData?.IME ||
+                                "",
+
+                            TELEFON:
+                                phone || "",
+
+                            EMAIL:
+                                email,
+
+                            LINK_STRANICE:
+                                linkStranice
+
+                        });
+
+
+                    if (notificationError) {
+
+                        console.error(
+                            "Prijava je spremljena, ali notifikacija nije kreirana:",
+                            notificationError
+                        );
+
+                    }
+
+
+                    /* -----------------------------------------
+                       USPJEH
+                    ----------------------------------------- */
+
+                    const successMessage =
+                        document.getElementById(
+                            "successMessage"
+                        );
+
+
+                    successMessage.textContent =
+                        translations[
+                            getLanguage()
+                        ].success;
+
+
+                    successMessage.style.display =
+                        "block";
+
+
+                    document
+                        .getElementById(
+                            "contactForm"
+                        )
+                        .reset();
+
+
+                    showAiStatus(
+                        "Prijava je uspješno poslana.",
+                        "success"
+                    );
+
+
+                    successMessage.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+
+                    console.log(
+                        "Prijava uspješno spremljena:",
+                        novaPrijava
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Greška pri slanju prijave:",
+                        error
+                    );
+
+
+                    showAiStatus(
+                        "Prijavu nije moguće poslati. Molimo pokušajte ponovo.",
+                        "error"
+                    );
+
+
+                } finally {
+
+                    if (submitButton) {
+
+                        submitButton.disabled =
+                            false;
 
                     }
 
                 }
 
-
-                /* -----------------------------------------
-                   2. JEZIK TRENUTNE STRANICE
-                ----------------------------------------- */
-
-                const currentLanguage =
-                    getLanguage();
-
-
-                let languageName =
-                    "Bosanski";
-
-
-                if (
-                    currentLanguage === "en"
-                ) {
-
-                    languageName =
-                        "English";
-
-                }
-
-
-                if (
-                    currentLanguage === "de"
-                ) {
-
-                    languageName =
-                        "Deutsch";
-
-                }
-
-
-                /* -----------------------------------------
-                   3. KOMPLETNA PRIJAVA
-                ----------------------------------------- */
-
-                const prijava = {
-
-                    OGLAS_ID:
-                        currentAd.id,
-
-                    FIRMA_ID:
-                        currentAd.FIRMA_ID || null,
-
-
-                    IME:
-                        name,
-
-                    KOMPANIJA:
-                        company || null,
-
-                    EMAIL:
-                        email,
-
-                    TELEFON:
-                        phone || null,
-
-                    PORUKA:
-                        message,
-
-
-                    JEZIK_PRIJAVE:
-                        currentLanguage,
-
-                    JEZIK_NAZIV:
-                        languageName,
-
-
-                    /* SNAPSHOT OGLASA */
-
-                    NASLOV_OGLASA:
-                        currentAd.NASLOV || "",
-
-                    OPIS_OGLASA:
-                        currentAd.OPIS || null,
-
-                    STA_TRAZE_OGLAS:
-                        currentAd.STA_TRAZE || null,
-
-                    TIP_OGLASA:
-                        currentAd.TIP_OGLASA || null,
-
-                    VRSTA_POSLA_OGLASA:
-                        currentAd.VRSTA_POSLA || null,
-
-                    GRAD_OGLASA:
-                        currentAd.GRAD || null,
-
-                    POSTANSKI_BROJ_OGLASA:
-                        currentAd.POSTANSKI_BROJ || null,
-
-                    DRZAVA_OGLASA:
-                        currentAd.DRZAVA || null,
-
-
-                    /* OSTALI PODACI OGLASA */
-
-                    IZVOR_OGLASA:
-                        currentAd.IZVOR || null,
-
-                    URL_OGLASA:
-                        currentAd.URL_OGLASA || null,
-
-                    ID_OGLASA:
-                        currentAd.ID_OGLASA || null,
-
-                    DATUM_OGLASA:
-                        currentAd.DATUM_OGLASA || null,
-
-                    DATUM_ISTEKA_OGLASA:
-                        currentAd.DATUM_ISTEKA || null,
-
-
-                    /* PODACI FIRME */
-
-                    NAZIV_FIRME:
-                        firmaData?.IME ||
-                        company ||
-                        null,
-
-                    KONTAKT_OSOBA_OGLASA:
-                        firmaData?.IME ||
-                        null,
-
-                    KONTAKT_EMAIL_OGLASA:
-                        firmaData?.MAIL ||
-                        null,
-
-                    KONTAKT_TELEFON_OGLASA:
-                        firmaData?.TELEFON ||
-                        null,
-
-
-                    STATUS_PRIJAVE:
-                        "NOVA",
-
-                    PRIORITET:
-                        0,
-
-                    NAPOMENA:
-                        null
-
-                };
-
-
-                /* -----------------------------------------
-                   4. UPIS KOMPLETNE PRIJAVE
-                ----------------------------------------- */
-
-                const {
-                    data: novaPrijava,
-                    error: prijavaError
-                } = await _supabase
-
-                    .from(
-                        "OGLASI_NJEMACKA_PRIJAVE"
-                    )
-
-                    .insert(
-                        prijava
-                    )
-
-                    .select(
-                        "id"
-                    )
-
-                    .single();
-
-
-                if (prijavaError) {
-
-                    throw prijavaError;
-
-                }
-
-
-                /* -----------------------------------------
-                   5. NAPRAVI LINK ZA DASHBOARD
-                ----------------------------------------- */
-
-                const linkStranice =
-                    "OGLASI_NJEMACKA_KONTAKT.html?id=" +
-                    encodeURIComponent(
-                        currentAd.id
-                    );
-
-
-                /* -----------------------------------------
-                   6. INSERT U NOTIFIKACIJE
-                ----------------------------------------- */
-
-                const {
-                    error: notificationError
-                } = await _supabase
-
-                    .from(
-                        "NOTIFIKACIJE"
-                    )
-
-                    .insert({
-
-                        VRSTA_NOTIFIKACIJE:
-                            "NOVA PRIJAVA",
-
-                        IME:
-                            name,
-
-                        FIRMA:
-                            company ||
-                            firmaData?.IME ||
-                            "",
-
-                        TELEFON:
-                            phone || "",
-
-                        EMAIL:
-                            email,
-
-                        LINK_STRANICE:
-                            linkStranice
-
-                    });
-
-
-                /*
-                 * VAŽNO:
-                 *
-                 * Ako je prijava već spremljena,
-                 * nećemo je brisati samo zato što
-                 * notifikacija nije uspjela.
-                 */
-
-                if (notificationError) {
-
-                    console.error(
-                        "Prijava je spremljena, ali notifikacija nije kreirana:",
-                        notificationError
-                    );
-
-                }
-
-
-                /* -----------------------------------------
-                   7. USPJEH
-                ----------------------------------------- */
-
-                const successMessage =
-                    document.getElementById(
-                        "successMessage"
-                    );
-
-
-                successMessage.textContent =
-                    translations[
-                        getLanguage()
-                    ].success;
-
-
-                successMessage.style.display =
-                    "block";
-
-
-                /* -----------------------------------------
-                   8. OČISTI FORMU
-                ----------------------------------------- */
-
-                document
-                    .getElementById(
-                        "contactForm"
-                    )
-                    .reset();
-
-
-                /* -----------------------------------------
-                   9. PORUKA O USPJEHU
-                ----------------------------------------- */
-
-                showAiStatus(
-                    "Prijava je uspješno poslana.",
-                    "success"
-                );
-
-
-                successMessage.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-
-                console.log(
-                    "Prijava uspješno spremljena:",
-                    novaPrijava
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Greška pri slanju prijave:",
-                    error
-                );
-
-
-                showAiStatus(
-                    "Prijavu nije moguće poslati. Molimo pokušajte ponovo.",
-                    "error"
-                );
-
-
-            } finally {
-
-                if (submitButton) {
-
-                    submitButton.disabled =
-                        false;
-
-                }
-
             }
+        );
 
-        }
-    );NA JEZIKA STRANICE
+
+    /* ============================================================
+       PROMJENA JEZIKA STRANICE
     ============================================================ */
 
     document
@@ -4857,6 +4800,7 @@ document
 
 </body>
 
+</html>
 </html>
 
     /* ============================================================
