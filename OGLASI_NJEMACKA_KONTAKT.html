@@ -1913,6 +1913,37 @@ console.log("LOAD AD ERROR:", error);
 
         const response =
             await fetch(
+                console.log("EDGE STATUS:", response.status);
+console.log("EDGE URL:", EDGE_FUNCTION_URL);
+
+const rawResponse = await response.text();
+
+console.log(
+    "EDGE RAW RESPONSE:",
+    rawResponse
+);
+
+let result = null;
+
+try {
+    result = JSON.parse(rawResponse);
+} catch (error) {
+    console.error(
+        "EDGE RESPONSE NIJE JSON:",
+        error
+    );
+}
+
+if (!response.ok) {
+    throw new Error(
+        result?.error ||
+        result?.message ||
+        rawResponse ||
+        "Greška Edge Function-a."
+    );
+}
+
+return result;
                 EDGE_FUNCTION_URL,
                 {
 
