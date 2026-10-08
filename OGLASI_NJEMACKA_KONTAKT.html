@@ -1552,7 +1552,23 @@ console.log(
         );
 
 
-    const adId = "21";
+   const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const adId =
+    urlParams.get("id");
+
+console.log(
+    "KONTAKT STRANICA - URL:",
+    window.location.href
+);
+
+console.log(
+    "KONTAKT STRANICA - AD ID:",
+    adId
+);
 
 console.log("FIKSNI ID OGLASA:", adId);
 
