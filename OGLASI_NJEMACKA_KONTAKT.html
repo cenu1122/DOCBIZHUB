@@ -967,7 +967,15 @@ DocBizHub
             SUPABASE_URL,
             SUPABASE_ANON_KEY
         );
-
+console.log("SUPABASE URL:", SUPABASE_URL);
+console.log(
+    "SUPABASE KEY LENGTH:",
+    SUPABASE_ANON_KEY?.length
+);
+console.log(
+    "SUPABASE KEY START:",
+    SUPABASE_ANON_KEY?.substring(0, 10)
+);
 
     /* ============================================================
        EDGE FUNCTION
