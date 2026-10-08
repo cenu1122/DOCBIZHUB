@@ -2013,23 +2013,24 @@ const contactButton =
 
 contactButton.onclick = function () {
 
+    console.log("LOG 1 - CIJELI OGLAS:", ad);
+    console.log("LOG 2 - ID OGLASA:", ad?.id);
+
     const kontaktEmail =
         ad.KONTAKT_EMAIL ||
         company?.MAIL ||
         "";
 
-    if (String(kontaktEmail).trim()) {
+    console.log("LOG 3 - EMAIL:", kontaktEmail);
 
-     window.location.href =
-    "OGLASI_NJEMACKA_KONTAKT.html?id=" +
-    encodeURIComponent(ad.id);
-
+    if (!ad?.id) {
+        alert("GREŠKA: Oglas nema ID!");
         return;
     }
 
     window.location.href =
-        "OGLASI_NJEMACKA_KONTAKT.html";
-
+        "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+        encodeURIComponent(ad.id);
 };
         
         document
