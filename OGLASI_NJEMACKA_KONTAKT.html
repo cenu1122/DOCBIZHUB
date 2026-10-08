@@ -1912,103 +1912,75 @@ console.log("LOAD AD ERROR:", error);
 
     async function callGenerator(payload) {
 
-        const response =
-            await fetch(
-                console.log("EDGE STATUS:", response.status);
-console.log("EDGE URL:", EDGE_FUNCTION_URL);
+    const response =
+        await fetch(
+            EDGE_FUNCTION_URL,
+            {
+                method: "POST",
 
-const rawResponse = await response.text();
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Authorization":
+                        "Bearer " +
+                        SUPABASE_ANON_KEY
+                },
 
-console.log(
-    "EDGE RAW RESPONSE:",
-    rawResponse
-);
+                body:
+                    JSON.stringify(payload)
+            }
+        );
 
-let result = null;
-
-try {
-    result = JSON.parse(rawResponse);
-} catch (error) {
-    console.error(
-        "EDGE RESPONSE NIJE JSON:",
-        error
+    console.log(
+        "EDGE STATUS:",
+        response.status
     );
-}
 
-if (!response.ok) {
-    throw new Error(
-        result?.error ||
-        result?.message ||
-        rawResponse ||
-        "Greška Edge Function-a."
+    console.log(
+        "EDGE URL:",
+        EDGE_FUNCTION_URL
     );
-}
 
-return result;
-                EDGE_FUNCTION_URL,
-                {
+    const rawResponse =
+        await response.text();
 
-                    method:
-                        "POST",
+    console.log(
+        "EDGE RAW RESPONSE:",
+        rawResponse
+    );
 
-                    headers: {
+    let result = null;
 
-                        "Content-Type":
-                            "application/json",
+    try {
 
-                        "apikey":
-                            SUPABASE_ANON_KEY,
-
-                        "Authorization":
-                            "Bearer " +
-                            SUPABASE_ANON_KEY
-
-                    },
-
-                    body:
-                        JSON.stringify(
-                            payload
-                        )
-
-                }
+        result =
+            JSON.parse(
+                rawResponse
             );
 
+    } catch (error) {
 
-        let result = null;
-
-
-        try {
-
-            result =
-                await response.json();
-
-        } catch (error) {
-
-            result = null;
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-
-                result?.error ||
-                result?.message ||
-                "Greška Edge Function-a."
-
-            );
-
-        }
-
-
-        return result;
-
+        console.error(
+            "EDGE RESPONSE NIJE JSON:",
+            error
+        );
     }
 
+    if (!response.ok) {
+
+        throw new Error(
+            result?.error ||
+            result?.message ||
+            rawResponse ||
+            "Greška Edge Function-a."
+        );
+    }
+
+    return result;
+}
 
 
-    /* ============================================================
+       /* ============================================================
        1. GENERIŠI PRVU PORUKU
     ============================================================ */
 
