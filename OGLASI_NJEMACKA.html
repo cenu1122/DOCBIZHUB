@@ -2010,33 +2010,18 @@ const contactButton =
         "modalContactButton"
     );
 
-
 contactButton.onclick = function () {
 
-alert("KLIK JE STIGAO DO contactButton");
-    
-    console.log("LOG 1 - CIJELI OGLAS:", ad);
-    console.log("LOG 2 - ID OGLASA:", ad?.id);
+    const adId = ad?.id;
 
-    const kontaktEmail =
-        ad.KONTAKT_EMAIL ||
-        company?.MAIL ||
-        "";
-
-    console.log("LOG 3 - EMAIL:", kontaktEmail);
-
-    if (!ad?.id) {
+    if (!adId) {
         alert("GREŠKA: Oglas nema ID!");
         return;
     }
 
-    console.log(
-    "URL KOJI ŠALJEMO:",
-    "OGLASI_NJEMACKA_KONTAKT.html?id=" +
-    encodeURIComponent(ad.id)
-);
-
-return;
+    window.location.href =
+        "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+        encodeURIComponent(adId);
 };
         
         document
