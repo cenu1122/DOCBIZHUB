@@ -1730,42 +1730,33 @@ console.log("KONTAKT STRANICA - AD ID:", adId);
 
         try {
 
-            const {
-                data,
-                error
-            } = await _supabase
+          const {
+    data,
+    error
+} = await _supabase
+    .from("OGLASI_NJEMACKA")
+    .select(`
+        id,
+        FIRMA_ID,
+        NASLOV,
+        OPIS,
+        STA_TRAZE,
+        TIP_OGLASA,
+        VRSTA_POSLA,
+        GRAD,
+        POSTANSKI_BROJ,
+        DRZAVA,
+        IZVOR,
+        URL_OGLASA,
+        ID_OGLASA,
+        DATUM_OGLASA,
+        DATUM_ISTEKA
+    `)
+    .eq("id", adId)
+    .single();
 
-                .from(
-                    "OGLASI_NJEMACKA"
-                )
-
-                console.log("LOAD AD DATA:", data);
+console.log("LOAD AD DATA:", data);
 console.log("LOAD AD ERROR:", error);
-
-                .select(`
-                    id,
-                    FIRMA_ID,
-                    NASLOV,
-                    OPIS,
-                    STA_TRAZE,
-                    TIP_OGLASA,
-                    VRSTA_POSLA,
-                    GRAD,
-                    POSTANSKI_BROJ,
-                    DRZAVA,
-                    IZVOR,
-                    URL_OGLASA,
-                    ID_OGLASA,
-                    DATUM_OGLASA,
-                    DATUM_ISTEKA
-                `)
-
-                .eq(
-                    "id",
-                    adId
-                )
-
-                .single();
 
 
             if (error) {
