@@ -2634,97 +2634,39 @@ console.log("LOAD AD ERROR:", error);
 
 const brojPrijave = novaPrijava.id;
 
-const tekstNotifikacije =
-    "Nova prijava je poslata. Broj prijave: " +
-    brojPrijave;
+const {
+    data: novaNotifikacija,
+    error: notificationError
+} = await _supabase
+    .from("NOTIFIKACIJE")
+    .insert({
+        PRIJAVA_ID: brojPrijave,
 
-const { data: novaNotifikacija, error: notificationError } =
-    await _supabase
-        .from("NOTIFIKACIJE")
-        .insert({
-            VRSTA_NOTIFIKACIJE: "NOVA PRIJAVA",
-            IME: tekstNotifikacije,
-            FIRMA: company || firmaData?.IME || "",
-            TELEFON: phone || "",
-            EMAIL: email,
-            LINK_STRANICE:
-                "OGLASI_NJEMACKA_KONTAKT.html?id=" +
-                encodeURIComponent(currentAd.id)
-        })
-        .select("id")
-        .maybeSingle();
+        VRSTA_NOTIFIKACIJE:
+            "NOVA PRIJAVA",
+
+        IME:
+            "Nova prijava je poslata. Broj prijave: " +
+            brojPrijave,
+
+        LINK_STRANICE:
+            "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+            encodeURIComponent(currentAd.id)
+    })
+    .select("id, PRIJAVA_ID")
+    .single();
 
 if (notificationError) {
     console.error(
-        "Greška pri upisu notifikacije:",
+        "GREŠKA PRI UPISU NOTIFIKACIJE:",
         notificationError
     );
 } else {
     console.log(
-        "Notifikacija uspješno upisana za prijavu broj:",
-        brojPrijave
+        "NOTIFIKACIJA USPJEŠNO UPISANA:",
+        novaNotifikacija
     );
 }
-
-                    /* -----------------------------------------
-                       LINK
-                    ----------------------------------------- */
-
-                    const linkStranice =
-                        "OGLASI_NJEMACKA_KONTAKT.html?id=" +
-                        encodeURIComponent(
-                            currentAd.id
-                        );
-
-
-
-                    /* -----------------------------------------
-                       ADMIN NOTIFIKACIJA
-                    ----------------------------------------- */
-
-                    const {
-                        error: notificationError
-                    } = await _supabase
-
-                        .from(
-                            "NOTIFIKACIJE"
-                        )
-
-                        .insert({
-
-                            VRSTA_NOTIFIKACIJE:
-                                "NOVA PRIJAVA",
-
-                            IME:
-                                name,
-
-                            FIRMA:
-                                company ||
-                                firmaData?.IME ||
-                                "",
-
-                            TELEFON:
-                                phone ||
-                                "",
-
-                            EMAIL:
-                                email,
-
-                            LINK_STRANICE:
-                                linkStranice
-
-                        });
-
-
-                    if (notificationError) {
-
-                        console.error(
-                            "Prijava je spremljena, ali notifikacija nije kreirana:",
-                            notificationError
-                        );
-
-                    }
-
 
 
                     /* -----------------------------------------
