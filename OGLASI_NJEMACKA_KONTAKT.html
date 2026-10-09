@@ -1542,36 +1542,20 @@ console.log(
 
 
 
-    /* ============================================================
-       ID OGLASA
-    ============================================================ */
+   /* ============================================================
+   ID OGLASA
+============================================================ */
 
-     const urlParams =
-    new URLSearchParams(
-        window.location.search
-    );
-
-const adId =
-    urlParams.get("id");
-
-console.log(
-    "KONTAKT STRANICA - URL:",
-    window.location.href
-);
-
-console.log(
-    "KONTAKT STRANICA - AD ID:",
-    adId
-);
-
-console.log("FIKSNI ID OGLASA:", adId);
+var adId = new URLSearchParams(
+    window.location.search
+).get("id");
 
 console.log("KONTAKT STRANICA - URL:", window.location.href);
 console.log("KONTAKT STRANICA - AD ID:", adId);
 
-    /* ============================================================
-       ELEMENTI
-    ============================================================ */
+/* ============================================================
+   ELEMENTI
+============================================================ */
 
     const generateButton =
         document.getElementById(
