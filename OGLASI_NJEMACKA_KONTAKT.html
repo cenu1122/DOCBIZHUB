@@ -2628,7 +2628,43 @@ console.log("LOAD AD ERROR:", error);
 
                     }
 
+/* =========================================
+   NOTIFIKACIJA O NOVOJ PRIJAVI
+========================================= */
 
+const brojPrijave = novaPrijava.id;
+
+const tekstNotifikacije =
+    "Nova prijava je poslata. Broj prijave: " +
+    brojPrijave;
+
+const { data: novaNotifikacija, error: notificationError } =
+    await _supabase
+        .from("NOTIFIKACIJE")
+        .insert({
+            VRSTA_NOTIFIKACIJE: "NOVA PRIJAVA",
+            IME: tekstNotifikacije,
+            FIRMA: company || firmaData?.IME || "",
+            TELEFON: phone || "",
+            EMAIL: email,
+            LINK_STRANICE:
+                "OGLASI_NJEMACKA_KONTAKT.html?id=" +
+                encodeURIComponent(currentAd.id)
+        })
+        .select("id")
+        .maybeSingle();
+
+if (notificationError) {
+    console.error(
+        "Greška pri upisu notifikacije:",
+        notificationError
+    );
+} else {
+    console.log(
+        "Notifikacija uspješno upisana za prijavu broj:",
+        brojPrijave
+    );
+}
 
                     /* -----------------------------------------
                        LINK
