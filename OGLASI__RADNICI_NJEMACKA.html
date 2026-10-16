@@ -756,6 +756,8 @@
     }
 
     allJobs = data || [];
+    console.log("Broj oglasa dobijenih iz Supabasea:", allJobs.length);
+console.log("Naslovi oglasa:", allJobs.map(job => job.NASLOV));
     renderJobs();
   }
 
