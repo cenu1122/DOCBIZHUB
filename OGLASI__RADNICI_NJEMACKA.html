@@ -1,185 +1,920 @@
+
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oglasi - Radnici Njemačka</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-            font-size: 24px;
-        }
-        .btn-add {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .btn-add:hover {
-            background-color: #219653;
-        }
-        .ad-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .ad-card h3 {
-            margin-top: 0;
-            color: #2980b9;
-        }
-        .ad-meta {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-        /* Modal stilovi za formu */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-        }
-        .modal-content input, .modal-content textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0 15px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .btn-cancel {
-            background-color: #95a5a6;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-save {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pronađi posao u Njemačkoj. Pregledaj oglase i besplatno predloži novi oglas.">
+  <title>DocBizHub | Poslovi u Njemačkoj</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #1769e0;
+      --dark: #14243a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f5f7fb;
+      --white: #ffffff;
+      --green: #087f5b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.55;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    button { cursor: pointer; }
+
+    header {
+      background: #102747;
+      color: white;
+      padding: 17px 20px;
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    .brand span { color: #78b3ff; }
+
+    .hero {
+      background: linear-gradient(125deg, #12335d, #1769e0);
+      color: white;
+      padding: 48px 20px;
+    }
+
+    .hero-inner, main, footer {
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(29px, 5vw, 45px);
+      line-height: 1.15;
+      margin: 0 0 12px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: #e0edff;
+      margin: 0 0 22px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 17px;
+      font-weight: 700;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover { background: #0d54bc; }
+
+    .btn-light {
+      background: white;
+      color: #164b94;
+    }
+
+    .btn-outline {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--dark);
+    }
+
+    main { padding: 27px 20px 45px; }
+
+    .toolbar {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: white;
+      color: var(--dark);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #bfdbfe;
+      border-color: var(--primary);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 25px 0 15px;
+    }
+
+    .section-heading h2 { margin: 0; font-size: 23px; }
+
+    #resultCount { color: var(--muted); font-size: 14px; }
+
+    .jobs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .job-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .job-card h3 {
+      font-size: 20px;
+      line-height: 1.3;
+      margin: 12px 0 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .company { color: #334155; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 13px 0;
+    }
+
+    .tag {
+      background: #edf4ff;
+      color: #1d4f91;
+      border-radius: 20px;
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag-green {
+      background: #e7f8ef;
+      color: var(--green);
+    }
+
+    .description {
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      margin: 5px 0 15px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      padding: 13px 0;
+      border-top: 1px solid #eef2f7;
+      margin-top: auto;
+    }
+
+    .detail { font-size: 13px; overflow-wrap: anywhere; }
+    .detail strong { display: block; color: #334155; }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .empty, .notice {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .notice { text-align: left; margin-bottom: 20px; }
+
+    .form-section {
+      margin-top: 36px;
+      padding: 23px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .form-section h2 { margin-top: 0; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .check-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 7px 0;
+    }
+
+    .check-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .check-row input { width: auto; }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    #formMessage {
+      margin-top: 15px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .success { color: var(--green); }
+    .error { color: #b42318; }
+
+    footer {
+      padding: 25px 20px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 800px) {
+      .toolbar { grid-template-columns: 1fr 1fr; }
+      .jobs { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .toolbar, .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .hero { padding: 35px 18px; }
+      main { padding-left: 13px; padding-right: 13px; }
+      .job-card { padding: 16px; }
+    }
+  </style>
 </head>
+
 <body>
+<header>
+  <div class="nav">
+    <div class="brand">DocBiz<span>Hub</span></div>
+    <button class="btn btn-light" id="openFormTop" type="button">
+      + Dodaj novi oglas
+    </button>
+  </div>
+</header>
 
-<div class="container">
-    <header>
-        <h1>🇩🇪 Oglasi za radnike - Njemačka</h1>
-        <button class="btn-add" onclick="otvoriFormu()">+ Dodaj novi oglas</button>
-    </header>
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Pronađi posao u Njemačkoj</h1>
+    <p>
+      Pregledaj dostupne oglase za posao, pronađi odgovarajuću poziciju
+      i prijavi se direktno poslodavcu. Imaš oglas? Predloži ga besplatno.
+    </p>
+    <button class="btn btn-light" id="openFormHero" type="button">
+      Objavi oglas za posao
+    </button>
+  </div>
+</section>
 
-    <!-- Lista oglasa -->
-    <div id="lista-oglasi">
-        <div class="ad-card">
-            <h3>Potrebni građevinski radnici (München)</h3>
-            <div class="ad-meta">Kategorija: radnici:njewmacka | Objavljeno: 16.10.2026.</div>
-            <p>Traže se iskusni zidari i tesari za rad na gradilištu u Münchenu. Obezbjeđen smještaj i radna vizu.</p>
+<main>
+  <div class="notice">
+    <strong>Kako funkcioniše objava?</strong><br>
+    Novi oglasi se prvo šalju na provjeru. Nakon odobrenja mogu biti
+    prikazani javno na stranici.
+  </div>
+
+  <div class="toolbar">
+    <input id="searchInput" type="search"
+      placeholder="Traži posao, firmu ili grad..."
+      aria-label="Pretraga oglasa">
+
+    <select id="categoryFilter" aria-label="Kategorija">
+      <option value="">Sve kategorije</option>
+      <option value="Zavarivanje">Zavarivanje</option>
+      <option value="Elektrika">Elektrika</option>
+      <option value="Građevina">Građevina</option>
+      <option value="Ugostiteljstvo">Ugostiteljstvo</option>
+      <option value="Transport">Transport</option>
+      <option value="Proizvodnja">Proizvodnja</option>
+      <option value="Ostalo">Ostalo</option>
+    </select>
+
+    <select id="workFilter" aria-label="Vrsta posla">
+      <option value="">Sve vrste posla</option>
+      <option value="Puno radno vrijeme">Puno radno vrijeme</option>
+      <option value="Nepuno radno vrijeme">Nepuno radno vrijeme</option>
+      <option value="Privremeni">Privremeni</option>
+      <option value="Sezonski">Sezonski</option>
+    </select>
+
+    <button class="btn btn-outline" id="resetFilters" type="button">
+      Resetuj
+    </button>
+  </div>
+
+  <div class="section-heading">
+    <h2>Aktuelni oglasi</h2>
+    <span id="resultCount">Učitavanje oglasa...</span>
+  </div>
+
+  <div id="loading" class="empty">Učitavam oglase iz baze...</div>
+  <div id="jobsList" class="jobs"></div>
+  <div id="emptyState" class="empty" hidden>
+    Nema oglasa koji odgovaraju tvojoj pretrazi.
+  </div>
+  <div id="loadError" class="empty error" hidden></div>
+
+  <section id="addJobSection" class="form-section" hidden>
+    <h2>Dodaj novi oglas za posao</h2>
+    <p class="muted">
+      Popuni podatke koje imaš. Obavezna su samo polja označena zvjezdicom.
+      Oglas će biti poslan na provjeru.
+    </p>
+
+    <form id="jobForm">
+      <div class="form-grid">
+        <div class="field full">
+          <label for="title">Naslov oglasa *</label>
+          <input id="title" name="title" maxlength="255" required
+            placeholder="Npr. Električar – rad u Njemačkoj">
         </div>
-        <!-- Ovdje će se dinamički učitavati ostali oglasi iz baze -->
-    </div>
-</div>
 
-<!-- Modal forma za dodavanje novog oglasa -->
-<div id="modalOglas" class="modal">
-    <div class="modal-content">
-        <h2>Dodaj novi oglas</h2>
-        <label>Naslov oglasa:</label>
-        <input type="text" id="naslovOglasa" placeholder="npr. Vozač kamiona C kategorije">
-        
-        <label>Kategorija:</label>
-        <input type="text" id="kategorijaOglasa" value="radnici:njewmacka">
-
-        <label>Opis i detalji:</label>
-        <textarea id="opisOglasa" rows="4" placeholder="Unesite uslove, platu i kontakt..."></textarea>
-
-        <div class="modal-buttons">
-            <button class="btn-cancel" onclick="zatvoriFormu()">Otkaži</button>
-            <button class="btn-save" onclick="sacuvajOglas()">Sačuvaj oglas</button>
+        <div class="field">
+          <label for="position">Pozicija</label>
+          <input id="position" name="position" maxlength="150"
+            placeholder="Npr. Električar">
         </div>
-    </div>
-</div>
+
+        <div class="field">
+          <label for="category">Kategorija</label>
+          <select id="category" name="category">
+            <option value="">Odaberi kategoriju</option>
+            <option>Zavarivanje</option>
+            <option>Elektrika</option>
+            <option>Građevina</option>
+            <option>Ugostiteljstvo</option>
+            <option>Transport</option>
+            <option>Proizvodnja</option>
+            <option>Ostalo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="company">Firma</label>
+          <input id="company" name="company" maxlength="255">
+        </div>
+
+        <div class="field">
+          <label for="city">Grad</label>
+          <input id="city" name="city" maxlength="150">
+        </div>
+
+        <div class="field">
+          <label for="state">Savezna pokrajina</label>
+          <input id="state" name="state" maxlength="150"
+            placeholder="Npr. Bayern">
+        </div>
+
+        <div class="field">
+          <label for="salaryFrom">Plata od (€)</label>
+          <input id="salaryFrom" name="salaryFrom" type="number"
+            min="0" max="1000000" step="0.01">
+        </div>
+
+        <div class="field">
+          <label for="salaryTo">Plata do (€)</label>
+          <input id="salaryTo" name="salaryTo" type="number"
+            min="0" max="1000000" step="0.01">
+        </div>
+
+        <div class="field">
+          <label for="salaryPeriod">Period plate</label>
+          <select id="salaryPeriod" name="salaryPeriod">
+            <option value="">Nije navedeno</option>
+            <option value="SAT">Po satu</option>
+            <option value="MJESEC">Mjesečno</option>
+            <option value="GODINA">Godišnje</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="workers">Broj radnika</label>
+          <input id="workers" name="workers" type="number"
+            min="1" max="100000" step="1">
+        </div>
+
+        <div class="field">
+          <label for="workType">Vrsta posla</label>
+          <select id="workType" name="workType">
+            <option value="">Nije navedeno</option>
+            <option>Puno radno vrijeme</option>
+            <option>Nepuno radno vrijeme</option>
+            <option>Privremeni</option>
+            <option>Sezonski</option>
+            <option>Samostalni rad</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="contractType">Tip ugovora</label>
+          <select id="contractType" name="contractType">
+            <option value="">Nije navedeno</option>
+            <option>Na neodređeno</option>
+            <option>Na određeno</option>
+            <option>Privremeni</option>
+            <option>Sezonski</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="hours">Radno vrijeme</label>
+          <input id="hours" name="hours" maxlength="50"
+            placeholder="Npr. 40 sati sedmično">
+        </div>
+
+        <div class="field">
+          <label for="language">Potreban jezik</label>
+          <input id="language" name="language" maxlength="100"
+            placeholder="Npr. njemački A2">
+        </div>
+
+        <div class="field">
+          <label for="employer">Kontakt osoba / poslodavac</label>
+          <input id="employer" name="employer" maxlength="255">
+        </div>
+
+        <div class="field">
+          <label for="phone">Telefon</label>
+          <input id="phone" name="phone" type="tel" maxlength="50">
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" maxlength="255">
+        </div>
+
+        <div class="field">
+          <label for="website">Web stranica firme</label>
+          <input id="website" name="website" type="url" maxlength="2000"
+            placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label for="applyLink">Direktan link za prijavu</label>
+          <input id="applyLink" name="applyLink" type="url" maxlength="2000"
+            placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label for="expiry">Datum isteka oglasa</label>
+          <input id="expiry" name="expiry" type="date">
+        </div>
+
+        <div class="field full">
+          <label for="description">Opis posla</label>
+          <textarea id="description" name="description" rows="6"
+            placeholder="Opis posla, uslovi, potrebne kvalifikacije..."></textarea>
+        </div>
+
+        <div class="field full">
+          <div class="check-row">
+            <label><input id="housing" type="checkbox"> Smještaj osiguran</label>
+            <label><input id="food" type="checkbox"> Hrana osigurana</label>
+            <label><input id="experience" type="checkbox"> Iskustvo potrebno</label>
+            <label><input id="driving" type="checkbox"> Vozačka dozvola potrebna</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button id="submitJob" class="btn btn-primary" type="submit">
+          Pošalji oglas na provjeru
+        </button>
+        <button id="closeForm" class="btn btn-outline" type="button">
+          Zatvori formu
+        </button>
+      </div>
+
+      <div id="formMessage" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<footer>
+  © <span id="year"></span> DocBizHub. Provjeri uslove i vjerodostojnost
+  oglasa prije slanja ličnih podataka ili prihvatanja posla.
+</footer>
 
 <script>
-    function otvoriFormu() {
-        document.getElementById('modalOglas').style.display = 'flex';
+  // Supabase javni anon ključ: namijenjen je klijentskoj aplikaciji.
+  // Sigurnost mora biti podešena RLS pravilima u Supabaseu.
+  const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ";
+
+  const TABLE = "OGLASI_RADNICI_NJEMACKA";
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allJobs = [];
+
+  const el = id => document.getElementById(id);
+
+  function text(value, fallback = "") {
+    if (value === null || value === undefined || value === "") return fallback;
+    return String(value);
+  }
+
+  function safeUrl(value) {
+    if (!value) return "";
+    try {
+      const url = new URL(value);
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        return url.href;
+      }
+    } catch (_) {}
+    return "";
+  }
+
+  function formatSalary(job) {
+    const from = job.PLATA_OD;
+    const to = job.PLATA_DO;
+    if (from == null && to == null) return "Plata nije navedena";
+
+    const money = amount =>
+      new Intl.NumberFormat("de-DE", {
+        maximumFractionDigits: 2
+      }).format(Number(amount));
+
+    let result = "";
+    if (from != null && to != null) result = money(from) + " – " + money(to);
+    else if (from != null) result = "Od " + money(from);
+    else result = "Do " + money(to);
+
+    const currency = text(job.VALUTA, "EUR").trim();
+    const periodMap = {
+      SAT: "po satu",
+      MJESEC: mj => "mjesečno",
+      GODINA: "godišnje"
+    };
+    let period = text(job.PLATA_PERIOD);
+    if (period === "SAT") period = "po satu";
+    else if (period === "MJESEC") period = "mjesečno";
+    else if (period === "GODINA") period = "godišnje";
+
+    return result + " " + currency + (period ? " " + period : "");
+  }
+
+  function createElement(tag, className, content) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (content !== undefined) node.textContent = content;
+    return node;
+  }
+
+  function addDetail(container, label, value) {
+    if (value === null || value === undefined || value === "") return;
+    const item = createElement("div", "detail");
+    item.appendChild(createElement("strong", "", label));
+    item.appendChild(createElement("span", "", String(value)));
+    container.appendChild(item);
+  }
+
+  function renderJobs() {
+    const query = el("searchInput").value.trim().toLocaleLowerCase();
+    const category = el("categoryFilter").value;
+    const workType = el("workFilter").value;
+
+    const jobs = allJobs.filter(job => {
+      const searchable = [
+        job.NASLOV, job.OPIS, job.POZICIJA,
+        job.KATEGORIJA, job.FIRMA, job.GRAD,
+        job.SAVEZNA_POKRAJINA
+      ].filter(Boolean).join(" ").toLocaleLowerCase();
+
+      return (!query || searchable.includes(query)) &&
+        (!category || job.KATEGORIJA === category) &&
+        (!workType || job.VRSTA_POSLA === workType);
+    });
+
+    el("jobsList").replaceChildren();
+    el("resultCount").textContent =
+      jobs.length + (jobs.length === 1 ? " oglas" : " oglasa");
+    el("emptyState").hidden = jobs.length !== 0;
+
+    jobs.forEach(job => {
+      const card = createElement("article", "job-card");
+      const tags = createElement("div", "tags");
+
+      if (job.KATEGORIJA) {
+        tags.appendChild(createElement("span", "tag", job.KATEGORIJA));
+      }
+      if (job.VRSTA_POSLA) {
+        tags.appendChild(createElement("span", "tag", job.VRSTA_POSLA));
+      }
+      if (job.SMJE STAJ) {}
+    });
+  }
+
+  // Kartice se grade DOM metodama, a tekst oglasa se nikad ne ubacuje
+  // kao sirovi HTML, kako sadržaj oglasa ne bi izvršavao skripte.
+  function buildJobCard(job) {
+    const card = createElement("article", "job-card");
+    const tags = createElement("div", "tags");
+
+    if (job.KATEGORIJA) tags.appendChild(createElement("span", "tag", job.KATEGORIJA));
+    if (job.VRSTA_POSLA) tags.appendChild(createElement("span", "tag", job.VRSTA_POSLA));
+    if (job.SMJE STAJ) {}
+
+    const title = createElement("h3", "", text(job.NASLOV, "Posao"));
+    const company = createElement("div", "company", text(job.FIRMA, "Poslodavac nije naveden"));
+    const location = createElement("div", "muted",
+      [job.GRAD, job.SAVEZNA_POKRAJINA, job.DRZAVA].filter(Boolean).join(", "));
+
+    card.append(tags, title, company, location);
+    card.appendChild(createElement("p", "description",
+      text(job.OPIS, "Detaljan opis posla nije naveden.")));
+
+    const details = createElement("div", "details");
+    addDetail(details, "Plata", formatSalary(job));
+    addDetail(details, "Jezik", job.POTREBAN_JEZIK);
+    addDetail(details, "Ugovor", job.TIP_UGOVORA);
+    addDetail(details, "Radno vrijeme", job.RADNO_VRIJEME);
+    addDetail(details, "Smještaj", job.SMJE STAJ ? "Da" : null);
+    addDetail(details, "Hrana", job.HRANA ? "Da" : null);
+    addDetail(details, "Iskustvo", job.POTREBNO_ISKUSTVO ? "Potrebno" : null);
+    addDetail(details, "Vozačka dozvola", job.POTREBNA_VOZACKA ? "Potrebna" : null);
+    addDetail(details, "Objavljeno", job.DATUM_OBJAVE
+      ? new Date(job.DATUM_OBJAVE).toLocaleDateString("bs-BA")
+      : null);
+
+    card.appendChild(details);
+
+    const actions = createElement("div", "card-actions");
+    const applyUrl = safeUrl(job.LINK_PRIJAVE) || safeUrl(job.WEB_STRANICA);
+
+    if (applyUrl) {
+      const link = createElement("a", "btn btn-primary", "Prijavi se");
+      link.href = applyUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      actions.appendChild(link);
     }
 
-    function zatvoriFormu() {
-        document.getElementById('modalOglas').style.display = 'none';
+    const email = text(job.EMAIL).trim();
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const link = createElement("a", "btn btn-outline", "E-mail");
+      link.href = "mailto:" + email;
+      actions.appendChild(link);
     }
 
-    function sacuvajOglas() {
-        const naslov = document.getElementById('naslovOglasa').value;
-        const kategorija = document.getElementById('kategorijaOglasa').value;
-        const opis = document.getElementById('opisOglasa').value;
-
-        if(!naslov || !opis) {
-            alert('Molimo popunite sva obavezna polja!');
-            return;
-        }
-
-        // Kreiranje nove kartice sa oglasom na stranici
-        const lista = document.getElementById('lista-oglasi');
-        const novaKartica = document.createElement('div');
-        novaKartica.className = 'ad-card';
-        novaKartica.innerHTML = `
-            <h3>${naslov}</h3>
-            <div class="ad-meta">Kategorija: ${kategorija} | Upravo postavljeno</div>
-            <p>${opis}</p>
-        `;
-        
-        lista.prepend(novaKartica);
-        zatvoriFormu();
-
-        // Očisti polja forme
-        document.getElementById('naslovOglasa').value = '';
-        document.getElementById('opisOglasa').value = '';
-        
-        alert('Oglas je uspješno dodan!');
+    const phone = text(job.TELEFON).trim();
+    if (phone) {
+      const link = createElement("a", "btn btn-outline", "Pozovi");
+      link.href = "tel:" + phone.replace(/[^\d+]/g, "");
+      actions.appendChild(link);
     }
+
+    if (actions.childElementCount) card.appendChild(actions);
+    return card;
+  }
+
+  function renderJobs() {
+    const query = el("searchInput").value.trim().toLocaleLowerCase();
+    const category = el("categoryFilter").value;
+    const workType = el("workFilter").value;
+
+    const jobs = allJobs.filter(job => {
+      const searchable = [
+        job.NASLOV, job.OPIS, job.POZICIJA, job.KATEGORIJA,
+        job.FIRMA, job.GRAD, job.SAVEZNA_POKRAJINA
+      ].filter(Boolean).join(" ").toLocaleLowerCase();
+
+      return (!query || searchable.includes(query)) &&
+        (!category || job.KATEGORIJA === category) &&
+        (!workType || job.VRSTA_POSLA === workType);
+    });
+
+    el("jobsList").replaceChildren();
+    jobs.forEach(job => el("jobsList").appendChild(buildJobCard(job)));
+    el("resultCount").textContent =
+      jobs.length + (jobs.length === 1 ? " oglas" : " oglasa");
+    el("emptyState").hidden = jobs.length !== 0;
+  }
+
+  async function loadJobs() {
+    el("loading").hidden = false;
+    el("loadError").hidden = true;
+
+    // Prikazuju se samo odobreni oglasi koji nisu istekli.
+    const today = new Date().toISOString().slice(0, 10);
+    const { data, error } = await db
+      .from(TABLE)
+      .select("*")
+      .eq("STATUS", "AKTIVAN")
+      .or(`DATUM_ISTEKA.is.null,DATUM_ISTEKA.gte.${today}`)
+      .order("DATUM_OBJAVE", { ascending: false });
+
+    el("loading").hidden = true;
+
+    if (error) {
+      console.error("Supabase greška:", error);
+      el("loadError").hidden = false;
+      el("loadError").textContent =
+        "Oglasi se trenutno ne mogu učitati. Provjeri Supabase RLS pravila, naziv tabele i API pristup.";
+      el("resultCount").textContent = "Greška pri učitavanju";
+      return;
+    }
+
+    allJobs = data || [];
+    renderJobs();
+  }
+
+  function openForm() {
+    el("addJobSection").hidden = false;
+    el("addJobSection").scrollIntoView({ behavior: "smooth", block: "start" });
+    el("title").focus({ preventScroll: true });
+  }
+
+  el("openFormTop").addEventListener("click", openForm);
+  el("openFormHero").addEventListener("click", openForm);
+
+  el("closeForm").addEventListener("click", () => {
+    el("addJobSection").hidden = true;
+  });
+
+  ["searchInput", "categoryFilter", "workFilter"].forEach(id => {
+    el(id).addEventListener(id === "searchInput" ? "input" : "change", renderJobs);
+  });
+
+  el("resetFilters").addEventListener("click", () => {
+    el("searchInput").value = "";
+    el("categoryFilter").value = "";
+    el("workFilter").value = "";
+    renderJobs();
+  });
+
+  function optionalNumber(id) {
+    const value = el(id).value.trim();
+    if (!value) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function optionalText(id) {
+    const value = el(id).value.trim();
+    return value || null;
+  }
+
+  el("jobForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = el("submitJob");
+    const message = el("formMessage");
+    message.textContent = "";
+    message.className = "";
+    button.disabled = true;
+    button.textContent = "Šaljem oglas...";
+
+    try {
+      const salaryFrom = optionalNumber("salaryFrom");
+      const salaryTo = optionalNumber("salaryTo");
+      const workers = optionalNumber("workers");
+
+      if (salaryFrom !== null && salaryTo !== null && salaryTo < salaryFrom) {
+        throw new Error("Plata do ne može biti manja od plate od.");
+      }
+
+      if (workers !== null && (!Number.isInteger(workers) || workers < 1)) {
+        throw new Error("Broj radnika mora biti pozitivan cijeli broj.");
+      }
+
+      const expiry = optionalText("expiry");
+      if (expiry && expiry < new Date().toISOString().slice(0, 10)) {
+        throw new Error("Datum isteka ne može biti u prošlosti.");
+      }
+
+      const payload = {
+        NASLOV: el("title").value.trim(),
+        POZICIJA: optionalText("position"),
+        KATEGORIJA: optionalText("category"),
+        FIRMA: optionalText("company"),
+        GRAD: optionalText("city"),
+        SAVEZNA_POKRAJINA: optionalText("state"),
+        DRZAVA: "Njemačka",
+        OPIS: optionalText("description"),
+        PLATA_OD: salaryFrom,
+        PLATA_DO: salaryTo,
+        VALUTA: "EUR",
+        PLATA_PERIOD: optionalText("salaryPeriod"),
+        BROJ_RADNIKA: workers,
+        VRSTA_POSLA: optionalText("workType"),
+        TIP_UGOVORA: optionalText("contractType"),
+        RADNO_VRIJEME: optionalText("hours"),
+        SMJESTAJ: el("housing").checked,
+        HRANA: el("food").checked,
+        POTREBAN_JEZIK: optionalText("language"),
+        POTREBNO_ISKUSTVO: el("experience").checked,
+        POTREBNA_VOZACKA: el("driving").checked,
+        POSLODAVAC: optionalText("employer"),
+        TELEFON: optionalText("phone"),
+        EMAIL: optionalText("email"),
+        WEB_STRANICA: optionalText("website"),
+        LINK_PRIJAVE: optionalText("applyLink"),
+        DATUM_ISTEKA: expiry,
+        STATUS: "PROVJERA",
+        ISTAKNUT: false
+      };
+
+      const { error } = await db.from(TABLE).insert(payload);
+
+      if (error) {
+        console.error("Greška pri slanju oglasa:", error);
+        throw new Error(
+          "Oglas nije poslan. Provjeri da li su RLS INSERT pravila podešena u Supabaseu."
+        );
+      }
+
+      message.className = "success";
+      message.textContent =
+        "Oglas je uspješno poslan na provjeru. Hvala na objavi!";
+      el("jobForm").reset();
+    } catch (error) {
+      message.className = "error";
+      message.textContent = error.message || "Došlo je do greške. Pokušaj ponovo.";
+    } finally {
+      button.disabled = false;
+      button.textContent = "Pošalji oglas na provjeru";
+    }
+  });
+
+  el("year").textContent = new Date().getFullYear();
+  loadJobs();
 </script>
-
 </body>
 </html>
