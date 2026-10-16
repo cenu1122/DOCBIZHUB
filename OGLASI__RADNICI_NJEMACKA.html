@@ -645,43 +645,7 @@
     container.appendChild(item);
   }
 
-  function renderJobs() {
-    const query = el("searchInput").value.trim().toLocaleLowerCase();
-    const category = el("categoryFilter").value;
-    const workType = el("workFilter").value;
-
-    const jobs = allJobs.filter(job => {
-      const searchable = [
-        job.NASLOV, job.OPIS, job.POZICIJA,
-        job.KATEGORIJA, job.FIRMA, job.GRAD,
-        job.SAVEZNA_POKRAJINA
-      ].filter(Boolean).join(" ").toLocaleLowerCase();
-
-      return (!query || searchable.includes(query)) &&
-        (!category || job.KATEGORIJA === category) &&
-        (!workType || job.VRSTA_POSLA === workType);
-    });
-
-    el("jobsList").replaceChildren();
-    el("resultCount").textContent =
-      jobs.length + (jobs.length === 1 ? " oglas" : " oglasa");
-    el("emptyState").hidden = jobs.length !== 0;
-
-    jobs.forEach(job => {
-      const card = createElement("article", "job-card");
-      const tags = createElement("div", "tags");
-
-      if (job.KATEGORIJA) {
-        tags.appendChild(createElement("span", "tag", job.KATEGORIJA));
-      }
-      if (job.VRSTA_POSLA) {
-        tags.appendChild(createElement("span", "tag", job.VRSTA_POSLA));
-      }
-      if (job.SMJESTAJ) {}
-    });
-  }
-
-  // Kartice se grade DOM metodama, a tekst oglasa se nikad ne ubacuje
+   // Kartice se grade DOM metodama, a tekst oglasa se nikad ne ubacuje
   // kao sirovi HTML, kako sadržaj oglasa ne bi izvršavao skripte.
   function buildJobCard(job) {
     const card = createElement("article", "job-card");
