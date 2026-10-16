@@ -677,7 +677,7 @@
       if (job.VRSTA_POSLA) {
         tags.appendChild(createElement("span", "tag", job.VRSTA_POSLA));
       }
-      if (job.SMJE STAJ) {}
+      if (job.SMJESTAJ) {}
     });
   }
 
@@ -689,7 +689,7 @@
 
     if (job.KATEGORIJA) tags.appendChild(createElement("span", "tag", job.KATEGORIJA));
     if (job.VRSTA_POSLA) tags.appendChild(createElement("span", "tag", job.VRSTA_POSLA));
-    if (job.SMJE STAJ) {}
+    if (job.SMJESTAJ) {}
 
     const title = createElement("h3", "", text(job.NASLOV, "Posao"));
     const company = createElement("div", "company", text(job.FIRMA, "Poslodavac nije naveden"));
@@ -705,7 +705,7 @@
     addDetail(details, "Jezik", job.POTREBAN_JEZIK);
     addDetail(details, "Ugovor", job.TIP_UGOVORA);
     addDetail(details, "Radno vrijeme", job.RADNO_VRIJEME);
-    addDetail(details, "Smještaj", job.SMJE STAJ ? "Da" : null);
+    addDetail(details, "Smještaj", job.SMJESTAJ ? "Da" : null);
     addDetail(details, "Hrana", job.HRANA ? "Da" : null);
     addDetail(details, "Iskustvo", job.POTREBNO_ISKUSTVO ? "Potrebno" : null);
     addDetail(details, "Vozačka dozvola", job.POTREBNA_VOZACKA ? "Potrebna" : null);
