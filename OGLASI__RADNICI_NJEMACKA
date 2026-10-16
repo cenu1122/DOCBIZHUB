@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oglasi - Radnici Njemačka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        .btn-add {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-add:hover {
+            background-color: #219653;
+        }
+        .ad-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ad-card h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+        .ad-meta {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        /* Modal stilovi za formu */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-cancel {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-save {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🇩🇪 Oglasi za radnike - Njemačka</h1>
+        <button class="btn-add" onclick="otvoriFormu()">+ Dodaj novi oglas</button>
+    </header>
+
+    <!-- Lista oglasa -->
+    <div id="lista-oglasi">
+        <div class="ad-card">
+            <h3>Potrebni građevinski radnici (München)</h3>
+            <div class="ad-meta">Kategorija: radnici:njewmacka | Objavljeno: 16.10.2026.</div>
+            <p>Traže se iskusni zidari i tesari za rad na gradilištu u Münchenu. Obezbjeđen smještaj i radna vizu.</p>
+        </div>
+        <!-- Ovdje će se dinamički učitavati ostali oglasi iz baze -->
+    </div>
+</div>
+
+<!-- Modal forma za dodavanje novog oglasa -->
+<div id="modalOglas" class="modal">
+    <div class="modal-content">
+        <h2>Dodaj novi oglas</h2>
+        <label>Naslov oglasa:</label>
+        <input type="text" id="naslovOglasa" placeholder="npr. Vozač kamiona C kategorije">
+        
+        <label>Kategorija:</label>
+        <input type="text" id="kategorijaOglasa" value="radnici:njewmacka">
+
+        <label>Opis i detalji:</label>
+        <textarea id="opisOglasa" rows="4" placeholder="Unesite uslove, platu i kontakt..."></textarea>
+
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="zatvoriFormu()">Otkaži</button>
+            <button class="btn-save" onclick="sacuvajOglas()">Sačuvaj oglas</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function otvoriFormu() {
+        document.getElementById('modalOglas').style.display = 'flex';
+    }
+
+    function zatvoriFormu() {
+        document.getElementById('modalOglas').style.display = 'none';
+    }
+
+    function sacuvajOglas() {
+        const naslov = document.getElementById('naslovOglasa').value;
+        const kategorija = document.getElementById('kategorijaOglasa').value;
+        const opis = document.getElementById('opisOglasa').value;
+
+        if(!naslov || !opis) {
+            alert('Molimo popunite sva obavezna polja!');
+            return;
+        }
+
+        // Kreiranje nove kartice sa oglasom na stranici
+        const lista = document.getElementById('lista-oglasi');
+        const novaKartica = document.createElement('div');
+        novaKartica.className = 'ad-card';
+        novaKartica.innerHTML = `
+            <h3>${naslov}</h3>
+            <div class="ad-meta">Kategorija: ${kategorija} | Upravo postavljeno</div>
+            <p>${opis}</p>
+        `;
+        
+        lista.prepend(novaKartica);
+        zatvoriFormu();
+
+        // Očisti polja forme
+        document.getElementById('naslovOglasa').value = '';
+        document.getElementById('opisOglasa').value = '';
+        
+        alert('Oglas je uspješno dodan!');
+    }
+</script>
+
+</body>
+</html>
