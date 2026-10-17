@@ -825,6 +825,118 @@
 
     }
 
+/* =========================================================
+        NOVI DODATNI PROZOR (MODAL) STILOVI
+    ========================================================== */
+    .custom-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .custom-modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      padding: 35px 30px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      animation: modalScaleUp 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    @keyframes modalScaleUp {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .custom-modal-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+
+    .custom-modal-card h3 {
+      font-size: 24px;
+      color: #123d7a;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .custom-modal-card p {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .custom-modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .custom-modal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .custom-modal-btn.grantovi {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    }
+    .custom-modal-btn.grantovi:hover {
+      transform: translateY(-2px);
+    }
+
+    .custom-modal-btn.oglasi {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+    }
+    .custom-modal-btn.oglasi:hover {
+      transform: translateY(-2px);
+    }
+
+    .custom-modal-btn.zadaci {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+    }
+    .custom-modal-btn.zadaci:hover {
+      transform: translateY(-2px);
+    }
+
+    .custom-modal-close {
+      margin-top: 15px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .custom-modal-close:hover {
+      color: #475569;
+    }
+    
   </style>
 
 </head>
@@ -2874,7 +2986,52 @@
 
     }
 
+/* =========================================================
+       FUNKCIJA ZA OTVARANJE DODATNOG PROZORA NA KLIK BILO KOJEG DUGMETA
+    ========================================================== */
+    document.addEventListener("DOMContentLoaded", function () {
+      const allButtons = document.querySelectorAll("button, .offer-button, input[type='submit']");
+      
+      allButtons.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+          // Ako je u pitanju dugme za toggle jezika ili passworda, preskačemo modal
+          if (this.classList.contains('password-toggle') || this.classList.contains('language-button')) {
+            return;
+          }
+          
+          // Ako je login forma, spriječiti standardno slanje da se otvori modal
+          if (this.type === 'submit' || this.id === 'loginButton') {
+            e.preventDefault();
+          }
+
+          // Otvori naš novi modalni prozor
+          document.getElementById('extraOfferModal').style.display = 'flex';
+        });
+      });
+    });
+
+    function closeExtraModal() {
+      document.getElementById('extraOfferModal').style.display = 'none';
+    }
+    
   </script>
 
+<!-- =========================================================
+      DODATNI PROZOR (MODAL) ZA PONUDU
+  ========================================================== -->
+  <div id="extraOfferModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+      <div class="custom-modal-icon">✨</div>
+      <h3>Nova ponuda</h3>
+      <p>Izaberite željenu opciju iz naše nove ponude za grantove i oglase:</p>
+      <div class="custom-modal-buttons">
+        <a href="grantovi.html" class="custom-modal-btn grantovi">Nova ponuda za grantove Njemačke</a>
+        <a href="oglasi.html" class="custom-modal-btn oglasi">Oglasi</a>
+        <a href="oglasi_njemacka.html" class="custom-modal-btn zadaci">Zadaci / Oglasi Njemačka</a>
+      </div>
+      <button type="button" class="custom-modal-close" onclick="closeExtraModal()">Zatvori</button>
+    </div>
+  </div>
+  
 </body>
 </html>
