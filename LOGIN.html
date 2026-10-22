@@ -3139,20 +3139,20 @@ function goToFinalDashboard() {
   
 </body>
 
-  <!-- MODALNI PROZOR SA PONUDAMA -->
-<div id="extraOfferModal" class="custom-modal-overlay">
-  <div class="custom-modal-card">
-    <div class="custom-modal-icon">✨</div>
-    <h3>Nova ponuda i Dashboard</h3>
-    <p>Izaberite željenu opciju iz naše nove ponude za grantove i oglase ili pređite na Dashboard:</p>
-    <div class="custom-modal-buttons">
-      <a href="GRANTOVI.html" class="custom-modal-btn grantovi">Nova ponuda za grantove</a>
-      <a href="OGLASI_KOOPERANTI.html" class="custom-modal-btn oglasi">Oglasi za kooperante</a>
-      <a href="OGLASI__RADNICI_NJEMACKA.html" class="custom-modal-btn posao">Oglasi za posao</a>
-      <button type="button" class="custom-modal-btn dashboard" onclick="goToFinalDashboard()">CONTINUE TO DASHBOARD →</button>
+<!-- MODALNI PROZOR SA PONUDAMA I DASHBOARDOM -->
+  <div id="extraOfferModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+      <div class="custom-modal-icon">✨</div>
+      <h3>Nova ponuda i Dashboard</h3>
+      <p>Izaberite željenu opciju iz naše nove ponude za grantove i oglase ili pređite na Dashboard:</p>
+      <div class="custom-modal-buttons">
+        <a href="GRANTOVI.html" class="custom-modal-btn grantovi">Nova ponuda za grantove</a>
+        <a href="OGLASI_KOOPERANTI.html" class="custom-modal-btn oglasi">Oglasi za kooperatne</a>
+        <a href="OGLASI__RADNICI_NJEMACKA.html" class="custom-modal-btn zadaci">Oglasi za posao</a>
+        <button type="button" class="custom-modal-btn dashboard" onclick="goToFinalDashboard()" style="background: linear-gradient(135deg, #1261d6, #0b3f91); color: white; border: none; cursor: pointer;">CONTINUE TO DASHBOARD →</button>
+      </div>
+      <button type="button" class="custom-modal-close" onclick="closeExtraModal()">Zatvori</button>
     </div>
-    <button type="button" class="custom-modal-close" onclick="closeExtraModal()">Zatvori</button>
   </div>
-</div>
   
 </html>
