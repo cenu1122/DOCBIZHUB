@@ -936,6 +936,90 @@
     .custom-modal-close:hover {
       color: #475569;
     }
+
+    /* =========================================================
+   DODATNI PROZOR (MODAL) STILOVI
+========================================================== */
+.custom-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.custom-modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 24px;
+  padding: 35px 30px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.custom-modal-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.custom-modal-card h3 {
+  font-size: 24px;
+  color: #123d7a;
+  margin-bottom: 10px;
+  font-weight: 800;
+}
+
+.custom-modal-card p {
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.custom-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.custom-modal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 14px;
+  color: white;
+  transition: 0.2s;
+}
+
+.custom-modal-btn.grantovi { background: linear-gradient(135deg, #10b981, #059669); }
+.custom-modal-btn.oglasi { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.custom-modal-btn.posao { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.custom-modal-btn.dashboard { background: linear-gradient(135deg, #1261d6, #0b3f91); border: none; cursor: pointer; width: 100%; }
+
+.custom-modal-close {
+  margin-top: 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+}
+.custom-modal-close:hover { color: #475569; }
+    
     
   </style>
 
@@ -2979,12 +3063,18 @@
        DASHBOARD
     ========================================================== */
 
-    function continueToDashboard() {
+  /* Umjesto direktnog odlaska na dashboard, ovo otvara naš prozor */
+function continueToDashboard() {
+  document.getElementById('extraOfferModal').style.display = 'flex';
+}
 
-      window.location.href =
-        'DASHBOARD.html';
+function closeExtraModal() {
+  document.getElementById('extraOfferModal').style.display = 'none';
+}
 
-    }
+function goToFinalDashboard() {
+  window.location.href = 'DASHBOARD.html';
+}
 
 /* =========================================================
        FUNKCIJA ZA OTVARANJE DODATNOG PROZORA NA KLIK BILO KOJEG DUGMETA
