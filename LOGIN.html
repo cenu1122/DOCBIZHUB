@@ -3002,18 +3002,58 @@
               3+ prijava → DASHBOARD
             */
 
-            if (
-              loginCount <= 2
-            ) {
+         if (
+  loginCount <= 2
+) {
 
-              showTrainingScreen();
+  showTrainingScreen();
 
-            } else {
+  setTimeout(function() {
 
-              window.location.href =
-                'DASHBOARD.html';
+    let dashboardButton =
+      document.getElementById(
+        'continueToDashboardButton'
+      );
 
-            }
+    if (!dashboardButton) {
+
+      dashboardButton =
+        document.createElement('button');
+
+      dashboardButton.id =
+        'continueToDashboardButton';
+
+      dashboardButton.textContent =
+        'CONTINUE TO DASHBOARD →';
+
+      dashboardButton.type = 'button';
+
+      dashboardButton.onclick = function() {
+        window.location.href =
+          'DASHBOARD.html';
+      };
+
+      dashboardButton.style.cssText =
+        'position:fixed;bottom:24px;left:50%;' +
+        'transform:translateX(-50%);z-index:99999;' +
+        'width:90%;max-width:420px;padding:16px;' +
+        'background:#1261d6;color:white;border:none;' +
+        'border-radius:12px;font-weight:800;cursor:pointer;';
+
+      document.body.appendChild(
+        dashboardButton
+      );
+
+    }
+
+  }, 300);
+
+} else {
+
+  window.location.href =
+    'DASHBOARD.html';
+
+}
 
           },
           700
