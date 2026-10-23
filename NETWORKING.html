@@ -146,8 +146,13 @@
         const opis = c.OPIS || c.BIOGRAFIJA || c.INTERESOVANJA || 'Poslovni profil i saradnja.';
         const grad = c.GRAD || c.LOKACIJA || 'Regija / Online';
 
-        const profilLink = c.MAIL ? `PROFIL.html?email=${encodeURIComponent(c.MAIL)}` : `PROFIL.html?id=${id}`;
-        const chatLink = c.MAIL ? `PORUKE.html?primatelj=${encodeURIComponent(c.MAIL)}` : `PORUKE.html?id=${id}`;
+       
+const profilLink = `PROFIL_TUDI.html?id=${encodeURIComponent(id)}`;
+
+const chatLink = c.MAIL
+  ? `PORUKE.html?primatelj=${encodeURIComponent(c.MAIL)}`
+  : `PORUKE.html?id=${encodeURIComponent(id)}`;
+
 
         htmlSadrzaj += `
           <div class="member-card">
