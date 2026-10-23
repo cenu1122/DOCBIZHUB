@@ -121,74 +121,69 @@ const SUPABASE_ANON_KEY =
       return row;
     }
 
+
     async function ucitajProfil() {
       try {
-        // Prednost ima ID iz URL-a. E-mail je podržan
-        // samo radi postojećih linkova u obavijestima.
-        const userId = params.get("id");
-        const email = params.get("korisnik");
+        const id = params.get("id");
 
-        if (!userId && !email) {
-          throw new Error("Nije naveden profil koji treba otvoriti.");
+        if (!id || !/^\d+$/.test(id)) {
+          throw new Error("ID profila nije ispravan.");
         }
 
-        // Tražimo samo polja koja želimo prikazati.
-        // MAIL, TELEFON i drugi privatni podaci nisu vraćeni.
-        let query = db
-          .from("POSAO_KORISNICI")
-          .select(
-            'USER, IME, GRAD, DJELATNOST, VRSTA_SARADNJE, JA, TRAZIM, SITE, LINKEDIN'
-          );
-
-        if (userId) {
-          query = query.eq("USER", userId);
-        } else {
-          query = query.ilike("MAIL", email);
-        }
-
-        const { data, error } = await query.maybeSingle();
+        const { data, error } = await db
+          .rpc("get_public_profile", { p_id: Number(id) })
+          .maybeSingle();
 
         if (error) throw error;
+
         if (!data) {
-          throw new Error(
-            "Profil nije pronađen ili nemaš dozvolu da ga pregledaš."
-          );
+          throw new Error("Profil nije pronađen.");
         }
 
         document.getElementById("name").textContent =
-          data.IME || "Član DocBizHuba";
+          data.ime || "Član DocBizHuba";
 
         const fields = document.getElementById("fields");
 
+        fields.replaceChildren();
+
         fields.append(
-          prikaziPolje("Grad", data.GRAD),
-          prikaziPolje("Djelatnost", data.DJELATNOST),
-          prikaziPolje("Vrsta saradnje", data.VRSTA_SARADNJE),
-          prikaziPolje("O članu / Šta nudi", data.JA),
-          prikaziPolje("Šta traži", data.TRAZIM)
+          prikaziPolje("Grad", data.grad),
+          prikaziPolje("Djelatnost", data.djelatnost),
+          prikaziPolje("Vrsta saradnje", data.vrsta_saradnje),
+          prikaziPolje("O članu / Šta nudi", data.ja),
+          prikaziPolje("Šta traži", data.trazim)
         );
 
-        // Linkovi se prikazuju samo ako su validni HTTP(S) URL-ovi.
         for (const [label, raw] of [
-          ["Web stranica", data.SITE],
-          ["LinkedIn", data.LINKEDIN]
+          ["Web stranica", data.site],
+          ["LinkedIn", data.linkedin]
         ]) {
           if (!raw) continue;
+
           try {
             const url = new URL(raw);
-            if (url.protocol !== "https:" && url.protocol !== "http:") {
+
+            if (
+              url.protocol !== "https:" &&
+              url.protocol !== "http:"
+            ) {
               continue;
             }
+
             const row = document.createElement("div");
             row.className = "item";
+
             const title = document.createElement("span");
             title.className = "label";
             title.textContent = label;
+
             const link = document.createElement("a");
             link.href = url.href;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
             link.textContent = "Otvori " + label;
+
             row.append(title, link);
             fields.append(row);
           } catch (_) {
@@ -205,7 +200,7 @@ const SUPABASE_ANON_KEY =
       }
     }
 
-    ucitajProfil();
+   ucitajProfil();
   </script>
 </body>
 </html>
