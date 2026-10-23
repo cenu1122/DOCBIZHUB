@@ -941,57 +941,6 @@ async function posaljiNotifikacijuUBazu() {
       }
 
 
-      // =====================================
-      // 2. UPIS U POSAO_KORISNICI
-      // =====================================
-
-      if (userId) {
-
-        const {
-          error: korisnikError
-        } = await _supabase
-          .from('POSAO_KORISNICI')
-          .insert([
-            {
-
-              USER: userId,
-
-              IME: fullName,
-
-              MAIL: email,
-
-              TELEFON: phone,
-
-              GRAD: grad,
-
-              DJELATNOST: djelatnost,
-
-              VRSTA_SARADNJE: vrstaSaradnje,
-
-              JA: ja,
-
-              TRAZIM: trazim,
-
-              LINKEDIN: linkedin || null,
-
-              SITE: webStranica || null,
-
-              IS_ONLINE: true,
-
-              LAST_SEEN:
-                new Date().toLocaleDateString()
-
-            }
-          ]);
-
-
-        if (korisnikError) {
-
-          throw korisnikError;
-
-        }
-
-      }
 
 
     
