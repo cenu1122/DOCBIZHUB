@@ -693,58 +693,40 @@
   // NOTIFIKACIJA
   // =====================================
 
-  async function posaljiNotifikacijuUBazu(
-    vrsta,
-    ime,
-    firma,
-    telefon,
-    email,
-    linkStranice
-  ) {
 
-    try {
-
-      const { error } =
-        await _supabase
-          .from('NOTIFIKACIJE')
-          .insert([
-            {
-
-              "VRSTA_NOTIFIKACIJE": vrsta,
-
-              "IME": ime,
-
-              "FIRMA": firma,
-
-              "TELEFON": telefon,
-
-              "EMAIL": email,
-
-              "LINK_STRANICE": linkStranice
-
-            }
-          ]);
-
-
-      if (error) {
-
-        console.error(
-          "Greška pri upisu u NOTIFIKACIJE:",
-          error.message
-        );
-
+async function posaljiNotifikacijuUBazu(
+  vrsta,
+  ime,
+  firma,
+  telefon,
+  email,
+  linkStranice
+) {
+  const { error } = await _supabase
+    .from('NOTIFIKACIJE')
+    .insert([
+      {
+        VRSTA_NOTIFIKACIJE: vrsta,
+        IME: ime,
+        FIRMA: firma,
+        TELEFON: telefon,
+        EMAIL: email,
+        LINK_STRANICE: linkStranice
       }
+    ]);
 
-    } catch (err) {
+  if (error) {
+    console.error(
+      'Greška pri upisu u NOTIFIKACIJE:',
+      error.message
+    );
 
-      console.error(
-        'Neočekivana greška pri slanju notifikacije:',
-        err
-      );
-
-    }
-
+    throw error;
   }
+
+  console.log('Obavijest uspješno spremljena.');
+}
+
 
 
   // =====================================
