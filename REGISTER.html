@@ -936,25 +936,19 @@ async function posaljiNotifikacijuUBazu() {
       }
 
 
+    
       // =====================================
       // 3. NOTIFIKACIJA
       // =====================================
 
-      await posaljiNotifikacijuUBazu(
-
-        'NOVI_CLAN',
-
-        fullName,
-
-        fullName,
-
-        phone,
-
-        email,
-
-        `DASHBOARD.html?korisnik=${encodeURIComponent(email)}`
-
-      );
+      try {
+        await posaljiNotifikacijuUBazu();
+      } catch (notifError) {
+        console.error(
+          'Profil je spremljen, ali obavijest nije poslana:',
+          notifError
+        );
+      }
 
 
       // =====================================
