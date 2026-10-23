@@ -694,34 +694,24 @@
   // =====================================
 
 
-async function posaljiNotifikacijuUBazu(
-  vrsta,
-  ime,
-  firma,
-  telefon,
-  email,
-  linkStranice
-) {
-  const { error } = await _supabase
-    .from('NOTIFIKACIJE')
-    .insert([
-      {
-        VRSTA_NOTIFIKACIJE: vrsta,
-        IME: ime,
-        FIRMA: firma,
-        TELEFON: telefon,
-        EMAIL: email,
-        LINK_STRANICE: linkStranice
-      }
-    ]);
+
+async function posaljiNotifikacijuUBazu() {
+  const { data, error } = await _supabase.functions.invoke(
+    'POSALJI_NOTIFIKACIJU',
+    {
+      body: {}
+    }
+  );
 
   if (error) {
-    console.error(
-      'Greška pri upisu u NOTIFIKACIJE:',
-      error.message
-    );
-
+    console.error('Greška pri slanju obavijesti:', error);
     throw error;
+  }
+
+  if (!data?.success) {
+    throw new Error(
+      data?.error || 'Obavijest nije spremljena.'
+    );
   }
 
   console.log('Obavijest uspješno spremljena.');
