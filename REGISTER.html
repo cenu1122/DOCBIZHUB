@@ -696,12 +696,17 @@
 
 
 async function posaljiNotifikacijuUBazu() {
+  console.log('TEST: POSALJI_NOTIFIKACIJU JE POZVANA');
+
   const { data, error } = await _supabase.functions.invoke(
     'POSALJI_NOTIFIKACIJU',
     {
       body: {}
     }
   );
+
+  console.log('ODGOVOR FUNKCIJE:', data);
+  console.log('GREŠKA FUNKCIJE:', error);
 
   if (error) {
     console.error('Greška pri slanju obavijesti:', error);
