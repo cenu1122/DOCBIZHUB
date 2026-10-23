@@ -859,6 +859,7 @@ async function posaljiNotifikacijuUBazu() {
     try {
 
 
+   
       // =====================================
       // 1. SUPABASE AUTH
       // =====================================
@@ -867,25 +868,77 @@ async function posaljiNotifikacijuUBazu() {
         data: authData,
         error: authError
       } = await _supabase.auth.signUp({
-
         email: email,
-
         password: password
-
       });
 
-
       if (authError) {
-
         throw authError;
-
       }
 
+      if (!authData.user) {
+        throw new Error(
+          "Supabase nije vratio podatke o registrovanom korisniku."
+        );
+      }
 
-      const userId =
-        authData.user
-          ? authData.user.id
-          : null;
+      // Provjera aktivne sesije nakon registracije
+      const { data: sessionCheck, error: sessionError } =
+        await _supabase.auth.getSession();
+
+      if (sessionError) {
+        throw sessionError;
+      }
+
+      if (!sessionCheck.session) {
+        console.error(
+          "Registracija je kreirana, ali aktivna sesija ne postoji."
+        );
+
+        throw new Error(
+          "Račun je kreiran, ali automatska prijava nije uspjela. Pokušaj se prijaviti."
+        );
+      }
+
+      console.log("AUTOMATSKA PRIJAVA: DA");
+      console.log(
+        "Prijavljen korisnik:",
+        sessionCheck.session.user.email
+      );
+
+      const userId = authData.user.id;
+
+      // =====================================
+      // 2. UPIS U POSAO_KORISNICI
+      // =====================================
+
+      const { error: korisnikError } = await _supabase
+        .from("POSAO_KORISNICI")
+        .insert([
+          {
+            USER: userId,
+            IME: fullName,
+            MAIL: email,
+            TELEFON: phone,
+            GRAD: grad,
+            DJELATNOST: djelatnost,
+            VRSTA_SARADNJE: vrstaSaradnje,
+            JA: ja,
+            TRAZIM: trazim,
+            LINKEDIN: linkedin || null,
+            SITE: webStranica || null,
+            IS_ONLINE: true,
+            LAST_SEEN: new Date().toLocaleDateString()
+          }
+        ]);
+
+      if (korisnikError) {
+        console.error(
+          "Greška pri upisu profila:",
+          korisnikError
+        );
+        throw korisnikError;
+      }
 
 
       // =====================================
