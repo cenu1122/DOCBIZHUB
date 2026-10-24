@@ -98,6 +98,33 @@
       line-height: 1.5;
     }
 
+.filteri-faktura {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filteri-faktura label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filteri-faktura select,
+.filteri-faktura input {
+  padding: 10px;
+  border: 1px solid #d7dfeb;
+  border-radius: 8px;
+  font: inherit;
+  max-width: 100%;
+}
+
+.filteri-faktura p {
+  flex-basis: 100%;
+  line-height: 1.8;
+}
+    
     @media (max-width: 650px) {
       .form-grid {
         grid-template-columns: 1fr;
@@ -364,6 +391,10 @@ for (const [VRIJEDNOST, NAZIV] of STATUSI) {
 }
 
 IZBOR_STATUSA.value = F.STATUS_FAKTURE || "NEPLACENA";
+
+if (!STATUSI.some(([VRIJEDNOST]) => VRIJEDNOST === IZBOR_STATUSA.value)) {
+  IZBOR_STATUSA.value = "NEPLACENA";
+}
 IZBOR_STATUSA.dataset.fakturaId = F.ID;
 
 IZBOR_STATUSA.addEventListener("change", async function () {
@@ -419,15 +450,9 @@ IZBOR_STATUSA.addEventListener("change", async function () {
   }
 });
 
-CELIJA_STATUS.appendChild(IZBOR_STATUSA);
-RED.appendChild(CELIJA_STATUS);
 
-
-    for (const V of VRIJEDNOSTI) {
-      const CELIJA = document.createElement("td");
-      CELIJA.textContent = V ?? "—";
-      RED.appendChild(CELIJA);
-    }
+    CELIJA_STATUS.appendChild(IZBOR_STATUSA);
+    RED.appendChild(CELIJA_STATUS);
 
     TABELA_FAKTURA.appendChild(RED);
   }
@@ -552,9 +577,7 @@ if (FAKTURA_FORM) {
 }
 
 
-</scrip
 document.getElementById("FILTER_STATUS").addEventListener("change", () => {
-  console.log("Odabrani status:", document.getElementById("FILTER_STATUS").value);
   FILTERISI_FAKTURE();
 });
 
@@ -563,8 +586,8 @@ document.getElementById("PRETRAGA_FAKTURA").addEventListener("input", () => {
 });
 
 UCITAJ_FAKTURE();
-t>
-
+</script>
 
 </body>
 </html>
+
