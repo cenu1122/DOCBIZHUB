@@ -483,15 +483,21 @@ async function UCITAJ_FAKTURE() {
     TABELA_FAKTURA.innerHTML =
       '<tr><td colspan="5">Učitavanje faktura...</td></tr>';
 
-    const { data: FAKTURE, error } = await DB
-      .from("FAKTURE")
-      .select("*")
-      .order("KREIRANO", { ascending: false });
+ const { data: FAKTURE, error } = await DB
+  .from("FAKTURE")
+  .select("*")
+  .order("KREIRANO", { ascending: false });
 
-    if (error) throw error;
+if (error) {
+  console.error("GREŠKA SUPABASE FAKTURE:", error);
+  throw error;
+}
 
-    SVE_FAKTURE = FAKTURE || [];
-    FILTERISI_FAKTURE();
+console.log("Učitane fakture:", FAKTURE);
+console.log("Broj učitanih faktura:", FAKTURE?.length ?? 0);
+
+SVE_FAKTURE = FAKTURE || [];
+FILTERISI_FAKTURE();
 
   } catch (GRESKA) {
     console.error("GREŠKA PRI UČITAVANJU FAKTURA:", GRESKA);
