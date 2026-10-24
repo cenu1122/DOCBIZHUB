@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fakture | DocBizHub</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .panel {
+      background: white;
+      border: 1px solid #e4eaf2;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d7dfeb;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .field textarea {
+      resize: vertical;
+    }
+
+    .form-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #3563e9;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #edf1f7;
+      color: #182230;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th, td {
+      padding: 13px;
+      text-align: left;
+      border-bottom: 1px solid #e4eaf2;
+    }
+
+    th {
+      color: #738096;
+      font-size: 13px;
+    }
+
+    .notice {
+      color: #738096;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a href="../index.html">🏠 Početna</a>
+      <a class="active" href="fakture.html">🧾 Fakture</a>
+      <a href="troskovi.html">💳 Troškovi</a>
+      <a href="prihodi.html">📈 Prihodi</a>
+      <a href="izvjestaji.html">📊 Izvještaji</a>
+      <a href="ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1>Fakture</h1>
+        <p>Unos i pregled izdatih faktura.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Nova faktura</h2>
+
+      <form id="FAKTURA_FORM">
+        <div class="form-grid">
+          <div class="field">
+            <label for="BROJ_FAKTURE">Broj fakture *</label>
+            <input id="BROJ_FAKTURE" required maxlength="80"
+                   placeholder="Npr. F-2026-001">
+          </div>
+
+          <div class="field">
+            <label for="KUPAC">Kupac *</label>
+            <input id="KUPAC" required maxlength="200"
+                   placeholder="Naziv kupca">
+          </div>
+
+          <div class="field">
+            <label for="DATUM_FAKTURE">Datum fakture *</label>
+            <input id="DATUM_FAKTURE" type="date" required>
+          </div>
+
+          <div class="field">
+            <label for="ROK_PLACANJA">Rok plaćanja</label>
+            <input id="ROK_PLACANJA" type="date">
+          </div>
+
+          <div class="field">
+            <label for="IZNOS_FAKTURE">Ukupan iznos (KM) *</label>
+            <input id="IZNOS_FAKTURE" type="number"
+                   min="0.01" max="999999999" step="0.01"
+                   required placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label for="STATUS_FAKTURE">Status</label>
+            <select id="STATUS_FAKTURE">
+              <option value="NEPLACENA">Neplaćena</option>
+              <option value="PLACENA">Plaćena</option>
+              <option value="DJELIMICNO_PLACENA">Djelimično plaćena</option>
+              <option value="STORNIRANA">Stornirana</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column: 1 / -1">
+            <label for="OPIS_FAKTURE">Opis</label>
+            <textarea id="OPIS_FAKTURE" rows="3"
+                      maxlength="1000"
+                      placeholder="Opis robe ili usluge"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">
+            Sačuvaj fakturu
+          </button>
+          <button class="btn btn-secondary" type="reset">
+            Poništi unos
+          </button>
+        </div>
+      </form>
+
+      <p id="FAKTURA_PORUKA" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Evidencija faktura</h2>
+
+      <p class="notice">
+        Ovdje će se prikazivati fakture spremljene u bazu.
+        Potrebno je prvo povezati tabelu i podesiti pristup.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Broj</th>
+              <th>Kupac</th>
+              <th>Datum</th>
+              <th>Iznos</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="FAKTURE_TABELA">
+            <tr>
+              <td colspan="5">Fakture još nisu učitane iz baze.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="notice">
+      Napomena: obrazac je trenutno pripremljen za unos.
+      Spremanje u bazu zahtijeva zasebnu tabelu i sigurnosna pravila.
+    </p>
+  </main>
+
+  <script>
+    const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
+    const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
+
+    FAKTURA_FORM.addEventListener("submit", function (DOGADJAJ) {
+      DOGADJAJ.preventDefault();
+
+      const FAKTURA = {
+        BROJ_FAKTURE: document.getElementById("BROJ_FAKTURE").value.trim(),
+        KUPAC: document.getElementById("KUPAC").value.trim(),
+        DATUM_FAKTURE: document.getElementById("DATUM_FAKTURE").value,
+        ROK_PLACANJA: document.getElementById("ROK_PLACANJA").value,
+        IZNOS_FAKTURE: Number(document.getElementById("IZNOS_FAKTURE").value),
+        STATUS_FAKTURE: document.getElementById("STATUS_FAKTURE").value,
+        OPIS_FAKTURE: document.getElementById("OPIS_FAKTURE").value.trim()
+      };
+
+      if (!FAKTURA.BROJ_FAKTURE || !FAKTURA.KUPAC ||
+          !FAKTURA.DATUM_FAKTURE || !Number.isFinite(FAKTURA.IZNOS_FAKTURE) ||
+          FAKTURA.IZNOS_FAKTURE <= 0) {
+        FAKTURA_PORUKA.textContent =
+          "Provjeri obavezna polja i iznos fakture.";
+        return;
+      }
+
+      FAKTURA_PORUKA.textContent =
+        "Obrazac je ispravan, ali spremanje u bazu još nije povezano. " +
+        "Unos nije sačuvan.";
+      console.log("PRIPREMLJENA FAKTURA:", FAKTURA);
+    });
+  </script>
+</body>
+</html>
