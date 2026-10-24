@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Izvještaji | DocBizHub</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .panel {
+      background: #fff;
+      border: 1px solid #e4eaf2;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d7dfeb;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .btn {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      background: #3563e9;
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #f8faff;
+      border: 1px solid #e4eaf2;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-card span {
+      color: #738096;
+      font-size: 14px;
+    }
+
+    .stat-card h2 {
+      margin-bottom: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      color: #738096;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 750px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a href="../index.html">🏠 Početna</a>
+      <a href="fakture.html">🧾 Fakture</a>
+      <a href="troskovi.html">💳 Troškovi</a>
+      <a href="prihodi.html">📈 Prihodi</a>
+      <a class="active" href="izvjestaji.html">📊 Izvještaji</a>
+      <a href="ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1>Finansijski izvještaji</h1>
+        <p>Pregled prihoda, troškova i finansijskog rezultata.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Izaberi period</h2>
+
+      <form id="IZVJESTAJ_FORM" class="filters">
+        <div class="field">
+          <label for="DATUM_OD">Od datuma</label>
+          <input id="DATUM_OD" type="date" required>
+        </div>
+
+        <div class="field">
+          <label for="DATUM_DO">Do datuma</label>
+          <input id="DATUM_DO" type="date" required>
+        </div>
+
+        <button class="btn" type="submit">Prikaži izvještaj</button>
+      </form>
+
+      <p id="IZVJESTAJ_PORUKA" class="notice" role="status">
+        Izaberi period za pregled.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Rezultati za odabrani period</h2>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span>Ukupni prihodi</span>
+          <h2 id="IZVJESTAJ_PRIHODI">0,00 KM</h2>
+        </article>
+
+        <article class="stat-card">
+          <span>Ukupni troškovi</span>
+          <h2 id="IZVJESTAJ_TROSKOVI">0,00 KM</h2>
+        </article>
+
+        <article class="stat-card">
+          <span>Razlika</span>
+          <h2 id="IZVJESTAJ_REZULTAT">0,00 KM</h2>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Detalji</h2>
+      <p class="notice">
+        Ovaj izvještaj će računati podatke iz tabele RACUNOVODSTVO kada
+        povežemo bazu i definišemo kolone DATUM, TIP i IZNOS.
+        Trenutno nije službeni računovodstveni ili poreski izvještaj.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const FORMAT_KM = new Intl.NumberFormat("bs-BA", {
+      style: "currency",
+      currency: "BAM"
+    });
+
+    const FORMA = document.getElementById("IZVJESTAJ_FORM");
+    const PORUKA = document.getElementById("IZVJESTAJ_PORUKA");
+
+    FORMA.addEventListener("submit", function (DOGADJAJ) {
+      DOGADJAJ.preventDefault();
+
+      const OD = document.getElementById("DATUM_OD").value;
+      const DO = document.getElementById("DATUM_DO").value;
+
+      if (!OD || !DO || OD > DO) {
+        PORUKA.textContent =
+          "Odaberi ispravan period. Početni datum mora biti prije završnog.";
+        return;
+      }
+
+      PORUKA.textContent =
+        "Period je odabran, ali izvještaj još nije povezan s bazom. " +
+        "Prikazane vrijednosti nisu obračunate iz stvarnih podataka.";
+    });
+  </script>
+</body>
+</html>
