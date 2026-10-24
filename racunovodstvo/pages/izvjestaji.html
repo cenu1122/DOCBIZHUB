@@ -236,24 +236,34 @@
     </div>
   </section>
 
-  <section class="cards">
-    <div class="card">
-      <div class="label">Prihodi u odabranom periodu</div>
-      <div class="value positive" id="UKUPNO_PRIHODI">—</div>
-    </div>
-    <div class="card">
-      <div class="label">Troškovi u odabranom periodu</div>
-      <div class="value negative" id="UKUPNO_TROSKOVI">—</div>
-    </div>
-    <div class="card">
-      <div class="label">Razlika prihodi − troškovi</div>
-      <div class="value" id="RAZLIKA">—</div>
-    </div>
-    <div class="card">
-      <div class="label">Broj faktura u periodu</div>
-      <div class="value" id="BROJ_FAKTURA">—</div>
-    </div>
-  </section>
+
+<section class="cards">
+  <div class="card">
+    <div class="label">Ostali evidentirani prihodi</div>
+    <div class="value positive" id="UKUPNO_PRIHODI">—</div>
+  </div>
+  <div class="card">
+    <div class="label">Naplaćeno po fakturama u periodu</div>
+    <div class="value positive" id="UKUPNO_UPLATE">—</div>
+  </div>
+  <div class="card">
+    <div class="label">Troškovi u odabranom periodu</div>
+    <div class="value negative" id="UKUPNO_TROSKOVI">—</div>
+  </div>
+  <div class="card">
+    <div class="label">Ostali prihodi − troškovi</div>
+    <div class="value" id="RAZLIKA">—</div>
+  </div>
+  <div class="card">
+    <div class="label">Broj izdatih faktura</div>
+    <div class="value" id="BROJ_FAKTURA">—</div>
+  </div>
+  <div class="card">
+    <div class="label">Preostala potraživanja na kraju perioda</div>
+    <div class="value" id="POTRAZIVANJA">—</div>
+  </div>
+</section>
+
 
   <section class="panel">
     <h2>Prihodi i troškovi po mjesecima</h2>
@@ -313,6 +323,7 @@ let KORISNIK_ID = null;
 let SVI_PRIHODI = [];
 let SVI_TROSKOVI = [];
 let SVE_FAKTURE = [];
+let SVE_UPLATE = [];
 
 const $ = (id) => document.getElementById(id);
 
@@ -348,38 +359,80 @@ function U_PERIODU(red, datumKolona) {
     datum <= $("DATUM_DO").value;
 }
 
+
 function FILTRIRAJ() {
+  const od = $("DATUM_OD").value;
+  const doDatuma = $("DATUM_DO").value;
+
   const prihodi = SVI_PRIHODI.filter(p => U_PERIODU(p, "DATUM"));
   const troskovi = SVI_TROSKOVI.filter(t => U_PERIODU(t, "DATUM"));
-  const fakture = SVE_FAKTURE.filter(f => U_PERIODU(f, "DATUM_FAKTURE"));
+  const fakture = SVE_FAKTURE.filter(f =>
+    U_PERIODU(f, "DATUM_FAKTURE")
+  );
+
+  const uplate = SVE_UPLATE.filter(u =>
+    U_PERIODU(u, "DATUM_UPLATE")
+  );
 
   const sumaPrihodi = SUMA(prihodi);
   const sumaTroskovi = SUMA(troskovi);
+  const sumaUplate = SUMA(uplate);
   const razlika = sumaPrihodi - sumaTroskovi;
 
   $("UKUPNO_PRIHODI").textContent = IZNOS(sumaPrihodi);
+  $("UKUPNO_UPLATE").textContent = IZNOS(sumaUplate);
   $("UKUPNO_TROSKOVI").textContent = IZNOS(sumaTroskovi);
   $("RAZLIKA").textContent = IZNOS(razlika);
-  $("RAZLIKA").className = "value " + (razlika >= 0 ? "positive" : "negative");
+
+  $("RAZLIKA").className =
+    "value " + (razlika >= 0 ? "positive" : "negative");
 
   $("BROJ_FAKTURA").textContent = String(fakture.length);
 
-  const placene = fakture.filter(f =>
-    String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs").includes("plać")
-    && !String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs").includes("neplać")
+  // Preostali dug po fakturama izdatim do kraja perioda.
+  // Stornirane fakture se ne računaju u potraživanja.
+  const faktureDoDatuma = SVE_FAKTURE.filter(f =>
+    f.DATUM_FAKTURE &&
+    f.DATUM_FAKTURE <= doDatuma &&
+    f.STATUS_FAKTURE !== "STORNIRANA"
   );
 
-  const neplacene = fakture.filter(f => {
-    const status = String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs");
-    return status.includes("neplać") || status.includes("nije plać");
-  });
+  const uplatePoFakturi = new Map();
+
+  SVE_UPLATE
+    .filter(u => u.DATUM_UPLATE && u.DATUM_UPLATE <= doDatuma)
+    .forEach(u => {
+      const id = u.FAKTURA_ID;
+      uplatePoFakturi.set(
+        id,
+        (uplatePoFakturi.get(id) || 0) + Number(u.IZNOS || 0)
+      );
+    });
+
+  const potrazivanja = faktureDoDatuma.reduce((ukupno, f) => {
+    const iznos = Number(f.IZNOS_FAKTURE || 0);
+    const uplaceno = uplatePoFakturi.get(f.ID) || 0;
+    return ukupno + Math.max(0, iznos - uplaceno);
+  }, 0);
+
+  $("POTRAZIVANJA").textContent = IZNOS(potrazivanja);
+
+  const placene = fakture.filter(f =>
+    f.STATUS_FAKTURE === "PLACENA"
+  );
+
+  const neplacene = fakture.filter(f =>
+    f.STATUS_FAKTURE === "NEPLACENA"
+  );
 
   $("PLACENE").textContent = String(placene.length);
   $("NEPLACENE").textContent = String(neplacene.length);
-  $("IZNOS_FAKTURA").textContent = IZNOS(SUMA(fakture, "IZNOS_FAKTURE"));
+  $("IZNOS_FAKTURA").textContent =
+    IZNOS(SUMA(fakture, "IZNOS_FAKTURE"));
 
   PRIKAZI_MJESECE();
 }
+
 
 function KLJUC_MJESECA(datum) {
   return datum ? datum.slice(0, 7) : "";
@@ -459,10 +512,11 @@ function PRIKAZI_MJESECE() {
   });
 }
 
+
 async function UCITAJ_SVE() {
   PORUKA("Učitavam podatke izvještaja...");
 
-  const [prihodi, troskovi, fakture] = await Promise.all([
+  const [prihodi, troskovi, fakture, uplate] = await Promise.all([
     DB.from("PRIHODI")
       .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
       .eq("USER_ID", KORISNIK_ID),
@@ -472,20 +526,27 @@ async function UCITAJ_SVE() {
       .eq("USER_ID", KORISNIK_ID),
 
     DB.from("FAKTURE")
-      .select("ID, USER_ID, DATUM_FAKTURE, IZNOS_FAKTURE, STATUS_FAKTURE, KREIRANO")
+      .select(
+        "ID, USER_ID, DATUM_FAKTURE, IZNOS_FAKTURE, STATUS_FAKTURE, KREIRANO"
+      )
+      .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("UPLATE_FAKTURA")
+      .select("ID, USER_ID, FAKTURA_ID, DATUM_UPLATE, IZNOS")
       .eq("USER_ID", KORISNIK_ID)
   ]);
 
-  if (prihodi.error || troskovi.error || fakture.error) {
+  if (prihodi.error || troskovi.error ||
+      fakture.error || uplate.error) {
     console.error("Greške pri učitavanju:", {
       prihodi: prihodi.error,
       troskovi: troskovi.error,
-      fakture: fakture.error
+      fakture: fakture.error,
+      uplate: uplate.error
     });
 
     PORUKA(
-      "Nisu učitani svi podaci. Provjeri RLS pravila i nazive tabela/kolona. " +
-      "Izvještaj se neće smatrati potpunim dok se sve tri tabele ne učitaju."
+      "Izvještaj nije potpun. Provjeri RLS pravila i greške u konzoli."
     );
     return;
   }
@@ -493,13 +554,17 @@ async function UCITAJ_SVE() {
   SVI_PRIHODI = prihodi.data || [];
   SVI_TROSKOVI = troskovi.data || [];
   SVE_FAKTURE = fakture.data || [];
+  SVE_UPLATE = uplate.data || [];
 
   $("DATUM_OD").value = POCETAK_MJESECA();
   $("DATUM_DO").value = DANAS();
 
   FILTRIRAJ();
-  PORUKA("Podaci su učitani. Izvještaj obuhvata podatke prijavljenog korisnika.");
+  PORUKA(
+    "Podaci su učitani za prijavljenog korisnika, uključujući evidentirane uplate."
+  );
 }
+
 
 async function POKRENI() {
   try {
