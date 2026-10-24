@@ -4,194 +4,550 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Izvještaji | DocBizHub</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Izvještaji | DOCBIZHUB</title>
 
   <style>
-    .panel {
-      background: #fff;
-      border: 1px solid #e4eaf2;
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 22px;
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #1f2937;
     }
 
-    .filters {
+    .container { max-width: 1250px; margin: auto; }
+
+    .header {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
       flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    h2 { font-size: 19px; margin: 0 0 18px; }
+    .muted { color: #6b7280; font-size: 14px; }
+
+    .panel, .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px #00000008;
+    }
+
+    .panel { margin-bottom: 24px; }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 14px;
       align-items: end;
     }
 
-    .field {
-      display: grid;
-      gap: 7px;
-      flex: 1;
-      min-width: 180px;
-    }
-
-    .field label {
-      font-weight: 600;
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
       font-size: 14px;
     }
 
-    .field input,
-    .field select {
+    input, select {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #d7dfeb;
-      border-radius: 8px;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      background: white;
       font: inherit;
     }
 
-    .btn {
-      padding: 12px 17px;
+    button, .link {
+      display: inline-block;
+      padding: 11px 15px;
       border: 0;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      background: #3563e9;
+      border-radius: 7px;
+      background: #1d4ed8;
       color: white;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .stat-card {
-      background: #f8faff;
-      border: 1px solid #e4eaf2;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .stat-card span {
-      color: #738096;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: bold;
       font-size: 14px;
     }
 
-    .stat-card h2 {
-      margin-bottom: 0;
+    .secondary { background: #374151; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card .label { color: #6b7280; font-size: 14px; }
+    .card .value {
+      margin-top: 10px;
+      font-size: 25px;
+      font-weight: bold;
       overflow-wrap: anywhere;
     }
 
-    .notice {
-      color: #738096;
-      font-size: 13px;
-      line-height: 1.5;
+    .positive { color: #15803d; }
+    .negative { color: #b91c1c; }
+
+    .status {
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      white-space: pre-wrap;
     }
 
-    @media (max-width: 750px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    th { background: #f9fafb; }
+
+    .chart {
+      display: flex;
+      height: 240px;
+      align-items: end;
+      gap: 10px;
+      padding: 15px 4px 0;
+      overflow-x: auto;
+      border-bottom: 1px solid #d1d5db;
+    }
+
+    .month {
+      min-width: 55px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .bars {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      height: 175px;
+    }
+
+    .bar {
+      width: 17px;
+      min-height: 2px;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .income-bar { background: #16a34a; }
+    .expense-bar { background: #dc2626; }
+
+    .month-label {
+      font-size: 11px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      .panel, .card { padding: 15px; }
+      h1 { font-size: 23px; }
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .no-print, #PORUKA { display: none !important; }
+      .panel, .card { box-shadow: none; border: 1px solid #ddd; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 
 <body>
-  <aside class="sidebar">
-    <h2>DocBizHub</h2>
-    <p class="sidebar-subtitle">Računovodstvo AI</p>
+<main class="container">
 
-    <nav>
-      <a href="../index.html">🏠 Početna</a>
-      <a href="fakture.html">🧾 Fakture</a>
-      <a href="troskovi.html">💳 Troškovi</a>
-      <a href="prihodi.html">📈 Prihodi</a>
-      <a class="active" href="izvjestaji.html">📊 Izvještaji</a>
-      <a href="ai-asistent.html">🤖 AI asistent</a>
-    </nav>
-  </aside>
+  <header class="header">
+    <div>
+      <h1>Poslovni izvještaji</h1>
+      <div class="muted">Pregled faktura, prihoda i troškova</div>
+    </div>
+    <a href="prihodi.html" class="link secondary no-print">Nazad na prihode</a>
+  </header>
 
-  <main class="main-content">
-    <header class="topbar">
+  <div id="PORUKA" class="status">Provjeravam prijavu...</div>
+
+  <section class="panel no-print">
+    <h2>Period izvještaja</h2>
+    <div class="filters">
       <div>
-        <h1>Finansijski izvještaji</h1>
-        <p>Pregled prihoda, troškova i finansijskog rezultata.</p>
+        <label for="DATUM_OD">Datum od</label>
+        <input type="date" id="DATUM_OD">
       </div>
-    </header>
-
-    <section class="panel">
-      <h2>Izaberi period</h2>
-
-      <form id="IZVJESTAJ_FORM" class="filters">
-        <div class="field">
-          <label for="DATUM_OD">Od datuma</label>
-          <input id="DATUM_OD" type="date" required>
-        </div>
-
-        <div class="field">
-          <label for="DATUM_DO">Do datuma</label>
-          <input id="DATUM_DO" type="date" required>
-        </div>
-
-        <button class="btn" type="submit">Prikaži izvještaj</button>
-      </form>
-
-      <p id="IZVJESTAJ_PORUKA" class="notice" role="status">
-        Izaberi period za pregled.
-      </p>
-    </section>
-
-    <section class="panel">
-      <h2>Rezultati za odabrani period</h2>
-
-      <div class="stats-grid">
-        <article class="stat-card">
-          <span>Ukupni prihodi</span>
-          <h2 id="IZVJESTAJ_PRIHODI">0,00 KM</h2>
-        </article>
-
-        <article class="stat-card">
-          <span>Ukupni troškovi</span>
-          <h2 id="IZVJESTAJ_TROSKOVI">0,00 KM</h2>
-        </article>
-
-        <article class="stat-card">
-          <span>Razlika</span>
-          <h2 id="IZVJESTAJ_REZULTAT">0,00 KM</h2>
-        </article>
+      <div>
+        <label for="DATUM_DO">Datum do</label>
+        <input type="date" id="DATUM_DO">
       </div>
-    </section>
+      <div>
+        <button id="DUGME_PRIMIJENI" type="button">Primijeni filter</button>
+      </div>
+      <div>
+        <button id="DUGME_STAMPAJ" type="button" class="secondary">
+          Štampaj / Sačuvaj PDF
+        </button>
+      </div>
+    </div>
+  </section>
 
-    <section class="panel">
-      <h2>Detalji</h2>
-      <p class="notice">
-        Ovaj izvještaj će računati podatke iz tabele RACUNOVODSTVO kada
-        povežemo bazu i definišemo kolone DATUM, TIP i IZNOS.
-        Trenutno nije službeni računovodstveni ili poreski izvještaj.
-      </p>
-    </section>
-  </main>
+  <section class="cards">
+    <div class="card">
+      <div class="label">Prihodi u odabranom periodu</div>
+      <div class="value positive" id="UKUPNO_PRIHODI">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Troškovi u odabranom periodu</div>
+      <div class="value negative" id="UKUPNO_TROSKOVI">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Razlika prihodi − troškovi</div>
+      <div class="value" id="RAZLIKA">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Broj faktura u periodu</div>
+      <div class="value" id="BROJ_FAKTURA">—</div>
+    </div>
+  </section>
 
-  <script>
-    const FORMAT_KM = new Intl.NumberFormat("bs-BA", {
-      style: "currency",
-      currency: "BAM"
+  <section class="panel">
+    <h2>Prihodi i troškovi po mjesecima</h2>
+    <div class="muted">Grafikon prikazuje iznose za posljednjih 6 mjeseci, prema učitanim podacima.</div>
+    <div id="GRAFIKON" class="chart"></div>
+    <div class="legend">
+      <span><span class="dot" style="background:#16a34a"></span>Prihodi</span>
+      <span><span class="dot" style="background:#dc2626"></span>Troškovi</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Fakture po statusu</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="label">Plaćene fakture</div>
+        <div class="value" id="PLACENE">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Neplaćene fakture</div>
+        <div class="value" id="NEPLACENE">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Ukupan iznos faktura</div>
+        <div class="value" id="IZNOS_FAKTURA">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Sažetak po mjesecima</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mjesec</th>
+            <th>Prihodi</th>
+            <th>Troškovi</th>
+            <th>Razlika</th>
+          </tr>
+        </thead>
+        <tbody id="TABELA_MJESECI"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script src="../js/supabase.js"></script>
+
+<script>
+"use strict";
+
+let DB = null;
+let KORISNIK_ID = null;
+let SVI_PRIHODI = [];
+let SVI_TROSKOVI = [];
+let SVE_FAKTURE = [];
+
+const $ = (id) => document.getElementById(id);
+
+function PORUKA(tekst) {
+  $("PORUKA").textContent = tekst;
+}
+
+function IZNOS(vrijednost) {
+  return new Intl.NumberFormat("bs-BA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number(vrijednost) || 0) + " KM";
+}
+
+function DANAS() {
+  const sada = new Date();
+  return new Date(sada.getTime() - sada.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 10);
+}
+
+function POCETAK_MJESECA() {
+  return DANAS().slice(0, 8) + "01";
+}
+
+function SUMA(podaci, kolona = "IZNOS") {
+  return podaci.reduce((suma, red) => suma + Number(red[kolona] || 0), 0);
+}
+
+function U_PERIODU(red, datumKolona) {
+  const datum = red[datumKolona];
+  return datum &&
+    datum >= $("DATUM_OD").value &&
+    datum <= $("DATUM_DO").value;
+}
+
+function FILTRIRAJ() {
+  const prihodi = SVI_PRIHODI.filter(p => U_PERIODU(p, "DATUM"));
+  const troskovi = SVI_TROSKOVI.filter(t => U_PERIODU(t, "DATUM"));
+  const fakture = SVE_FAKTURE.filter(f => U_PERIODU(f, "DATUM_FAKTURE"));
+
+  const sumaPrihodi = SUMA(prihodi);
+  const sumaTroskovi = SUMA(troskovi);
+  const razlika = sumaPrihodi - sumaTroskovi;
+
+  $("UKUPNO_PRIHODI").textContent = IZNOS(sumaPrihodi);
+  $("UKUPNO_TROSKOVI").textContent = IZNOS(sumaTroskovi);
+  $("RAZLIKA").textContent = IZNOS(razlika);
+  $("RAZLIKA").className = "value " + (razlika >= 0 ? "positive" : "negative");
+
+  $("BROJ_FAKTURA").textContent = String(fakture.length);
+
+  const placene = fakture.filter(f =>
+    String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs").includes("plać")
+    && !String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs").includes("neplać")
+  );
+
+  const neplacene = fakture.filter(f => {
+    const status = String(f.STATUS_FAKTURE || "").toLocaleLowerCase("bs");
+    return status.includes("neplać") || status.includes("nije plać");
+  });
+
+  $("PLACENE").textContent = String(placene.length);
+  $("NEPLACENE").textContent = String(neplacene.length);
+  $("IZNOS_FAKTURA").textContent = IZNOS(SUMA(fakture, "IZNOS_FAKTURE"));
+
+  PRIKAZI_MJESECE();
+}
+
+function KLJUC_MJESECA(datum) {
+  return datum ? datum.slice(0, 7) : "";
+}
+
+function PRIKAZI_MJESECE() {
+  const mjeseci = [];
+  const sada = new Date();
+  const lokalni = new Date(sada.getTime() - sada.getTimezoneOffset() * 60000);
+
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(Date.UTC(
+      lokalni.getUTCFullYear(),
+      lokalni.getUTCMonth() - i,
+      1
+    ));
+    mjeseci.push(d.toISOString().slice(0, 7));
+  }
+
+  const podaci = mjeseci.map(mjesec => {
+    const prihodi = SVI_PRIHODI.filter(p => KLJUC_MJESECA(p.DATUM) === mjesec);
+    const troskovi = SVI_TROSKOVI.filter(t => KLJUC_MJESECA(t.DATUM) === mjesec);
+    return {
+      mjesec,
+      prihodi: SUMA(prihodi),
+      troskovi: SUMA(troskovi)
+    };
+  });
+
+  const maksimum = Math.max(
+    1,
+    ...podaci.flatMap(p => [p.prihodi, p.troskovi])
+  );
+
+  const grafikon = $("GRAFIKON");
+  grafikon.replaceChildren();
+
+  podaci.forEach(p => {
+    const mjesec = document.createElement("div");
+    mjesec.className = "month";
+
+    const stubovi = document.createElement("div");
+    stubovi.className = "bars";
+
+    [
+      { iznos: p.prihodi, klasa: "bar income-bar", naziv: "Prihodi" },
+      { iznos: p.troskovi, klasa: "bar expense-bar", naziv: "Troškovi" }
+    ].forEach(stub => {
+      const el = document.createElement("div");
+      el.className = stub.klasa;
+      el.style.height = Math.max(2, stub.iznos / maksimum * 170) + "px";
+      el.title = stub.naziv + ": " + IZNOS(stub.iznos);
+      stubovi.appendChild(el);
     });
 
-    const FORMA = document.getElementById("IZVJESTAJ_FORM");
-    const PORUKA = document.getElementById("IZVJESTAJ_PORUKA");
+    const oznaka = document.createElement("div");
+    oznaka.className = "month-label";
+    oznaka.textContent = p.mjesec;
 
-    FORMA.addEventListener("submit", function (DOGADJAJ) {
-      DOGADJAJ.preventDefault();
+    mjesec.append(stubovi, oznaka);
+    grafikon.appendChild(mjesec);
+  });
 
-      const OD = document.getElementById("DATUM_OD").value;
-      const DO = document.getElementById("DATUM_DO").value;
+  const tabela = $("TABELA_MJESECI");
+  tabela.replaceChildren();
 
-      if (!OD || !DO || OD > DO) {
-        PORUKA.textContent =
-          "Odaberi ispravan period. Početni datum mora biti prije završnog.";
+  podaci.slice().reverse().forEach(p => {
+    const red = tabela.insertRow();
+    [
+      p.mjesec,
+      IZNOS(p.prihodi),
+      IZNOS(p.troskovi),
+      IZNOS(p.prihodi - p.troskovi)
+    ].forEach(v => {
+      red.insertCell().textContent = v;
+    });
+  });
+}
+
+async function UCITAJ_SVE() {
+  PORUKA("Učitavam podatke izvještaja...");
+
+  const [prihodi, troskovi, fakture] = await Promise.all([
+    DB.from("PRIHODI")
+      .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
+      .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("TROSKOVI")
+      .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
+      .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("FAKTURE")
+      .select("ID, USER_ID, DATUM_FAKTURE, IZNOS_FAKTURE, STATUS_FAKTURE, KREIRANO")
+      .eq("USER_ID", KORISNIK_ID)
+  ]);
+
+  if (prihodi.error || troskovi.error || fakture.error) {
+    console.error("Greške pri učitavanju:", {
+      prihodi: prihodi.error,
+      troskovi: troskovi.error,
+      fakture: fakture.error
+    });
+
+    PORUKA(
+      "Nisu učitani svi podaci. Provjeri RLS pravila i nazive tabela/kolona. " +
+      "Izvještaj se neće smatrati potpunim dok se sve tri tabele ne učitaju."
+    );
+    return;
+  }
+
+  SVI_PRIHODI = prihodi.data || [];
+  SVI_TROSKOVI = troskovi.data || [];
+  SVE_FAKTURE = fakture.data || [];
+
+  $("DATUM_OD").value = POCETAK_MJESECA();
+  $("DATUM_DO").value = DANAS();
+
+  FILTRIRAJ();
+  PORUKA("Podaci su učitani. Izvještaj obuhvata podatke prijavljenog korisnika.");
+}
+
+async function POKRENI() {
+  try {
+    if (window.DB && typeof window.DB.from === "function") {
+      DB = window.DB;
+    } else if (
+      window.supabaseClient &&
+      typeof window.supabaseClient.from === "function"
+    ) {
+      DB = window.supabaseClient;
+    } else if (typeof window.DOBAVI_SUPABASE === "function") {
+      DB = window.DOBAVI_SUPABASE();
+    } else if (typeof window.POVEZI_SUPABASE === "function") {
+      DB = await window.POVEZI_SUPABASE();
+    }
+
+    if (!DB || !DB.auth || typeof DB.from !== "function") {
+      PORUKA("Supabase klijent nije pronađen. Postojeći supabase.js nije izmijenjen.");
+      return;
+    }
+
+    const { data, error } = await DB.auth.getUser();
+
+    if (error || !data || !data.user) {
+      PORUKA("Prijavi se u aplikaciju prije pregleda izvještaja.");
+      return;
+    }
+
+    KORISNIK_ID = data.user.id;
+
+    $("DUGME_PRIMIJENI").addEventListener("click", () => {
+      if ($("DATUM_OD").value > $("DATUM_DO").value) {
+        PORUKA("Datum od ne može biti poslije datuma do.");
         return;
       }
-
-      PORUKA.textContent =
-        "Period je odabran, ali izvještaj još nije povezan s bazom. " +
-        "Prikazane vrijednosti nisu obračunate iz stvarnih podataka.";
+      FILTRIRAJ();
+      PORUKA("Filter je primijenjen.");
     });
-  </script>
+
+    $("DUGME_STAMPAJ").addEventListener("click", () => window.print());
+
+    await UCITAJ_SVE();
+  } catch (error) {
+    console.error("Greška pri pokretanju izvještaja:", error);
+    PORUKA("Greška pri pokretanju. Provjeri konzolu preglednika.");
+  }
+}
+
+POKRENI();
+</script>
 </body>
 </html>
