@@ -288,468 +288,564 @@
         </p>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Broj</th>
-              <th>Kupac</th>
-              <th>Datum</th>
-              <th>Iznos</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+    ```html
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Broj</th>
+        <th>Kupac</th>
+        <th>Datum</th>
+        <th>Iznos fakture</th>
+        <th>Uplaćeno</th>
+        <th>Preostalo</th>
+        <th>Status</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
 
-          <tbody id="FAKTURE_TABELA">
-            <tr>
-              <td colspan="5">Učitavanje faktura...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <tbody id="FAKTURE_TABELA">
+      <tr>
+        <td colspan="8">Učitavanje faktura...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase.js"></script>
 
-  <script>
-    "use strict";
+ ```html
+<script>
+  "use strict";
 
-    let SVE_FAKTURE = [];
+  let SVE_FAKTURE = [];
+  let SVE_UPLATE = [];
+  let TRENUTNI_KORISNIK = null;
 
-    const FAKTURA_FORM =
-      document.getElementById("FAKTURA_FORM");
+  const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
+  const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
+  const TABELA_FAKTURA = document.getElementById("FAKTURE_TABELA");
+  const DUGME_SACUVAJ_FAKTURU =
+    document.getElementById("DUGME_SACUVAJ_FAKTURU");
 
-    const FAKTURA_PORUKA =
-      document.getElementById("FAKTURA_PORUKA");
+  const STATUSI = [
+    ["NEPLACENA", "Neplaćena"],
+    ["PLACENA", "Plaćena"],
+    ["DJELIMICNO_PLACENA", "Djelimično plaćena"],
+    ["STORNIRANA", "Stornirana"]
+  ];
 
-    const TABELA_FAKTURA =
-      document.getElementById("FAKTURE_TABELA");
+  function DOBAVI_DB() {
+    const DB = window.DOBAVI_SUPABASE?.();
 
-    const DUGME_SACUVAJ_FAKTURU =
-      document.getElementById("DUGME_SACUVAJ_FAKTURU");
-
-    const STATUSI = [
-      ["NEPLACENA", "Neplaćena"],
-      ["PLACENA", "Plaćena"],
-      ["DJELIMICNO_PLACENA", "Djelimično plaćena"],
-      ["STORNIRANA", "Stornirana"]
-    ];
-
-    function DOBAVI_DB() {
-      const DB = window.DOBAVI_SUPABASE?.();
-
-      if (!DB) {
-        throw new Error(
-          "Supabase nije dostupan. Provjeri ../js/supabase.js."
-        );
-      }
-
-      return DB;
+    if (!DB) {
+      throw new Error("Supabase nije dostupan.");
     }
 
-    function NORMALIZUJ(VRIJEDNOST) {
-      return String(VRIJEDNOST ?? "")
-        .trim()
-        .toLocaleLowerCase("bs");
-    }
+    return DB;
+  }
 
-    function PRIKAZI_PORUKU(TEKST) {
+  function PRIKAZI_PORUKU(TEKST) {
+    if (FAKTURA_PORUKA) {
       FAKTURA_PORUKA.textContent = TEKST;
     }
+  }
 
-    function FILTERISI_FAKTURE() {
-      const STATUS =
-        document.getElementById("FILTER_STATUS").value;
+  function NORMALIZUJ(VRIJEDNOST) {
+    return String(VRIJEDNOST ?? "")
+      .trim()
+      .toLocaleLowerCase("bs");
+  }
 
-      const PRETRAGA = NORMALIZUJ(
-        document.getElementById("PRETRAGA_FAKTURA").value
+  function NOVAC(IZNOS) {
+    return Number(IZNOS || 0).toLocaleString("bs-BA", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + " KM";
+  }
+
+  function UKUPNO_UPLACENO(FAKTURA_ID) {
+    return SVE_UPLATE
+      .filter(U => U.FAKTURA_ID === FAKTURA_ID)
+      .reduce((ZBIR, U) => ZBIR + Number(U.IZNOS || 0), 0);
+  }
+
+  function STATUS_PREMA_UPLATAMA(FAKTURA, UPLACENO) {
+    if (FAKTURA.STATUS_FAKTURE === "STORNIRANA") {
+      return "STORNIRANA";
+    }
+
+    const IZNOS = Number(FAKTURA.IZNOS_FAKTURE || 0);
+    const CENTI_UPLACENO = Math.round(UPLACENO * 100);
+    const CENTI_FAKTURA = Math.round(IZNOS * 100);
+
+    if (CENTI_UPLACENO <= 0) return "NEPLACENA";
+    if (CENTI_UPLACENO >= CENTI_FAKTURA) return "PLACENA";
+
+    return "DJELIMICNO_PLACENA";
+  }
+
+  function NAZIV_STATUSA(STATUS) {
+    return STATUSI.find(([V]) => V === STATUS)?.[1] || STATUS;
+  }
+
+  async function UCITAJ_UPLATE() {
+    const DB = DOBAVI_DB();
+
+    const { data, error } = await DB
+      .from("UPLATE_FAKTURA")
+      .select("ID, FAKTURA_ID, DATUM_UPLATE, IZNOS, NACIN_PLACANJA, BROJ_DOKUMENTA, NAPOMENA")
+      .eq("USER_ID", TRENUTNI_KORISNIK);
+
+    if (error) throw error;
+
+    SVE_UPLATE = data || [];
+  }
+
+  async function SINHRONIZUJ_STATUS(FAKTURA) {
+    if (FAKTURA.STATUS_FAKTURE === "STORNIRANA") return;
+
+    const UPLACENO = UKUPNO_UPLACENO(FAKTURA.ID);
+
+    // Ako nema evidentiranih uplata, ne mijenjamo postojeći status.
+    if (UPLACENO <= 0) return;
+
+    const NOVI_STATUS = STATUS_PREMA_UPLATAMA(FAKTURA, UPLACENO);
+
+    if (FAKTURA.STATUS_FAKTURE === NOVI_STATUS) return;
+
+    const DB = DOBAVI_DB();
+
+    const { error } = await DB
+      .from("FAKTURE")
+      .update({ STATUS_FAKTURE: NOVI_STATUS })
+      .eq("ID", FAKTURA.ID)
+      .eq("USER_ID", TRENUTNI_KORISNIK);
+
+    if (error) throw error;
+
+    FAKTURA.STATUS_FAKTURE = NOVI_STATUS;
+  }
+
+  function FILTERISI_FAKTURE() {
+    const FILTER = document.getElementById("FILTER_STATUS");
+    const PRETRAGA_EL = document.getElementById("PRETRAGA_FAKTURA");
+
+    const STATUS_FILTER = FILTER ? FILTER.value : "SVE";
+    const PRETRAGA = NORMALIZUJ(PRETRAGA_EL?.value || "");
+
+    const BROJAC = {
+      SVE: SVE_FAKTURE.length,
+      PLACENA: 0,
+      NEPLACENA: 0,
+      DJELIMICNO_PLACENA: 0,
+      STORNIRANA: 0
+    };
+
+    for (const F of SVE_FAKTURE) {
+      const UPLACENO = UKUPNO_UPLACENO(F.ID);
+      const STATUS = STATUS_PREMA_UPLATAMA(F, UPLACENO);
+
+      if (Object.prototype.hasOwnProperty.call(BROJAC, STATUS)) {
+        BROJAC[STATUS]++;
+      }
+    }
+
+    document.getElementById("BROJ_SVIH").textContent = BROJAC.SVE;
+    document.getElementById("BROJ_PLACENIH").textContent = BROJAC.PLACENA;
+    document.getElementById("BROJ_NEPLACENIH").textContent = BROJAC.NEPLACENA;
+    document.getElementById("BROJ_DJELIMICNIH").textContent =
+      BROJAC.DJELIMICNO_PLACENA;
+    document.getElementById("BROJ_STORNIRANIH").textContent =
+      BROJAC.STORNIRANA;
+
+    const FILTRIRANE = SVE_FAKTURE.filter(F => {
+      const STATUS = STATUS_PREMA_UPLATAMA(
+        F,
+        UKUPNO_UPLACENO(F.ID)
       );
 
-      const BROJAC = {
-        SVE: SVE_FAKTURE.length,
-        PLACENA: 0,
-        NEPLACENA: 0,
-        DJELIMICNO_PLACENA: 0,
-        STORNIRANA: 0
-      };
+      const ODGOVARA_STATUS =
+        STATUS_FILTER === "SVE" || STATUS === STATUS_FILTER;
 
-      for (const F of SVE_FAKTURE) {
-        const S = String(
-          F.STATUS_FAKTURE || "NEPLACENA"
-        ).toUpperCase();
+      const ODGOVARA_PRETRAGA =
+        NORMALIZUJ(F.BROJ_FAKTURE).includes(PRETRAGA) ||
+        NORMALIZUJ(F.KUPAC).includes(PRETRAGA);
 
-        if (Object.prototype.hasOwnProperty.call(BROJAC, S)) {
-          BROJAC[S]++;
-        }
-      }
+      return ODGOVARA_STATUS && ODGOVARA_PRETRAGA;
+    });
 
-      document.getElementById("BROJ_SVIH").textContent =
-        BROJAC.SVE;
+    TABELA_FAKTURA.replaceChildren();
 
-      document.getElementById("BROJ_PLACENIH").textContent =
-        BROJAC.PLACENA;
+    if (FILTRIRANE.length === 0) {
+      const RED = document.createElement("tr");
+      const CELIJA = document.createElement("td");
 
-      document.getElementById("BROJ_NEPLACENIH").textContent =
-        BROJAC.NEPLACENA;
+      CELIJA.colSpan = 8;
+      CELIJA.textContent = SVE_FAKTURE.length === 0
+        ? "Nema faktura za ovaj korisnički račun."
+        : "Nema faktura za odabrani filter.";
 
-      document.getElementById("BROJ_DJELIMICNIH").textContent =
-        BROJAC.DJELIMICNO_PLACENA;
+      RED.appendChild(CELIJA);
+      TABELA_FAKTURA.appendChild(RED);
+      return;
+    }
 
-      document.getElementById("BROJ_STORNIRANIH").textContent =
-        BROJAC.STORNIRANA;
+    for (const F of FILTRIRANE) {
+      const RED = document.createElement("tr");
+      const UPLACENO = UKUPNO_UPLACENO(F.ID);
+      const IZNOS = Number(F.IZNOS_FAKTURE || 0);
+      const PREOSTALO = Math.max(0, IZNOS - UPLACENO);
+      const STATUS = STATUS_PREMA_UPLATAMA(F, UPLACENO);
 
-      const FILTRIRANE = SVE_FAKTURE.filter(F => {
-        const STATUS_F = String(
-          F.STATUS_FAKTURE || "NEPLACENA"
-        ).toUpperCase();
+      const VRIJEDNOSTI = [
+        F.BROJ_FAKTURE,
+        F.KUPAC,
+        F.DATUM_FAKTURE,
+        NOVAC(IZNOS),
+        NOVAC(UPLACENO),
+        NOVAC(PREOSTALO)
+      ];
 
-        const ODGOVARA_STATUS =
-          STATUS === "SVE" || STATUS_F === STATUS;
-
-        const ODGOVARA_PRETRAZI =
-          NORMALIZUJ(F.BROJ_FAKTURE).includes(PRETRAGA) ||
-          NORMALIZUJ(F.KUPAC).includes(PRETRAGA);
-
-        return ODGOVARA_STATUS && ODGOVARA_PRETRAZI;
-      });
-
-      TABELA_FAKTURA.replaceChildren();
-
-      if (FILTRIRANE.length === 0) {
-        const RED = document.createElement("tr");
+      for (const V of VRIJEDNOSTI) {
         const CELIJA = document.createElement("td");
-
-        CELIJA.colSpan = 5;
-        CELIJA.textContent = SVE_FAKTURE.length === 0
-          ? "Nema faktura za ovaj korisnički račun."
-          : "Nema faktura za odabrani filter.";
-
+        CELIJA.textContent = V ?? "—";
         RED.appendChild(CELIJA);
-        TABELA_FAKTURA.appendChild(RED);
-        return;
       }
 
-      for (const F of FILTRIRANE) {
-        const RED = document.createElement("tr");
+      // Status fakture
+      const CELIJA_STATUS = document.createElement("td");
+      const IZBOR_STATUSA = document.createElement("select");
 
-        const VRIJEDNOSTI = [
-          F.BROJ_FAKTURE,
-          F.KUPAC,
-          F.DATUM_FAKTURE,
-          Number(F.IZNOS_FAKTURE || 0).toLocaleString(
-            "bs-BA",
-            {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            }
-          ) + " KM"
-        ];
+      IZBOR_STATUSA.setAttribute("aria-label", "Status fakture");
 
-        for (const V of VRIJEDNOSTI) {
-          const CELIJA = document.createElement("td");
-          CELIJA.textContent = V ?? "—";
-          RED.appendChild(CELIJA);
-        }
-
-        const CELIJA_STATUS =
-          document.createElement("td");
-
-        const IZBOR_STATUSA =
-          document.createElement("select");
-
-        IZBOR_STATUSA.className = "status-select";
-        IZBOR_STATUSA.setAttribute(
-          "aria-label",
-          "Status fakture " + (F.BROJ_FAKTURE || "")
-        );
-
-        for (const [VRIJEDNOST, NAZIV] of STATUSI) {
-          const OPCIJA = document.createElement("option");
-          OPCIJA.value = VRIJEDNOST;
-          OPCIJA.textContent = NAZIV;
-          IZBOR_STATUSA.appendChild(OPCIJA);
-        }
-
-        const STARI_STATUS = String(
-          F.STATUS_FAKTURE || "NEPLACENA"
-        ).toUpperCase();
-
-        IZBOR_STATUSA.value = STATUSI.some(
-          ([V]) => V === STARI_STATUS
-        ) ? STARI_STATUS : "NEPLACENA";
-
-        const DUGME_SACUVAJ =
-          document.createElement("button");
-
-        DUGME_SACUVAJ.type = "button";
-        DUGME_SACUVAJ.className =
-          "btn btn-primary status-save";
-        DUGME_SACUVAJ.textContent = "Sačuvaj status";
-
-        DUGME_SACUVAJ.addEventListener(
-          "click",
-          async function () {
-            const NOVI_STATUS = IZBOR_STATUSA.value;
-
-            DUGME_SACUVAJ.disabled = true;
-            IZBOR_STATUSA.disabled = true;
-            DUGME_SACUVAJ.textContent = "Čuvanje...";
-
-            try {
-              const DB = DOBAVI_DB();
-
-              const {
-                data: AUTH_DATA,
-                error: AUTH_GRESKA
-              } = await DB.auth.getUser();
-
-              if (AUTH_GRESKA) throw AUTH_GRESKA;
-
-              if (!AUTH_DATA.user) {
-                throw new Error("Prijavi se ponovo.");
-              }
-
-              const { data, error } = await DB
-                .from("FAKTURE")
-                .update({
-                  STATUS_FAKTURE: NOVI_STATUS
-                })
-                .eq("ID", F.ID)
-                .eq("USER_ID", AUTH_DATA.user.id)
-                .select("ID");
-
-              if (error) throw error;
-
-              if (!data || data.length === 0) {
-                throw new Error(
-                  "Status nije sačuvan. Provjeri prava pristupa i vlasništvo fakture."
-                );
-              }
-
-              F.STATUS_FAKTURE = NOVI_STATUS;
-
-              PRIKAZI_PORUKU(
-                "Status fakture " +
-                (F.BROJ_FAKTURE || "") +
-                " uspješno je sačuvan."
-              );
-
-              FILTERISI_FAKTURE();
-
-            } catch (GRESKA) {
-              console.error(
-                "Greška pri čuvanju statusa:",
-                GRESKA
-              );
-
-              IZBOR_STATUSA.value = STARI_STATUS;
-
-              PRIKAZI_PORUKU(
-                "Greška pri čuvanju statusa: " +
-                (GRESKA.message || "Nepoznata greška")
-              );
-
-              DUGME_SACUVAJ.disabled = false;
-              IZBOR_STATUSA.disabled = false;
-              DUGME_SACUVAJ.textContent = "Sačuvaj status";
-            }
-          }
-        );
-
-        CELIJA_STATUS.appendChild(IZBOR_STATUSA);
-        CELIJA_STATUS.appendChild(DUGME_SACUVAJ);
-        RED.appendChild(CELIJA_STATUS);
-        TABELA_FAKTURA.appendChild(RED);
+      for (const [VRIJEDNOST, NAZIV] of STATUSI) {
+        const OPCIJA = document.createElement("option");
+        OPCIJA.value = VRIJEDNOST;
+        OPCIJA.textContent = NAZIV;
+        IZBOR_STATUSA.appendChild(OPCIJA);
       }
-    }
 
-    async function UCITAJ_FAKTURE() {
-      TABELA_FAKTURA.innerHTML =
-        '<tr><td colspan="5">Učitavanje faktura...</td></tr>';
+      IZBOR_STATUSA.value = STATUS;
+      IZBOR_STATUSA.disabled =
+        STATUS === "PLACENA" || STATUS === "DJELIMICNO_PLACENA";
 
-      try {
-        const DB = DOBAVI_DB();
+      const DUGME_STATUS = document.createElement("button");
+      DUGME_STATUS.type = "button";
+      DUGME_STATUS.textContent = "Sačuvaj status";
 
-        const {
-          data: AUTH,
-          error: AUTH_GRESKA
-        } = await DB.auth.getUser();
-
-        if (AUTH_GRESKA) throw AUTH_GRESKA;
-
-        if (!AUTH.user) {
-          SVE_FAKTURE = [];
-          FILTERISI_FAKTURE();
-
-          PRIKAZI_PORUKU(
-            "Prijavi se da vidiš svoje fakture."
-          );
-          return;
-        }
-
-        const { data: FAKTURE, error } = await DB
-          .from("FAKTURE")
-          .select("*")
-          .eq("USER_ID", AUTH.user.id)
-          .order("KREIRANO", { ascending: false });
-
-        if (error) throw error;
-
-        console.log("Prijavljeni korisnik:", AUTH.user.id);
-        console.log("Učitane fakture:", FAKTURE);
-        console.log(
-          "Broj učitanih faktura:",
-          FAKTURE?.length ?? 0
-        );
-
-        SVE_FAKTURE = FAKTURE || [];
-        FILTERISI_FAKTURE();
-
-        if (SVE_FAKTURE.length === 0) {
-          PRIKAZI_PORUKU(
-            "Nema faktura vezanih za ovaj korisnički račun."
-          );
-        }
-
-      } catch (GRESKA) {
-        console.error(
-          "Greška pri učitavanju faktura:",
-          GRESKA
-        );
-
-        TABELA_FAKTURA.innerHTML =
-          '<tr><td colspan="5">Fakture nisu učitane. Provjeri prijavu, Supabase konfiguraciju i Console.</td></tr>';
-
-        PRIKAZI_PORUKU(
-          "Greška pri učitavanju faktura: " +
-          (GRESKA.message || "Nepoznata greška")
-        );
-      }
-    }
-
-    FAKTURA_FORM.addEventListener(
-      "submit",
-      async function (DOGADJAJ) {
-        DOGADJAJ.preventDefault();
-
-        if (!FAKTURA_FORM.reportValidity()) return;
-
-        const F = {
-          BROJ_FAKTURE:
-            document.getElementById("BROJ_FAKTURE").value.trim(),
-
-          KUPAC:
-            document.getElementById("KUPAC").value.trim(),
-
-          DATUM_FAKTURE:
-            document.getElementById("DATUM_FAKTURE").value,
-
-          ROK_PLACANJA:
-            document.getElementById("ROK_PLACANJA").value,
-
-          IZNOS_FAKTURE:
-            Number(
-              document.getElementById("IZNOS_FAKTURE").value
-            ),
-
-          STATUS_FAKTURE:
-            document.getElementById("STATUS_FAKTURE").value,
-
-          OPIS_FAKTURE:
-            document.getElementById("OPIS_FAKTURE").value.trim()
-        };
-
-        if (
-          !F.BROJ_FAKTURE ||
-          !F.KUPAC ||
-          !F.DATUM_FAKTURE ||
-          !Number.isFinite(F.IZNOS_FAKTURE) ||
-          F.IZNOS_FAKTURE <= 0
-        ) {
-          PRIKAZI_PORUKU(
-            "Provjeri obavezna polja i iznos fakture."
-          );
-          return;
-        }
-
-        DUGME_SACUVAJ_FAKTURU.disabled = true;
-        DUGME_SACUVAJ_FAKTURU.textContent = "Spremanje...";
-        PRIKAZI_PORUKU("Spremanje fakture...");
+      DUGME_STATUS.addEventListener("click", async () => {
+        const NOVI_STATUS = IZBOR_STATUSA.value;
 
         try {
+          DUGME_STATUS.disabled = true;
           const DB = DOBAVI_DB();
 
-          const {
-            data: AUTH,
-            error: AUTH_GRESKA
-          } = await DB.auth.getUser();
-
-          if (AUTH_GRESKA) throw AUTH_GRESKA;
-
-          if (!AUTH.user) {
-            throw new Error(
-              "Moraš se prijaviti prije spremanja fakture."
-            );
-          }
-
-          const { data, error } = await DB
+          const { error } = await DB
             .from("FAKTURE")
-            .insert({
-              USER_ID: AUTH.user.id,
-              BROJ_FAKTURE: F.BROJ_FAKTURE,
-              KUPAC: F.KUPAC,
-              DATUM_FAKTURE: F.DATUM_FAKTURE,
-              ROK_PLACANJA: F.ROK_PLACANJA || null,
-              IZNOS_FAKTURE: F.IZNOS_FAKTURE,
-              STATUS_FAKTURE:
-                F.STATUS_FAKTURE || "NEPLACENA",
-              OPIS_FAKTURE: F.OPIS_FAKTURE || null
-            })
-            .select("*")
-            .single();
+            .update({ STATUS_FAKTURE: NOVI_STATUS })
+            .eq("ID", F.ID)
+            .eq("USER_ID", TRENUTNI_KORISNIK);
 
           if (error) throw error;
 
-          FAKTURA_FORM.reset();
-
-          await UCITAJ_FAKTURE();
-
-          PRIKAZI_PORUKU(
-            "Faktura " +
-            data.BROJ_FAKTURE +
-            " uspješno je sačuvana."
-          );
-
+          F.STATUS_FAKTURE = NOVI_STATUS;
+          PRIKAZI_PORUKU("Status fakture je sačuvan.");
+          FILTERISI_FAKTURE();
         } catch (GRESKA) {
-          console.error(
-            "Greška pri spremanju fakture:",
-            GRESKA
-          );
-
-          PRIKAZI_PORUKU(
-            "Faktura nije sačuvana: " +
-            (GRESKA.message || "Nepoznata greška")
-          );
-
+          console.error(GRESKA);
+          PRIKAZI_PORUKU("Greška pri čuvanju statusa: " + GRESKA.message);
         } finally {
-          DUGME_SACUVAJ_FAKTURU.disabled = false;
-          DUGME_SACUVAJ_FAKTURU.textContent =
-            "Sačuvaj fakturu";
+          DUGME_STATUS.disabled = false;
+        }
+      });
+
+      CELIJA_STATUS.appendChild(IZBOR_STATUSA);
+      CELIJA_STATUS.appendChild(DUGME_STATUS);
+      RED.appendChild(CELIJA_STATUS);
+
+      // Akcije
+      const CELIJA_AKCIJE = document.createElement("td");
+
+      const DUGME_UPLATA = document.createElement("button");
+      DUGME_UPLATA.type = "button";
+      DUGME_UPLATA.textContent = "Evidentiraj uplatu";
+      DUGME_UPLATA.disabled = STATUS === "STORNIRANA" || PREOSTALO <= 0;
+
+      DUGME_UPLATA.addEventListener("click", () => {
+        EVIDENTIRAJ_UPLATU(F);
+      });
+
+      const DUGME_HISTORIJA = document.createElement("button");
+      DUGME_HISTORIJA.type = "button";
+      DUGME_HISTORIJA.textContent = "Historija uplata";
+
+      DUGME_HISTORIJA.addEventListener("click", () => {
+        const UPLATE = SVE_UPLATE.filter(U => U.FAKTURA_ID === F.ID);
+
+        if (UPLATE.length === 0) {
+          alert("Za ovu fakturu još nema evidentiranih uplata.");
+          return;
+        }
+
+        const TEKST = UPLATE.map(U =>
+          `${U.DATUM_UPLATE} — ${NOVAC(U.IZNOS)}`
+          + (U.NACIN_PLACANJA ? ` — ${U.NACIN_PLACANJA}` : "")
+          + (U.BROJ_DOKUMENTA ? ` — Dokument: ${U.BROJ_DOKUMENTA}` : "")
+          + (U.NAPOMENA ? ` — ${U.NAPOMENA}` : "")
+        ).join("\n");
+
+        alert("Uplate za fakturu " + F.BROJ_FAKTURE + ":\n\n" + TEKST);
+      });
+
+      CELIJA_AKCIJE.appendChild(DUGME_UPLATA);
+      CELIJA_AKCIJE.appendChild(document.createElement("br"));
+      CELIJA_AKCIJE.appendChild(DUGME_HISTORIJA);
+      RED.appendChild(CELIJA_AKCIJE);
+
+      TABELA_FAKTURA.appendChild(RED);
+    }
+  }
+
+  async function EVIDENTIRAJ_UPLATU(FAKTURA) {
+    try {
+      const UPLACENO = UKUPNO_UPLACENO(FAKTURA.ID);
+      const IZNOS = Number(FAKTURA.IZNOS_FAKTURE || 0);
+      const PREOSTALO = Math.max(0, IZNOS - UPLACENO);
+
+      if (PREOSTALO <= 0) {
+        alert("Ova faktura je već u potpunosti plaćena.");
+        return;
+      }
+
+      const DATUM = prompt(
+        "Datum uplate (GGGG-MM-DD):",
+        new Date().toISOString().slice(0, 10)
+      );
+
+      if (DATUM === null) return;
+
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(DATUM)) {
+        alert("Unesi datum u formatu GGGG-MM-DD.");
+        return;
+      }
+
+      const UNOS_IZNOSA = prompt(
+        "Iznos ove uplate (preostalo: " + NOVAC(PREOSTALO) + "):"
+      );
+
+      if (UNOS_IZNOSA === null) return;
+
+      const IZNOS_UPLATE = Number(UNOS_IZNOSA.replace(",", "."));
+
+      if (!Number.isFinite(IZNOS_UPLATE) || IZNOS_UPLATE <= 0) {
+        alert("Iznos uplate mora biti veći od nule.");
+        return;
+      }
+
+      if (Math.round(IZNOS_UPLATE * 100) > Math.round(PREOSTALO * 100)) {
+        alert("Uplata ne može biti veća od preostalog duga (" +
+          NOVAC(PREOSTALO) + ").");
+        return;
+      }
+
+      const NACIN = prompt(
+        "Način plaćanja (npr. Bankovni transfer, Gotovina):",
+        "Bankovni transfer"
+      );
+      if (NACIN === null) return;
+
+      const DOKUMENT = prompt("Broj potvrde ili dokumenta (opcionalno):");
+      if (DOKUMENT === null) return;
+
+      const NAPOMENA = prompt("Napomena (opcionalno):");
+      if (NAPOMENA === null) return;
+
+      const DB = DOBAVI_DB();
+
+      const { error: INSERT_GRESKA } = await DB
+        .from("UPLATE_FAKTURA")
+        .insert({
+          USER_ID: TRENUTNI_KORISNIK,
+          FAKTURA_ID: FAKTURA.ID,
+          DATUM_UPLATE: DATUM,
+          IZNOS: Math.round(IZNOS_UPLATE * 100) / 100,
+          NACIN_PLACANJA: NACIN.trim() || null,
+          BROJ_DOKUMENTA: DOKUMENT.trim() || null,
+          NAPOMENA: NAPOMENA.trim() || null
+        });
+
+      if (INSERT_GRESKA) throw INSERT_GRESKA;
+
+      // Ponovo čitamo sve uplate iz baze prije obračuna statusa.
+      await UCITAJ_UPLATE();
+
+      const UKUPNO = UKUPNO_UPLACENO(FAKTURA.ID);
+      const NOVI_STATUS = STATUS_PREMA_UPLATAMA(FAKTURA, UKUPNO);
+
+      if (FAKTURA.STATUS_FAKTURE !== "STORNIRANA") {
+        const { error: UPDATE_GRESKA } = await DB
+          .from("FAKTURE")
+          .update({ STATUS_FAKTURE: NOVI_STATUS })
+          .eq("ID", FAKTURA.ID)
+          .eq("USER_ID", TRENUTNI_KORISNIK);
+
+        if (UPDATE_GRESKA) throw UPDATE_GRESKA;
+
+        FAKTURA.STATUS_FAKTURE = NOVI_STATUS;
+      }
+
+      await UCITAJ_FAKTURE();
+
+      PRIKAZI_PORUKU(
+        "Uplata je sačuvana. Ukupno uplaćeno: " + NOVAC(UKUPNO) +
+        ". Preostalo: " + NOVAC(Math.max(0, IZNOS - UKUPNO)) +
+        ". Status: " + NAZIV_STATUSA(FAKTURA.STATUS_FAKTURE) + "."
+      );
+
+    } catch (GRESKA) {
+      console.error("Greška pri evidentiranju uplate:", GRESKA);
+      PRIKAZI_PORUKU(
+        "Uplata nije sačuvana: " +
+        (GRESKA.message || "Nepoznata greška")
+      );
+      alert("Uplata nije sačuvana: " + (GRESKA.message || "Nepoznata greška"));
+    }
+  }
+
+  async function UCITAJ_FAKTURE() {
+    TABELA_FAKTURA.innerHTML =
+      '<tr><td colspan="8">Učitavanje faktura...</td></tr>';
+
+    try {
+      const DB = DOBAVI_DB();
+      const { data: AUTH, error: AUTH_GRESKA } = await DB.auth.getUser();
+
+      if (AUTH_GRESKA) throw AUTH_GRESKA;
+
+      if (!AUTH.user) {
+        TRENUTNI_KORISNIK = null;
+        SVE_FAKTURE = [];
+        SVE_UPLATE = [];
+        FILTERISI_FAKTURE();
+        PRIKAZI_PORUKU("Prijavi se da vidiš svoje fakture.");
+        return;
+      }
+
+      TRENUTNI_KORISNIK = AUTH.user.id;
+
+      const { data: FAKTURE, error } = await DB
+        .from("FAKTURE")
+        .select("*")
+        .eq("USER_ID", TRENUTNI_KORISNIK)
+        .order("KREIRANO", { ascending: false });
+
+      if (error) throw error;
+
+      SVE_FAKTURE = FAKTURE || [];
+      await UCITAJ_UPLATE();
+
+      // Uskladi statuse za fakture koje imaju evidentirane uplate.
+      for (const F of SVE_FAKTURE) {
+        if (UKUPNO_UPLACENO(F.ID) > 0) {
+          await SINHRONIZUJ_STATUS(F);
         }
       }
-    );
 
-    document
-      .getElementById("FILTER_STATUS")
-      .addEventListener("change", FILTERISI_FAKTURE);
+      FILTERISI_FAKTURE();
 
-    document
-      .getElementById("PRETRAGA_FAKTURA")
-      .addEventListener("input", FILTERISI_FAKTURE);
+    } catch (GRESKA) {
+      console.error("Greška pri učitavanju faktura:", GRESKA);
+      TABELA_FAKTURA.innerHTML =
+        '<tr><td colspan="8">Fakture nisu učitane. Provjeri prijavu, Supabase i Console.</td></tr>';
+      PRIKAZI_PORUKU(
+        "Greška pri učitavanju: " +
+        (GRESKA.message || "Nepoznata greška")
+      );
+    }
+  }
 
-    UCITAJ_FAKTURE();
-  </script>
+  FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
+    DOGADJAJ.preventDefault();
+
+    if (!FAKTURA_FORM.reportValidity()) return;
+
+    const F = {
+      BROJ_FAKTURE: document.getElementById("BROJ_FAKTURE").value.trim(),
+      KUPAC: document.getElementById("KUPAC").value.trim(),
+      DATUM_FAKTURE: document.getElementById("DATUM_FAKTURE").value,
+      ROK_PLACANJA: document.getElementById("ROK_PLACANJA").value,
+      IZNOS_FAKTURE: Number(document.getElementById("IZNOS_FAKTURE").value),
+      STATUS_FAKTURE: document.getElementById("STATUS_FAKTURE").value,
+      OPIS_FAKTURE: document.getElementById("OPIS_FAKTURE").value.trim()
+    };
+
+    if (
+      !F.BROJ_FAKTURE || !F.KUPAC || !F.DATUM_FAKTURE ||
+      !Number.isFinite(F.IZNOS_FAKTURE) || F.IZNOS_FAKTURE <= 0
+    ) {
+      PRIKAZI_PORUKU("Provjeri obavezna polja i iznos fakture.");
+      return;
+    }
+
+    DUGME_SACUVAJ_FAKTURU.disabled = true;
+    DUGME_SACUVAJ_FAKTURU.textContent = "Spremanje...";
+
+    try {
+      const DB = DOBAVI_DB();
+      const { data: AUTH, error: AUTH_GRESKA } = await DB.auth.getUser();
+
+      if (AUTH_GRESKA) throw AUTH_GRESKA;
+      if (!AUTH.user) throw new Error("Moraš se prijaviti prije spremanja fakture.");
+
+      const { data, error } = await DB
+        .from("FAKTURE")
+        .insert({
+          USER_ID: AUTH.user.id,
+          BROJ_FAKTURE: F.BROJ_FAKTURE,
+          KUPAC: F.KUPAC,
+          DATUM_FAKTURE: F.DATUM_FAKTURE,
+          ROK_PLACANJA: F.ROK_PLACANJA || null,
+          IZNOS_FAKTURE: F.IZNOS_FAKTURE,
+          STATUS_FAKTURE: F.STATUS_FAKTURE || "NEPLACENA",
+          OPIS_FAKTURE: F.OPIS_FAKTURE || null
+        })
+        .select("*")
+        .single();
+
+      if (error) throw error;
+
+      FAKTURA_FORM.reset();
+      await UCITAJ_FAKTURE();
+
+      PRIKAZI_PORUKU(
+        "Faktura " + data.BROJ_FAKTURE + " uspješno je sačuvana."
+      );
+
+    } catch (GRESKA) {
+      console.error("Greška pri spremanju fakture:", GRESKA);
+      PRIKAZI_PORUKU(
+        "Faktura nije sačuvana: " +
+        (GRESKA.message || "Nepoznata greška")
+      );
+    } finally {
+      DUGME_SACUVAJ_FAKTURU.disabled = false;
+      DUGME_SACUVAJ_FAKTURU.textContent = "Sačuvaj fakturu";
+    }
+  });
+
+  document
+    .getElementById("FILTER_STATUS")
+    .addEventListener("change", FILTERISI_FAKTURE);
+
+  document
+    .getElementById("PRETRAGA_FAKTURA")
+    .addEventListener("input", FILTERISI_FAKTURE);
+
+  UCITAJ_FAKTURE();
+</script>
 </body>
 </html>
