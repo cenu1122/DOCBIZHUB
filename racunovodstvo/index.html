@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocBizHub | Računovodstvo AI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a class="active" href="index.html">🏠 Početna</a>
+      <a href="pages/fakture.html">🧾 Fakture</a>
+      <a href="pages/troskovi.html">💳 Troškovi</a>
+      <a href="pages/prihodi.html">📈 Prihodi</a>
+      <a href="pages/izvjestaji.html">📊 Izvještaji</a>
+      <a href="pages/ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1>Računovodstvo</h1>
+        <p>Dobro došao u svoj finansijski pregled.</p>
+      </div>
+      <span class="status">● Sistem</span>
+    </header>
+
+    <section class="welcome">
+      <h2>Finansije pod kontrolom.</h2>
+      <p>Upravljaj fakturama, troškovima i prihodima na jednom mjestu.</p>
+      <a class="primary-button" href="pages/ai-asistent.html">
+        Otvori AI asistenta →
+      </a>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span>Ukupni prihodi</span>
+        <h2 id="UKUPNI_PRIHODI">0,00 KM</h2>
+      </article>
+
+      <article class="stat-card">
+        <span>Ukupni troškovi</span>
+        <h2 id="UKUPNI_TROSKOVI">0,00 KM</h2>
+      </article>
+
+      <article class="stat-card">
+        <span>Razlika</span>
+        <h2 id="NETO_REZULTAT">0,00 KM</h2>
+      </article>
+
+      <article class="stat-card">
+        <span>Povezivanje baze</span>
+        <h2 id="STATUS_BAZE">Provjera...</h2>
+      </article>
+    </section>
+
+    <section class="content-card">
+      <h2>Brzi pristup</h2>
+      <div class="quick-links">
+        <a href="pages/fakture.html">+ Nova faktura</a>
+        <a href="pages/troskovi.html">+ Evidentiraj trošak</a>
+        <a href="pages/prihodi.html">+ Evidentiraj prihod</a>
+        <a href="pages/ai-asistent.html">Pitaj AI asistenta</a>
+      </div>
+    </section>
+
+    <p id="PORUKA_SISTEMA" class="system-message"></p>
+  </main>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/racunovodstvo.js"></script>
+</body>
+</html>
