@@ -4,71 +4,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prihodi | DocBizHub</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Prihodi | DOCBIZHUB</title>
 
   <style>
-    .panel {
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card, .panel {
       background: white;
-      border: 1px solid #e4eaf2;
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 22px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px #00000008;
+    }
+
+    .card .label {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .card .value {
+      font-size: 26px;
+      font-weight: bold;
+      margin-top: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .panel {
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 19px;
+      margin: 0 0 18px;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
     }
 
-    .field {
-      display: grid;
-      gap: 7px;
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 7px;
     }
 
-    .field label {
-      font-weight: 600;
+    input, select, textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      font: inherit;
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    button, .button-link {
+      display: inline-block;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 7px;
+      background: #166534;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
       font-size: 14px;
     }
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d7dfeb;
-      border-radius: 8px;
-      font: inherit;
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
     }
 
-    .field textarea {
-      resize: vertical;
+    .secondary {
+      background: #374151;
     }
 
-    .btn {
-      padding: 12px 17px;
-      border: 0;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn-primary {
-      background: #3563e9;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #edf1f7;
-      color: #182230;
+    .danger {
+      background: #b91c1c;
     }
 
     .form-actions {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       margin-top: 18px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     .table-wrap {
@@ -76,198 +154,549 @@
     }
 
     table {
-      width: 100%;
-      min-width: 600px;
       border-collapse: collapse;
+      width: 100%;
+      min-width: 850px;
     }
 
     th, td {
-      padding: 13px;
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: left;
-      border-bottom: 1px solid #e4eaf2;
+      font-size: 14px;
+      vertical-align: top;
     }
 
     th {
-      color: #738096;
-      font-size: 13px;
+      background: #f9fafb;
+      white-space: nowrap;
     }
 
-    .notice {
-      color: #738096;
-      font-size: 13px;
-      line-height: 1.5;
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
     }
 
-    @media (max-width: 650px) {
-      .form-grid {
-        grid-template-columns: 1fr;
+    .hidden {
+      display: none !important;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .row-actions button {
+      padding: 8px 10px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .card, .panel {
+        padding: 15px;
       }
     }
   </style>
 </head>
 
 <body>
-  <aside class="sidebar">
-    <h2>DocBizHub</h2>
-    <p class="sidebar-subtitle">Računovodstvo AI</p>
-
-    <nav>
-      <a href="../index.html">🏠 Početna</a>
-      <a href="fakture.html">🧾 Fakture</a>
-      <a href="troskovi.html">💳 Troškovi</a>
-      <a class="active" href="prihodi.html">📈 Prihodi</a>
-      <a href="izvjestaji.html">📊 Izvještaji</a>
-      <a href="ai-asistent.html">🤖 AI asistent</a>
-    </nav>
-  </aside>
-
-  <main class="main-content">
-    <header class="topbar">
+  <main class="container">
+    <header class="header">
       <div>
         <h1>Prihodi</h1>
-        <p>Pregled i evidencija poslovnih prihoda.</p>
+        <div class="muted">Evidencija i pregled poslovnih prihoda</div>
       </div>
+      <a class="button-link secondary" href="fakture.html">Nazad na fakture</a>
     </header>
 
-    <section class="panel">
-      <h2>Unesi novi prihod</h2>
+    <div id="PORUKA" class="status">Provjeravam prijavu...</div>
 
-      <form id="PRIHOD_FORM">
+    <section class="cards">
+      <div class="card">
+        <div class="label">Ukupni prihodi — svi zapisi</div>
+        <div class="value" id="UKUPNO_SVE">0,00 KM</div>
+      </div>
+      <div class="card">
+        <div class="label">Prihodi ovog mjeseca</div>
+        <div class="value" id="UKUPNO_MJESEC">0,00 KM</div>
+      </div>
+      <div class="card">
+        <div class="label">Broj evidentiranih prihoda</div>
+        <div class="value" id="BROJ_PRIHODA">0</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 id="NASLOV_FORME">Dodaj novi prihod</h2>
+
+      <form id="FORMA_PRIHOD">
         <div class="form-grid">
-          <div class="field">
-            <label for="DATUM_PRIHODA">Datum prihoda *</label>
-            <input id="DATUM_PRIHODA" type="date" required>
+          <div>
+            <label for="DATUM">Datum prihoda *</label>
+            <input type="date" id="DATUM" required>
           </div>
 
-          <div class="field">
-            <label for="IZNOS_PRIHODA">Iznos (KM) *</label>
-            <input id="IZNOS_PRIHODA" type="number"
-                   min="0.01" max="999999999" step="0.01"
+          <div>
+            <label for="IZNOS">Iznos (KM) *</label>
+            <input type="number" id="IZNOS" min="0.01" step="0.01"
                    placeholder="0.00" required>
           </div>
 
-          <div class="field">
-            <label for="VRSTA_PRIHODA">Vrsta prihoda *</label>
-            <select id="VRSTA_PRIHODA" required>
-              <option value="">Odaberi vrstu</option>
-              <option value="PRODAJA_ROBE">Prodaja robe</option>
-              <option value="USLUGE">Usluge</option>
-              <option value="PROJEKTI">Projekti</option>
-              <option value="PROVIZIJE">Provizije</option>
-              <option value="OSTALO">Ostalo</option>
+          <div>
+            <label for="TIP_PRIHODA">Tip prihoda *</label>
+            <select id="TIP_PRIHODA" required>
+              <option value="">Odaberi tip</option>
+              <option value="Prodaja">Prodaja</option>
+              <option value="Usluge">Usluge</option>
+              <option value="Konsultacije">Konsultacije</option>
+              <option value="Provizija">Provizija</option>
+              <option value="Ostalo">Ostalo</option>
             </select>
           </div>
 
-          <div class="field">
-            <label for="KUPAC_PRIHODA">Kupac / izvor prihoda</label>
-            <input id="KUPAC_PRIHODA" maxlength="200"
-                   placeholder="Naziv kupca ili izvora">
+          <div>
+            <label for="IZVOR_PRIHODA">Izvor prihoda</label>
+            <input type="text" id="IZVOR_PRIHODA"
+                   placeholder="Kupac ili izvor">
           </div>
 
-          <div class="field">
+          <div>
             <label for="NACIN_PLACANJA">Način plaćanja</label>
             <select id="NACIN_PLACANJA">
-              <option value="BANKA">Bankovni račun</option>
-              <option value="GOTOVINA">Gotovina</option>
-              <option value="KARTICA">Kartica</option>
-              <option value="OSTALO">Ostalo</option>
+              <option value="">Odaberi način</option>
+              <option value="Gotovina">Gotovina</option>
+              <option value="Bankovni transfer">Bankovni transfer</option>
+              <option value="Kartica">Kartica</option>
+              <option value="Ostalo">Ostalo</option>
             </select>
           </div>
 
-          <div class="field">
+          <div>
             <label for="BROJ_DOKUMENTA">Broj dokumenta</label>
-            <input id="BROJ_DOKUMENTA" maxlength="100"
-                   placeholder="Broj fakture ili potvrde">
+            <input type="text" id="BROJ_DOKUMENTA"
+                   placeholder="Npr. PR-001">
           </div>
 
-          <div class="field" style="grid-column: 1 / -1">
-            <label for="OPIS_PRIHODA">Opis prihoda *</label>
-            <textarea id="OPIS_PRIHODA" rows="3"
-                      maxlength="1000" required
-                      placeholder="Opiši izvor prihoda"></textarea>
+          <div class="field-full">
+            <label for="OPIS">Opis prihoda</label>
+            <textarea id="OPIS" placeholder="Dodatne informacije..."></textarea>
           </div>
         </div>
 
         <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Sačuvaj prihod
-          </button>
-          <button class="btn btn-secondary" type="reset">
-            Poništi unos
-          </button>
+          <button id="DUGME_SACUVAJ" type="submit">Sačuvaj prihod</button>
+          <button id="DUGME_ODUSTANI" class="secondary hidden"
+                  type="button">Odustani od izmjene</button>
         </div>
       </form>
-
-      <p id="PRIHOD_PORUKA" role="status"></p>
     </section>
 
     <section class="panel">
       <h2>Evidencija prihoda</h2>
 
-      <p class="notice">
-        Prihodi će se prikazivati ovdje nakon povezivanja baze podataka.
-      </p>
+      <div class="filters">
+        <div>
+          <label for="PRETRAGA">Pretraga</label>
+          <input type="search" id="PRETRAGA"
+                 placeholder="Izvor, opis ili broj dokumenta">
+        </div>
+        <div>
+          <label for="FILTER_OD">Datum od</label>
+          <input type="date" id="FILTER_OD">
+        </div>
+        <div>
+          <label for="FILTER_DO">Datum do</label>
+          <input type="date" id="FILTER_DO">
+        </div>
+        <div>
+          <label for="FILTER_TIP">Tip prihoda</label>
+          <select id="FILTER_TIP">
+            <option value="">Svi tipovi</option>
+            <option value="Prodaja">Prodaja</option>
+            <option value="Usluge">Usluge</option>
+            <option value="Konsultacije">Konsultacije</option>
+            <option value="Provizija">Provizija</option>
+            <option value="Ostalo">Ostalo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="muted" id="BROJ_REZULTATA"></div>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Datum</th>
-              <th>Vrsta</th>
-              <th>Opis</th>
+              <th>Tip</th>
               <th>Izvor</th>
+              <th>Način plaćanja</th>
+              <th>Broj dokumenta</th>
+              <th>Opis</th>
               <th>Iznos</th>
+              <th>Akcije</th>
             </tr>
           </thead>
-          <tbody id="PRIHODI_TABELA">
-            <tr>
-              <td colspan="5">Prihodi još nisu učitani iz baze.</td>
-            </tr>
+          <tbody id="LISTA_PRIHODA">
+            <tr><td colspan="8">Učitavanje...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
-
-    <p class="notice">
-      Napomena: obrazac trenutno provjerava unos, ali još ne sprema podatke
-      u Supabase.
-    </p>
   </main>
 
+  <!-- Koristi postojeću konfiguraciju Supabase projekta. -->
+  <script src="../js/supabase.js"></script>
+
   <script>
-    const PRIHOD_FORM = document.getElementById("PRIHOD_FORM");
-    const PRIHOD_PORUKA = document.getElementById("PRIHOD_PORUKA");
+    "use strict";
 
-    PRIHOD_FORM.addEventListener("submit", function (DOGADJAJ) {
-      DOGADJAJ.preventDefault();
+    let DB = null;
+    let KORISNIK_ID = null;
+    let SVI_PRIHODI = [];
+    let ID_IZMJENE = null;
 
-      const PRIHOD = {
-        DATUM: document.getElementById("DATUM_PRIHODA").value,
-        IZNOS: Number(document.getElementById("IZNOS_PRIHODA").value),
-        VRSTA: document.getElementById("VRSTA_PRIHODA").value,
-        IZVOR: document.getElementById("KUPAC_PRIHODA").value.trim(),
-        NACIN_PLACANJA: document.getElementById("NACIN_PLACANJA").value,
-        BROJ_DOKUMENTA: document.getElementById("BROJ_DOKUMENTA").value.trim(),
-        OPIS: document.getElementById("OPIS_PRIHODA").value.trim()
-      };
+    const $ = (id) => document.getElementById(id);
 
-      if (
-        !PRIHOD.DATUM ||
-        !PRIHOD.VRSTA ||
-        !PRIHOD.OPIS ||
-        !Number.isFinite(PRIHOD.IZNOS) ||
-        PRIHOD.IZNOS <= 0
-      ) {
-        PRIHOD_PORUKA.textContent =
-          "Provjeri datum, vrstu, opis i iznos prihoda.";
+    function PRIKAZI_PORUKU(tekst) {
+      $("PORUKA").textContent = tekst;
+    }
+
+    function FORMATIRAJ_IZNOS(iznos) {
+      return new Intl.NumberFormat("bs-BA", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(Number(iznos) || 0) + " KM";
+    }
+
+    function SIGURAN_TEKST(vrijednost) {
+      return String(vrijednost ?? "");
+    }
+
+    function DODAJ_TEKST(celija, vrijednost) {
+      celija.textContent = SIGURAN_TEKST(vrijednost) || "—";
+    }
+
+    function DANAS() {
+      const sada = new Date();
+      const lokalniPomak = sada.getTimezoneOffset() * 60000;
+      return new Date(sada.getTime() - lokalniPomak)
+        .toISOString().slice(0, 10);
+    }
+
+    function RESETUJ_FORMU() {
+      $("FORMA_PRIHOD").reset();
+      $("DATUM").value = DANAS();
+      ID_IZMJENE = null;
+      $("NASLOV_FORME").textContent = "Dodaj novi prihod";
+      $("DUGME_SACUVAJ").textContent = "Sačuvaj prihod";
+      $("DUGME_ODUSTANI").classList.add("hidden");
+    }
+
+    function PROVJERI_FILTERE() {
+      const od = $("FILTER_OD").value;
+      const doDatuma = $("FILTER_DO").value;
+
+      if (od && doDatuma && od > doDatuma) {
+        PRIKAZI_PORUKU("Datum 'od' ne može biti poslije datuma 'do'.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function FILTRIRANI_PRIHODI() {
+      const pretraga = $("PRETRAGA").value.trim().toLocaleLowerCase("bs");
+      const od = $("FILTER_OD").value;
+      const doDatuma = $("FILTER_DO").value;
+      const tip = $("FILTER_TIP").value;
+
+      return SVI_PRIHODI.filter((p) => {
+        if (od && p.DATUM < od) return false;
+        if (doDatuma && p.DATUM > doDatuma) return false;
+        if (tip && p.TIP_PRIHODA !== tip) return false;
+
+        const tekst = [
+          p.IZVOR_PRIHODA,
+          p.BROJ_DOKUMENTA,
+          p.OPIS,
+          p.TIP_PRIHODA,
+          p.NACIN_PLACANJA
+        ].join(" ").toLocaleLowerCase("bs");
+
+        return !pretraga || tekst.includes(pretraga);
+      });
+    }
+
+    function PRIKAZI_STATISTIKU() {
+      const danas = DANAS();
+      const mjesec = danas.slice(0, 7);
+
+      const ukupno = SVI_PRIHODI.reduce(
+        (zbir, p) => zbir + Number(p.IZNOS || 0), 0
+      );
+
+      const ukupnoMjesec = SVI_PRIHODI.reduce((zbir, p) => {
+        return p.DATUM && p.DATUM.startsWith(mjesec)
+          ? zbir + Number(p.IZNOS || 0)
+          : zbir;
+      }, 0);
+
+      $("UKUPNO_SVE").textContent = FORMATIRAJ_IZNOS(ukupno);
+      $("UKUPNO_MJESEC").textContent = FORMATIRAJ_IZNOS(ukupnoMjesec);
+      $("BROJ_PRIHODA").textContent = String(SVI_PRIHODI.length);
+    }
+
+    function PRIKAZI_TABELU() {
+      const lista = $("LISTA_PRIHODA");
+      lista.replaceChildren();
+
+      if (!PROVJERI_FILTERE()) return;
+
+      const podaci = FILTRIRANI_PRIHODI();
+      $("BROJ_REZULTATA").textContent =
+        "Prikazano " + podaci.length + " od " + SVI_PRIHODI.length + " prihoda.";
+
+      if (!podaci.length) {
+        const red = lista.insertRow();
+        const celija = red.insertCell();
+        celija.colSpan = 8;
+        celija.textContent = "Nema prihoda za odabrane filtere.";
         return;
       }
 
-      console.log("PRIPREMLJEN PRIHOD:", PRIHOD);
+      for (const p of podaci) {
+        const red = lista.insertRow();
 
-      PRIHOD_PORUKA.textContent =
-        "Obrazac je ispravan, ali prihod još nije spremljen u bazu.";
-    });
+        DODAJ_TEKST(red.insertCell(), p.DATUM);
+        DODAJ_TEKST(red.insertCell(), p.TIP_PRIHODA);
+        DODAJ_TEKST(red.insertCell(), p.IZVOR_PRIHODA);
+        DODAJ_TEKST(red.insertCell(), p.NACIN_PLACANJA);
+        DODAJ_TEKST(red.insertCell(), p.BROJ_DOKUMENTA);
+        DODAJ_TEKST(red.insertCell(), p.OPIS);
+        DODAJ_TEKST(red.insertCell(), FORMATIRAJ_IZNOS(p.IZNOS));
+
+        const akcije = red.insertCell();
+        const grupa = document.createElement("div");
+        grupa.className = "row-actions";
+
+        const dugmeIzmijeni = document.createElement("button");
+        dugmeIzmijeni.type = "button";
+        dugmeIzmijeni.className = "secondary";
+        dugmeIzmijeni.textContent = "Izmijeni";
+        dugmeIzmijeni.addEventListener("click", () => UCITAJ_U_FORMU(p));
+
+        const dugmeObrisi = document.createElement("button");
+        dugmeObrisi.type = "button";
+        dugmeObrisi.className = "danger";
+        dugmeObrisi.textContent = "Obriši";
+        dugmeObrisi.addEventListener("click", () => OBRISI_PRIHOD(p.ID));
+
+        grupa.append(dugmeIzmijeni, dugmeObrisi);
+        akcije.appendChild(grupa);
+      }
+    }
+
+    async function UCITAJ_PRIHODE() {
+      PRIKAZI_PORUKU("Učitavam prihode...");
+
+      const { data, error } = await DB
+        .from("PRIHODI")
+        .select("ID, USER_ID, DATUM, IZNOS, TIP_PRIHODA, IZVOR_PRIHODA, NACIN_PLACANJA, BROJ_DOKUMENTA, OPIS, KREIRANO")
+        .eq("USER_ID", KORISNIK_ID)
+        .order("DATUM", { ascending: false })
+        .order("KREIRANO", { ascending: false });
+
+      if (error) {
+        console.error("Greška pri učitavanju prihoda:", error);
+        PRIKAZI_PORUKU(
+          "Prihodi nisu učitani. Provjeri RLS pravila za tabelu PRIHODI."
+        );
+        return;
+      }
+
+      SVI_PRIHODI = data || [];
+      PRIKAZI_STATISTIKU();
+      PRIKAZI_TABELU();
+      PRIKAZI_PORUKU("Prihodi su učitani.");
+    }
+
+    async function SACUVAJ_PRIHOD(event) {
+      event.preventDefault();
+
+      const iznos = Number($("IZNOS").value);
+
+      if (!Number.isFinite(iznos) || iznos <= 0) {
+        PRIKAZI_PORUKU("Unesi iznos veći od nule.");
+        return;
+      }
+
+      const zapis = {
+        USER_ID: KORISNIK_ID,
+        DATUM: $("DATUM").value,
+        IZNOS: iznos,
+        TIP_PRIHODA: $("TIP_PRIHODA").value,
+        IZVOR_PRIHODA: $("IZVOR_PRIHODA").value.trim() || null,
+        NACIN_PLACANJA: $("NACIN_PLACANJA").value || null,
+        BROJ_DOKUMENTA: $("BROJ_DOKUMENTA").value.trim() || null,
+        OPIS: $("OPIS").value.trim() || null
+      };
+
+      if (!zapis.DATUM || !zapis.TIP_PRIHODA) {
+        PRIKAZI_PORUKU("Datum i tip prihoda su obavezni.");
+        return;
+      }
+
+      $("DUGME_SACUVAJ").disabled = true;
+      PRIKAZI_PORUKU("Čuvam prihod...");
+
+      try {
+        let rezultat;
+
+        if (ID_IZMJENE) {
+          rezultat = await DB
+            .from("PRIHODI")
+            .update(zapis)
+            .eq("ID", ID_IZMJENE)
+            .eq("USER_ID", KORISNIK_ID);
+        } else {
+          rezultat = await DB.from("PRIHODI").insert(zapis);
+        }
+
+        if (rezultat.error) throw rezultat.error;
+
+        RESETUJ_FORMU();
+        await UCITAJ_PRIHODE();
+        PRIKAZI_PORUKU("Prihod je uspješno sačuvan.");
+      } catch (error) {
+        console.error("Greška pri čuvanju prihoda:", error);
+        PRIKAZI_PORUKU(
+          "Nije moguće sačuvati prihod. Provjeri RLS pravila i pokušaj ponovo."
+        );
+      } finally {
+        $("DUGME_SACUVAJ").disabled = false;
+      }
+    }
+
+    function UCITAJ_U_FORMU(p) {
+      ID_IZMJENE = p.ID;
+      $("DATUM").value = p.DATUM || DANAS();
+      $("IZNOS").value = p.IZNOS;
+      $("TIP_PRIHODA").value = p.TIP_PRIHODA || "";
+      $("IZVOR_PRIHODA").value = p.IZVOR_PRIHODA || "";
+      $("NACIN_PLACANJA").value = p.NACIN_PLACANJA || "";
+      $("BROJ_DOKUMENTA").value = p.BROJ_DOKUMENTA || "";
+      $("OPIS").value = p.OPIS || "";
+
+      $("NASLOV_FORME").textContent = "Izmijeni prihod";
+      $("DUGME_SACUVAJ").textContent = "Sačuvaj izmjene";
+      $("DUGME_ODUSTANI").classList.remove("hidden");
+
+      $("FORMA_PRIHOD").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    async function OBRISI_PRIHOD(id) {
+      if (!confirm("Da li sigurno želiš obrisati ovaj prihod?")) return;
+
+      PRIKAZI_PORUKU("Brišem prihod...");
+
+      const { error } = await DB
+        .from("PRIHODI")
+        .delete()
+        .eq("ID", id)
+        .eq("USER_ID", KORISNIK_ID);
+
+      if (error) {
+        console.error("Greška pri brisanju prihoda:", error);
+        PRIKAZI_PORUKU(
+          "Brisanje nije uspjelo. Provjeri RLS DELETE pravilo."
+        );
+        return;
+      }
+
+      if (ID_IZMJENE === id) RESETUJ_FORMU();
+
+      await UCITAJ_PRIHODE();
+      PRIKAZI_PORUKU("Prihod je obrisan.");
+    }
+
+    async function POKRENI_STRANICU() {
+      try {
+        /*
+          Ovdje se koristi postojeći klijent iz supabase.js.
+          Podržani su uobičajeni nazivi koje projekat može izlagati.
+        */
+        if (window.DB && typeof window.DB.from === "function") {
+          DB = window.DB;
+        } else if (
+          window.supabaseClient &&
+          typeof window.supabaseClient.from === "function"
+        ) {
+          DB = window.supabaseClient;
+        } else if (
+          window.DOBAVI_SUPABASE &&
+          typeof window.DOBAVI_SUPABASE === "function"
+        ) {
+          DB = window.DOBAVI_SUPABASE();
+        } else if (
+          window.POVEZI_SUPABASE &&
+          typeof window.POVEZI_SUPABASE === "function"
+        ) {
+          DB = await window.POVEZI_SUPABASE();
+        }
+
+        if (!DB || !DB.auth || typeof DB.from !== "function") {
+          PRIKAZI_PORUKU(
+            "Supabase klijent nije pronađen. Potrebno je provjeriti postojeći js/supabase.js."
+          );
+          return;
+        }
+
+        const { data, error } = await DB.auth.getUser();
+
+        if (error || !data || !data.user) {
+          PRIKAZI_PORUKU(
+            "Nisi prijavljen. Prijavi se u aplikaciju pa ponovo otvori prihode."
+          );
+          return;
+        }
+
+        KORISNIK_ID = data.user.id;
+        $("DATUM").value = DANAS();
+
+        $("FORMA_PRIHOD").addEventListener("submit", SACUVAJ_PRIHOD);
+        $("DUGME_ODUSTANI").addEventListener("click", RESETUJ_FORMU);
+
+        ["PRETRAGA", "FILTER_OD", "FILTER_DO", "FILTER_TIP"]
+          .forEach((id) => {
+            $(id).addEventListener("input", PRIKAZI_TABELU);
+            $(id).addEventListener("change", PRIKAZI_TABELU);
+          });
+
+        await UCITAJ_PRIHODE();
+      } catch (error) {
+        console.error("Greška pri pokretanju stranice:", error);
+        PRIKAZI_PORUKU(
+          "Stranica nije mogla pokrenuti evidenciju. Provjeri konzolu preglednika."
+        );
+      }
+    }
+
+    POKRENI_STRANICU();
   </script>
 </body>
 </html>
