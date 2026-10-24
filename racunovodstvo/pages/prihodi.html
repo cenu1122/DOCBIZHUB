@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prihodi | DocBizHub</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .panel {
+      background: white;
+      border: 1px solid #e4eaf2;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d7dfeb;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .field textarea {
+      resize: vertical;
+    }
+
+    .btn {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #3563e9;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #edf1f7;
+      color: #182230;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 13px;
+      text-align: left;
+      border-bottom: 1px solid #e4eaf2;
+    }
+
+    th {
+      color: #738096;
+      font-size: 13px;
+    }
+
+    .notice {
+      color: #738096;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a href="../index.html">🏠 Početna</a>
+      <a href="fakture.html">🧾 Fakture</a>
+      <a href="troskovi.html">💳 Troškovi</a>
+      <a class="active" href="prihodi.html">📈 Prihodi</a>
+      <a href="izvjestaji.html">📊 Izvještaji</a>
+      <a href="ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1>Prihodi</h1>
+        <p>Pregled i evidencija poslovnih prihoda.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Unesi novi prihod</h2>
+
+      <form id="PRIHOD_FORM">
+        <div class="form-grid">
+          <div class="field">
+            <label for="DATUM_PRIHODA">Datum prihoda *</label>
+            <input id="DATUM_PRIHODA" type="date" required>
+          </div>
+
+          <div class="field">
+            <label for="IZNOS_PRIHODA">Iznos (KM) *</label>
+            <input id="IZNOS_PRIHODA" type="number"
+                   min="0.01" max="999999999" step="0.01"
+                   placeholder="0.00" required>
+          </div>
+
+          <div class="field">
+            <label for="VRSTA_PRIHODA">Vrsta prihoda *</label>
+            <select id="VRSTA_PRIHODA" required>
+              <option value="">Odaberi vrstu</option>
+              <option value="PRODAJA_ROBE">Prodaja robe</option>
+              <option value="USLUGE">Usluge</option>
+              <option value="PROJEKTI">Projekti</option>
+              <option value="PROVIZIJE">Provizije</option>
+              <option value="OSTALO">Ostalo</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="KUPAC_PRIHODA">Kupac / izvor prihoda</label>
+            <input id="KUPAC_PRIHODA" maxlength="200"
+                   placeholder="Naziv kupca ili izvora">
+          </div>
+
+          <div class="field">
+            <label for="NACIN_PLACANJA">Način plaćanja</label>
+            <select id="NACIN_PLACANJA">
+              <option value="BANKA">Bankovni račun</option>
+              <option value="GOTOVINA">Gotovina</option>
+              <option value="KARTICA">Kartica</option>
+              <option value="OSTALO">Ostalo</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="BROJ_DOKUMENTA">Broj dokumenta</label>
+            <input id="BROJ_DOKUMENTA" maxlength="100"
+                   placeholder="Broj fakture ili potvrde">
+          </div>
+
+          <div class="field" style="grid-column: 1 / -1">
+            <label for="OPIS_PRIHODA">Opis prihoda *</label>
+            <textarea id="OPIS_PRIHODA" rows="3"
+                      maxlength="1000" required
+                      placeholder="Opiši izvor prihoda"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">
+            Sačuvaj prihod
+          </button>
+          <button class="btn btn-secondary" type="reset">
+            Poništi unos
+          </button>
+        </div>
+      </form>
+
+      <p id="PRIHOD_PORUKA" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Evidencija prihoda</h2>
+
+      <p class="notice">
+        Prihodi će se prikazivati ovdje nakon povezivanja baze podataka.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Vrsta</th>
+              <th>Opis</th>
+              <th>Izvor</th>
+              <th>Iznos</th>
+            </tr>
+          </thead>
+          <tbody id="PRIHODI_TABELA">
+            <tr>
+              <td colspan="5">Prihodi još nisu učitani iz baze.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="notice">
+      Napomena: obrazac trenutno provjerava unos, ali još ne sprema podatke
+      u Supabase.
+    </p>
+  </main>
+
+  <script>
+    const PRIHOD_FORM = document.getElementById("PRIHOD_FORM");
+    const PRIHOD_PORUKA = document.getElementById("PRIHOD_PORUKA");
+
+    PRIHOD_FORM.addEventListener("submit", function (DOGADJAJ) {
+      DOGADJAJ.preventDefault();
+
+      const PRIHOD = {
+        DATUM: document.getElementById("DATUM_PRIHODA").value,
+        IZNOS: Number(document.getElementById("IZNOS_PRIHODA").value),
+        VRSTA: document.getElementById("VRSTA_PRIHODA").value,
+        IZVOR: document.getElementById("KUPAC_PRIHODA").value.trim(),
+        NACIN_PLACANJA: document.getElementById("NACIN_PLACANJA").value,
+        BROJ_DOKUMENTA: document.getElementById("BROJ_DOKUMENTA").value.trim(),
+        OPIS: document.getElementById("OPIS_PRIHODA").value.trim()
+      };
+
+      if (
+        !PRIHOD.DATUM ||
+        !PRIHOD.VRSTA ||
+        !PRIHOD.OPIS ||
+        !Number.isFinite(PRIHOD.IZNOS) ||
+        PRIHOD.IZNOS <= 0
+      ) {
+        PRIHOD_PORUKA.textContent =
+          "Provjeri datum, vrstu, opis i iznos prihoda.";
+        return;
+      }
+
+      console.log("PRIPREMLJEN PRIHOD:", PRIHOD);
+
+      PRIHOD_PORUKA.textContent =
+        "Obrazac je ispravan, ali prihod još nije spremljen u bazu.";
+    });
+  </script>
+</body>
+</html>
