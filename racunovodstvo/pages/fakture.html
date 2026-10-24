@@ -198,8 +198,7 @@
       <h2>Evidencija faktura</h2>
 
       <p class="notice">
-        Ovdje će se prikazivati fakture spremljene u bazu.
-        Potrebno je prvo povezati tabelu i podesiti pristup.
+      
       </p>
 
       <div class="table-wrap">
@@ -228,98 +227,157 @@
     </p>
   </main>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase.js"></script>
 
-  
-  <script>
-    const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
-    const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
+<script>
+"use strict";
 
-    
-FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
-      DOGADJAJ.preventDefault();
+const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
+const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
 
-      const FAKTURA = {
-        BROJ_FAKTURE: document.getElementById("BROJ_FAKTURE").value.trim(),
-        KUPAC: document.getElementById("KUPAC").value.trim(),
-        DATUM_FAKTURE: document.getElementById("DATUM_FAKTURE").value,
-        ROK_PLACANJA: document.getElementById("ROK_PLACANJA").value,
-        IZNOS_FAKTURE: Number(document.getElementById("IZNOS_FAKTURE").value),
-        STATUS_FAKTURE: document.getElementById("STATUS_FAKTURE").value,
-        OPIS_FAKTURE: document.getElementById("OPIS_FAKTURE").value.trim()
-      };
+async function UCITAJ_FAKTURE() {
+  const TABELA = document.getElementById("FAKTURE_TABELA");
+  const DB = window.DOBAVI_SUPABASE?.();
 
-      if (!FAKTURA.BROJ_FAKTURE || !FAKTURA.KUPAC ||
-          !FAKTURA.DATUM_FAKTURE || !Number.isFinite(FAKTURA.IZNOS_FAKTURE) ||
-          FAKTURA.IZNOS_FAKTURE <= 0) {
-        FAKTURA_PORUKA.textContent =
-          "Provjeri obavezna polja i iznos fakture.";
-        return;
+  if (!DB) {
+    FAKTURA_PORUKA.textContent = "Supabase nije povezan.";
+    return;
+  }
+
+  try {
+    const { data: AUTH, error: AUTH_GRESKA } =
+      await DB.auth.getUser();
+
+    if (AUTH_GRESKA) throw AUTH_GRESKA;
+
+    if (!AUTH.user) {
+      TABELA.innerHTML =
+        '<tr><td colspan="5">Prijavi se da vidiš svoje fakture.</td></tr>';
+      return;
+    }
+
+    TABELA.innerHTML =
+      '<tr><td colspan="5">Učitavanje faktura...</td></tr>';
+
+    const { data: FAKTURE, error } = await DB
+      .from("FAKTURE")
+      .select("*")
+      .order("KREIRANO", { ascending: false });
+
+    if (error) throw error;
+
+    TABELA.innerHTML = "";
+
+    if (!FAKTURE || FAKTURE.length === 0) {
+      TABELA.innerHTML =
+        '<tr><td colspan="5">Još nema spremljenih faktura.</td></tr>';
+      return;
+    }
+
+    for (const F of FAKTURE) {
+      const RED = document.createElement("tr");
+
+      const VRIJEDNOSTI = [
+        F.BROJ_FAKTURE,
+        F.KUPAC,
+        F.DATUM_FAKTURE,
+        Number(F.IZNOS_FAKTURE).toLocaleString("bs-BA", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + " KM",
+        F.STATUS_FAKTURE
+      ];
+
+      for (const V of VRIJEDNOSTI) {
+        const CELIJA = document.createElement("td");
+        CELIJA.textContent = V ?? "—";
+        RED.appendChild(CELIJA);
       }
 
-     
-FAKTURA_PORUKA.textContent = "Spremanje fakture...";
-
-try {
-  const supabase = window.DOBAVI_SUPABASE
-    ? window.DOBAVI_SUPABASE()
-    : null;
-
-  if (!supabase) {
-    throw new Error("Supabase nije povezan.");
+      TABELA.appendChild(RED);
+    }
+  } catch (GRESKA) {
+    console.error("GREŠKA PRI UČITAVANJU FAKTURA:", GRESKA);
+    TABELA.innerHTML =
+      '<tr><td colspan="5">Fakture nisu učitane. Provjeri Console.</td></tr>';
   }
-
-  // Provjera prijavljenog korisnika
-  const { data: authData, error: authError } =
-    await supabase.auth.getUser();
-
-  if (authError) throw authError;
-
-  const korisnik = authData?.user;
-
-  if (!korisnik) {
-    throw new Error(
-      "Moraš se prijaviti prije spremanja fakture."
-    );
-  }
-
-  // Priprema podataka za tabelu FAKTURE
-  const zapis = {
-    USER_ID: korisnik.id,
-    BROJ_FAKTURE: FAKTURA.BROJ_FAKTURE,
-    KUPAC: FAKTURA.KUPAC,
-    DATUM_FAKTURE: FAKTURA.DATUM_FAKTURE,
-    ROK_PLACANJA: FAKTURA.ROK_PLACANJA || null,
-    IZNOS_FAKTURE: FAKTURA.IZNOS_FAKTURE,
-    STATUS_FAKTURE: FAKTURA.STATUS_FAKTURE || "NEPLACENA",
-    OPIS_FAKTURE: FAKTURA.OPIS_FAKTURE || null
-  };
-
-  const { data, error } = await supabase
-    .from("FAKTURE")
-    .insert(zapis)
-    .select()
-    .single();
-
-  if (error) throw error;
-
-  FAKTURA_PORUKA.textContent =
-    "Faktura " + data.BROJ_FAKTURE +
-    " uspješno je sačuvana u bazi!";
-
-  console.log("SAČUVANA FAKTURA:", data);
-
-} catch (error) {
-  console.error("GREŠKA PRI SPREMANJU FAKTURE:", error);
-
-  FAKTURA_PORUKA.textContent =
-    "Faktura nije sačuvana: " +
-    (error.message || "Nepoznata greška");
 }
 
-    });
-  </script>
+FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
+  DOGADJAJ.preventDefault();
+
+  const F = {
+    BROJ_FAKTURE: document.getElementById("BROJ_FAKTURE").value.trim(),
+    KUPAC: document.getElementById("KUPAC").value.trim(),
+    DATUM_FAKTURE: document.getElementById("DATUM_FAKTURE").value,
+    ROK_PLACANJA: document.getElementById("ROK_PLACANJA").value,
+    IZNOS_FAKTURE: Number(document.getElementById("IZNOS_FAKTURE").value),
+    STATUS_FAKTURE: document.getElementById("STATUS_FAKTURE").value,
+    OPIS_FAKTURE: document.getElementById("OPIS_FAKTURE").value.trim()
+  };
+
+  if (
+    !F.BROJ_FAKTURE ||
+    !F.KUPAC ||
+    !F.DATUM_FAKTURE ||
+    !Number.isFinite(F.IZNOS_FAKTURE) ||
+    F.IZNOS_FAKTURE <= 0
+  ) {
+    FAKTURA_PORUKA.textContent =
+      "Provjeri obavezna polja i iznos fakture.";
+    return;
+  }
+
+  FAKTURA_PORUKA.textContent = "Spremanje fakture...";
+
+  try {
+    const DB = window.DOBAVI_SUPABASE?.();
+
+    if (!DB) throw new Error("Supabase nije povezan.");
+
+    const { data: AUTH, error: AUTH_GRESKA } =
+      await DB.auth.getUser();
+
+    if (AUTH_GRESKA) throw AUTH_GRESKA;
+    if (!AUTH.user) {
+      throw new Error("Moraš se prijaviti prije spremanja fakture.");
+    }
+
+    const { data, error } = await DB
+      .from("FAKTURE")
+      .insert({
+        USER_ID: AUTH.user.id,
+        BROJ_FAKTURE: F.BROJ_FAKTURE,
+        KUPAC: F.KUPAC,
+        DATUM_FAKTURE: F.DATUM_FAKTURE,
+        ROK_PLACANJA: F.ROK_PLACANJA || null,
+        IZNOS_FAKTURE: F.IZNOS_FAKTURE,
+        STATUS_FAKTURE: F.STATUS_FAKTURE || "NEPLACENA",
+        OPIS_FAKTURE: F.OPIS_FAKTURE || null
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    FAKTURA_PORUKA.textContent =
+      "Faktura " + data.BROJ_FAKTURE + " uspješno je sačuvana!";
+
+    FAKTURA_FORM.reset();
+    console.log("SAČUVANA FAKTURA:", data);
+
+    await UCITAJ_FAKTURE();
+  } catch (GRESKA) {
+    console.error("GREŠKA PRI SPREMANJU FAKTURE:", GRESKA);
+    FAKTURA_PORUKA.textContent =
+      "Faktura nije sačuvana: " +
+      (GRESKA.message || "Nepoznata greška");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", UCITAJ_FAKTURE);
+</script>
+
 </body>
 </html>
