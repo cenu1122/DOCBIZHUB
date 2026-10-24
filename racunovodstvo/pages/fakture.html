@@ -467,18 +467,19 @@ if (FAKTURA_FORM) {
   });
 }
 
-document.getElementById("FILTER_STATUS")?.addEventListener(
-  "change",
-  FILTERISI_FAKTURE
-);
 
-document.getElementById("PRETRAGA_FAKTURA")?.addEventListener(
-  "input",
-  FILTERISI_FAKTURE
-);
+</scrip
+document.getElementById("FILTER_STATUS").addEventListener("change", () => {
+  console.log("Odabrani status:", document.getElementById("FILTER_STATUS").value);
+  FILTERISI_FAKTURE();
+});
 
-document.addEventListener("DOMContentLoaded", UCITAJ_FAKTURE);
-</script>
+document.getElementById("PRETRAGA_FAKTURA").addEventListener("input", () => {
+  FILTERISI_FAKTURE();
+});
+
+UCITAJ_FAKTURE();
+t>
 
 
 </body>
