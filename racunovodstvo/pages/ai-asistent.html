@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI asistent | DocBizHub</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .chat-card {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+      background: white;
+      border: 1px solid #e4eaf2;
+      border-radius: 16px;
+    }
+
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 280px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 13px 16px;
+      border-radius: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .assistant-message {
+      align-self: flex-start;
+      background: #f0f4fb;
+      color: #182230;
+    }
+
+    .user-message {
+      align-self: flex-end;
+      background: #3563e9;
+      color: white;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .chat-form input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #d7dfeb;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    .chat-form button {
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 9px;
+      color: white;
+      background: #3563e9;
+      cursor: pointer;
+    }
+
+    .chat-form button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .chat-note {
+      color: #738096;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #3563e9;
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      .chat-form {
+        flex-direction: column;
+      }
+
+      .chat-form button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a href="../index.html">🏠 Početna</a>
+      <a href="fakture.html">🧾 Fakture</a>
+      <a href="troskovi.html">💳 Troškovi</a>
+      <a href="prihodi.html">📈 Prihodi</a>
+      <a href="izvjestaji.html">📊 Izvještaji</a>
+      <a class="active" href="ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <a class="back-link" href="../index.html">← Nazad na početnu</a>
+
+    <header class="topbar">
+      <div>
+        <h1>AI računovodstveni asistent</h1>
+        <p>Postavi pitanje o fakturama, prihodima ili troškovima.</p>
+      </div>
+    </header>
+
+    <section class="chat-card">
+      <h2>Razgovor s asistentom</h2>
+
+      <div
+        id="CHAT_PORUKE"
+        class="chat-messages"
+        aria-live="polite"
+        aria-label="Razgovor"
+      >
+        <div class="message assistant-message">
+          Zdravo! Ja sam DocBizHub demo asistent.
+          Možeš me pitati o fakturama, prihodima, troškovima i izvještajima.
+        </div>
+      </div>
+
+      <form id="CHAT_FORM" class="chat-form">
+        <input
+          id="CHAT_UNOS"
+          type="text"
+          placeholder="Napiši svoje pitanje..."
+          autocomplete="off"
+          maxlength="2000"
+          required
+        >
+        <button id="CHAT_POSALJI" type="submit">Pošalji</button>
+      </form>
+
+      <p class="chat-note">
+        Ovo je demo asistent s unaprijed pripremljenim odgovorima.
+        Nije povezan s pravim AI modelom. Ne unosi lozinke ni povjerljive podatke.
+      </p>
+    </section>
+  </main>
+
+  <script src="../js/ai-agent.js"></script>
+  <script>
+    const CHAT_FORM = document.getElementById("CHAT_FORM");
+    const CHAT_UNOS = document.getElementById("CHAT_UNOS");
+    const CHAT_PORUKE = document.getElementById("CHAT_PORUKE");
+    const CHAT_POSALJI = document.getElementById("CHAT_POSALJI");
+
+    function DODAJ_PORUKU(TEKST, ULOGA) {
+      const PORUKA = document.createElement("div");
+
+      PORUKA.className = "message " +
+        (ULOGA === "KORISNIK"
+          ? "user-message"
+          : "assistant-message");
+
+      // Koristimo textContent da uneseni tekst ne postane HTML.
+      PORUKA.textContent = TEKST;
+
+      CHAT_PORUKE.appendChild(PORUKA);
+      CHAT_PORUKE.scrollTop = CHAT_PORUKE.scrollHeight;
+    }
+
+    CHAT_FORM.addEventListener("submit", (DOGADJAJ) => {
+      DOGADJAJ.preventDefault();
+
+      const TEKST = CHAT_UNOS.value.trim();
+
+      if (!TEKST || !window.AI_AGENT) return;
+
+      CHAT_POSALJI.disabled = true;
+
+      try {
+        DODAJ_PORUKU(TEKST, "KORISNIK");
+
+        const ODGOVOR = window.AI_AGENT.POSALJI(TEKST);
+
+        DODAJ_PORUKU(ODGOVOR, "ASISTENT");
+        CHAT_UNOS.value = "";
+        CHAT_UNOS.focus();
+      } catch (GRESKA) {
+        console.error("GREŠKA AI ASISTENTA:", GRESKA);
+        DODAJ_PORUKU(
+          "Došlo je do greške. Osvježi stranicu i pokušaj ponovo.",
+          "ASISTENT"
+        );
+      } finally {
+        CHAT_POSALJI.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
