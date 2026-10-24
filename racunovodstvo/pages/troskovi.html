@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troškovi | DocBizHub</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .panel {
+      background: #fff;
+      border: 1px solid #e4eaf2;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d7dfeb;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .field textarea {
+      resize: vertical;
+    }
+
+    .btn {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #3563e9;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #edf1f7;
+      color: #182230;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 13px;
+      text-align: left;
+      border-bottom: 1px solid #e4eaf2;
+    }
+
+    th {
+      color: #738096;
+      font-size: 13px;
+    }
+
+    .notice {
+      color: #738096;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <h2>DocBizHub</h2>
+    <p class="sidebar-subtitle">Računovodstvo AI</p>
+
+    <nav>
+      <a href="../index.html">🏠 Početna</a>
+      <a href="fakture.html">🧾 Fakture</a>
+      <a class="active" href="troskovi.html">💳 Troškovi</a>
+      <a href="prihodi.html">📈 Prihodi</a>
+      <a href="izvjestaji.html">📊 Izvještaji</a>
+      <a href="ai-asistent.html">🤖 AI asistent</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1>Troškovi</h1>
+        <p>Evidencija poslovnih troškova.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Unesi novi trošak</h2>
+
+      <form id="TROSAK_FORM">
+        <div class="form-grid">
+          <div class="field">
+            <label for="DATUM_TROSKA">Datum troška *</label>
+            <input id="DATUM_TROSKA" type="date" required>
+          </div>
+
+          <div class="field">
+            <label for="IZNOS_TROSKA">Iznos (KM) *</label>
+            <input id="IZNOS_TROSKA" type="number"
+                   min="0.01" max="999999999" step="0.01"
+                   placeholder="0.00" required>
+          </div>
+
+          <div class="field">
+            <label for="KATEGORIJA_TROSKA">Kategorija *</label>
+            <select id="KATEGORIJA_TROSKA" required>
+              <option value="">Odaberi kategoriju</option>
+              <option value="NAJAM">Najam</option>
+              <option value="PLATE">Plate i naknade</option>
+              <option value="OPREMA">Oprema</option>
+              <option value="PREVOZ">Prevoz</option>
+              <option value="TELEFON_INTERNET">Telefon i internet</option>
+              <option value="REZIJE">Režije</option>
+              <option value="MARKETING">Marketing</option>
+              <option value="MATERIJAL">Materijal i roba</option>
+              <option value="OSTALO">Ostalo</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="DOBAVLJAC">Dobavljač</label>
+            <input id="DOBAVLJAC" maxlength="200"
+                   placeholder="Naziv dobavljača">
+          </div>
+
+          <div class="field" style="grid-column: 1 / -1">
+            <label for="OPIS_TROSKA">Opis troška *</label>
+            <textarea id="OPIS_TROSKA" rows="3"
+                      maxlength="1000" required
+                      placeholder="Opiši poslovni trošak"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">
+            Sačuvaj trošak
+          </button>
+          <button class="btn btn-secondary" type="reset">
+            Poništi unos
+          </button>
+        </div>
+      </form>
+
+      <p id="TROSAK_PORUKA" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Evidencija troškova</h2>
+
+      <p class="notice">
+        Tabela će prikazivati evidentirane troškove nakon povezivanja baze.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Kategorija</th>
+              <th>Opis</th>
+              <th>Dobavljač</th>
+              <th>Iznos</th>
+            </tr>
+          </thead>
+          <tbody id="TROSKOVI_TABELA">
+            <tr>
+              <td colspan="5">Troškovi još nisu učitani iz baze.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="notice">
+      Važno: obrazac još nije povezan sa spremanjem u Supabase.
+      Nemoj zatvarati stranicu očekujući da je unos sačuvan.
+    </p>
+  </main>
+
+  <script>
+    const TROSAK_FORM = document.getElementById("TROSAK_FORM");
+    const TROSAK_PORUKA = document.getElementById("TROSAK_PORUKA");
+
+    TROSAK_FORM.addEventListener("submit", function (DOGADJAJ) {
+      DOGADJAJ.preventDefault();
+
+      const TROSAK = {
+        DATUM_TROSKA: document.getElementById("DATUM_TROSKA").value,
+        IZNOS: Number(document.getElementById("IZNOS_TROSKA").value),
+        KATEGORIJA: document.getElementById("KATEGORIJA_TROSKA").value,
+        DOBAVLJAC: document.getElementById("DOBAVLJAC").value.trim(),
+        OPIS: document.getElementById("OPIS_TROSKA").value.trim()
+      };
+
+      if (
+        !TROSAK.DATUM_TROSKA ||
+        !TROSAK.KATEGORIJA ||
+        !TROSAK.OPIS ||
+        !Number.isFinite(TROSAK.IZNOS) ||
+        TROSAK.IZNOS <= 0
+      ) {
+        TROSAK_PORUKA.textContent =
+          "Provjeri datum, kategoriju, opis i iznos.";
+        return;
+      }
+
+      console.log("PRIPREMLJEN TROSAK:", TROSAK);
+
+      TROSAK_PORUKA.textContent =
+        "Obrazac je ispravan, ali trošak još nije spremljen u bazu.";
+    });
+  </script>
+</body>
+</html>
