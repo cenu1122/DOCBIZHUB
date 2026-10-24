@@ -328,16 +328,100 @@ function FILTERISI_FAKTURE() {
   for (const F of FILTRIRANE) {
     const RED = document.createElement("tr");
 
-    const VRIJEDNOSTI = [
-      F.BROJ_FAKTURE,
-      F.KUPAC,
-      F.DATUM_FAKTURE,
-      Number(F.IZNOS_FAKTURE || 0).toLocaleString("bs-BA", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }) + " KM",
-      F.STATUS_FAKTURE
-    ];
+   
+const VRIJEDNOSTI = [
+  F.BROJ_FAKTURE,
+  F.KUPAC,
+  F.DATUM_FAKTURE,
+  Number(F.IZNOS_FAKTURE || 0).toLocaleString("bs-BA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " KM"
+];
+
+for (const V of VRIJEDNOSTI) {
+  const CELIJA = document.createElement("td");
+  CELIJA.textContent = V ?? "—";
+  RED.appendChild(CELIJA);
+}
+
+// Peta kolona: status fakture
+const CELIJA_STATUS = document.createElement("td");
+const IZBOR_STATUSA = document.createElement("select");
+
+const STATUSI = [
+  ["NEPLACENA", "Neplaćena"],
+  ["PLACENA", "Plaćena"],
+  ["DJELIMICNO_PLACENA", "Djelimično plaćena"],
+  ["STORNIRANA", "Stornirana"]
+];
+
+for (const [VRIJEDNOST, NAZIV] of STATUSI) {
+  const OPCIJA = document.createElement("option");
+  OPCIJA.value = VRIJEDNOST;
+  OPCIJA.textContent = NAZIV;
+  IZBOR_STATUSA.appendChild(OPCIJA);
+}
+
+IZBOR_STATUSA.value = F.STATUS_FAKTURE || "NEPLACENA";
+IZBOR_STATUSA.dataset.fakturaId = F.ID;
+
+IZBOR_STATUSA.addEventListener("change", async function () {
+  const NOVI_STATUS = this.value;
+  const STARI_STATUS = F.STATUS_FAKTURE;
+
+  this.disabled = true;
+
+  try {
+    const DB = window.DOBAVI_SUPABASE?.();
+
+    if (!DB) {
+      throw new Error("Supabase nije dostupan.");
+    }
+
+    const { data: AUTH_DATA, error: AUTH_GRESKA } =
+      await DB.auth.getUser();
+
+    if (AUTH_GRESKA || !AUTH_DATA.user) {
+      throw new Error("Prijavi se ponovo.");
+    }
+
+    const { data, error } = await DB
+      .from("FAKTURE")
+      .update({ STATUS_FAKTURE: NOVI_STATUS })
+      .eq("ID", F.ID)
+      .eq("USER_ID", AUTH_DATA.user.id)
+      .select("ID");
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      throw new Error("Status nije promijenjen. Provjeri prava pristupa.");
+    }
+
+    F.STATUS_FAKTURE = NOVI_STATUS;
+    FILTERISI_FAKTURE();
+
+    if (FAKTURA_PORUKA) {
+      FAKTURA_PORUKA.textContent = "Status fakture je uspješno promijenjen.";
+    }
+  } catch (GRESKA) {
+    this.value = STARI_STATUS;
+
+    if (FAKTURA_PORUKA) {
+      FAKTURA_PORUKA.textContent =
+        "Greška pri promjeni statusa: " + GRESKA.message;
+    }
+
+    console.error("Greška pri promjeni statusa:", GRESKA);
+  } finally {
+    this.disabled = false;
+  }
+});
+
+CELIJA_STATUS.appendChild(IZBOR_STATUSA);
+RED.appendChild(CELIJA_STATUS);
+
 
     for (const V of VRIJEDNOSTI) {
       const CELIJA = document.createElement("td");
