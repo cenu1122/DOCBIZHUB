@@ -228,11 +228,17 @@
     </p>
   </main>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+
+  
   <script>
     const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
     const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
 
-    FAKTURA_FORM.addEventListener("submit", function (DOGADJAJ) {
+    
+FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
       DOGADJAJ.preventDefault();
 
       const FAKTURA = {
@@ -253,10 +259,66 @@
         return;
       }
 
-      FAKTURA_PORUKA.textContent =
-        "Obrazac je ispravan, ali spremanje u bazu još nije povezano. " +
-        "Unos nije sačuvan.";
-      console.log("PRIPREMLJENA FAKTURA:", FAKTURA);
+     
+FAKTURA_PORUKA.textContent = "Spremanje fakture...";
+
+try {
+  const supabase = window.DOBAVI_SUPABASE
+    ? window.DOBAVI_SUPABASE()
+    : null;
+
+  if (!supabase) {
+    throw new Error("Supabase nije povezan.");
+  }
+
+  // Provjera prijavljenog korisnika
+  const { data: authData, error: authError } =
+    await supabase.auth.getUser();
+
+  if (authError) throw authError;
+
+  const korisnik = authData?.user;
+
+  if (!korisnik) {
+    throw new Error(
+      "Moraš se prijaviti prije spremanja fakture."
+    );
+  }
+
+  // Priprema podataka za tabelu FAKTURE
+  const zapis = {
+    USER_ID: korisnik.id,
+    BROJ_FAKTURE: FAKTURA.BROJ_FAKTURE,
+    KUPAC: FAKTURA.KUPAC,
+    DATUM_FAKTURE: FAKTURA.DATUM_FAKTURE,
+    ROK_PLACANJA: FAKTURA.ROK_PLACANJA || null,
+    IZNOS_FAKTURE: FAKTURA.IZNOS_FAKTURE,
+    STATUS_FAKTURE: FAKTURA.STATUS_FAKTURE || "NEPLACENA",
+    OPIS_FAKTURE: FAKTURA.OPIS_FAKTURE || null
+  };
+
+  const { data, error } = await supabase
+    .from("FAKTURE")
+    .insert(zapis)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  FAKTURA_PORUKA.textContent =
+    "Faktura " + data.BROJ_FAKTURE +
+    " uspješno je sačuvana u bazi!";
+
+  console.log("SAČUVANA FAKTURA:", data);
+
+} catch (error) {
+  console.error("GREŠKA PRI SPREMANJU FAKTURE:", error);
+
+  FAKTURA_PORUKA.textContent =
+    "Faktura nije sačuvana: " +
+    (error.message || "Nepoznata greška");
+}
+
     });
   </script>
 </body>
