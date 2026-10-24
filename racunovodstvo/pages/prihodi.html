@@ -356,10 +356,15 @@
     </section>
   </main>
 
-  <!-- Koristi postojeću konfiguraciju Supabase projekta. -->
+ 
+  <!-- Učitaj Supabase biblioteku prvo. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Zatim učitaj postojeću konfiguraciju projekta. -->
   <script src="../js/supabase.js"></script>
 
   <script>
+
     "use strict";
 
     let DB = null;
