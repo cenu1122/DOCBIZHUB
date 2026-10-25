@@ -370,14 +370,21 @@ function FILTRIRAJ() {
     U_PERIODU(f, "DATUM_FAKTURE")
   );
 
-  const uplate = SVE_UPLATE.filter(u =>
-    U_PERIODU(u, "DATUM_UPLATE")
-  );
+  
+const uplate = SVE_UPLATE.filter(u =>
+  U_PERIODU(u, "DATUM_UPLATE")
+);
 
-  const sumaPrihodi = SUMA(prihodi);
-  const sumaTroskovi = SUMA(troskovi);
-  const sumaUplate = SUMA(uplate);
-  const razlika = sumaPrihodi - sumaTroskovi;
+console.log("Sve učitane uplate:", SVE_UPLATE);
+console.log("Uplate u izabranom periodu:", uplate);
+
+const sumaPrihodi = SUMA(prihodi);
+const sumaTroskovi = SUMA(troskovi);
+const sumaUplate = uplate.reduce(
+  (suma, uplata) => suma + Number(uplata.IZNOS || 0),
+  0
+);
+const razlika = sumaPrihodi - sumaTroskovi;
 
   $("UKUPNO_PRIHODI").textContent = IZNOS(sumaPrihodi);
   $("UKUPNO_UPLATE").textContent = IZNOS(sumaUplate);
