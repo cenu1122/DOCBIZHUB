@@ -445,10 +445,22 @@ function KLJUC_MJESECA(datum) {
   return datum ? datum.slice(0, 7) : "";
 }
 
+
+
+
+async function UCITAJ_SVE() {
+  PORUKA("Učitavam podatke izvještaja...");
+
+  const [prihodi, troskovi, fakture, uplate] = await Promise.all([
+    DB.from("PRIHODI")
+      .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
+      .eq("USER_ID", KORISNIK_ID),
 function PRIKAZI_MJESECE() {
   const mjeseci = [];
   const sada = new Date();
-  const lokalni = new Date(sada.getTime() - sada.getTimezoneOffset() * 60000);
+  const lokalni = new Date(
+    sada.getTime() - sada.getTimezoneOffset() * 60000
+  );
 
   for (let i = 5; i >= 0; i--) {
     const d = new Date(Date.UTC(
@@ -460,18 +472,33 @@ function PRIKAZI_MJESECE() {
   }
 
   const podaci = mjeseci.map(mjesec => {
-    const prihodi = SVI_PRIHODI.filter(p => KLJUC_MJESECA(p.DATUM) === mjesec);
-    const troskovi = SVI_TROSKOVI.filter(t => KLJUC_MJESECA(t.DATUM) === mjesec);
+    const prihodi = SVI_PRIHODI.filter(
+      p => KLJUC_MJESECA(p.DATUM) === mjesec
+    );
+
+    const troskovi = SVI_TROSKOVI.filter(
+      t => KLJUC_MJESECA(t.DATUM) === mjesec
+    );
+
+    const uplate = SVE_UPLATE.filter(
+      u => KLJUC_MJESECA(u.DATUM_UPLATE) === mjesec
+    );
+
     return {
       mjesec,
       prihodi: SUMA(prihodi),
-      troskovi: SUMA(troskovi)
+      troskovi: SUMA(troskovi),
+      uplate: SUMA(uplate)
     };
   });
 
   const maksimum = Math.max(
     1,
-    ...podaci.flatMap(p => [p.prihodi, p.troskovi])
+    ...podaci.flatMap(p => [
+      p.prihodi,
+      p.troskovi,
+      p.uplate
+    ])
   );
 
   const grafikon = $("GRAFIKON");
@@ -485,12 +512,26 @@ function PRIKAZI_MJESECE() {
     stubovi.className = "bars";
 
     [
-      { iznos: p.prihodi, klasa: "bar income-bar", naziv: "Prihodi" },
-      { iznos: p.troskovi, klasa: "bar expense-bar", naziv: "Troškovi" }
+      {
+        iznos: p.prihodi,
+        klasa: "bar income-bar",
+        naziv: "Ostali prihodi"
+      },
+      {
+        iznos: p.uplate,
+        klasa: "bar payment-bar",
+        naziv: "Naplaćeno po fakturama"
+      },
+      {
+        iznos: p.troskovi,
+        klasa: "bar expense-bar",
+        naziv: "Troškovi"
+      }
     ].forEach(stub => {
       const el = document.createElement("div");
       el.className = stub.klasa;
-      el.style.height = Math.max(2, stub.iznos / maksimum * 170) + "px";
+      el.style.height =
+        Math.max(2, stub.iznos / maksimum * 170) + "px";
       el.title = stub.naziv + ": " + IZNOS(stub.iznos);
       stubovi.appendChild(el);
     });
@@ -508,9 +549,11 @@ function PRIKAZI_MJESECE() {
 
   podaci.slice().reverse().forEach(p => {
     const red = tabela.insertRow();
+
     [
       p.mjesec,
       IZNOS(p.prihodi),
+      IZNOS(p.uplate),
       IZNOS(p.troskovi),
       IZNOS(p.prihodi - p.troskovi)
     ].forEach(v => {
@@ -519,14 +562,6 @@ function PRIKAZI_MJESECE() {
   });
 }
 
-
-async function UCITAJ_SVE() {
-  PORUKA("Učitavam podatke izvještaja...");
-
-  const [prihodi, troskovi, fakture, uplate] = await Promise.all([
-    DB.from("PRIHODI")
-      .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
-      .eq("USER_ID", KORISNIK_ID),
 
     DB.from("TROSKOVI")
       .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
