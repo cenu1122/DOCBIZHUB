@@ -46,8 +46,6 @@ th{background:#f6f8fb}
 </style>
 </head>
 <body>
-</head>
-<body>
 <div class="wrap">
 
   <div id="prijavljeniKorisnik"
@@ -256,14 +254,39 @@ async function initDB() {
     );
   }
 
-  const {data,error} = await DB.auth.getUser();
-  if (error) throw error;
+ 
+const { data, error } = await DB.auth.getUser();
 
-  if (!data || !data.user) {
-    throw new Error("Niste prijavljeni. Prijavite se pa ponovo otvorite izvještaj.");
-  }
+if (error) throw error;
 
-  USER_ID = data.user.id;
+if (!data || !data.user) {
+  throw new Error(
+    "Niste prijavljeni. Prijavite se pa ponovo otvorite izvještaj."
+  );
+}
+
+USER_ID = data.user.id;
+
+const korisnikBox = document.getElementById("prijavljeniKorisnik");
+
+const { data: profil, error: profilError } = await DB
+  .from("POSAO_KORISNICI")
+  .select("IME")
+  .eq("USER", USER_ID)
+  .maybeSingle();
+
+if (korisnikBox) {
+  const ime = profil?.IME || "Ime nije uneseno";
+  const email = data.user.email || "E-mail nije dostupan";
+
+  korisnikBox.textContent =
+    "Prijavljeni korisnik: " + ime + " | E-mail: " + email;
+}
+
+if (profilError) {
+  console.error("Greška pri učitavanju profila:", profilError);
+}
+
 }
 
 async function query(table, columns, dateColumn) {
