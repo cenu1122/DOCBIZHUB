@@ -1,0 +1,732 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova faktura | DOCBIZHUB</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #202938;
+  background: #f3f6fb;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+header {
+  padding: 18px;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+header h2 {
+  margin: 0;
+  color: #315be8;
+}
+
+.panel {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #e0e5ee;
+}
+
+h1 { margin-bottom: 8px; }
+h3 { margin-top: 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.full { grid-column: 1 / -1; }
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd3df;
+  border-radius: 6px;
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 6px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 3px;
+}
+
+.primary {
+  color: white;
+  background: #315be8;
+}
+
+.secondary {
+  color: #202938;
+  background: #e8edf5;
+}
+
+.remove {
+  background: #ffe8e8;
+  color: #a02020;
+}
+
+.actions {
+  margin-bottom: 18px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border-bottom: 1px solid #e0e5ee;
+  text-align: left;
+}
+
+th {
+  background: #f0f4fa;
+  font-size: 13px;
+}
+
+td input {
+  min-width: 65px;
+}
+
+.invoice {
+  background: white;
+  padding: 32px;
+  border: 1px solid #e0e5ee;
+  border-radius: 10px;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 3px solid #315be8;
+  padding-bottom: 18px;
+  margin-bottom: 25px;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: bold;
+  color: #315be8;
+}
+
+.invoice-title {
+  text-align: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.meta {
+  text-align: right;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.parties h4 {
+  color: #667085;
+  margin-bottom: 8px;
+}
+
+.parties p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin: 4px 0;
+}
+
+.right { text-align: right; }
+
+.totals {
+  width: 300px;
+  max-width: 100%;
+  margin: 20px 0 0 auto;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+}
+
+.grand-total {
+  border-top: 2px solid #202938;
+  margin-top: 5px;
+  padding-top: 12px;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.notes {
+  margin-top: 25px;
+  white-space: pre-line;
+}
+
+.signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  margin-top: 65px;
+}
+
+.signatures div {
+  border-top: 1px solid #777;
+  padding-top: 8px;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  body { padding: 10px; }
+  .grid, .parties { grid-template-columns: 1fr; }
+  .full { grid-column: auto; }
+  .invoice { padding: 16px; }
+  .invoice-header { flex-direction: column; }
+  .invoice-title, .meta { text-align: left; }
+  .table-wrap { overflow-x: auto; }
+}
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  body {
+    padding: 0;
+    background: white;
+    font-size: 11px;
+  }
+
+  header, .editor, .actions, .page-title {
+    display: none !important;
+  }
+
+  .container { max-width: none; }
+
+  .invoice {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .brand { color: black; }
+
+  th {
+    background: #eee !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  tr, .parties {
+    break-inside: avoid;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+  <h2>DOCBIZHUB</h2>
+  <div>Računovodstvo / Izrada fakture</div>
+</header>
+
+<h1 class="page-title">Nova faktura</h1>
+
+<div class="actions">
+  <button class="primary" onclick="printInvoice()">
+    Štampaj / Sačuvaj PDF
+  </button>
+
+  <button class="secondary" onclick="addItem()">
+    + Dodaj stavku
+  </button>
+
+  <button class="secondary" onclick="resetInvoice()">
+    Nova faktura
+  </button>
+</div>
+
+<div class="editor">
+
+<section class="panel">
+<h3>Podaci o fakturi</h3>
+
+<div class="grid">
+  <div class="field">
+    <label>Broj fakture</label>
+    <input id="number" value="F-001">
+  </div>
+
+  <div class="field">
+    <label>Valuta</label>
+    <select id="currency">
+      <option value="KM">KM</option>
+      <option value="EUR">EUR</option>
+      <option value="USD">USD</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Datum izdavanja</label>
+    <input type="date" id="date">
+  </div>
+
+  <div class="field">
+    <label>Rok plaćanja</label>
+    <input type="date" id="due">
+  </div>
+
+  <div class="field">
+    <label>Mjesto izdavanja</label>
+    <input id="place" placeholder="Npr. Travnik">
+  </div>
+
+  <div class="field">
+    <label>Način plaćanja</label>
+    <select id="payment">
+      <option>Bankovni transfer</option>
+      <option>Gotovina</option>
+      <option>Kartica</option>
+      <option>Drugo</option>
+    </select>
+  </div>
+</div>
+</section>
+
+<section class="panel">
+<h3>Izdavalac fakture</h3>
+
+<div class="grid">
+  <div class="field full">
+    <label>Naziv firme / ime i prezime</label>
+    <input id="seller" placeholder="Naziv tvoje firme">
+  </div>
+
+  <div class="field full">
+    <label>Adresa</label>
+    <input id="sellerAddress" placeholder="Ulica, broj, grad">
+  </div>
+
+  <div class="field">
+    <label>ID / PDV broj</label>
+    <input id="sellerId">
+  </div>
+
+  <div class="field">
+    <label>Telefon ili e-mail</label>
+    <input id="sellerContact">
+  </div>
+
+  <div class="field full">
+    <label>Banka i broj računa</label>
+    <input id="bank">
+  </div>
+</div>
+</section>
+
+<section class="panel">
+<h3>Podaci o kupcu</h3>
+
+<div class="grid">
+  <div class="field full">
+    <label>Naziv kupca / ime i prezime</label>
+    <input id="buyer">
+  </div>
+
+  <div class="field full">
+    <label>Adresa kupca</label>
+    <input id="buyerAddress">
+  </div>
+
+  <div class="field">
+    <label>ID / PDV broj kupca</label>
+    <input id="buyerId">
+  </div>
+
+  <div class="field">
+    <label>Telefon ili e-mail kupca</label>
+    <input id="buyerContact">
+  </div>
+</div>
+</section>
+
+<section class="panel">
+<h3>Stavke fakture</h3>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>Opis</th>
+  <th>Količina</th>
+  <th>Cijena</th>
+  <th>Porez %</th>
+  <th></th>
+</tr>
+</thead>
+<tbody id="items"></tbody>
+</table>
+</div>
+
+<div class="grid" style="margin-top:16px">
+  <div class="field">
+    <label>Popust (%)</label>
+    <input id="discount" type="number" min="0" max="100" value="0">
+  </div>
+
+  <div class="field">
+    <label>Status</label>
+    <select id="status">
+      <option>Neplaćena</option>
+      <option>Plaćena</option>
+      <option>Djelimično plaćena</option>
+    </select>
+  </div>
+
+  <div class="field full">
+    <label>Napomena / uslovi plaćanja</label>
+    <textarea id="notes" rows="3"></textarea>
+  </div>
+</div>
+</section>
+</div>
+
+<section class="invoice" id="invoice">
+
+<div class="invoice-header">
+  <div>
+    <div class="brand" id="pSeller">DOCBIZHUB</div>
+    <p id="pSellerDetails"></p>
+  </div>
+
+  <div>
+    <div class="invoice-title">FAKTURA</div>
+    <div class="meta">Broj: <strong id="pNumber"></strong></div>
+    <div class="meta">Datum: <span id="pDate"></span></div>
+    <div class="meta">Rok plaćanja: <span id="pDue"></span></div>
+  </div>
+</div>
+
+<div class="parties">
+  <div>
+    <h4>IZDAVALAC</h4>
+    <p id="pSellerBlock"></p>
+  </div>
+
+  <div>
+    <h4>KUPAC</h4>
+    <p id="pBuyer"></p>
+    <p id="pBuyerDetails"></p>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Opis</th>
+  <th class="right">Kol.</th>
+  <th class="right">Cijena</th>
+  <th class="right">Porez</th>
+  <th class="right">Ukupno</th>
+</tr>
+</thead>
+<tbody id="pItems"></tbody>
+</table>
+</div>
+
+<div class="totals">
+  <div class="total-row">
+    <span>Međuzbir</span>
+    <strong id="pSubtotal"></strong>
+  </div>
+
+  <div class="total-row">
+    <span>Popust</span>
+    <strong id="pDiscount"></strong>
+  </div>
+
+  <div class="total-row">
+    <span>Porez</span>
+    <strong id="pTax"></strong>
+  </div>
+
+  <div class="total-row grand-total">
+    <span>UKUPNO</span>
+    <strong id="pTotal"></strong>
+  </div>
+</div>
+
+<div class="notes">
+  <strong>Način plaćanja:</strong> <span id="pPayment"></span>
+  <p id="pNotes"></p>
+  <p id="pPlace"></p>
+</div>
+
+<div class="signatures">
+  <div>Potpis / ovjera izdavaoca</div>
+  <div>Potpis / ovjera kupca</div>
+</div>
+
+</section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function today() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
+$("date").value = today();
+
+function money(value) {
+  return Number(value || 0).toLocaleString("bs-BA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " " + $("currency").value;
+}
+
+function addItem() {
+  const row = document.createElement("tr");
+
+  const descCell = document.createElement("td");
+  const desc = document.createElement("input");
+  desc.placeholder = "Opis robe ili usluge";
+  descCell.appendChild(desc);
+
+  row.appendChild(descCell);
+
+  [
+    { cls: "qty", value: "1" },
+    { cls: "price", value: "0" },
+    { cls: "tax", value: "0" }
+  ].forEach(item => {
+    const td = document.createElement("td");
+    const input = document.createElement("input");
+
+    input.type = "number";
+    input.min = "0";
+    input.step = "0.01";
+    input.value = item.value;
+    input.className = item.cls;
+
+    td.appendChild(input);
+    row.appendChild(td);
+  });
+
+  const removeCell = document.createElement("td");
+  const removeButton = document.createElement("button");
+
+  removeButton.type = "button";
+  removeButton.className = "remove";
+  removeButton.textContent = "X";
+  removeButton.title = "Ukloni stavku";
+
+  removeButton.addEventListener("click", () => {
+    row.remove();
+    update();
+  });
+
+  removeCell.appendChild(removeButton);
+  row.appendChild(removeCell);
+
+  row.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", update);
+  });
+
+  $("items").appendChild(row);
+  update();
+}
+
+function get(id) {
+  return $(id).value.trim();
+}
+
+function text(id, value) {
+  $(id).textContent = value || "";
+}
+
+function update() {
+  const currency = $("currency").value;
+
+  text("pNumber", get("number"));
+  text("pDate", get("date") || "—");
+  text("pDue", get("due") || "—");
+
+  text("pSeller", get("seller") || "Naziv izdavaoca");
+
+  text("pSellerDetails", [
+    get("sellerAddress"),
+    get("sellerContact")
+  ].filter(Boolean).join(" · "));
+
+  text("pSellerBlock", [
+    get("seller") || "Naziv izdavaoca",
+    get("sellerAddress"),
+    get("sellerId") ? "ID / PDV: " + get("sellerId") : "",
+    get("sellerContact"),
+    get("bank") ? "Banka / račun: " + get("bank") : ""
+  ].filter(Boolean).join("\n"));
+
+  text("pBuyer", get("buyer") || "Naziv kupca");
+
+  text("pBuyerDetails", [
+    get("buyerAddress"),
+    get("buyerId") ? "ID / PDV: " + get("buyerId") : "",
+    get("buyerContact")
+  ].filter(Boolean).join("\n"));
+
+  text("pPayment", get("payment"));
+  text("pNotes", get("notes"));
+  text("pPlace", get("place") ? "Mjesto izdavanja: " + get("place") : "");
+
+  let subtotal = 0;
+  let taxTotal = 0;
+
+  const preview = $("pItems");
+  preview.replaceChildren();
+
+  const rows = [...$("items").querySelectorAll("tr")];
+
+  rows.forEach((row, index) => {
+    const description = row.querySelector("td input").value.trim()
+      || "—";
+
+    const qty = Math.max(0, Number(row.querySelector(".qty").value) || 0);
+    const price = Math.max(0, Number(row.querySelector(".price").value) || 0);
+    const rate = Math.max(0, Math.min(100, Number(row.querySelector(".tax").value) || 0));
+
+    const base = qty * price;
+    const tax = base * rate / 100;
+
+    subtotal += base;
+    taxTotal += tax;
+
+    const values = [
+      index + 1,
+      description,
+      qty.toLocaleString("bs-BA"),
+      money(price),
+      rate.toLocaleString("bs-BA") + "%",
+      money(base + tax)
+    ];
+
+    const tr = document.createElement("tr");
+
+    values.forEach((value, i) => {
+      const td = document.createElement("td");
+      td.textContent = value;
+
+      if (i >= 2) td.className = "right";
+
+      tr.appendChild(td);
+    });
+
+    preview.appendChild(tr);
+  });
+
+  const discountRate = Math.max(
+    0, Math.min(100, Number(get("discount")) || 0)
+  );
+
+  const discount = subtotal * discountRate / 100;
+
+  // Popust se proporcionalno oduzima prije obračuna poreza.
+  const adjustedTax = rows.reduce((sum, row) => {
+    const qty = Math.max(0, Number(row.querySelector(".qty").value) || 0);
+    const price = Math.max(0, Number(row.querySelector(".price").value) || 0);
+    const rate = Math.max(0, Math.min(100, Number(row.querySelector(".tax").value) || 0));
+
+    return sum + qty * price * (1 - discountRate / 100) * rate / 100;
+  }, 0);
+
+  text("pSubtotal", money(subtotal));
+  text("pDiscount", "− " + money(discount));
+  text("pTax", money(adjustedTax));
+  text("pTotal", money(subtotal - discount + adjustedTax));
+}
+
+function printInvoice() {
+  if (!get("number") || !get("seller") || !get("buyer")) {
+    alert("Molimo unesite broj fakture, izdavaoca i kupca.");
+    return;
+  }
+
+  window.print();
+}
+
+function resetInvoice() {
+  if (!confirm("Želite li obrisati unesene podatke i početi novu fakturu?")) {
+    return;
+  }
+
+  document.querySelectorAll(".editor input, .editor textarea").forEach(el => {
+    el.value = "";
+  });
+
+  $("number").value = "F-001";
+  $("date").value = today();
+  $("discount").value = "0";
+  $("currency").value = "KM";
+  $("payment").value = "Bankovni transfer";
+  $("status").value = "Neplaćena";
+  $("items").replaceChildren();
+
+  addItem();
+  update();
+}
+
+document.querySelectorAll(".editor input, .editor textarea, .editor select")
+  .forEach(el => el.addEventListener("input", update));
+
+$("currency").addEventListener("change", update);
+
+addItem();
+</script>
+
+</body>
+</html>
