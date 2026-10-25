@@ -1,0 +1,482 @@
+
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOCBIZHUB — Izvještaj za računovođu</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;color:#172033;font-family:Arial,sans-serif}
+.wrap{max-width:1400px;margin:auto;padding:22px}
+header,.panel,.kpi{background:white;border:1px solid #e1e6ef;border-radius:12px;padding:18px;margin-bottom:15px}
+h1{font-size:26px;margin:0 0 8px}
+h2{font-size:18px;margin:0 0 14px}
+.muted{color:#647084;font-size:13px;line-height:1.5}
+.notice{background:#fff7df;border:1px solid #f0d68c;padding:12px;border-radius:8px;margin-top:14px;font-size:13px;line-height:1.5}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}
+label{display:block;font-size:12px;font-weight:bold;margin-bottom:6px}
+input,select,button{font:inherit;border:1px solid #cfd6e2;border-radius:8px;padding:10px;width:100%;background:white}
+button{cursor:pointer;background:#174ea6;color:white;font-weight:bold;border-color:#174ea6}
+button.secondary{background:white;color:#174ea6}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.actions button{width:auto}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(170px,1fr));gap:12px;margin-top:14px}
+.kpi{margin:0;padding:15px}
+.kpi .label{font-size:12px;color:#647084}
+.kpi .value{font-size:21px;font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:650px;font-size:13px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #e8ecf2;white-space:nowrap}
+th{background:#f6f8fb}
+#message{padding:12px;border-radius:8px;background:#edf4ff;color:#174078;margin-bottom:15px;white-space:pre-wrap}
+.error{background:#fff0f0!important;color:#9b1c1c!important}
+.empty{text-align:center;color:#647084;padding:15px}
+.status{font-size:11px;background:#eef2f8;border-radius:15px;padding:5px 8px}
+@media(max-width:800px){.wrap{padding:10px}.filters,.kpis{grid-template-columns:1fr 1fr}h1{font-size:22px}}
+@media(max-width:520px){.filters,.kpis{grid-template-columns:1fr}.actions button{width:100%}}
+@media print{
+ body{background:white}.wrap{max-width:none;padding:0}
+ .no-print,#message{display:none!important}
+ header,.panel,.kpi{break-inside:avoid;box-shadow:none;border-color:#ccc}
+ .table-wrap{overflow:visible}table{min-width:0;font-size:9px}
+ th,td{white-space:normal;padding:5px}
+ .kpis{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>DOCBIZHUB — Kompletan izvještaj za računovođu</h1>
+<div class="muted">Pregled prihoda, troškova, faktura, uplata i potraživanja prijavljenog korisnika.</div>
+<div class="notice">
+<strong>Važna napomena:</strong> Izbor države označava izvještaj, ali ne obračunava automatski PDV, porez niti službene poreske obrasce. Pravila treba provjeriti s računovođom. Podržane države: Bosna i Hercegovina, Hrvatska, Srbija i Crna Gora. Druge države mogu se naknadno dodati. Izbor valute ne konvertuje iznose.
+</div>
+</header>
+
+<div id="message">Povezivanje s bazom…</div>
+
+<section class="panel no-print">
+<h2>Postavke izvještaja</h2>
+<div class="filters">
+<div>
+<label for="country">Država registracije</label>
+<select id="country">
+<option>Bosna i Hercegovina</option>
+<option>Hrvatska</option>
+<option>Srbija</option>
+<option>Crna Gora</option>
+</select>
+</div>
+<div><label for="from">Od datuma</label><input id="from" type="date"></div>
+<div><label for="to">Do datuma</label><input id="to" type="date"></div>
+<div>
+<label for="currency">Oznaka valute (bez konverzije)</label>
+<select id="currency">
+<option value="KM">KM</option>
+<option value="EUR">EUR</option>
+<option value="RSD">RSD</option>
+</select>
+</div>
+</div>
+<div class="actions">
+<button id="apply">Primijeni period</button>
+<button class="secondary" id="refresh">Ponovo učitaj</button>
+<button class="secondary" id="csv">Izvezi CSV za Excel</button>
+<button class="secondary" id="print">Štampaj / Sačuvaj PDF</button>
+<button class="secondary" id="back">Nazad na izvještaje</button>
+</div>
+</section>
+
+<section class="panel">
+<h2>Sažetak perioda</h2>
+<div id="periodLabel" class="muted"></div>
+<div class="kpis">
+<div class="kpi"><div class="label">Ostali prihodi</div><div id="kIncome" class="value">—</div></div>
+<div class="kpi"><div class="label">Uplate po fakturama</div><div id="kPayments" class="value">—</div></div>
+<div class="kpi"><div class="label">Troškovi</div><div id="kExpenses" class="value">—</div></div>
+<div class="kpi"><div class="label">Izdane fakture</div><div id="kInvoices" class="value">—</div></div>
+<div class="kpi"><div class="label">Otvorena potraživanja</div><div id="kReceivables" class="value">—</div></div>
+<div class="kpi"><div class="label">Prihodi i uplate minus troškovi*</div><div id="kNet" class="value">—</div></div>
+</div>
+<p class="muted">* Informativni pregled: ostali prihodi + uplate po fakturama − troškovi. Nije službeni obračun dobiti.</p>
+</section>
+
+<section class="panel">
+<h2>Mjesečni pregled</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Mjesec</th><th>Ostali prihodi</th><th>Uplate faktura</th><th>Troškovi</th><th>Razlika*</th></tr></thead>
+<tbody id="monthlyRows"></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Fakture i potraživanja</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Broj fakture</th><th>Kupac</th><th>Datum</th><th>Rok</th><th>Iznos</th><th>Status</th><th>Uplaćeno</th><th>Preostalo</th></tr></thead>
+<tbody id="invoiceRows"></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Uplate po fakturama</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Datum uplate</th><th>Faktura ID</th><th>Iznos</th><th>Način plaćanja</th><th>Broj dokumenta</th><th>Napomena</th></tr></thead>
+<tbody id="paymentRows"></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Ostali prihodi</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Datum</th><th>Vrsta</th><th>Izvor</th><th>Način plaćanja</th><th>Dokument</th><th>Iznos</th><th>Opis</th></tr></thead>
+<tbody id="incomeRows"></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Troškovi</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Datum</th><th>Kategorija</th><th>Dobavljač</th><th>Iznos</th><th>Opis</th></tr></thead>
+<tbody id="expenseRows"></tbody>
+</table></div>
+</section>
+
+<footer class="muted">DOCBIZHUB — Prije službene upotrebe provjeriti tačnost podataka i lokalne računovodstvene zahtjeve.</footer>
+</div>
+
+<!-- Učitati Supabase biblioteku prije lokalnog supabase.js fajla. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+(() => {
+"use strict";
+
+let DB = null;
+let USER_ID = null;
+let ALL = {incomes:[], expenses:[], invoices:[], payments:[]};
+let VIEW = {};
+
+const $ = id => document.getElementById(id);
+
+const money = n =>
+  Number(n || 0).toLocaleString("bs-BA", {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  }) + " " + $("currency").value;
+
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+}[c]));
+
+const dateText = v => v ? esc(String(v).slice(0,10)) : "—";
+
+function message(text, error=false) {
+  $("message").textContent = text;
+  $("message").classList.toggle("error", error);
+}
+
+function inPeriod(date, from, to) {
+  if (!date) return false;
+  const d = String(date).slice(0,10);
+  return (!from || d >= from) && (!to || d <= to);
+}
+
+function sum(rows, field) {
+  return rows.reduce((total,row) => total + Number(row[field] || 0),0);
+}
+
+function rowsOrEmpty(id, html, colspan) {
+  $(id).innerHTML = html ||
+    `<tr><td colspan="${colspan}" class="empty">Nema podataka za izabrani period.</td></tr>`;
+}
+
+function getDB() {
+  return window.DB || window.supabaseClient || window.SUPABASE || null;
+}
+
+async function initDB() {
+  DB = getDB();
+
+  if (!DB && typeof window.POVEZI_SUPABASE === "function") {
+    const result = await window.POVEZI_SUPABASE();
+    DB = result || getDB();
+  }
+
+  if (!DB && typeof window.DOBAVI_SUPABASE === "function") {
+    const result = await window.DOBAVI_SUPABASE();
+    DB = result || getDB();
+  }
+
+  if (!DB || !DB.auth) {
+    throw new Error(
+      "Supabase klijent nije pronađen. Provjeri povezivanje i redoslijed učitavanja skripti."
+    );
+  }
+
+  const {data,error} = await DB.auth.getUser();
+  if (error) throw error;
+
+  if (!data || !data.user) {
+    throw new Error("Niste prijavljeni. Prijavite se pa ponovo otvorite izvještaj.");
+  }
+
+  USER_ID = data.user.id;
+}
+
+async function query(table, columns, dateColumn) {
+  let q = DB.from(table)
+    .select(columns)
+    .eq("USER_ID", USER_ID);
+
+  if (dateColumn) q = q.order(dateColumn,{ascending:true});
+
+  const {data,error} = await q;
+
+  if (error) {
+    throw new Error("Greška pri učitavanju tabele " + table + ": " + error.message);
+  }
+
+  return data || [];
+}
+
+async function load() {
+  message("Učitavam podatke za prijavljeni korisnički račun…");
+
+  try {
+    if (!DB || !USER_ID) await initDB();
+
+    const [incomes,expenses,invoices,payments] = await Promise.all([
+      query(
+        "PRIHODI",
+        "ID, USER_ID, DATUM, IZNOS, TIP_PRIHODA, IZVOR_PRIHODA, NACIN_PLACANJA, BROJ_DOKUMENTA, OPIS",
+        "DATUM"
+      ),
+      query(
+        "TROSKOVI",
+        "ID, USER_ID, DATUM, IZNOS, KATEGORIJA, DOBAVLJAC, OPIS",
+        "DATUM"
+      ),
+      query(
+        "FAKTURE",
+        "ID, USER_ID, BROJ_FAKTURE, KUPAC, DATUM_FAKTURE, ROK_PLACANJA, IZNOS_FAKTURE, STATUS_FAKTURE, OPIS_FAKTURE",
+        "DATUM_FAKTURE"
+      ),
+      query(
+        "UPLATE_FAKTURA",
+        "ID, USER_ID, FAKTURA_ID, DATUM_UPLATE, IZNOS, NACIN_PLACANJA, BROJ_DOKUMENTA, NAPOMENA",
+        "DATUM_UPLATE"
+      )
+    ]);
+
+    ALL = {incomes,expenses,invoices,payments};
+    render();
+    message("Podaci su učitani. Prikazuju se zapisi prijavljenog korisnika.");
+  } catch (e) {
+    console.error(e);
+    message(e.message || "Nije moguće učitati podatke.",true);
+  }
+}
+
+function render() {
+  const from = $("from").value;
+  const to = $("to").value;
+
+  if (from && to && from > to) {
+    message("Datum 'Od' ne može biti poslije datuma 'Do'.",true);
+    return;
+  }
+
+  const incomes = ALL.incomes.filter(r => inPeriod(r.DATUM,from,to));
+  const expenses = ALL.expenses.filter(r => inPeriod(r.DATUM,from,to));
+  const invoices = ALL.invoices.filter(r => inPeriod(r.DATUM_FAKTURE,from,to));
+  const payments = ALL.payments.filter(r => inPeriod(r.DATUM_UPLATE,from,to));
+
+  const paymentsByInvoice = new Map();
+  ALL.payments.forEach(p => {
+    paymentsByInvoice.set(
+      p.FAKTURA_ID,
+      (paymentsByInvoice.get(p.FAKTURA_ID) || 0) + Number(p.IZNOS || 0)
+    );
+  });
+
+  // Potraživanja se računaju iz faktura umanjenih za evidentirane uplate.
+  const allReceivables = ALL.invoices.reduce((total,inv) => {
+    if (String(inv.STATUS_FAKTURE || "").toUpperCase() === "STORNIRANA") return total;
+    return total + Math.max(
+      0,
+      Number(inv.IZNOS_FAKTURE || 0) - (paymentsByInvoice.get(inv.ID) || 0)
+    );
+  },0);
+
+  $("periodLabel").textContent =
+    $("country").value + " · " +
+    (from || "početak evidentiranja") + " do " +
+    (to || "zadnji evidentirani datum");
+
+  const totalIncome = sum(incomes,"IZNOS");
+  const totalPayments = sum(payments,"IZNOS");
+  const totalExpenses = sum(expenses,"IZNOS");
+  const totalInvoices = sum(invoices,"IZNOS_FAKTURE");
+
+  $("kIncome").textContent = money(totalIncome);
+  $("kPayments").textContent = money(totalPayments);
+  $("kExpenses").textContent = money(totalExpenses);
+  $("kInvoices").textContent = money(totalInvoices);
+  $("kReceivables").textContent = money(allReceivables);
+  $("kNet").textContent = money(totalIncome + totalPayments - totalExpenses);
+
+  const monthMap = new Map();
+
+  function addMonth(date,key,amount) {
+    if (!date) return;
+    const month = String(date).slice(0,7);
+    if (from && month < from.slice(0,7)) return;
+    if (to && month > to.slice(0,7)) return;
+
+    if (!monthMap.has(month)) {
+      monthMap.set(month,{income:0,payments:0,expenses:0});
+    }
+
+    monthMap.get(month)[key] += Number(amount || 0);
+  }
+
+  incomes.forEach(r => addMonth(r.DATUM,"income",r.IZNOS));
+  payments.forEach(r => addMonth(r.DATUM_UPLATE,"payments",r.IZNOS));
+  expenses.forEach(r => addMonth(r.DATUM,"expenses",r.IZNOS));
+
+  rowsOrEmpty("monthlyRows",
+    [...monthMap.entries()]
+      .sort((a,b) => a[0].localeCompare(b[0]))
+      .map(([month,v]) => `<tr>
+        <td>${esc(month)}</td>
+        <td>${money(v.income)}</td>
+        <td>${money(v.payments)}</td>
+        <td>${money(v.expenses)}</td>
+        <td>${money(v.income + v.payments - v.expenses)}</td>
+      </tr>`).join(""),5);
+
+  rowsOrEmpty("invoiceRows",invoices.map(inv => {
+    const paid = paymentsByInvoice.get(inv.ID) || 0;
+    const status = String(inv.STATUS_FAKTURE || "");
+    const remaining = status.toUpperCase() === "STORNIRANA"
+      ? 0
+      : Math.max(0,Number(inv.IZNOS_FAKTURE || 0)-paid);
+
+    return `<tr>
+      <td>${esc(inv.BROJ_FAKTURE || "—")}</td>
+      <td>${esc(inv.KUPAC || "—")}</td>
+      <td>${dateText(inv.DATUM_FAKTURE)}</td>
+      <td>${dateText(inv.ROK_PLACANJA)}</td>
+      <td>${money(inv.IZNOS_FAKTURE)}</td>
+      <td><span class="status">${esc(status || "—")}</span></td>
+      <td>${money(paid)}</td>
+      <td>${money(remaining)}</td>
+    </tr>`;
+  }).join(""),8);
+
+  rowsOrEmpty("paymentRows",payments.map(p => `<tr>
+    <td>${dateText(p.DATUM_UPLATE)}</td>
+    <td>${esc(p.FAKTURA_ID || "—")}</td>
+    <td>${money(p.IZNOS)}</td>
+    <td>${esc(p.NACIN_PLACANJA || "—")}</td>
+    <td>${esc(p.BROJ_DOKUMENTA || "—")}</td>
+    <td>${esc(p.NAPOMENA || "—")}</td>
+  </tr>`).join(""),6);
+
+  rowsOrEmpty("incomeRows",incomes.map(r => `<tr>
+    <td>${dateText(r.DATUM)}</td>
+    <td>${esc(r.TIP_PRIHODA || "—")}</td>
+    <td>${esc(r.IZVOR_PRIHODA || "—")}</td>
+    <td>${esc(r.NACIN_PLACANJA || "—")}</td>
+    <td>${esc(r.BROJ_DOKUMENTA || "—")}</td>
+    <td>${money(r.IZNOS)}</td>
+    <td>${esc(r.OPIS || "—")}</td>
+  </tr>`).join(""),7);
+
+  rowsOrEmpty("expenseRows",expenses.map(r => `<tr>
+    <td>${dateText(r.DATUM)}</td>
+    <td>${esc(r.KATEGORIJA || "—")}</td>
+    <td>${esc(r.DOBAVLJAC || "—")}</td>
+    <td>${money(r.IZNOS)}</td>
+    <td>${esc(r.OPIS || "—")}</td>
+  </tr>`).join(""),5);
+
+  VIEW = {incomes,expenses,invoices,payments};
+}
+
+function csvCell(value) {
+  let s = String(value ?? "");
+  if (/^[=+\-@]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g,'""') + '"';
+}
+
+function exportCSV() {
+  if (!VIEW.incomes) {
+    message("Prvo učitaj podatke.",true);
+    return;
+  }
+
+  const lines = [[
+    "Vrsta","Datum","Dokument / ID","Partner / kategorija","Opis","Iznos","Status"
+  ]];
+
+  VIEW.incomes.forEach(r => lines.push([
+    "Ostali prihod",r.DATUM,r.BROJ_DOKUMENTA,r.IZVOR_PRIHODA,r.OPIS,r.IZNOS,""
+  ]));
+
+  VIEW.expenses.forEach(r => lines.push([
+    "Trošak",r.DATUM,"",r.DOBAVLJAC,
+    (r.KATEGORIJA || "") + " " + (r.OPIS || ""),r.IZNOS,""
+  ]));
+
+  VIEW.invoices.forEach(r => lines.push([
+    "Faktura",r.DATUM_FAKTURE,r.BROJ_FAKTURE,r.KUPAC,
+    r.OPIS_FAKTURE,r.IZNOS_FAKTURE,r.STATUS_FAKTURE
+  ]));
+
+  VIEW.payments.forEach(r => lines.push([
+    "Uplata fakture",r.DATUM_UPLATE,r.FAKTURA_ID,
+    r.NACIN_PLACANJA,r.NAPOMENA,r.IZNOS,""
+  ]));
+
+  const csv = "\uFEFF" + lines.map(row => row.map(csvCell).join(";")).join("\r\n");
+  const blob = new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "izvjestaj-racunovodja.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+$("apply").addEventListener("click",render);
+$("refresh").addEventListener("click",load);
+$("csv").addEventListener("click",exportCSV);
+$("print").addEventListener("click",() => window.print());
+$("back").addEventListener("click",() => {
+  window.location.href = "izvjestaji.html";
+});
+$("country").addEventListener("change",render);
+$("currency").addEventListener("change",render);
+
+const today = new Date();
+$("to").value =
+  today.getFullYear() + "-" +
+  String(today.getMonth()+1).padStart(2,"0") + "-" +
+  String(today.getDate()).padStart(2,"0");
+$("from").value = today.getFullYear() + "-01-01";
+
+load();
+})();
+</script>
+</body>
+</html>
