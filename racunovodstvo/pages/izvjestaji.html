@@ -448,6 +448,7 @@ function KLJUC_MJESECA(datum) {
 
 
 
+
 async function UCITAJ_SVE() {
   PORUKA("Učitavam podatke izvještaja...");
 
@@ -455,6 +456,54 @@ async function UCITAJ_SVE() {
     DB.from("PRIHODI")
       .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
       .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("TROSKOVI")
+      .select("ID, USER_ID, DATUM, IZNOS, KREIRANO")
+      .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("FAKTURE")
+      .select(
+        "ID, USER_ID, DATUM_FAKTURE, IZNOS_FAKTURE, STATUS_FAKTURE, KREIRANO"
+      )
+      .eq("USER_ID", KORISNIK_ID),
+
+    DB.from("UPLATE_FAKTURA")
+      .select("ID, USER_ID, FAKTURA_ID, DATUM_UPLATE, IZNOS")
+      .eq("USER_ID", KORISNIK_ID)
+  ]);
+
+  if (
+    prihodi.error ||
+    troskovi.error ||
+    fakture.error ||
+    uplate.error
+  ) {
+    console.error("Greške pri učitavanju:", {
+      prihodi: prihodi.error,
+      troskovi: troskovi.error,
+      fakture: fakture.error,
+      uplate: uplate.error
+    });
+
+    PORUKA("Izvještaj nije potpun. Provjeri greške u konzoli.");
+    return;
+  }
+
+  SVI_PRIHODI = prihodi.data || [];
+  SVI_TROSKOVI = troskovi.data || [];
+  SVE_FAKTURE = fakture.data || [];
+  SVE_UPLATE = uplate.data || [];
+
+  $("DATUM_OD").value = POCETAK_MJESECA();
+  $("DATUM_DO").value = DANAS();
+
+  FILTRIRAJ();
+
+  PORUKA(
+    "Podaci su učitani za prijavljenog korisnika, uključujući evidentirane uplate."
+  );
+}
+
 function PRIKAZI_MJESECE() {
   const mjeseci = [];
   const sada = new Date();
