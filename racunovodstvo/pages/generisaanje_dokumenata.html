@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Finisiranje Ugovora i Projekata</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success-color: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button.btn-primary {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button.btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        .result-section {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .result-box {
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-color);
+            color: #0f172a;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--accent-color);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚡ AI Finisiranje Ugovora i Projekata</h1>
+        <p class="subtitle">Unesite nacrt ugovora ili skicu projekta, odaberite AI model i automatski dotjerajte dokument do savršenstva.</p>
+
+        <div class="form-group">
+            <label for="ai-mode">Izaberite AI režim rada:</label>
+            <select id="ai-mode">
+                <option value="legal">Pravni & Finansijski Revizor (Ugovori)</option>
+                <option value="project">Optimizator Projektnih Zadataka (Projekti)</option>
+                <option value="creative">Kreativni & Strukturirani Redaktor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="input-text">Unesite tekst ugovora ili opis projekta:</label>
+            <textarea id="input-text" placeholder="Unesite ili zalijepite tekst ovdje..."></textarea>
+        </div>
+
+        <button class="btn-primary" onclick="processWithAI()">Pokreni AI Finisiranje 🚀</button>
+
+        <div class="loader" id="loader">AI analizira i finisira dokument... Molimo sačekajte.</div>
+
+        <div class="result-section" id="result-section">
+            <div class="result-header">
+                <h3>Rezultat obrade:</h3>
+                <button class="btn-copy" onclick="copyResult()">Kopiraj tekst</button>
+            </div>
+            <div class="result-box" id="result-box"></div>
+        </div>
+    </div>
+
+    <script>
+        function processWithAI() {
+            const textInput = document.getElementById('input-text').value.trim();
+            const mode = document.getElementById('ai-mode').value;
+            const loader = document.getElementById('loader');
+            const resultSection = document.getElementById('result-section');
+            const resultBox = document.getElementById('result-box');
+
+            if (!textInput) {
+                alert('Molimo unesite tekst ugovora ili projekta prije pokretanja!');
+                return;
+            }
+
+            // Prikaži loader, sakrij prethodni rezultat
+            loader.style.display = 'block';
+            resultSection.style.display = 'none';
+
+            // Simulacija AI obrade (ovdje možeš kasnije spojiti pravu API skriptu)
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                let processedText = "";
+                if (mode === 'legal') {
+                    processedText = `[AI PRAVNA REVIZIJA I FINISIRANJE UGOVORA]\n\n` +
+                                    `1. PREAMBULA I STRANKE:\n   - Uspješno standardizovano prema važećim propisima.\n\n` +
+                                    `2. OPTIMIZOVANI SADRŽAJ:\n${textInput}\n\n` +
+                                    `3. PRAVNE NAPOMENE:\n   - Dodane klauzule o rokovima isporuke, zaštiti podataka i rješavanju sporova.\n   - Status: Spremno za potpisivanje. ✔`;
+                } else if (mode === 'project') {
+                    processedText = `[AI OPTIMIZACIJA PROJEKTA]\n\n` +
+                                    `ANALIZA CILJEVA:\n${textInput}\n\n` +
+                                    `STRUKTURIRANI KORACI:\n` +
+                                    ` - Faza 1: Priprema resursa i nabavka materijala\n` +
+                                    ` - Faza 2: Izrada, montaža i testiranje\n` +
+                                    ` - Faza 3: Završna revizija i isporuka\n\n` +
+                                    `Status projekta: Usklađeno i optimizovano za efikasnu realizaciju. ✔`;
+                } else {
+                    processedText = `[AI KREATIVNI REDAKTORSKI PREGLED]\n\n` +
+                                    `Poboljšana verzija teksta:\n${textInput}\n\n` +
+                                    ` Stilski dorađeno, uklonjene su suvišne fraze i pojačana jasnoća poruke. ✔`;
+                }
+
+                resultBox.innerText = processedText;
+                resultSection.style.display = 'block';
+            }, 1200);
+        }
+
+        function copyResult() {
+            const resultText = document.getElementById('result-box').innerText;
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('Rezultat je uspješno kopiran u međuspremnik!');
+            });
+        }
+    </script>
+
+</body>
+</html>
