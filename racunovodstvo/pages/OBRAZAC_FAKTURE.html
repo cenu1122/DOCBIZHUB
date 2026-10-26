@@ -1,572 +1,550 @@
-
 <!DOCTYPE html>
 <html lang="bs">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Izrada fakture | DOCBIZHUB</title>
+<title>DocBizHub — Faktura</title>
+
 <style>
-:root {
-  --navy: #15233b;
-  --blue: #4169e1;
-  --light: #f4f6fa;
-  --border: #dce2ec;
-  --muted: #667085;
-}
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
+  padding: 20px;
+  background: #f2f6fc;
+  color: #183153;
   font-family: Arial, sans-serif;
-  color: var(--navy);
-  background: var(--light);
 }
-.topbar {
-  padding: 20px 5%;
-  background: var(--navy);
-  color: white;
-}
-.topbar strong { font-size: 23px; }
-.topbar span { color: #c5d2e8; margin-left: 12px; }
-main { max-width: 1200px; margin: 28px auto; padding: 0 18px; }
-h1 { margin: 0 0 8px; }
-.intro { color: var(--muted); margin-bottom: 22px; }
-.actions { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 20px; }
-button {
-  border: 0;
-  border-radius: 7px;
-  padding: 11px 15px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.primary { background: var(--blue); color: white; }
-.secondary { background: #e4eaf4; color: var(--navy); }
-.delete { background: #ffeded; color: #a12525; }
-.columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-}
-.card {
+
+.container {
+  max-width: 1100px;
+  margin: auto;
   background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 21px;
-  margin-bottom: 18px;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 5px 25px #17345b12;
 }
-.card h2 { font-size: 17px; margin: 0 0 17px; }
-.fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 13px;
-}
-.field { display: flex; flex-direction: column; gap: 6px; }
-.full { grid-column: 1 / -1; }
-label { font-size: 12px; font-weight: bold; color: #46536a; }
-input, textarea, select {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid #ccd5e2;
-  border-radius: 6px;
-  padding: 10px;
-  font: inherit;
-  background: white;
-}
-textarea { resize: vertical; }
-.table-scroll { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 8px 5px; border-bottom: 1px solid var(--border); }
-th { font-size: 11px; text-align: left; color: var(--muted); }
-td input { padding: 8px 5px; min-width: 65px; }
-td .description { min-width: 130px; }
-.invoice {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 28px;
-  min-width: 0;
-}
-.invoice-head {
+
+header {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 20px;
-  border-bottom: 3px solid var(--blue);
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid #1769e8;
+  padding-bottom: 15px;
 }
-.invoice-brand { font-size: 23px; font-weight: bold; color: var(--blue); }
-.invoice-word { font-size: 26px; font-weight: bold; text-align: right; }
-.invoice-meta { font-size: 12px; text-align: right; margin-top: 6px; }
-.addresses {
+
+h1 { margin: 0; color: #1769e8; }
+
+h2 {
+  font-size: 17px;
+  margin-top: 24px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px;
-  margin: 23px 0;
 }
-.addresses h3 { font-size: 11px; letter-spacing: 1px; color: var(--muted); }
-.addresses p { white-space: pre-line; overflow-wrap: anywhere; font-size: 13px; }
-.preview-table { font-size: 11px; }
-.preview-table th { background: #f0f3f9; }
-.preview-table td { overflow-wrap: anywhere; }
-.right { text-align: right; }
-.summary { width: 100%; max-width: 290px; margin: 20px 0 0 auto; }
-.summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; }
-.summary-row.total {
-  border-top: 2px solid var(--navy);
-  margin-top: 7px;
-  padding-top: 12px;
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccd8e8;
+  border-radius: 6px;
+  font: inherit;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #dce5f0;
+  text-align: left;
+}
+
+th { background: #edf4ff; }
+
+td input { min-width: 65px; }
+
+button {
+  padding: 10px 14px;
+  margin: 5px 3px 5px 0;
+  border: 0;
+  border-radius: 6px;
+  background: #1769e8;
+  color: white;
+  cursor: pointer;
+}
+
+.delete { background: #d93025; }
+
+.totals {
+  max-width: 420px;
+  margin: 20px 0 0 auto;
+}
+
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.grand {
+  background: #1769e8;
+  color: white;
   font-size: 18px;
   font-weight: bold;
 }
-.invoice-note { margin-top: 24px; font-size: 12px; white-space: pre-line; }
-.signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; margin-top: 65px; }
-.signatures div { border-top: 1px solid #7b8493; padding-top: 8px; font-size: 11px; }
-.hint { font-size: 12px; color: var(--muted); }
-@media(max-width: 850px) {
-  .columns { grid-template-columns: 1fr; }
+
+@media(max-width: 750px) {
+  .grid { grid-template-columns: 1fr; }
+  .table-wrap { overflow-x: auto; }
 }
-@media(max-width: 500px) {
-  .fields { grid-template-columns: 1fr; }
-  .full { grid-column: auto; }
-  .invoice { padding: 15px; }
-  .invoice-head { flex-direction: column; }
-  .invoice-word, .invoice-meta { text-align: left; }
-  .addresses { grid-template-columns: 1fr; }
-}
-@page { size: A4; margin: 12mm; }
+
 @media print {
-  body { background: white; font-size: 10pt; }
-  .topbar, .editor, .actions, .intro, .page-title { display: none !important; }
-  main { margin: 0; max-width: none; padding: 0; }
-  .columns { display: block; }
-  .invoice { border: 0; border-radius: 0; padding: 0; }
-  .invoice-brand { color: black; }
-  .preview-table th {
-    background: #eee !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+  body { background: white; padding: 0; }
+  .container { box-shadow: none; padding: 0; }
+  .no-print { display: none !important; }
+  input, select, textarea {
+    border: none;
+    padding: 2px;
   }
-  tr, .addresses { break-inside: avoid; }
 }
 </style>
 </head>
+
 <body>
-<header class="topbar">
-  <strong>DOCBIZHUB</strong>
-  <span>Samostalna izrada fakture</span>
+<div class="container">
+
+<header>
+  <div>
+    <h1 data-i18n="title">FAKTURA</h1>
+    <p>DocBizHub</p>
+  </div>
+
+  <div>
+    <label for="language" data-i18n="language">Jezik</label>
+    <select id="language" onchange="changeLanguage()">
+      <option value="bs">🇧🇦 Bosanski</option>
+      <option value="hr">🇭🇷 Hrvatski</option>
+      <option value="sr">🇷🇸 Srpski</option>
+      <option value="me">🇲🇪 Crnogorski</option>
+      <option value="sl">🇸🇮 Slovenski</option>
+      <option value="mk">🇲🇰 Makedonski</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="it">🇮🇹 Italiano</option>
+    </select>
+  </div>
 </header>
 
-<main>
-  <h1 class="page-title">Izradi novu fakturu</h1>
-  <p class="intro">Unesi podatke lijevo i pregledaj gotovu fakturu desno. Na kraju je možeš štampati ili sačuvati kao PDF.</p>
+<div class="grid">
+  <section>
+    <h2 data-i18n="seller">Podaci o prodavcu</h2>
 
-  <div class="actions">
-    <button class="primary" id="printButton">Štampaj / Sačuvaj PDF</button>
-    <button class="secondary" id="addButton">+ Dodaj stavku</button>
-    <button class="secondary" id="newButton">Očisti obrazac</button>
+    <label data-i18n="company">Firma</label>
+    <input id="sellerName">
+
+    <label data-i18n="address">Adresa</label>
+    <input id="sellerAddress">
+
+    <label data-i18n="tax">JIB / ID broj</label>
+    <input id="sellerTax">
+
+    <label data-i18n="vatid">PDV broj</label>
+    <input id="sellerVat">
+
+    <label data-i18n="contact">Telefon / e-mail</label>
+    <input id="sellerContact">
+
+    <label data-i18n="bank">Banka</label>
+    <input id="sellerBank">
+
+    <label data-i18n="account">Transakcijski račun</label>
+    <input id="sellerAccount">
+  </section>
+
+  <section>
+    <h2 data-i18n="buyer">Podaci o kupcu</h2>
+
+    <label data-i18n="company">Firma / ime kupca</label>
+    <input id="buyerName">
+
+    <label data-i18n="address">Adresa</label>
+    <input id="buyerAddress">
+
+    <label data-i18n="tax">JIB / ID broj</label>
+    <input id="buyerTax">
+
+    <label data-i18n="vatid">PDV broj</label>
+    <input id="buyerVat">
+
+    <label data-i18n="contact">Telefon / e-mail</label>
+    <input id="buyerContact">
+  </section>
+
+  <section>
+    <h2 data-i18n="details">Podaci o fakturi</h2>
+
+    <label data-i18n="number">Broj fakture</label>
+    <input id="invoiceNumber" value="2026-001">
+
+    <label data-i18n="issued">Datum izdavanja</label>
+    <input id="invoiceDate" type="date">
+
+    <label data-i18n="due">Datum dospijeća</label>
+    <input id="dueDate" type="date">
+
+    <label data-i18n="currency">Valuta</label>
+    <select id="currency" onchange="calculate()">
+      <option value="BAM">BAM / KM</option>
+      <option value="EUR">EUR / €</option>
+      <option value="RSD">RSD</option>
+      <option value="MKD">MKD</option>
+    </select>
+  </section>
+</div>
+
+<h2 data-i18n="items">Stavke fakture</h2>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th data-i18n="description">Opis</th>
+      <th data-i18n="qty">Količina</th>
+      <th data-i18n="price">Cijena</th>
+      <th data-i18n="discount">Rabat %</th>
+      <th data-i18n="vat">PDV %</th>
+      <th data-i18n="amount">Iznos</th>
+      <th class="no-print">×</th>
+    </tr>
+  </thead>
+  <tbody id="items"></tbody>
+</table>
+</div>
+
+<button class="no-print" onclick="addItem()" data-i18n="add">
+  + Dodaj stavku
+</button>
+
+<div class="grid">
+  <section>
+    <h2 data-i18n="notes">Napomena</h2>
+    <textarea id="notes" rows="4"></textarea>
+  </section>
+
+  <section>
+    <h2 data-i18n="payment">Plaćanje</h2>
+    <label data-i18n="method">Način plaćanja</label>
+    <select id="payment">
+      <option value="transfer">Bankovni transfer</option>
+      <option value="cash">Gotovina</option>
+      <option value="card">Kartica</option>
+    </select>
+    <label data-i18n="issuer">Fakturu izdao/la</label>
+    <input id="issuer">
+  </section>
+</div>
+
+<div class="totals">
+  <div>
+    <span data-i18n="subtotal">Osnovica</span>
+    <strong id="subtotal">0,00</strong>
   </div>
-
-  <div class="columns">
-    <section class="editor">
-      <div class="card">
-        <h2>1. Osnovni podaci</h2>
-        <div class="fields">
-          <div class="field">
-            <label for="invoiceNo">Broj fakture *</label>
-            <input id="invoiceNo" value="2026-001">
-          </div>
-          <div class="field">
-            <label for="currency">Valuta</label>
-            <select id="currency">
-              <option value="KM">BAM / KM</option>
-              <option value="EUR">EUR</option>
-              <option value="USD">USD</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="issueDate">Datum izdavanja *</label>
-            <input id="issueDate" type="date">
-          </div>
-          <div class="field">
-            <label for="dueDate">Rok plaćanja</label>
-            <input id="dueDate" type="date">
-          </div>
-          <div class="field full">
-            <label for="place">Mjesto izdavanja</label>
-            <input id="place" placeholder="Npr. Travnik">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>2. Podaci o izdavaocu</h2>
-        <div class="fields">
-          <div class="field full">
-            <label for="sellerName">Naziv firme / ime i prezime *</label>
-            <input id="sellerName" placeholder="Naziv izdavaoca fakture">
-          </div>
-          <div class="field full">
-            <label for="sellerAddress">Adresa</label>
-            <input id="sellerAddress" placeholder="Ulica, broj, grad">
-          </div>
-          <div class="field">
-            <label for="sellerId">ID broj</label>
-            <input id="sellerId">
-          </div>
-          <div class="field">
-            <label for="sellerVat">PDV broj</label>
-            <input id="sellerVat">
-          </div>
-          <div class="field">
-            <label for="sellerPhone">Telefon</label>
-            <input id="sellerPhone">
-          </div>
-          <div class="field">
-            <label for="sellerEmail">E-mail</label>
-            <input id="sellerEmail" type="email">
-          </div>
-          <div class="field full">
-            <label for="sellerBank">Banka i transakcijski račun</label>
-            <input id="sellerBank">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>3. Podaci o kupcu</h2>
-        <div class="fields">
-          <div class="field full">
-            <label for="buyerName">Naziv kupca / ime i prezime *</label>
-            <input id="buyerName">
-          </div>
-          <div class="field full">
-            <label for="buyerAddress">Adresa kupca</label>
-            <input id="buyerAddress">
-          </div>
-          <div class="field">
-            <label for="buyerId">ID broj kupca</label>
-            <input id="buyerId">
-          </div>
-          <div class="field">
-            <label for="buyerVat">PDV broj kupca</label>
-            <input id="buyerVat">
-          </div>
-          <div class="field full">
-            <label for="buyerEmail">E-mail kupca</label>
-            <input id="buyerEmail" type="email">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>4. Roba i usluge</h2>
-        <p class="hint">Unesi cijenu po jedinici bez poreza i stopu poreza za svaku stavku.</p>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Opis</th>
-                <th>Količina</th>
-                <th>Cijena</th>
-                <th>Porez %</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="items"></tbody>
-          </table>
-        </div>
-        <div class="fields" style="margin-top:16px">
-          <div class="field">
-            <label for="discount">Popust (%)</label>
-            <input id="discount" type="number" min="0" max="100" step="0.01" value="0">
-          </div>
-          <div class="field">
-            <label for="paymentMethod">Način plaćanja</label>
-            <select id="paymentMethod">
-              <option>Bankovni transfer</option>
-              <option>Gotovina</option>
-              <option>Kartica</option>
-              <option>Drugo</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="note">Napomena / uslovi plaćanja</label>
-            <textarea id="note" rows="3" placeholder="Dodatne informacije..."></textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="invoice" id="invoice">
-      <div class="invoice-head">
-        <div>
-          <div class="invoice-brand" id="outSeller">TVOJA FIRMA</div>
-          <p class="hint" id="outSellerContact"></p>
-        </div>
-        <div>
-          <div class="invoice-word">FAKTURA</div>
-          <div class="invoice-meta">Broj: <strong id="outNo"></strong></div>
-          <div class="invoice-meta">Datum: <span id="outDate"></span></div>
-          <div class="invoice-meta">Rok: <span id="outDue">—</span></div>
-        </div>
-      </div>
-
-      <div class="addresses">
-        <div>
-          <h3>IZDAVALAC</h3>
-          <p id="outSellerBlock"></p>
-        </div>
-        <div>
-          <h3>KUPAC</h3>
-          <p id="outBuyerBlock">Podaci o kupcu</p>
-        </div>
-      </div>
-
-      <div class="table-scroll">
-        <table class="preview-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Opis</th>
-              <th class="right">Kol.</th>
-              <th class="right">Cijena</th>
-              <th class="right">Porez</th>
-              <th class="right">Iznos</th>
-            </tr>
-          </thead>
-          <tbody id="outItems"></tbody>
-        </table>
-      </div>
-
-      <div class="summary">
-        <div class="summary-row">
-          <span>Međuzbir</span><strong id="outSubtotal"></strong>
-        </div>
-        <div class="summary-row">
-          <span>Popust</span><strong id="outDiscount"></strong>
-        </div>
-        <div class="summary-row">
-          <span>Porez</span><strong id="outTax"></strong>
-        </div>
-        <div class="summary-row total">
-          <span>UKUPNO</span><strong id="outTotal"></strong>
-        </div>
-      </div>
-
-      <div class="invoice-note">
-        <strong>Način plaćanja:</strong> <span id="outPayment"></span>
-        <p id="outNote"></p>
-        <p id="outPlace"></p>
-      </div>
-
-      <div class="signatures">
-        <div>Potpis / ovjera izdavaoca</div>
-        <div>Potpis / ovjera kupca</div>
-      </div>
-    </section>
+  <div>
+    <span data-i18n="discountTotal">Rabat</span>
+    <strong id="discountTotal">0,00</strong>
   </div>
-</main>
+  <div>
+    <span data-i18n="vatTotal">PDV</span>
+    <strong id="vatTotal">0,00</strong>
+  </div>
+  <div class="grand">
+    <span data-i18n="total">UKUPNO</span>
+    <strong id="total">0,00</strong>
+  </div>
+</div>
+
+<div class="no-print" style="margin-top:20px">
+  <button onclick="saveInvoice()" data-i18n="save">Sačuvaj</button>
+  <button onclick="loadInvoice()" data-i18n="load">Učitaj sačuvano</button>
+  <button onclick="window.print()" data-i18n="print">Štampaj / PDF</button>
+  <button onclick="newInvoice()" data-i18n="new">Nova faktura</button>
+</div>
+
+</div>
 
 <script>
-const $ = id => document.getElementById(id);
+const translations = {
+bs: {
+title:"FAKTURA",language:"Jezik",seller:"Podaci o prodavcu",
+company:"Firma / ime kupca",address:"Adresa",tax:"JIB / ID broj",
+vatid:"PDV broj",contact:"Telefon / e-mail",bank:"Banka",
+account:"Transakcijski račun",buyer:"Podaci o kupcu",
+details:"Podaci o fakturi",number:"Broj fakture",
+issued:"Datum izdavanja",due:"Datum dospijeća",currency:"Valuta",
+items:"Stavke fakture",description:"Opis",qty:"Količina",
+price:"Cijena",discount:"Rabat %",vat:"PDV %",
+amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
+payment:"Plaćanje",method:"Način plaćanja",issuer:"Fakturu izdao/la",
+subtotal:"Osnovica",discountTotal:"Rabat",vatTotal:"PDV",
+total:"UKUPNO",save:"Sačuvaj",load:"Učitaj sačuvano",
+print:"Štampaj / PDF",new:"Nova faktura"
+},
+hr: {
+title:"RAČUN",language:"Jezik",seller:"Podaci o izdavatelju",
+company:"Tvrtka / ime kupca",address:"Adresa",tax:"OIB / ID broj",
+vatid:"PDV broj",contact:"Telefon / e-pošta",bank:"Banka",
+account:"Transakcijski račun",buyer:"Podaci o kupcu",
+details:"Podaci o računu",number:"Broj računa",
+issued:"Datum izdavanja",due:"Datum dospijeća",currency:"Valuta",
+items:"Stavke računa",description:"Opis",qty:"Količina",
+price:"Cijena",discount:"Popust %",vat:"PDV %",
+amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
+payment:"Plaćanje",method:"Način plaćanja",issuer:"Račun izdao/la",
+subtotal:"Osnovica",discountTotal:"Popust",vatTotal:"PDV",
+total:"UKUPNO",save:"Spremi",load:"Učitaj spremljeno",
+print:"Ispiši / PDF",new:"Novi račun"
+},
+sr: {
+title:"ФАКТУРА",language:"Језик",seller:"Подаци о продавцу",
+company:"Фирма / име купца",address:"Адреса",tax:"ПИБ / ИД број",
+vatid:"ПДВ број",contact:"Телефон / е-пошта",bank:"Банка",
+account:"Трансакциони рачун",buyer:"Подаци о купцу",
+details:"Подаци о фактури",number:"Број фактуре",
+issued:"Датум издавања",due:"Датум доспећа",currency:"Валута",
+items:"Ставке фактуре",description:"Опис",qty:"Количина",
+price:"Цена",discount:"Попуст %",vat:"ПДВ %",
+amount:"Износ",add:"+ Додај ставку",notes:"Напомена",
+payment:"Плаћање",method:"Начин плаћања",issuer:"Фактуру издао/ла",
+subtotal:"Основица",discountTotal:"Попуст",vatTotal:"ПДВ",
+total:"УКУПНО",save:"Сачувај",load:"Учитај сачувано",
+print:"Штампај / PDF",new:"Нова фактура"
+},
+me: {
+title:"FAKTURA",language:"Jezik",seller:"Podaci o prodavcu",
+company:"Firma / ime kupca",address:"Adresa",tax:"PIB / ID broj",
+vatid:"PDV broj",contact:"Telefon / e-mail",bank:"Banka",
+account:"Transakcioni račun",buyer:"Podaci o kupcu",
+details:"Podaci o fakturi",number:"Broj fakture",
+issued:"Datum izdavanja",due:"Datum dospijeća",currency:"Valuta",
+items:"Stavke fakture",description:"Opis",qty:"Količina",
+price:"Cijena",discount:"Popust %",vat:"PDV %",
+amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
+payment:"Plaćanje",method:"Način plaćanja",issuer:"Fakturu izdao/la",
+subtotal:"Osnovica",discountTotal:"Popust",vatTotal:"PDV",
+total:"UKUPNO",save:"Sačuvaj",load:"Učitaj sačuvano",
+print:"Štampaj / PDF",new:"Nova faktura"
+},
+sl: {
+title:"RAČUN",language:"Jezik",seller:"Podatki izdajatelja",
+company:"Podjetje / ime kupca",address:"Naslov",tax:"Davčna številka",
+vatid:"ID za DDV",contact:"Telefon / e-pošta",bank:"Banka",
+account:"Bančni račun",buyer:"Podatki kupca",details:"Podatki računa",
+number:"Številka računa",issued:"Datum izdaje",due:"Rok plačila",
+currency:"Valuta",items:"Postavke računa",description:"Opis",
+qty:"Količina",price:"Cena",discount:"Popust %",vat:"DDV %",
+amount:"Znesek",add:"+ Dodaj postavko",notes:"Opomba",
+payment:"Plačilo",method:"Način plačila",issuer:"Izdajatelj računa",
+subtotal:"Osnova",discountTotal:"Popust",vatTotal:"DDV",
+total:"SKUPAJ",save:"Shrani",load:"Naloži shranjeno",
+print:"Natisni / PDF",new:"Nov račun"
+},
+mk: {
+title:"ФАКТУРА",language:"Јазик",seller:"Податоци за продавачот",
+company:"Фирма / име на купувач",address:"Адреса",tax:"ЕДБ / ИД број",
+vatid:"ДДВ број",contact:"Телефон / е-пошта",bank:"Банка",
+account:"Трансакциска сметка",buyer:"Податоци за купувачот",
+details:"Податоци за фактурата",number:"Број на фактура",
+issued:"Датум на издавање",due:"Рок за плаќање",currency:"Валута",
+items:"Ставки на фактурата",description:"Опис",qty:"Количина",
+price:"Цена",discount:"Попуст %",vat:"ДДВ %",
+amount:"Износ",add:"+ Додај ставка",notes:"Забелешка",
+payment:"Плаќање",method:"Начин на плаќање",issuer:"Издал",
+subtotal:"Основица",discountTotal:"Попуст",vatTotal:"ДДВ",
+total:"ВКУПНО",save:"Зачувај",load:"Вчитај зачувано",
+print:"Печати / PDF",new:"Нова фактура"
+},
+en: {
+title:"INVOICE",language:"Language",seller:"Seller details",
+company:"Company / customer name",address:"Address",tax:"Tax / ID number",
+vatid:"VAT number",contact:"Phone / email",bank:"Bank",
+account:"Bank account",buyer:"Customer details",details:"Invoice details",
+number:"Invoice number",issued:"Issue date",due:"Due date",currency:"Currency",
+items:"Invoice items",description:"Description",qty:"Quantity",
+price:"Price",discount:"Discount %",vat:"VAT %",
+amount:"Amount",add:"+ Add item",notes:"Notes",payment:"Payment",
+method:"Payment method",issuer:"Issued by",subtotal:"Subtotal",
+discountTotal:"Discount",vatTotal:"VAT",total:"TOTAL",
+save:"Save",load:"Load saved",print:"Print / PDF",new:"New invoice"
+},
+de: {
+title:"RECHNUNG",language:"Sprache",seller:"Verkäuferdaten",
+company:"Firma / Kundenname",address:"Adresse",tax:"Steuer-/ID-Nummer",
+vatid:"USt-IdNr.",contact:"Telefon / E-Mail",bank:"Bank",
+account:"Bankkonto",buyer:"Kundendaten",details:"Rechnungsdaten",
+number:"Rechnungsnummer",issued:"Ausstellungsdatum",due:"Fälligkeitsdatum",
+currency:"Währung",items:"Positionen",description:"Beschreibung",
+qty:"Menge",price:"Preis",discount:"Rabatt %",vat:"MwSt. %",
+amount:"Betrag",add:"+ Position hinzufügen",notes:"Anmerkungen",
+payment:"Zahlung",method:"Zahlungsart",issuer:"Ausgestellt von",
+subtotal:"Zwischensumme",discountTotal:"Rabatt",vatTotal:"MwSt.",
+total:"GESAMT",save:"Speichern",load:"Gespeichertes laden",
+print:"Drucken / PDF",new:"Neue Rechnung"
+},
+it: {
+title:"FATTURA",language:"Lingua",seller:"Dati del venditore",
+company:"Azienda / nome cliente",address:"Indirizzo",tax:"Codice fiscale / ID",
+vatid:"Partita IVA",contact:"Telefono / e-mail",bank:"Banca",
+account:"Conto bancario",buyer:"Dati cliente",details:"Dati fattura",
+number:"Numero fattura",issued:"Data emissione",due:"Scadenza",
+currency:"Valuta",items:"Voci fattura",description:"Descrizione",
+qty:"Quantità",price:"Prezzo",discount:"Sconto %",vat:"IVA %",
+amount:"Importo",add:"+ Aggiungi voce",notes:"Note",payment:"Pagamento",
+method:"Metodo di pagamento",issuer:"Emessa da",subtotal:"Imponibile",
+discountTotal:"Sconto",vatTotal:"IVA",total:"TOTALE",
+save:"Salva",load:"Carica salvato",print:"Stampa / PDF",new:"Nuova fattura"
+}
+};
 
-function localToday() {
-  const d = new Date();
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().slice(0, 10);
+function changeLanguage() {
+  const lang = document.getElementById("language").value;
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (translations[lang][key]) el.textContent = translations[lang][key];
+  });
 }
 
-$("issueDate").value = localToday();
-
-function value(id) {
-  return $(id).value.trim();
-}
-
-function output(id, text) {
-  $(id).textContent = text || "";
-}
-
-function amount(number) {
-  return Number(number || 0).toLocaleString("bs-BA", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }) + " " + $("currency").value;
-}
-
-function addItem(description = "", quantity = 1, price = 0, tax = 0) {
+function addItem(desc="", qty=1, price=0, discount=0, vat=17) {
   const row = document.createElement("tr");
-
-  const descCell = document.createElement("td");
-  const desc = document.createElement("input");
-  desc.className = "description";
-  desc.placeholder = "Opis robe ili usluge";
-  desc.value = description;
-  descCell.appendChild(desc);
-  row.appendChild(descCell);
-
-  [
-    ["quantity", quantity],
-    ["price", price],
-    ["tax", tax]
-  ].forEach(([className, initialValue]) => {
-    const cell = document.createElement("td");
-    const input = document.createElement("input");
-    input.type = "number";
-    input.min = "0";
-    input.step = "0.01";
-    input.className = className;
-    input.value = initialValue;
-    cell.appendChild(input);
-    row.appendChild(cell);
-  });
-
-  const actionCell = document.createElement("td");
-  const remove = document.createElement("button");
-  remove.type = "button";
-  remove.className = "delete";
-  remove.textContent = "×";
-  remove.title = "Ukloni stavku";
-  remove.addEventListener("click", () => {
-    row.remove();
-    updatePreview();
-  });
-  actionCell.appendChild(remove);
-  row.appendChild(actionCell);
-
-  row.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", updatePreview);
-  });
-
-  $("items").appendChild(row);
-  updatePreview();
+  row.innerHTML = `
+    <td class="index"></td>
+    <td><input class="desc" value="${escapeHTML(desc)}"></td>
+    <td><input class="qty" type="number" min="0" step="any" value="${qty}"></td>
+    <td><input class="price" type="number" min="0" step="any" value="${price}"></td>
+    <td><input class="discount" type="number" min="0" max="100" value="${discount}"></td>
+    <td><input class="vat" type="number" min="0" max="100" value="${vat}"></td>
+    <td class="amount">0.00</td>
+    <td class="no-print"><button class="delete" type="button">×</button></td>`;
+  document.getElementById("items").appendChild(row);
+  row.querySelectorAll("input").forEach(input => input.addEventListener("input", calculate));
+  row.querySelector(".delete").onclick = () => { row.remove(); renumber(); calculate(); };
+  renumber();
+  calculate();
 }
 
-function updatePreview() {
-  output("outNo", value("invoiceNo"));
-  output("outDate", value("issueDate") || "—");
-  output("outDue", value("dueDate") || "—");
-  output("outSeller", value("sellerName") || "TVOJA FIRMA");
+function escapeHTML(text) {
+  return String(text).replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[c]);
+}
 
-  const sellerDetails = [
-    value("sellerAddress"),
-    value("sellerPhone"),
-    value("sellerEmail")
-  ].filter(Boolean).join(" · ");
+function renumber() {
+  document.querySelectorAll("#items tr").forEach((row, i) => {
+    row.querySelector(".index").textContent = i + 1;
+  });
+}
 
-  output("outSellerContact", sellerDetails);
+function money(value) {
+  const currency = document.getElementById("currency").value;
+  try {
+    return new Intl.NumberFormat("bs-BA", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value) + " " + currency;
+  } catch { return value.toFixed(2) + " " + currency; }
+}
 
-  output("outSellerBlock", [
-    value("sellerName"),
-    value("sellerAddress"),
-    value("sellerId") ? "ID broj: " + value("sellerId") : "",
-    value("sellerVat") ? "PDV broj: " + value("sellerVat") : "",
-    value("sellerPhone"),
-    value("sellerEmail"),
-    value("sellerBank") ? "Račun: " + value("sellerBank") : ""
-  ].filter(Boolean).join("\n"));
-
-  output("outBuyerBlock", [
-    value("buyerName") || "Podaci o kupcu",
-    value("buyerAddress"),
-    value("buyerId") ? "ID broj: " + value("buyerId") : "",
-    value("buyerVat") ? "PDV broj: " + value("buyerVat") : "",
-    value("buyerEmail")
-  ].filter(Boolean).join("\n"));
-
-  output("outPayment", value("paymentMethod"));
-  output("outNote", value("note"));
-  output("outPlace", value("place") ? "Mjesto izdavanja: " + value("place") : "");
-
-  const rows = [...$("items").querySelectorAll("tr")];
-  const preview = $("outItems");
-  preview.replaceChildren();
-
-  let subtotal = 0;
-  let taxTotal = 0;
-
-  rows.forEach((row, index) => {
-    const description = row.querySelector(".description").value.trim() || "—";
-    const quantity = Math.max(0, Number(row.querySelector(".quantity").value) || 0);
+function calculate() {
+  let subtotal = 0, discounts = 0, vatTotal = 0, total = 0;
+  document.querySelectorAll("#items tr").forEach(row => {
+    const qty = Math.max(0, Number(row.querySelector(".qty").value) || 0);
     const price = Math.max(0, Number(row.querySelector(".price").value) || 0);
-    const taxRate = Math.max(0, Math.min(100, Number(row.querySelector(".tax").value) || 0));
-
-    const base = quantity * price;
-    const tax = base * taxRate / 100;
-
-    subtotal += base;
-    taxTotal += tax;
-
-    const values = [
-      index + 1,
-      description,
-      quantity.toLocaleString("bs-BA"),
-      amount(price),
-      taxRate.toLocaleString("bs-BA") + "%",
-      amount(base + tax)
-    ];
-
-    const tr = document.createElement("tr");
-
-    values.forEach((item, i) => {
-      const td = document.createElement("td");
-      td.textContent = item;
-      if (i >= 2) td.className = "right";
-      tr.appendChild(td);
-    });
-
-    preview.appendChild(tr);
+    const discount = Math.min(100, Math.max(0, Number(row.querySelector(".discount").value) || 0));
+    const vat = Math.max(0, Number(row.querySelector(".vat").value) || 0);
+    const gross = qty * price;
+    const discountAmount = gross * discount / 100;
+    const base = gross - discountAmount;
+    const tax = base * vat / 100;
+    subtotal += gross;
+    discounts += discountAmount;
+    vatTotal += tax;
+    total += base + tax;
+    row.querySelector(".amount").textContent = money(base + tax);
   });
-
-  const discountRate = Math.max(0, Math.min(100, Number(value("discount")) || 0));
-  const discount = subtotal * discountRate / 100;
-
-  // Popust se proporcionalno raspoređuje na stavke prije obračuna poreza.
-  const adjustedTax = rows.reduce((sum, row) => {
-    const quantity = Math.max(0, Number(row.querySelector(".quantity").value) || 0);
-    const price = Math.max(0, Number(row.querySelector(".price").value) || 0);
-    const rate = Math.max(0, Math.min(100, Number(row.querySelector(".tax").value) || 0));
-    return sum + quantity * price * (1 - discountRate / 100) * rate / 100;
-  }, 0);
-
-  output("outSubtotal", amount(subtotal));
-  output("outDiscount", "− " + amount(discount));
-  output("outTax", amount(adjustedTax));
-  output("outTotal", amount(subtotal - discount + adjustedTax));
+  document.getElementById("subtotal").textContent = money(subtotal);
+  document.getElementById("discountTotal").textContent = money(discounts);
+  document.getElementById("vatTotal").textContent = money(vatTotal);
+  document.getElementById("total").textContent = money(total);
 }
 
-function printInvoice() {
-  if (!value("invoiceNo") || !value("sellerName") || !value("buyerName")) {
-    alert("Unesi broj fakture, podatke o izdavaocu i kupcu prije štampanja.");
-    return;
-  }
-  window.print();
+function getFormData() {
+  const data = {};
+  document.querySelectorAll("input[id], textarea[id], select[id]").forEach(el => {
+    if (el.id !== "language") data[el.id] = el.value;
+  });
+  data.items = [...document.querySelectorAll("#items tr")].map(row => ({
+    desc: row.querySelector(".desc").value,
+    qty: row.querySelector(".qty").value,
+    price: row.querySelector(".price").value,
+    discount: row.querySelector(".discount").value,
+    vat: row.querySelector(".vat").value
+  }));
+  return data;
 }
 
-function resetForm() {
-  if (!confirm("Želiš li očistiti cijeli obrazac?")) return;
+function saveInvoice() {
+  localStorage.setItem("docbizhub_invoice", JSON.stringify(getFormData()));
+  alert("Faktura je sačuvana u ovom pregledniku.");
+}
 
-  document.querySelectorAll(".editor input, .editor textarea").forEach(el => {
-    el.value = "";
+function loadInvoice() {
+  const saved = localStorage.getItem("docbizhub_invoice");
+  if (!saved) return alert("Nema sačuvane fakture u ovom pregledniku.");
+  const data = JSON.parse(saved);
+  Object.entries(data).forEach(([key, value]) => {
+    const el = document.getElementById(key);
+    if (el && key !== "items") el.value = value;
   });
+  document.getElementById("items").innerHTML = "";
+  (data.items || []).forEach(item =>
+    addItem(item.desc, item.qty, item.price, item.discount, item.vat)
+  );
+  if (!data.items || !data.items.length) addItem();
+  changeLanguage();
+  calculate();
+}
 
-  $("invoiceNo").value = "2026-001";
-  $("issueDate").value = localToday();
-  $("currency").value = "KM";
-  $("discount").value = "0";
-  $("paymentMethod").value = "Bankovni transfer";
-  $("items").replaceChildren();
-
+function newInvoice() {
+  if (!confirm("Započeti novu fakturu?")) return;
+  document.querySelectorAll("input[id], textarea[id]").forEach(el => el.value = "");
+  document.getElementById("invoiceNumber").value = "";
+  document.getElementById("items").innerHTML = "";
   addItem();
-  updatePreview();
+  calculate();
 }
 
-document.querySelectorAll(".editor input, .editor textarea, .editor select")
-  .forEach(el => el.addEventListener("input", updatePreview));
-
-$("currency").addEventListener("change", updatePreview);
-$("addButton").addEventListener("click", () => addItem());
-$("printButton").addEventListener("click", printInvoice);
-$("newButton").addEventListener("click", resetForm);
-
+document.getElementById("currency").addEventListener("change", calculate);
+document.getElementById("invoiceDate").value = new Date().toISOString().slice(0,10);
 addItem();
 </script>
 </body>
