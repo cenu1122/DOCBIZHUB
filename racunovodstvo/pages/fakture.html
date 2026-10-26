@@ -664,15 +664,79 @@
         alert("Uplate za fakturu " + F.BROJ_FAKTURE + ":\n\n" + TEKST);
       });
 
-      CELIJA_AKCIJE.appendChild(DUGME_UPLATA);
-      CELIJA_AKCIJE.appendChild(document.createElement("br"));
-      CELIJA_AKCIJE.appendChild(DUGME_HISTORIJA);
-      RED.appendChild(CELIJA_AKCIJE);
+      const DUGME_STAVKE = document.createElement("button");
+
+DUGME_STAVKE.type = "button";
+DUGME_STAVKE.textContent = "Prikaži fakturu";
+
+DUGME_STAVKE.addEventListener("click", () => {
+  PRIKAZI_STAVKE_FAKTURE(F);
+});
+
+CELIJA_AKCIJE.appendChild(DUGME_STAVKE);
+
+CELIJA_AKCIJE.appendChild(document.createElement("br"));
+
+CELIJA_AKCIJE.appendChild(DUGME_UPLATA);
+
+CELIJA_AKCIJE.appendChild(document.createElement("br"));
+
+CELIJA_AKCIJE.appendChild(DUGME_HISTORIJA);
+
+RED.appendChild(CELIJA_AKCIJE);
 
       TABELA_FAKTURA.appendChild(RED);
     }
   }
 
+async function PRIKAZI_STAVKE_FAKTURE(FAKTURA) {
+  try {
+    const DB = DOBAVI_DB();
+
+    const { data: STAVKE, error } = await DB
+      .from("STAVKE_FAKTURA")
+      .select(
+        "NAZIV_STAVKE, KOLICINA, JEDINICA_MJERE, CIJENA, UKUPNO"
+      )
+      .eq("FAKTURA_ID", FAKTURA.ID)
+      .eq("USER_ID", TRENUTNI_KORISNIK)
+      .order("KREIRANO", { ascending: true });
+
+    if (error) throw error;
+
+    if (!STAVKE || STAVKE.length === 0) {
+      alert(
+        "Faktura " + FAKTURA.BROJ_FAKTURE +
+        " nema spremljenih stavki."
+      );
+      return;
+    }
+
+    const TEKST = STAVKE.map((S, INDEX) =>
+      (INDEX + 1) + ". " + S.NAZIV_STAVKE +
+      "\n   Količina: " + S.KOLICINA +
+      " " + (S.JEDINICA_MJERE || "kom") +
+      "\n   Cijena: " + NOVAC(S.CIJENA) +
+      "\n   Iznos: " + NOVAC(S.UKUPNO)
+    ).join("\n\n");
+
+    alert(
+      "FAKTURA: " + FAKTURA.BROJ_FAKTURE +
+      "\nKupac: " + FAKTURA.KUPAC +
+      "\nDatum: " + FAKTURA.DATUM_FAKTURE +
+      "\n\nSTAVKE FAKTURE\n\n" + TEKST +
+      "\n\nUKUPNO: " + NOVAC(FAKTURA.IZNOS_FAKTURE)
+    );
+
+  } catch (GRESKA) {
+    console.error("Greška pri prikazu stavki:", GRESKA);
+    PRIKAZI_PORUKU(
+      "Stavke fakture nisu učitane: " +
+      (GRESKA.message || "Nepoznata greška")
+    );
+  }
+}
+  
   async function EVIDENTIRAJ_UPLATU(FAKTURA) {
     try {
       const UPLACENO = UKUPNO_UPLACENO(FAKTURA.ID);
