@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poslovni dokumenti | DOCBIZHUB</title>
+
+  <style>
+    :root {
+      --pozadina: #f4f7fb;
+      --bijela: #ffffff;
+      --tekst: #172033;
+      --muted: #64748b;
+      --plava: #2563eb;
+      --plava-tamna: #1d4ed8;
+      --granica: #e2e8f0;
+      --zeleno: #15803d;
+      --crveno: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--pozadina);
+      color: var(--tekst);
+    }
+
+    header {
+      background: #172554;
+      color: white;
+      padding: 22px;
+    }
+
+    .zaglavlje,
+    main {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .zaglavlje {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 7px 0 0;
+      color: #cbd5e1;
+    }
+
+    main {
+      padding: 24px 16px 50px;
+    }
+
+    .kartica {
+      background: var(--bijela);
+      border: 1px solid var(--granica);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px #0f172a08;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+
+    .pretraga {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .pretraga:focus {
+      border-color: var(--plava);
+      box-shadow: 0 0 0 3px #2563eb20;
+    }
+
+    .opis-pretrage {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 9px 0 0;
+    }
+
+    .broj-rezultata {
+      color: var(--muted);
+      margin: 16px 0 0;
+      font-size: 14px;
+    }
+
+    .dokument {
+      border: 1px solid var(--granica);
+      border-radius: 10px;
+      padding: 17px;
+      margin-top: 12px;
+    }
+
+    .dokument h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      overflow-wrap: anywhere;
+    }
+
+    .detalji-liste {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .detalj {
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .detalj strong {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .dugme {
+      display: inline-block;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 15px;
+      background: var(--plava);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .dugme:hover {
+      background: var(--plava-tamna);
+    }
+
+    .sekundarno {
+      background: white;
+      color: var(--tekst);
+      border: 1px solid var(--granica);
+    }
+
+    .sekundarno:hover {
+      background: #f1f5f9;
+    }
+
+    .poruka {
+      padding: 14px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e40af;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .greska {
+      background: #fef2f2;
+      color: var(--crveno);
+    }
+
+    .prazno {
+      padding: 25px 10px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .skriveno {
+      display: none !important;
+    }
+
+    .oznaka {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .detalji-pregleda {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .detalji-pregleda .polje {
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--granica);
+      overflow-wrap: anywhere;
+    }
+
+    .detalji-pregleda .polje strong {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 20px;
+      }
+
+      .kartica {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="zaglavlje">
+      <div>
+        <h1>Poslovni dokumenti</h1>
+        <p>DOCBIZHUB — pregled i pretraga dokumenata</p>
+      </div>
+
+      <a class="dugme sekundarno"
+         href="fakture.html">
+        Povratak na fakture
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="kartica">
+      <h2>Pronađi poslovni dokument</h2>
+
+      <input
+        type="search"
+        id="PRETRAGA"
+        class="pretraga"
+        placeholder="Upiši firmu, naziv ili broj dokumenta..."
+        autocomplete="off"
+        aria-label="Pretraga poslovnih dokumenata"
+      >
+
+      <p class="opis-pretrage">
+        Rezultati se filtriraju automatski dok kucaš.
+      </p>
+
+      <p id="BROJ_REZULTATA" class="broj-rezultata">
+        Učitavanje dokumenata...
+      </p>
+
+      <div id="PORUKA" class="poruka skriveno"
+           role="status"></div>
+
+      <div id="LISTA_DOKUMENATA"></div>
+    </section>
+
+    <section id="PREGLED" class="kartica skriveno">
+      <h2>Detalji poslovnog dokumenta</h2>
+
+      <div id="DETALJI_DOKUMENTA"></div>
+
+      <button
+        type="button"
+        id="ZATVORI_PREGLED"
+        class="dugme sekundarno"
+        style="margin-top:18px">
+        Zatvori detalje
+      </button>
+    </section>
+  </main>
+
+  <footer>
+    DOCBIZHUB — poslovni dokumenti
+  </footer>
+
+  <script>
+    "use strict";
+
+    /*
+      OVA STRANICA KORISTI POSTOJEĆU SUPABASE
+      KONFIGURACIJU IZ TVOJE APLIKACIJE.
+
+      Očekuje funkciju DOBAVI_DB() koja vraća
+      već konfigurisan Supabase klijent.
+    */
+
+    const DB = typeof DOBAVI_DB === "function"
+      ? DOBAVI_DB()
+      : null;
+
+    let SVI_DOKUMENTI = [];
+    let DOKUMENTI_PO_ID = new Map();
+
+    const PRETRAGA = document.getElementById("PRETRAGA");
+    const LISTA = document.getElementById("LISTA_DOKUMENATA");
+    const PORUKA = document.getElementById("PORUKA");
+    const BROJ_REZULTATA =
+      document.getElementById("BROJ_REZULTATA");
+    const PREGLED = document.getElementById("PREGLED");
+    const DETALJI = document.getElementById("DETALJI_DOKUMENTA");
+
+    function PRIKAZI_PORUKU(tekst, greska = false) {
+      PORUKA.textContent = tekst;
+      PORUKA.classList.remove("skriveno", "greska");
+
+      if (greska) {
+        PORUKA.classList.add("greska");
+      }
+    }
+
+    function SAKRIJ_PORUKU() {
+      PORUKA.textContent = "";
+      PORUKA.classList.add("skriveno");
+      PORUKA.classList.remove("greska");
+    }
+
+    function FORMAT_DATUMA(vrijednost) {
+      if (!vrijednost) return "—";
+
+      const dijelovi = String(vrijednost).slice(0, 10).split("-");
+
+      if (dijelovi.length !== 3) return vrijednost;
+
+      return `${dijelovi[2]}.${dijelovi[1]}.${dijelovi[0]}.`;
+    }
+
+    function FORMAT_IZNOS(vrijednost) {
+      if (vrijednost === null || vrijednost === undefined ||
+          vrijednost === "") {
+        return "—";
+      }
+
+      const broj = Number(vrijednost);
+
+      if (!Number.isFinite(broj)) return String(vrijednost);
+
+      return new Intl.NumberFormat("bs-BA", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(broj);
+    }
+
+    function DODAJ_POLJE(kontejner, naslov, vrijednost) {
+      const polje = document.createElement("div");
+      polje.className = "polje";
+
+      const label = document.createElement("strong");
+      label.textContent = naslov;
+
+      const tekst = document.createElement("div");
+      tekst.textContent =
+        vrijednost === null ||
+        vrijednost === undefined ||
+        vrijednost === ""
+          ? "—"
+          : String(vrijednost);
+
+      polje.append(label, tekst);
+      kontejner.appendChild(polje);
+    }
+
+    function OTVORI_DOKUMENT(id) {
+      const dokument = DOKUMENTI_PO_ID.get(id);
+
+      if (!dokument) {
+        PRIKAZI_PORUKU(
+          "Dokument nije pronađen. Osvježi listu i pokušaj ponovo.",
+          true
+        );
+        return;
+      }
+
+      DETALJI.replaceChildren();
+
+      const oznaka = document.createElement("span");
+      oznaka.className = "oznaka";
+      oznaka.textContent = dokument.VRSTA_PAPIRA || "Dokument";
+
+      const naziv = document.createElement("h3");
+      naziv.textContent = dokument.NAZIV || "Bez naziva";
+
+      const mreza = document.createElement("div");
+      mreza.className = "detalji-pregleda";
+
+      DODAJ_POLJE(mreza, "ID dokumenta", dokument.id);
+      DODAJ_POLJE(mreza, "Naziv", dokument.NAZIV);
+      DODAJ_POLJE(mreza, "Vrsta dokumenta", dokument.VRSTA_PAPIRA);
+      DODAJ_POLJE(mreza, "Broj dokumenta", dokument.BROJ_DOKUMENTA);
+      DODAJ_POLJE(mreza, "Firma / kupac", dokument.KUPAC);
+      DODAJ_POLJE(
+        mreza,
+        "Datum dokumenta",
+        FORMAT_DATUMA(dokument.DATUM_DOKUMENTA)
+      );
+      DODAJ_POLJE(
+        mreza,
+        "Važi do",
+        FORMAT_DATUMA(dokument.VAZI_DO)
+      );
+      DODAJ_POLJE(
+        mreza,
+        "Iznos",
+        dokument.IZNOS === null ||
+        dokument.IZNOS === undefined
+          ? "—"
+          : FORMAT_IZNOS(dokument.IZNOS)
+      );
+      DODAJ_POLJE(mreza, "Status", dokument.STATUS);
+      DODAJ_POLJE(mreza, "Opis", dokument.OPIS);
+      DODAJ_POLJE(
+        mreza,
+        "Kreirano",
+        dokument.KREIRANO
+          ? new Date(dokument.KREIRANO).toLocaleString("bs-BA")
+          : "—"
+      );
+
+      DETALJI.append(oznaka, naziv, mreza);
+
+      PREGLED.classList.remove("skriveno");
+      PREGLED.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function PRIKAZI_LISTU() {
+      SAKRIJ_PORUKU();
+      LISTA.replaceChildren();
+
+      const pojam = PRETRAGA.value
+        .trim()
+        .toLocaleLowerCase("bs");
+
+      const rezultati = SVI_DOKUMENTI.filter(dokument => {
+        const tekst = [
+          dokument.NAZIV,
+          dokument.VRSTA_PAPIRA,
+          dokument.BROJ_DOKUMENTA,
+          dokument.KUPAC,
+          dokument.OPIS,
+          dokument.STATUS
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase("bs");
+
+        return tekst.includes(pojam);
+      });
+
+      BROJ_REZULTATA.textContent =
+        `Pronađeno dokumenata: ${rezultati.length}`;
+
+      if (rezultati.length === 0) {
+        const prazno = document.createElement("div");
+        prazno.className = "prazno";
+        prazno.textContent = pojam
+          ? "Nema dokumenata koji odgovaraju pretrazi."
+          : "Još nema poslovnih dokumenata.";
+        LISTA.appendChild(prazno);
+        return;
+      }
+
+      for (const dokument of rezultati) {
+        const kartica = document.createElement("article");
+        kartica.className = "dokument";
+
+        const naslov = document.createElement("h3");
+        naslov.textContent = dokument.NAZIV || "Dokument bez naziva";
+
+        const oznaka = document.createElement("span");
+        oznaka.className = "oznaka";
+        oznaka.textContent = dokument.VRSTA_PAPIRA || "Dokument";
+
+        const detalji = document.createElement("div");
+        detalji.className = "detalji-liste";
+
+        function DODAJ_LISTU_DETALJ(naziv, vrijednost) {
+          const element = document.createElement("div");
+          element.className = "detalj";
+
+          const label = document.createElement("strong");
+          label.textContent = naziv;
+
+          const tekst = document.createElement("span");
+          tekst.textContent =
+            vrijednost === null ||
+            vrijednost === undefined ||
+            vrijednost === ""
+              ? "—"
+              : String(vrijednost);
+
+          element.append(label, tekst);
+          detalji.appendChild(element);
+        }
+
+        DODAJ_LISTU_DETALJ("Broj dokumenta", dokument.BROJ_DOKUMENTA);
+        DODAJ_LISTU_DETALJ("Firma / kupac", dokument.KUPAC);
+        DODAJ_LISTU_DETALJ(
+          "Datum",
+          FORMAT_DATUMA(dokument.DATUM_DOKUMENTA)
+        );
+        DODAJ_LISTU_DETALJ("Status", dokument.STATUS);
+
+        const dugme = document.createElement("button");
+        dugme.type = "button";
+        dugme.className = "dugme";
+        dugme.textContent = "Otvori dokument";
+        dugme.addEventListener("click", () => {
+          OTVORI_DOKUMENT(dokument.id);
+        });
+
+        kartica.append(oznaka, naslov, detalji, dugme);
+        LISTA.appendChild(kartica);
+      }
+    }
+
+    async function UCITAJ_POSLOVNE_DOKUMENTE() {
+      if (!DB) {
+        PRIKAZI_PORUKU(
+          "Nije pronađena funkcija DOBAVI_DB(). " +
+          "Poveži ovu stranicu s postojećom Supabase konfiguracijom.",
+          true
+        );
+        BROJ_REZULTATA.textContent = "Dokumenti nisu učitani.";
+        return;
+      }
+
+      try {
+        PRIKAZI_PORUKU("Provjeravam prijavu...");
+
+        const { data: authData, error: authError } =
+          await DB.auth.getUser();
+
+        if (authError) throw authError;
+
+        if (!authData.user) {
+          PRIKAZI_PORUKU(
+            "Prijavi se u DOCBIZHUB, pa ponovo otvori ovu stranicu.",
+            true
+          );
+          BROJ_REZULTATA.textContent = "Prijava je potrebna.";
+          return;
+        }
+
+        PRIKAZI_PORUKU("Učitavam tvoje dokumente...");
+
+        const { data, error } = await DB
+          .from("POSLOVNI_DOKUMENTI")
+          .select(
+            "id, USER_ID, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, " +
+            "KUPAC, DATUM_DOKUMENTA, VAZI_DO, OPIS, IZNOS, " +
+            "STATUS, KREIRANO, AZURIRANO"
+          )
+          .eq("USER_ID", authData.user.id)
+          .order("KREIRANO", { ascending: false });
+
+        if (error) throw error;
+
+        SVI_DOKUMENTI = data || [];
+
+        DOKUMENTI_PO_ID = new Map(
+          SVI_DOKUMENTI.map(dokument => [dokument.id, dokument])
+        );
+
+        SAKRIJ_PORUKU();
+        PRIKAZI_LISTU();
+
+      } catch (greska) {
+        console.error("Greška pri učitavanju dokumenata:", greska);
+
+        PRIKAZI_PORUKU(
+          "Dokumenti nisu učitani. Provjeri Supabase konfiguraciju, " +
+          "prijavu i dozvole pristupa tabeli POSLOVNI_DOKUMENTI. " +
+          (greska.message || ""),
+          true
+        );
+
+        BROJ_REZULTATA.textContent = "Greška pri učitavanju.";
+      }
+    }
+
+    PRETRAGA.addEventListener("input", PRIKAZI_LISTU);
+
+    document
+      .getElementById("ZATVORI_PREGLED")
+      .addEventListener("click", () => {
+        PREGLED.classList.add("skriveno");
+      });
+
+    UCITAJ_POSLOVNE_DOKUMENTE();
+  </script>
+</body>
+</html>
