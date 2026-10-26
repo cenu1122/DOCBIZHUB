@@ -307,6 +307,21 @@
           </div>
 
           <div class="field" style="grid-column: 1 / -1">
+  <label for="POSLOVNI_DOKUMENT_ID">
+    Povezani poslovni dokument (opcionalno)
+  </label>
+
+  <select id="POSLOVNI_DOKUMENT_ID">
+    <option value="">Bez povezanog dokumenta</option>
+  </select>
+
+  <a href="poslovni-dokumenti.html" target="_blank"
+     rel="noopener">
+    Otvori sve poslovne dokumente
+  </a>
+</div>
+          
+          <div class="field" style="grid-column: 1 / -1">
             <label for="OPIS_FAKTURE">Opis</label>
             <textarea id="OPIS_FAKTURE"
                       rows="3"
@@ -743,6 +758,8 @@ DUGME_STAVKE.addEventListener("click", () => {
 });
 
 CELIJA_AKCIJE.appendChild(DUGME_STAVKE);
+      CELIJA_AKCIJE.appendChild(document.createElement("br"));
+CELIJA_AKCIJE.appendChild(DUGME_UREDI);
 
 CELIJA_AKCIJE.appendChild(document.createElement("br"));
 
@@ -1442,9 +1459,10 @@ FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
     document.getElementById("IZNOS_FAKTURE").value = "";
     dugme.textContent = "Sačuvaj fakturu";
 
-    await UCITAJ_FAKTURE();
-    await UCITAJ_KATALOG();
-    NOVA_STAVKA();
+  await UCITAJ_FAKTURE();
+await UCITAJ_KATALOG();
+await UCITAJ_POSLOVNE_DOKUMENTE();
+NOVA_STAVKA();
 
     PRIKAZI_PORUKU(
       uredjivanje
