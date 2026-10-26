@@ -618,6 +618,8 @@
           F.STATUS_FAKTURE = NOVI_STATUS;
           PRIKAZI_PORUKU("Status fakture je sačuvan.");
           FILTERISI_FAKTURE();
+          CELIJA_AKCIJE.appendChild(DUGME_UREDI);
+CELIJA_AKCIJE.appendChild(document.createElement("br"));
         } catch (GRESKA) {
           console.error(GRESKA);
           PRIKAZI_PORUKU("Greška pri čuvanju statusa: " + GRESKA.message);
@@ -953,14 +955,7 @@ KATALOG_MATERIJALA.forEach(m => {
   izbor.appendChild(opcija);
 });
 
-  KATALOG_MATERIJALA.forEach(m => {
-    const opcija = document.createElement("option");
-    opcija.value = m.ID;
-    opcija.textContent = m.NAZIV + " — " + m.CIJENA + " KM";
-    izbor.appendChild(opcija);
-  });
-
-  function polje(klasa, placeholder, vrijednost = "") {
+   function polje(klasa, placeholder, vrijednost = "") {
     const el = document.createElement("input");
     el.className = klasa;
     el.placeholder = placeholder;
