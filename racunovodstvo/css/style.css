@@ -200,3 +200,26 @@ body {
     padding: 24px;
   }
 }
+
+
+/* Popravka prikaza lijevog menija */
+.sidebar {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important;
+  box-sizing: border-box;
+}
+
+.sidebar nav {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: visible !important;
+}
+
+.sidebar nav a {
+  flex-shrink: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
