@@ -538,70 +538,63 @@
       }
     }
 
-    async function UCITAJ_POSLOVNE_DOKUMENTE() {
-      if (!DB) {
-        PRIKAZI_PORUKU(
-          "Nije pronađena funkcija DOBAVI_DB(). " +
-          "Poveži ovu stranicu s postojećom Supabase konfiguracijom.",
-          true
-        );
-        BROJ_REZULTATA.textContent = "Dokumenti nisu učitani.";
-        return;
-      }
+    
+async function UCITAJ_POSLOVNE_DOKUMENTE() {
+  try {
+    const { data: authData, error: authError } =
+      await DB.auth.getUser();
 
-      try {
-        PRIKAZI_PORUKU("Provjeravam prijavu...");
+    if (authError) throw authError;
 
-        const { data: authData, error: authError } =
-          await DB.auth.getUser();
-
-        if (authError) throw authError;
-
-        if (!authData.user) {
-          PRIKAZI_PORUKU(
-            "Prijavi se u DOCBIZHUB, pa ponovo otvori ovu stranicu.",
-            true
-          );
-          BROJ_REZULTATA.textContent = "Prijava je potrebna.";
-          return;
-        }
-
-        PRIKAZI_PORUKU("Učitavam tvoje dokumente...");
-
-        const { data, error } = await DB
-          .from("POSLOVNI_DOKUMENTI")
-          .select(
-            "id, USER_ID, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, " +
-            "KUPAC, DATUM_DOKUMENTA, VAZI_DO, OPIS, IZNOS, " +
-            "STATUS, KREIRANO, AZURIRANO"
-          )
-          .eq("USER_ID", authData.user.id)
-          .order("KREIRANO", { ascending: false });
-
-        if (error) throw error;
-
-        SVI_DOKUMENTI = data || [];
-
-        DOKUMENTI_PO_ID = new Map(
-          SVI_DOKUMENTI.map(dokument => [dokument.id, dokument])
-        );
-
-        SAKRIJ_PORUKU();
-        PRIKAZI_LISTU();
-
-      } catch (greska) {
-        console.error("Greška pri učitavanju dokumenata:", greska);
-
-        PRIKAZI_PORUKU(
-          "Dokumenti nisu učitani. Provjeri Supabase konfiguraciju, " +
-          "prijavu i dozvole pristupa tabeli POSLOVNI_DOKUMENTI. " +
-          (greska.message || ""),
-          true
-        );
-
-        BROJ_REZULTATA.textContent = "Greška pri učitavanju.";
-      }
+    if (!authData.user) {
+      PRIKAZI_PORUKU(
+        "Prijavi se u DOCBIZHUB, pa ponovo otvori ovu stranicu.",
+        true
+      );
+      BROJ_REZULTATA.textContent = "Prijava je potrebna.";
+      return;
     }
+
+    PRIKAZI_PORUKU("Učitavam tvoje dokumente...");
+
+    const { data, error } = await DB
+      .from("POSLOVNI_DOKUMENTI")
+      .select(
+        "id, USER_ID, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, " +
+        "KUPAC, DATUM_DOKUMENTA, VAZI_DO, OPIS, IZNOS, " +
+        "STATUS, KREIRANO, AZURIRANO, PDF_PUTANJA"
+      )
+      .eq("USER_ID", authData.user.id)
+      .order("KREIRANO", { ascending: false });
+
+    if (error) throw error;
+
+    SVI_DOKUMENTI = data || [];
+
+    DOKUMENTI_PO_ID = new Map(
+      SVI_DOKUMENTI.map(dokument => [dokument.id, dokument])
+    );
+
+    SAKRIJ_PORUKU();
+    PRIKAZI_LISTU();
+
+  } catch (greska) {
+    console.error(
+      "Greška pri učitavanju dokumenata:",
+      greska
+    );
+
+    PRIKAZI_PORUKU(
+      "Dokumenti nisu učitani. Provjeri Supabase konfiguraciju, " +
+      "prijavu i dozvole pristupa tabeli POSLOVNI_DOKUMENTI. " +
+      (greska.message || ""),
+      true
+    );
+
+    BROJ_REZULTATA.textContent = "Greška pri učitavanju.";
+  }
+}
+
 
     PRETRAGA.addEventListener("input", PRIKAZI_LISTU);
 
