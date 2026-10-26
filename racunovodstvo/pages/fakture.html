@@ -642,6 +642,14 @@
         EVIDENTIRAJ_UPLATU(F);
       });
 
+const DUGME_UREDI = document.createElement("button");
+DUGME_UREDI.type = "button";
+DUGME_UREDI.textContent = "Uredi fakturu";
+
+DUGME_UREDI.addEventListener("click", () => {
+  UREDI_FAKTURU(F);
+});
+      
       const DUGME_HISTORIJA = document.createElement("button");
       DUGME_HISTORIJA.type = "button";
       DUGME_HISTORIJA.textContent = "Historija uplata";
@@ -898,6 +906,8 @@ async function PRIKAZI_STAVKE_FAKTURE(FAKTURA) {
 
 let KATALOG_MATERIJALA = [];
 let BROJ_STAVKI = 0;
+let FAKTURA_ZA_UREDJIVANJE = null;
+let ORIGINALNE_STAVKE_FAKTURE = [];
 
 function IZRACUNAJ_UKUPNO() {
   let ukupno = 0;
@@ -1032,13 +1042,111 @@ async function UCITAJ_KATALOG() {
 document.getElementById("DODAJ_STAVKU")
   .addEventListener("click", NOVA_STAVKA);
 
-  
  
+async function UREDI_FAKTURU(FAKTURA) {
+  try {
+    const db = DOBAVI_DB();
+    const { data: authData, error: authError } =
+      await db.auth.getUser();
+
+    if (authError) throw authError;
+    if (!authData.user) throw new Error("Prijavi se ponovo.");
+
+    // Provjeri da faktura pripada prijavljenom korisniku.
+    const { data: faktura, error: fakturaError } = await db
+      .from("FAKTURE")
+      .select("*")
+      .eq("ID", FAKTURA.ID)
+      .eq("USER_ID", authData.user.id)
+      .single();
+
+    if (fakturaError) throw fakturaError;
+
+    const { data: stavke, error: stavkeError } = await db
+      .from("STAVKE_FAKTURA")
+      .select("*")
+      .eq("FAKTURA_ID", faktura.ID)
+      .eq("USER_ID", authData.user.id)
+      .order("KREIRANO", { ascending: true });
+
+    if (stavkeError) throw stavkeError;
+
+    if (!stavke || stavke.length === 0) {
+      throw new Error(
+        "Ova faktura nema spremljenih stavki koje se mogu urediti."
+      );
+    }
+
+    await UCITAJ_KATALOG();
+
+    FAKTURA_ZA_UREDJIVANJE = faktura.ID;
+
+    document.getElementById("BROJ_FAKTURE").value =
+      faktura.BROJ_FAKTURE || "";
+    document.getElementById("KUPAC").value =
+      faktura.KUPAC || "";
+    document.getElementById("DATUM_FAKTURE").value =
+      faktura.DATUM_FAKTURE || "";
+    document.getElementById("ROK_PLACANJA").value =
+      faktura.ROK_PLACANJA || "";
+    document.getElementById("STATUS_FAKTURE").value =
+      faktura.STATUS_FAKTURE || "NEPLACENA";
+    document.getElementById("OPIS_FAKTURE").value =
+      faktura.OPIS_FAKTURE || "";
+
+    const kontejner = document.getElementById("STAVKE_UNOS");
+    kontejner.replaceChildren();
+
+    for (const s of stavke) {
+      NOVA_STAVKA();
+
+      const redovi = kontejner.querySelectorAll(":scope > div");
+      const red = redovi[redovi.length - 1];
+
+      red.querySelector(".materijal-izbor").value =
+        s.MATERIJAL_ID || "";
+
+      red.querySelector(".materijal-naziv").value =
+        s.NAZIV_STAVKE || "";
+      red.querySelector(".materijal-kolicina").value =
+        s.KOLICINA ?? 1;
+      red.querySelector(".materijal-jedinica").value =
+        s.JEDINICA_MJERE || "kom";
+      red.querySelector(".materijal-cijena").value =
+        Number(s.CIJENA || 0).toFixed(2);
+    }
+
+    IZRACUNAJ_UKUPNO();
+
+    DUGME_SACUVAJ_FAKTURU.textContent = "Sačuvaj izmjene";
+
+    document.getElementById("STAVKE_UNOS").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    PRIKAZI_PORUKU(
+      "Uređuješ fakturu " + faktura.BROJ_FAKTURE +
+      ". Nakon izmjena klikni Sačuvaj izmjene."
+    );
+  } catch (greska) {
+    console.error("Greška pri učitavanju fakture za uređivanje:", greska);
+    PRIKAZI_PORUKU(
+      "Faktura nije učitana: " +
+      (greska.message || "Nepoznata greška")
+    );
+  }
+}
+ 
+ 
+
 FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
   DOGADJAJ.preventDefault();
   if (!FAKTURA_FORM.reportValidity()) return;
 
-  const redovi = [...document.querySelectorAll("#STAVKE_UNOS > div")];
+  const redovi = [
+    ...document.querySelectorAll("#STAVKE_UNOS > div")
+  ];
 
   if (!redovi.length) {
     PRIKAZI_PORUKU("Dodaj najmanje jednu stavku fakture.");
@@ -1052,6 +1160,242 @@ FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
     jedinica: red.querySelector(".materijal-jedinica").value.trim(),
     cijena: Number(red.querySelector(".materijal-cijena").value)
   }));
+
+  if (stavke.some(s =>
+    !s.naziv || !s.jedinica ||
+    !Number.isFinite(s.kolicina) || s.kolicina <= 0 ||
+    !Number.isFinite(s.cijena) || s.cijena < 0
+  )) {
+    PRIKAZI_PORUKU(
+      "Provjeri naziv, količinu, jedinicu i cijenu svake stavke."
+    );
+    return;
+  }
+
+  const ukupno = Math.round(
+    stavke.reduce((z, s) => z + s.kolicina * s.cijena, 0) * 100
+  ) / 100;
+
+  if (ukupno <= 0) {
+    PRIKAZI_PORUKU("Ukupan iznos mora biti veći od nule.");
+    return;
+  }
+
+  const dugme = DUGME_SACUVAJ_FAKTURU;
+  const uredjivanje = FAKTURA_ZA_UREDJIVANJE;
+
+  dugme.disabled = true;
+  dugme.textContent = uredjivanje
+    ? "Spremanje izmjena..."
+    : "Spremanje...";
+
+  try {
+    const db = DOBAVI_DB();
+    const { data: authData, error: authError } =
+      await db.auth.getUser();
+
+    if (authError) throw authError;
+    if (!authData.user) {
+      throw new Error("Moraš se prijaviti prije spremanja.");
+    }
+
+    const userId = authData.user.id;
+
+    // Ako uređujemo, provjeri vlasništvo postojeće fakture.
+    let faktura;
+    if (uredjivanje) {
+      const { data, error } = await db
+        .from("FAKTURE")
+        .select("*")
+        .eq("ID", uredjivanje)
+        .eq("USER_ID", userId)
+        .single();
+
+      if (error) throw error;
+      faktura = data;
+    }
+
+    // Ažuriraj postojeće zaglavlje ili napravi novu fakturu.
+    const podaciFakture = {
+      BROJ_FAKTURE:
+        document.getElementById("BROJ_FAKTURE").value.trim(),
+      KUPAC: document.getElementById("KUPAC").value.trim(),
+      DATUM_FAKTURE:
+        document.getElementById("DATUM_FAKTURE").value,
+      ROK_PLACANJA:
+        document.getElementById("ROK_PLACANJA").value || null,
+      IZNOS_FAKTURE: ukupno,
+      STATUS_FAKTURE:
+        document.getElementById("STATUS_FAKTURE").value || "NEPLACENA",
+      OPIS_FAKTURE:
+        document.getElementById("OPIS_FAKTURE").value.trim() || null
+    };
+
+    if (uredjivanje) {
+      const { data, error } = await db
+        .from("FAKTURE")
+        .update(podaciFakture)
+        .eq("ID", uredjivanje)
+        .eq("USER_ID", userId)
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      faktura = data;
+    } else {
+      const { data, error } = await db
+        .from("FAKTURE")
+        .insert({
+          ...podaciFakture,
+          USER_ID: userId
+        })
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      faktura = data;
+    }
+
+    const fakturaId = faktura.ID;
+
+    await UCITAJ_KATALOG();
+
+    // Pripremi stavke i pronađi ili napravi materijale u katalogu.
+    const sacuvaneStavke = [];
+
+    for (const s of stavke) {
+      let materijal = s.materijalId
+        ? KATALOG_MATERIJALA.find(m => m.ID === s.materijalId)
+        : null;
+
+      if (!materijal) {
+        materijal = KATALOG_MATERIJALA.find(m =>
+          m.NAZIV.trim().toLocaleLowerCase() ===
+          s.naziv.toLocaleLowerCase()
+        );
+      }
+
+      let materijalId;
+
+      if (materijal) {
+        const { data, error } = await db
+          .from("MATERIJALI")
+          .update({
+            NAZIV: s.naziv,
+            JEDINICA_MJERE: s.jedinica,
+            CIJENA: s.cijena,
+            AZURIRANO: new Date().toISOString()
+          })
+          .eq("ID", materijal.ID)
+          .eq("USER_ID", userId)
+          .select("ID")
+          .single();
+
+        if (error) throw error;
+        materijalId = data.ID;
+      } else {
+        const { data, error } = await db
+          .from("MATERIJALI")
+          .insert({
+            USER_ID: userId,
+            NAZIV: s.naziv,
+            JEDINICA_MJERE: s.jedinica,
+            CIJENA: s.cijena
+          })
+          .select("ID")
+          .single();
+
+        if (error) throw error;
+        materijalId = data.ID;
+      }
+
+      sacuvaneStavke.push({
+        FAKTURA_ID: fakturaId,
+        USER_ID: userId,
+        MATERIJAL_ID: materijalId,
+        NAZIV_STAVKE: s.naziv,
+        KOLICINA: s.kolicina,
+        JEDINICA_MJERE: s.jedinica,
+        CIJENA: s.cijena,
+        POPUST: 0,
+        PDV_STOPA: 0,
+        UKUPNO: Math.round(s.kolicina * s.cijena * 100) / 100
+      });
+    }
+
+    if (uredjivanje) {
+      // Prvo sačuvaj nove stavke, da ne izgubiš stare
+      // ako insert ne uspije.
+      const { data: noveStavke, error: insertError } = await db
+        .from("STAVKE_FAKTURA")
+        .insert(sacuvaneStavke)
+        .select("ID");
+
+      if (insertError) throw insertError;
+
+      // Obriši samo stare stavke ove fakture i korisnika.
+      const { error: deleteError } = await db
+        .from("STAVKE_FAKTURA")
+        .delete()
+        .eq("FAKTURA_ID", fakturaId)
+        .eq("USER_ID", userId)
+        .not(
+          "ID",
+          "in",
+          "(" + (noveStavke || []).map(s => s.ID).join(",") + ")"
+        );
+
+      if (deleteError) {
+        console.error(
+          "Nove stavke su sačuvane, ali stare nisu uklonjene:",
+          deleteError
+        );
+        throw new Error(
+          "Nove stavke su dodane, ali stare stavke nisu uklonjene. " +
+          "Nemoj ponavljati spremanje dok ne provjeriš fakturu."
+        );
+      }
+    } else {
+      const { error } = await db
+        .from("STAVKE_FAKTURA")
+        .insert(sacuvaneStavke);
+
+      if (error) throw error;
+    }
+
+    FAKTURA_ZA_UREDJIVANJE = null;
+    FAKTURA_FORM.reset();
+    document.getElementById("STAVKE_UNOS").replaceChildren();
+    document.getElementById("IZNOS_FAKTURE").value = "";
+    dugme.textContent = "Sačuvaj fakturu";
+
+    await UCITAJ_FAKTURE();
+    await UCITAJ_KATALOG();
+    NOVA_STAVKA();
+
+    PRIKAZI_PORUKU(
+      uredjivanje
+        ? "Faktura " + faktura.BROJ_FAKTURE + " je izmijenjena."
+        : "Faktura " + faktura.BROJ_FAKTURE +
+          " i " + sacuvaneStavke.length + " stavki su sačuvani."
+    );
+
+  } catch (greska) {
+    console.error("Greška pri spremanju fakture:", greska);
+    PRIKAZI_PORUKU(
+      "Greška pri spremanju: " +
+      (greska.message || "Nepoznata greška")
+    );
+  } finally {
+    dugme.disabled = false;
+    if (FAKTURA_ZA_UREDJIVANJE) {
+      dugme.textContent = "Sačuvaj izmjene";
+    } else {
+      dugme.textContent = "Sačuvaj fakturu";
+    }
+  }
+});
+
 
   if (stavke.some(s =>
     !s.naziv || !s.jedinica ||
