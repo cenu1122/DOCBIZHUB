@@ -925,8 +925,23 @@ function NOVA_STAVKA() {
     "display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;padding:12px;border:1px solid #ddd;border-radius:8px";
 
   const izbor = document.createElement("select");
-  izbor.className = "materijal-izbor";
-  izbor.innerHTML = '<option value="">Novi materijal / usluga</option>';
+izbor.className = "materijal-izbor";
+
+const pocetnaOpcija = document.createElement("option");
+pocetnaOpcija.value = "";
+pocetnaOpcija.textContent = KATALOG_MATERIJALA.length
+  ? "Izaberi materijal iz kataloga"
+  : "Novi materijal / usluga";
+
+izbor.appendChild(pocetnaOpcija);
+
+KATALOG_MATERIJALA.forEach(m => {
+  const opcija = document.createElement("option");
+  opcija.value = m.ID;
+  opcija.textContent =
+    m.NAZIV + " — " + Number(m.CIJENA || 0).toFixed(2) + " KM";
+  izbor.appendChild(opcija);
+});
 
   KATALOG_MATERIJALA.forEach(m => {
     const opcija = document.createElement("option");
