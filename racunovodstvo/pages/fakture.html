@@ -283,6 +283,19 @@
            placeholder="0.00">
 </div>
 
+<div class="field">
+  <label for="POSLOVNI_DOKUMENT_ID">
+    Povezani poslovni dokument
+  </label>
+  <select id="POSLOVNI_DOKUMENT_ID">
+    <option value="">Bez povezanog dokumenta</option>
+  </select>
+  <p class="notice">
+    Opcionalno: poveži fakturu s ugovorom, projektom,
+    ponudom ili narudžbenicom.
+  </p>
+</div>
+          
           <div class="field">
             <label for="STATUS_FAKTURE">Početni status</label>
             <select id="STATUS_FAKTURE">
@@ -387,7 +400,53 @@
   let SVE_FAKTURE = [];
   let SVE_UPLATE = [];
   let TRENUTNI_KORISNIK = null;
+let SVI_POSLOVNI_DOKUMENTI = [];
 
+async function UCITAJ_POSLOVNE_DOKUMENTE() {
+  const DB = DOBAVI_DB();
+
+  const { data: AUTH, error: AUTH_GRESKA } =
+    await DB.auth.getUser();
+
+  if (AUTH_GRESKA) throw AUTH_GRESKA;
+  if (!AUTH.user) {
+    throw new Error("Prijavi se da učitaš poslovne dokumente.");
+  }
+
+  const { data, error } = await DB
+    .from("POSLOVNI_DOKUMENTI")
+    .select("id, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, KUPAC")
+    .eq("USER_ID", AUTH.user.id)
+    .order("KREIRANO", { ascending: false });
+
+  if (error) throw error;
+
+  SVI_POSLOVNI_DOKUMENTI = data || [];
+
+  const IZBOR = document.getElementById("POSLOVNI_DOKUMENT_ID");
+  IZBOR.replaceChildren();
+
+  const PRAZNO = document.createElement("option");
+  PRAZNO.value = "";
+  PRAZNO.textContent = "Bez povezanog dokumenta";
+  IZBOR.appendChild(PRAZNO);
+
+  for (const D of SVI_POSLOVNI_DOKUMENTI) {
+    const OPCIJA = document.createElement("option");
+    OPCIJA.value = D.id;
+
+    OPCIJA.textContent = [
+      D.VRSTA_PAPIRA,
+      D.BROJ_DOKUMENTA,
+      D.NAZIV,
+      D.KUPAC
+    ].filter(Boolean).join(" — ");
+
+    IZBOR.appendChild(OPCIJA);
+  }
+}
+
+  
   const FAKTURA_FORM = document.getElementById("FAKTURA_FORM");
   const FAKTURA_PORUKA = document.getElementById("FAKTURA_PORUKA");
   const TABELA_FAKTURA = document.getElementById("FAKTURE_TABELA");
@@ -1236,8 +1295,13 @@ FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
       IZNOS_FAKTURE: ukupno,
       STATUS_FAKTURE:
         document.getElementById("STATUS_FAKTURE").value || "NEPLACENA",
+     
       OPIS_FAKTURE:
-        document.getElementById("OPIS_FAKTURE").value.trim() || null
+        document.getElementById("OPIS_FAKTURE").value.trim() || null,
+
+      POSLOVNI_DOKUMENT_ID:
+        document.getElementById("POSLOVNI_DOKUMENT_ID").value || null
+
     };
 
     if (uredjivanje) {
