@@ -1128,18 +1128,7 @@ FAKTURA_FORM.addEventListener("submit", async function (DOGADJAJ) {
 });
 
 
-    } catch (GRESKA) {
-      console.error("Greška pri spremanju fakture:", GRESKA);
-      PRIKAZI_PORUKU(
-        "Faktura nije sačuvana: " +
-        (GRESKA.message || "Nepoznata greška")
-      );
-    } finally {
-      DUGME_SACUVAJ_FAKTURU.disabled = false;
-      DUGME_SACUVAJ_FAKTURU.textContent = "Sačuvaj fakturu";
-    }
-  });
-
+  
   document
     .getElementById("FILTER_STATUS")
     .addEventListener("change", FILTERISI_FAKTURE);
