@@ -525,15 +525,72 @@
         );
         DODAJ_LISTU_DETALJ("Status", dokument.STATUS);
 
-        const dugme = document.createElement("button");
-        dugme.type = "button";
-        dugme.className = "dugme";
-        dugme.textContent = "Otvori dokument";
-        dugme.addEventListener("click", () => {
-          OTVORI_DOKUMENT(dokument.id);
-        });
+        
+const dugme = document.createElement("button");
+dugme.type = "button";
+dugme.className = "dugme";
+dugme.textContent = "Otvori dokument";
 
-        kartica.append(oznaka, naslov, detalji, dugme);
+dugme.addEventListener("click", () => {
+  OTVORI_DOKUMENT(dokument.id);
+});
+
+const dugmeDatoteka = document.createElement("button");
+dugmeDatoteka.type = "button";
+dugmeDatoteka.className = "dugme sekundarno";
+dugmeDatoteka.textContent = "Otvori datoteku";
+dugmeDatoteka.style.marginLeft = "8px";
+
+const linkDatoteke = String(
+  dokument.PDF_PUTANJA || ""
+).trim();
+
+dugmeDatoteka.disabled = !linkDatoteke;
+
+dugmeDatoteka.title = linkDatoteke
+  ? "Otvori povezanu datoteku"
+  : "Za ovaj dokument nije unesen link datoteke";
+
+dugmeDatoteka.addEventListener("click", () => {
+  if (!linkDatoteke) {
+    PRIKAZI_PORUKU(
+      "Za ovaj dokument nije unesen link datoteke.",
+      true
+    );
+    return;
+  }
+
+  let url;
+
+  try {
+    url = new URL(linkDatoteke);
+  } catch {
+    PRIKAZI_PORUKU(
+      "Link datoteke nije ispravan. Unesi puni URL koji počinje sa https:// ili http://.",
+      true
+    );
+    return;
+  }
+
+  if (!["https:", "http:"].includes(url.protocol)) {
+    PRIKAZI_PORUKU(
+      "Dozvoljeni su samo HTTP i HTTPS linkovi.",
+      true
+    );
+    return;
+  }
+
+  window.open(url.href, "_blank", "noopener,noreferrer");
+});
+
+kartica.append(
+  oznaka,
+  naslov,
+  detalji,
+  dugme,
+  dugmeDatoteka
+);
+
         LISTA.appendChild(kartica);
       }
     }
@@ -559,11 +616,13 @@ async function UCITAJ_POSLOVNE_DOKUMENTE() {
 
     const { data, error } = await DB
       .from("POSLOVNI_DOKUMENTI")
-      .select(
-        "id, USER_ID, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, " +
-        "KUPAC, DATUM_DOKUMENTA, VAZI_DO, OPIS, IZNOS, " +
-        "STATUS, KREIRANO, AZURIRANO, PDF_PUTANJA"
-      )
+     
+.select(
+  "id, USER_ID, NAZIV, VRSTA_PAPIRA, BROJ_DOKUMENTA, " +
+  "KUPAC, DATUM_DOKUMENTA, VAZI_DO, OPIS, IZNOS, " +
+  "STATUS, KREIRANO, AZURIRANO, PDF_PUTANJA"
+)
+
       .eq("USER_ID", authData.user.id)
       .order("KREIRANO", { ascending: false });
 
