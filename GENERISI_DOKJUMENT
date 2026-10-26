@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI generator dokumenata | DOCBIZHUB</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}
+main{max-width:950px;margin:auto;background:#fff;padding:26px;border-radius:14px;box-shadow:0 4px 20px #0001}
+h1{color:#17365d}
+p{line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin-bottom:16px}
+label{display:block;font-weight:bold;margin-bottom:7px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}
+textarea{resize:vertical}
+#zahtjev{min-height:130px}
+#sadrzaj{min-height:360px;line-height:1.6}
+button{border:0;border-radius:8px;padding:12px 16px;margin:4px 5px 4px 0;background:#1d4ed8;color:white;font-weight:bold;cursor:pointer}
+button.alt{background:#475569}
+button:disabled{opacity:.5;cursor:wait}
+#poruka{display:none;padding:12px;border-radius:8px;margin:15px 0;overflow-wrap:anywhere;white-space:pre-wrap}
+#poruka.info{display:block;background:#dbeafe;color:#1e40af}
+#poruka.ok{display:block;background:#dcfce7;color:#166534}
+#poruka.err{display:block;background:#fee2e2;color:#991b1b}
+.small{font-size:13px;color:#64748b}
+@media(max-width:650px){body{padding:8px}main{padding:16px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+<main>
+<h1>AI generator poslovnih dokumenata</h1>
+<p>Unesi podatke, generiši nacrt, provjeri ga, a zatim napravi PDF i sačuvaj ga u DOCBIZHUB.</p>
+
+<div id="poruka"></div>
+
+<form id="forma">
+  <div class="grid">
+    <div class="field">
+      <label for="naziv">Naziv dokumenta *</label>
+      <input id="naziv" maxlength="200" required placeholder="Ugovor o poslovnoj saradnji">
+    </div>
+
+    <div class="field">
+      <label for="vrsta">Vrsta dokumenta *</label>
+      <select id="vrsta" required>
+        <option>Ugovor</option>
+        <option>Ugovor o poslovnoj saradnji</option>
+        <option>Ugovor o djelu</option>
+        <option>Odluka</option>
+        <option>Punomoć</option>
+        <option>Izjava</option>
+        <option>Opomena</option>
+        <option>Ponuda</option>
+        <option>Zapisnik</option>
+        <option>Drugi poslovni dokument</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="partner">Kupac / poslovni partner</label>
+      <input id="partner" maxlength="200" placeholder="Naziv firme ili ime osobe">
+    </div>
+
+    <div class="field">
+      <label for="broj">Broj dokumenta</label>
+      <input id="broj" maxlength="100" placeholder="UG-2026-001">
+    </div>
+
+    <div class="field">
+      <label for="datum">Datum dokumenta</label>
+      <input id="datum" type="date">
+    </div>
+
+    <div class="field">
+      <label for="vazi">Važi do</label>
+      <input id="vazi" type="date">
+    </div>
+
+    <div class="field">
+      <label for="iznos">Iznos (KM), ako postoji</label>
+      <input id="iznos" type="number" min="0" step="0.01" placeholder="0.00">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="zahtjev">Opis zahtjeva i uslovi dokumenta *</label>
+    <textarea id="zahtjev" maxlength="12000" required placeholder="Opiši ugovorne strane, predmet ugovora, obaveze, rokove, plaćanje i ostale važne uslove."></textarea>
+  </div>
+
+  <button id="generisi" type="submit">Generiši nacrt pomoću AI-ja</button>
+</form>
+
+<hr>
+
+<div class="field">
+  <label for="sadrzaj">Pregled i uređivanje dokumenta</label>
+  <textarea id="sadrzaj" placeholder="Generisani tekst pojavit će se ovdje. Možeš ga ručno urediti prije izrade PDF-a."></textarea>
+  <p class="small">Provjeri sva imena, datume, iznose i pravne odredbe prije nego što koristiš dokument.</p>
+</div>
+
+<button id="spremi" type="button">Napravi PDF i sačuvaj u DOCBIZHUB</button>
+<button id="odjava" class="alt" type="button">Odjavi se</button>
+
+<p class="small">PDF će biti spremljen u privatni Supabase Storage bucket POSLOVNI_DOKUMENTI.</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.20/build/pdfmake.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.20/build/vfs_fonts.js"></script>
+
+<script>
+(() => {
+  "use strict";
+
+  const SUPABASE_URL = "OVDJE_UNESI_SUPABASE_URL";
+  const SUPABASE_ANON_KEY = "OVDJE_UNESI_SUPABASE_ANON_KEY";
+  const BUCKET = "POSLOVNI_DOKUMENTI";
+  const EDGE_FUNCTION = "generisi-poslovni-dokument";
+
+  const $ = id => document.getElementById(id);
+  const poruka = $("poruka");
+  const btnGenerisi = $("generisi");
+  const btnSpremi = $("spremi");
+
+  let DB;
+  let trenutniKorisnik = null;
+
+  function prikaziPoruku(tekst, tip = "info") {
+    poruka.textContent = tekst;
+    poruka.className = tip;
+  }
+
+  function podaciObrasca() {
+    return {
+      naziv: $("naziv").value.trim(),
+      vrsta: $("vrsta").value,
+      partner: $("partner").value.trim(),
+      broj: $("broj").value.trim(),
+      datum: $("datum").value,
+      vazi_do: $("vazi").value,
+      iznos: $("iznos").value,
+      zahtjev: $("zahtjev").value.trim()
+    };
+  }
+
+  async function provjeriPrijavu() {
+    const { data, error } = await DB.auth.getUser();
+    if (error) throw error;
+
+    if (!data.user) {
+      throw new Error("Nisi prijavljen. Prvo se prijavi u DOCBIZHUB.");
+    }
+
+    trenutniKorisnik = data.user;
+  }
+
+  async function pozoviAI() {
+    const podaci = podaciObrasca();
+
+    if (!podaci.naziv || !podaci.zahtjev) {
+      throw new Error("Popuni naziv dokumenta i opis zahtjeva.");
+    }
+
+    const { data: sesijaData, error: sesijaError } =
+      await DB.auth.getSession();
+
+    if (sesijaError) throw sesijaError;
+
+    const token = sesijaData.session?.access_token;
+    if (!token) throw new Error("Sesija je istekla. Prijavi se ponovo.");
+
+    const odgovor = await DB.functions.invoke(EDGE_FUNCTION, {
+      body: podaci
+    });
+
+    if (odgovor.error) {
+      let detalj = odgovor.error.message || "Greška pri pozivu AI funkcije.";
+      try {
+        const ctx = odgovor.error.context;
+        if (ctx && typeof ctx.json === "function") {
+          const tijelo = await ctx.json();
+          if (tijelo.error) detalj = tijelo.error;
+        }
+      } catch (_) {}
+      throw new Error(detalj);
+    }
+
+    const rezultat = odgovor.data;
+    if (!rezultat || typeof rezultat.tekst !== "string" || !rezultat.tekst.trim()) {
+      throw new Error("AI funkcija nije vratila tekst dokumenta.");
+    }
+
+    return rezultat.tekst;
+  }
+
+  $("forma").addEventListener("submit", async e => {
+    e.preventDefault();
+    btnGenerisi.disabled = true;
+
+    try {
+      prikaziPoruku("Generišem nacrt dokumenta…", "info");
+      await provjeriPrijavu();
+      const tekst = await pozoviAI();
+      $("sadrzaj").value = tekst;
+      prikaziPoruku("Nacrt je generisan. Pregledaj i uredi tekst prije spremanja.", "ok");
+    } catch (err) {
+      console.error(err);
+      prikaziPoruku(err.message || "Generisanje nije uspjelo.", "err");
+    } finally {
+      btnGenerisi.disabled = false;
+    }
+  });
+
+  function napraviPDF(tekst, podaci) {
+    // Koristi standardni PDF font. Prije produkcije provjeri prikaz
+    // č/ć/ž/š/đ; za punu Unicode podršku treba ugraditi Unicode font.
+    const redovi = tekst.replace(/\r/g, "").split("\n");
+
+    const content = [
+      { text: podaci.naziv, fontSize: 17, bold: true, margin: [0, 0, 0, 16] },
+      { text: "Vrsta dokumenta: " + podaci.vrsta, margin: [0, 0, 0, 5] },
+      ...(podaci.partner ? [{ text: "Poslovni partner: " + podaci.partner, margin: [0, 0, 0, 5] }] : []),
+      ...(podaci.broj ? [{ text: "Broj dokumenta: " + podaci.broj, margin: [0, 0, 0, 5] }] : []),
+      ...(podaci.datum ? [{ text: "Datum: " + podaci.datum, margin: [0, 0, 0, 5] }] : []),
+      ...(podaci.vazi_do ? [{ text: "Važi do: " + podaci.vazi_do, margin: [0, 0, 0, 5] }] : []),
+      ...(podaci.iznos !== "" ? [{ text: "Iznos: " + podaci.iznos + " KM", margin: [0, 0, 0, 12] }] : []),
+      { text: "Sadržaj dokumenta", bold: true, fontSize: 12, margin: [0, 12, 0, 8] },
+      ...redovi.map(red => ({
+        text: red || " ",
+        fontSize: 10,
+        margin: [0, 0, 0, 4],
+        lineHeight: 1.25
+      }))
+    ];
+
+    const definicija = {
+      pageSize: "A4",
+      pageMargins: [48, 48, 48, 55],
+      content,
+      defaultStyle: { font: "Roboto", fontSize: 10 },
+      footer: function(currentPage, pageCount) {
+        return {
+          text: "DOCBIZHUB  •  Stranica " + currentPage + " od " + pageCount,
+          alignment: "center",
+          fontSize: 8,
+          margin: [0, 20, 0, 0]
+        };
+      }
+    };
+
+    return new Promise((resolve, reject) => {
+      try {
+        pdfMake.createPdf(definicija).getBlob(blob => resolve(blob));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  async function spremiDokument() {
+    if (!trenutniKorisnik) await provjeriPrijavu();
+
+    const podaci = podaciObrasca();
+    const tekst = $("sadrzaj").value.trim();
+
+    if (!podaci.naziv || !tekst) {
+      throw new Error("Prvo generiši dokument i provjeri da polje sa sadržajem nije prazno.");
+    }
+
+    const blob = await napraviPDF(tekst, podaci);
+    const sigurnoIme = podaci.naziv
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9_-]+/g, "_")
+      .slice(0, 70) || "dokument";
+
+    const putanja = trenutniKorisnik.id + "/" +
+      Date.now() + "_" + sigurnoIme + ".pdf";
+
+    prikaziPoruku("Spremam PDF u privatni Storage…", "info");
+
+    const { error: uploadError } = await DB.storage
+      .from(BUCKET)
+      .upload(putanja, blob, {
+        contentType: "application/pdf",
+        upsert: false
+      });
+
+    if (uploadError) throw uploadError;
+
+    const zapis = {
+      USER_ID: trenutniKorisnik.id,
+      NAZIV: podaci.naziv,
+      VRSTA_PAPIRA: podaci.vrsta,
+      BROJ_DOKUMENTA: podaci.broj || null,
+      KUPAC: podaci.partner || null,
+      DATUM_DOKUMENTA: podaci.datum || null,
+      VAZI_DO: podaci.vazi_do || null,
+      OPIS: podaci.zahtjev,
+      IZNOS: podaci.iznos !== "" ? Number(podaci.iznos) : null,
+      STATUS: "Generisan",
+      PDF_PUTANJA: putanja
+    };
+
+    const { data: novi, error: insertError } = await DB
+      .from("POSLOVNI_DOKUMENTI")
+      .insert(zapis)
+      .select("id, NAZIV, PDF_PUTANJA")
+      .single();
+
+    if (insertError) {
+      // Ako upis u bazu ne uspije, ukloni upravo uploadovani fajl.
+      const { error: cleanupError } = await DB.storage
+        .from(BUCKET)
+        .remove([putanja]);
+
+      if (cleanupError) {
+        console.error("PDF je ostao u Storage nakon greške baze:", cleanupError);
+      }
+
+      throw insertError;
+    }
+
+    prikaziPoruku(
+      "Dokument je spremljen!\n" +
+      "Naziv: " + novi.NAZIV + "\n" +
+      "ID zapisa: " + novi.id + "\n" +
+      "Putanja datoteke: " + novi.PDF_PUTANJA,
+      "ok"
+    );
+
+    const { data: potpisani, error: urlError } = await DB.storage
+      .from(BUCKET)
+      .createSignedUrl(putanja, 300);
+
+    if (!urlError && potpisani?.signedUrl) {
+      const link = document.createElement("a");
+      link.href = potpisani.signedUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Otvori spremljeni PDF (link vrijedi 5 minuta)";
+      link.style.display = "inline-block";
+      link.style.marginTop = "12px";
+      link.style.fontWeight = "bold";
+      poruka.appendChild(document.createElement("br"));
+      poruka.appendChild(link);
+    }
+  }
+
+  btnSpremi.addEventListener("click", async () => {
+    btnSpremi.disabled = true;
+
+    try {
+      prikaziPoruku("Pripremam PDF i spremam zapis…", "info");
+      await provjeriPrijavu();
+      await spremiDokument();
+    } catch (err) {
+      console.error(err);
+      prikaziPoruku(
+        "Spremanje nije uspjelo: " + (err.message || "Nepoznata greška") +
+        "\nProvjeri prijavu, Storage pravila i RLS dozvole za tabelu.",
+        "err"
+      );
+    } finally {
+      btnSpremi.disabled = false;
+    }
+  });
+
+  $("odjava").addEventListener("click", async () => {
+    const { error } = await DB.auth.signOut();
+    if (error) prikaziPoruku(error.message, "err");
+    else prikaziPoruku("Odjavljen si. Vrati se na stranicu za prijavu.", "ok");
+  });
+
+  async function pokreni() {
+    if (SUPABASE_URL.startsWith("OVDJE_") ||
+        SUPABASE_ANON_KEY.startsWith("OVDJE_")) {
+      prikaziPoruku("Prvo unesi svoj Supabase URL i anon/publishable ključ u kod.", "err");
+      btnGenerisi.disabled = true;
+      btnSpremi.disabled = true;
+      return;
+    }
+
+    DB = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    try {
+      await provjeriPrijavu();
+      prikaziPoruku("Prijavljen si. Možeš generisati dokument.", "ok");
+    } catch (err) {
+      prikaziPoruku("Prijava je potrebna. Prijavi se u DOCBIZHUB pa ponovo otvori ovu stranicu.", "err");
+    }
+  }
+
+  pokreni();
+})();
+</script>
+</body>
+</html>
