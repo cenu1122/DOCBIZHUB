@@ -101,11 +101,25 @@
       overflow-x: auto;
     }
 
-    table {
-      width: 100%;
-      min-width: 900px;
-      border-collapse: collapse;
-    }
+   table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px 5px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #e4eaf2;
+  overflow-wrap: anywhere;
+}
+
+th:last-child,
+td:last-child {
+  width: 190px;
+}
 
     th, td {
       padding: 12px;
