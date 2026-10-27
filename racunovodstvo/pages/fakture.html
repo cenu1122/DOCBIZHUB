@@ -203,6 +203,44 @@
       .summary-card strong { font-size: 17px; }
       .topbar-actions { width: 100%; }
     }
+    /* Akcije na fakturama */
+.akcije-fakture {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    min-width: 470px;
+}
+
+.akcije-fakture button {
+    margin: 0;
+    padding: 7px 9px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.btn-pregled {
+    background: #52657e;
+}
+
+.btn-uredi {
+    background: #1769e8;
+}
+
+.btn-uplata {
+    background: #16834a;
+}
+
+.btn-historija {
+    background: #7651b5;
+}
+
+.status-fakture {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+}
   </style>
 </head>
 
@@ -653,7 +691,7 @@
 
       const cekanje = document.createElement("tr");
       const celija = document.createElement("td");
-      celija.colSpan = 8;
+      celija.colSpan = 9;
       celija.textContent = PREVOD("loading");
       cekanje.appendChild(celija);
       tabela.appendChild(cekanje);
@@ -760,13 +798,16 @@
       const tabela = $("FAKTURE_TABELA");
       tabela.replaceChildren();
 
-      if (filtrirane.length === 0) {
+      
+if (filtrirane.length === 0) {
+ 
         const red = document.createElement("tr");
         const celija = document.createElement("td");
 
-        celija.colSpan = 8;
+        celija.colSpan = 9;
         celija.textContent = PREVOD("noInvoices");
-
+red.appendChild(akcije);
+        
         red.appendChild(celija);
         tabela.appendChild(red);
         return;
@@ -809,10 +850,46 @@
         oznaka.className = "status " + KLASA_STATUSA(status);
         oznaka.textContent = NAZIV_STATUSA(status);
 
-        celijaStatus.appendChild(oznaka);
-        tabela.appendChild(red);
-      });
-    }
+        
+
+celijaStatus.appendChild(oznaka);
+
+// Dugmad za akcije na fakturi
+const akcije = document.createElement("td");
+akcije.innerHTML = `
+  <div class="akcije-fakture">
+    <button type="button" class="btn-pregled">Pregled</button>
+    <button type="button" class="btn-uredi">Uredi</button>
+    <button type="button" class="btn-uplata">Evidentiraj uplatu</button>
+    <button type="button" class="btn-historija">Historija uplata</button>
+  </div>
+`;
+
+akcije.querySelector(".btn-pregled").addEventListener("click", () => {
+  OTVORI_OBRAZAC(faktura.ID, "view");
+});
+
+akcije.querySelector(".btn-uredi").addEventListener("click", () => {
+  OTVORI_OBRAZAC(faktura.ID, "edit");
+});
+
+akcije.querySelector(".btn-uplata").addEventListener("click", () => {
+  EVIDENTIRAJ_UPLATU(
+    faktura.ID,
+    faktura.BROJ_FAKTURE,
+    preostalo
+  );
+});
+
+akcije.querySelector(".btn-historija").addEventListener("click", () => {
+  HISTORIJA_UPLATA(faktura.ID, faktura.BROJ_FAKTURE);
+});
+
+red.appendChild(akcije);
+tabela.appendChild(red);
+});
+}
+
 
     $("JEZIK").addEventListener("change", () => {
       JEZIK = $("JEZIK").value;
@@ -832,6 +909,148 @@
 
     PRIMIJENI_JEZIK();
     UCITAJ_FAKTURE();
+
+    function OTVORI_OBRAZAC(id, mode) {
+  const url = new URL("OBRAZAC_FAKTURE.html", window.location.href);
+  url.searchParams.set("id", id);
+  url.searchParams.set("mode", mode);
+  window.location.href = url.href;
+}
+
+async function EVIDENTIRAJ_UPLATU(id, brojFakture, preostalo) {
+  const unos = prompt(
+    `Faktura ${brojFakture}\nPreostalo za uplatu: ${preostalo}\n\nUnesi iznos uplate:`
+  );
+
+  if (unos === null) return;
+
+  // Prihvata i decimalni zarez i decimalnu tačku.
+  const iznos = Number(unos.trim().replace(",", "."));
+
+  if (!Number.isFinite(iznos) || iznos <= 0) {
+    alert("Unesi ispravan iznos veći od nule.");
+    return;
+  }
+
+  try {
+    const supabase = DB();
+
+    if (!supabase) {
+      throw new Error("Supabase nije dostupan.");
+    }
+
+    const { data: authData, error: authError } =
+      await supabase.auth.getUser();
+
+    if (authError || !authData?.user) {
+      throw new Error("Prijavi se prije evidentiranja uplate.");
+    }
+
+    const userId = authData.user.id;
+
+    // Provjera da faktura pripada prijavljenom korisniku.
+    const { data: faktura, error: fakturaError } = await supabase
+      .from("FAKTURE")
+      .select("ID, IZNOS_FAKTURE")
+      .eq("ID", id)
+      .eq("USER_ID", userId)
+      .single();
+
+    if (fakturaError) throw fakturaError;
+    if (!faktura) throw new Error("Faktura nije pronađena.");
+
+    const { data: uplate, error: uplateError } = await supabase
+      .from("UPLATE_FAKTURA")
+      .select("IZNOS")
+      .eq("FAKTURA_ID", id)
+      .eq("USER_ID", userId);
+
+    if (uplateError) throw uplateError;
+
+    const ukupnoPlaceno = (uplate || []).reduce(
+      (suma, uplata) => suma + Number(uplata.IZNOS || 0),
+      0
+    );
+
+    const preostaloZaUplatu =
+      Number(faktura.IZNOS_FAKTURE || 0) - ukupnoPlaceno;
+
+    if (iznos > preostaloZaUplatu + 0.009) {
+      const potvrda = confirm(
+        `Uplata je veća od preostalog iznosa (${preostaloZaUplatu.toFixed(2)}).\n` +
+        "Želiš li ipak evidentirati ovu uplatu?"
+      );
+
+      if (!potvrda) return;
+    }
+
+    // Koristi kolone potvrđene u postojećem kodu projekta.
+    const { error: insertError } = await supabase
+      .from("UPLATE_FAKTURA")
+      .insert({
+        USER_ID: userId,
+        FAKTURA_ID: id,
+        IZNOS: iznos
+      });
+
+    if (insertError) throw insertError;
+
+    alert("Uplata je evidentirana.");
+    await UCITAJ_FAKTURE();
+  } catch (error) {
+    console.error("Greška pri evidentiranju uplate:", error);
+    alert("Uplata nije sačuvana: " + (error.message || error));
+  }
+}
+
+async function HISTORIJA_UPLATA(id, brojFakture) {
+  try {
+    const supabase = DB();
+
+    if (!supabase) {
+      throw new Error("Supabase nije dostupan.");
+    }
+
+    const { data: authData, error: authError } =
+      await supabase.auth.getUser();
+
+    if (authError || !authData?.user) {
+      throw new Error("Prijavi se da vidiš historiju uplata.");
+    }
+
+    const { data: uplate, error } = await supabase
+      .from("UPLATE_FAKTURA")
+      .select("IZNOS")
+      .eq("FAKTURA_ID", id)
+      .eq("USER_ID", authData.user.id);
+
+    if (error) throw error;
+
+    const stavke = uplate || [];
+
+    if (!stavke.length) {
+      alert(`Historija uplata — faktura ${brojFakture}\n\nNema evidentiranih uplata.`);
+      return;
+    }
+
+    const tekst = stavke.map((uplata, index) =>
+      `${index + 1}. ${Number(uplata.IZNOS || 0).toFixed(2)}`
+    ).join("\n");
+
+    const ukupno = stavke.reduce(
+      (suma, uplata) => suma + Number(uplata.IZNOS || 0),
+      0
+    );
+
+    alert(
+      `Historija uplata — faktura ${brojFakture}\n\n` +
+      `${tekst}\n\nUkupno evidentirano: ${ukupno.toFixed(2)}`
+    );
+  } catch (error) {
+    console.error("Greška pri učitavanju historije uplata:", error);
+    alert("Historija nije učitana: " + (error.message || error));
+  }
+}
   </script>
 </body>
 </html>
