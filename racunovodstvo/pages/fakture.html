@@ -6,7 +6,7 @@
   <title>Fakture | DocBizHub</title>
   <link rel="stylesheet" href="../css/style.css">
 
-  <style>
+  <>
     * { box-sizing: border-box; }
 
     .panel {
@@ -390,14 +390,6 @@ body.meni-sakriven .main-content {
 
 <body>
 
-  <button
-  type="button"
-  id="DUGME_MENI"
-  class="dugme-meni"
-  aria-label="Sakrij ili prikaži meni"
-  title="Sakrij ili prikaži meni"
->☰</button>
-  
 <button
   type="button"
   id="DUGME_MENI"
@@ -1230,12 +1222,6 @@ dugmeMeni.addEventListener("click", () => {
     sakriven ? "Prikaži meni" : "Sakrij meni"
   );
   dugmeMeni.title = sakriven ? "Prikaži meni" : "Sakrij meni";
-});
-
-const dugmeMeni = document.getElementById("DUGME_MENI");
-
-dugmeMeni.addEventListener("click", () => {
-  document.body.classList.toggle("meni-sakriven");
 });
     
   </script>
