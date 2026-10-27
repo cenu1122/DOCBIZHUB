@@ -101,10 +101,9 @@
       overflow-x: auto;
     }
 
-   table {
+ table {
   width: 100%;
-  min-width: 0;
-  table-layout: fixed;
+  min-width: 1100px;
   border-collapse: collapse;
 }
 
@@ -298,10 +297,73 @@ td.celija-akcije {
   white-space: nowrap;
 }
 
+
+/* Sklopivi lijevi meni */
+.sidebar {
+  transition: width 0.25s ease, padding 0.25s ease,
+              transform 0.25s ease;
+}
+
+.main-content {
+  transition: margin-left 0.25s ease, padding 0.25s ease;
+}
+
+/* Kada je meni sakriven */
+body.meni-sakriven .sidebar {
+  transform: translateX(-100%);
+}
+
+body.meni-sakriven .main-content {
+  margin-left: 0 !important;
+  max-width: none !important;
+}
+
+/* Dugme za prikaz/sakrivanje menija */
+.dugme-meni {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 10000;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #3563e9;
+  color: white;
+  font-size: 23px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0002;
+}
+
+body:not(.meni-sakriven) .dugme-meni {
+  left: 258px;
+}
+
+@media (max-width: 700px) {
+  body:not(.meni-sakriven) .sidebar {
+    padding-top: 64px;
+  }
+
+  body:not(.meni-sakriven) .dugme-meni {
+    left: 14px;
+  }
+}
+
+    
   </style>
 </head>
 
 <body>
+  
+<button
+  type="button"
+  id="DUGME_MENI"
+  class="dugme-meni"
+  aria-label="Sakrij ili prikaži meni"
+  aria-expanded="true"
+  title="Sakrij ili prikaži meni"
+>☰</button>
+
   <aside class="sidebar">
     <h2>DocBizHub</h2>
     <p class="sidebar-subtitle">Računovodstvo AI</p>
@@ -1113,6 +1175,22 @@ async function HISTORIJA_UPLATA(id, brojFakture) {
     alert("Historija nije učitana: " + (error.message || error));
   }
 }
+
+const dugmeMeni = document.getElementById("DUGME_MENI");
+
+dugmeMeni.addEventListener("click", () => {
+  const sakriven = document.body.classList.toggle("meni-sakriven");
+
+  dugmeMeni.setAttribute("aria-expanded", String(!sakriven));
+  dugmeMeni.setAttribute(
+    "aria-label",
+    sakriven ? "Prikaži meni" : "Sakrij meni"
+  );
+  dugmeMeni.title = sakriven ? "Prikaži meni" : "Sakrij meni";
+});
+
+
+    
   </script>
 </body>
 </html>
