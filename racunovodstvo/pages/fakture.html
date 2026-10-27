@@ -348,12 +348,53 @@ body:not(.meni-sakriven) .dugme-meni {
     left: 14px;
   }
 }
+.dugme-meni {
+  position: fixed;
+  top: 14px;
+  left: 258px;
+  z-index: 10000;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #3563e9;
+  color: white;
+  font-size: 23px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0002;
+}
 
+body.meni-sakriven .dugme-meni {
+  left: 14px;
+}
+
+body.meni-sakriven .sidebar {
+  transform: translateX(-100%);
+}
+
+body.meni-sakriven .main-content {
+  margin-left: 0 !important;
+  max-width: none !important;
+}
+
+.sidebar,
+.main-content,
+.dugme-meni {
+  transition: all 0.25s ease;
+}
     
   </style>
 </head>
 
 <body>
+
+  <button
+  type="button"
+  id="DUGME_MENI"
+  class="dugme-meni"
+  aria-label="Sakrij ili prikaži meni"
+  title="Sakrij ili prikaži meni"
+>☰</button>
   
 <button
   type="button"
@@ -1189,7 +1230,11 @@ dugmeMeni.addEventListener("click", () => {
   dugmeMeni.title = sakriven ? "Prikaži meni" : "Sakrij meni";
 });
 
+const dugmeMeni = document.getElementById("DUGME_MENI");
 
+dugmeMeni.addEventListener("click", () => {
+  document.body.classList.toggle("meni-sakriven");
+});
     
   </script>
 </body>
