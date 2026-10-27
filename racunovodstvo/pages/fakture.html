@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fakture | DocBizHub</title>
   <link rel="stylesheet" href="../css/style.css">
-
+<style>
   <>
     * { box-sizing: border-box; }
 
@@ -321,35 +321,7 @@ body.meni-sakriven .main-content {
 }
 
 /* Dugme za prikaz/sakrivanje menija */
-.dugme-meni {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 10000;
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 8px;
-  background: #3563e9;
-  color: white;
-  font-size: 23px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px #0002;
-}
 
-body:not(.meni-sakriven) .dugme-meni {
-  left: 258px;
-}
-
-@media (max-width: 700px) {
-  body:not(.meni-sakriven) .sidebar {
-    padding-top: 64px;
-  }
-
-  body:not(.meni-sakriven) .dugme-meni {
-    left: 14px;
-  }
-}
 .dugme-meni {
   position: fixed;
   top: 14px;
@@ -384,7 +356,16 @@ body.meni-sakriven .main-content {
 .dugme-meni {
   transition: all 0.25s ease;
 }
-    
+    @media (max-width: 700px) {
+  .dugme-meni {
+    left: 14px;
+  }
+
+  body:not(.meni-sakriven) .dugme-meni {
+    left: 258px;
+  }
+}
+  
   </style>
 </head>
 
@@ -814,10 +795,11 @@ body.meni-sakriven .main-content {
       const iznos = Math.round(Number(faktura.IZNOS_FAKTURE || 0) * 100);
       const uplaceno = Math.round(IZNOS_UPLATA(faktura.ID) * 100);
 
-      if (uplaceno <= 0) {
-        return originalni === "PLACENA" ? "PLACENA" : "NEPLACENA";
-      }
+    if (uplaceno <= 0) return "NEPLACENA";
 
+if (iznos > 0 && uplaceno >= iznos) return "PLACENA";
+
+return "DJELIMICNO_PLACENA";
       if (iznos > 0 && uplaceno >= iznos) return "PLACENA";
 
       return "DJELIMICNO_PLACENA";
@@ -1117,7 +1099,10 @@ async function EVIDENTIRAJ_UPLATU(id, brojFakture, preostalo) {
 
     if (fakturaError) throw fakturaError;
     if (!faktura) throw new Error("Faktura nije pronađena.");
-
+if (String(faktura.STATUS_FAKTURE || "").toUpperCase() === "STORNIRANA") {
+  throw new Error("Na storniranu fakturu nije moguće evidentirati uplatu.");
+}
+    
     const { data: uplate, error: uplateError } = await supabase
       .from("UPLATE_FAKTURA")
       .select("IZNOS")
