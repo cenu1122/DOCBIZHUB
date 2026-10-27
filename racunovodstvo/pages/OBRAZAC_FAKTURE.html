@@ -689,6 +689,12 @@ const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6IkFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
 const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+_supabase.auth.onAuthStateChange((event, session) => {
+  console.log("Supabase auth event:", event);
+  console.log("Postoji sesija:", !!session);
+  console.log("Postoji access token:", !!session?.access_token);
+});
+  
 let currentUserId = null;
 let invoiceCache = [];
 let activeInvoiceId = null;
@@ -782,16 +788,46 @@ function getTotals() {
   return { subtotal, discounts, vatTotal, total, items };
 }
 
+
 async function ensureUser() {
-  const { data, error } = await _supabase.auth.getUser();
+  let { data, error } = await _supabase.auth.getUser();
 
   if (error || !data?.user) {
-    throw new Error(tr('loginRequired'));
+    const { data: sessionData, error: sessionError } =
+      await _supabase.auth.getSession();
+
+    if (sessionError) {
+      throw new Error(
+        "Greška pri provjeri sesije: " + sessionError.message
+      );
+    }
+
+    if (sessionData?.session?.access_token) {
+      const refreshed = await _supabase.auth.refreshSession();
+
+      if (refreshed.error) {
+        throw new Error(
+          "Sesija nije mogla biti obnovljena: " +
+          refreshed.error.message
+        );
+      }
+
+      data = { user: refreshed.data.user };
+      error = refreshed.error;
+    }
+  }
+
+  if (error || !data?.user) {
+    throw new Error(
+      "Sesija nije pronađena na stranici fakture. " +
+      "Provjeri prijavu i Supabase konfiguraciju."
+    );
   }
 
   currentUserId = data.user.id;
   return data.user;
 }
+
 
 function languageFromCountry(country) {
   const c = String(country || '').toLowerCase().trim();
