@@ -555,7 +555,8 @@
       </div>
 
 
-   <!-- POSLOVNI PODACI -->
+
+<!-- POSLOVNI PODACI -->
 <div class="section-title">
   💼 Poslovni podaci
 </div>
@@ -574,83 +575,69 @@
   >
 </div>
 
-<!-- PODACI FIRME -->
-<div class="section-title">
-  🏢 Podaci firme
+<div class="form-group">
+  <label for="adresaFirme">Adresa firme</label>
+  <input type="text" id="adresaFirme" placeholder="Ulica i broj">
 </div>
 
-      <div class="form-group">
-  <label for="nazivFirme">Naziv firme</label>
-  <input
-    type="text"
-    id="nazivFirme"
-    placeholder="Naziv firme"
-  >
+<div class="form-group">
+  <label for="gradFirme">Grad firme</label>
+  <input type="text" id="gradFirme" placeholder="Grad">
 </div>
+
+<div class="form-group">
+  <label for="postanskiBroj">Poštanski broj</label>
+  <input type="text" id="postanskiBroj" placeholder="Poštanski broj">
+</div>
+
+<div class="form-group">
+  <label for="drzavaFirme">Država firme</label>
+  <input type="text" id="drzavaFirme" placeholder="Država">
+</div>
+
+<div class="form-group">
+  <label for="idBrojFirme">ID broj firme</label>
+  <input type="text" id="idBrojFirme" placeholder="ID broj">
+</div>
+
+<div class="form-group">
+  <label for="pdvBroj">PDV broj</label>
+  <input type="text" id="pdvBroj" placeholder="PDV broj">
+</div>
+
+<div class="form-group">
+  <label for="telefonFirme">Telefon firme</label>
+  <input type="tel" id="telefonFirme" placeholder="+387...">
+</div>
+
+<div class="form-group">
+  <label for="emailFirme">E-mail firme</label>
+  <input type="email" id="emailFirme" placeholder="firma@primjer.ba">
+</div>
+
+<div class="form-group">
+  <label for="webStranicaFirme">Web stranica firme</label>
+  <input type="url" id="webStranicaFirme" placeholder="https://www.firma.ba">
+</div>
+
+<div class="form-group">
+  <label for="iban">IBAN</label>
+  <input type="text" id="iban" placeholder="IBAN računa">
+</div>
+
+<div class="form-group">
+  <label for="banka">Banka</label>
+  <input type="text" id="banka" placeholder="Naziv banke">
+</div>
+
+<div class="form-group">
+  <label for="logoFirmeUrl">URL logotipa firme</label>
+  <input type="url" id="logoFirmeUrl" placeholder="https://...">
+</div>
+
+
       
-      <div class="form-group">
-        <label for="adresaFirme">Adresa firme</label>
-        <input type="text" id="adresaFirme" placeholder="Ulica i broj">
-      </div>
-
-      <div class="form-group">
-        <label for="gradFirme">Grad firme</label>
-        <input type="text" id="gradFirme" placeholder="Grad">
-      </div>
-
-      <div class="form-group">
-        <label for="postanskiBroj">Poštanski broj</label>
-        <input type="text" id="postanskiBroj" placeholder="Poštanski broj">
-      </div>
-
-      <div class="form-group">
-        <label for="drzavaFirme">Država firme</label>
-        <input type="text" id="drzavaFirme" placeholder="Država">
-      </div>
-
-      <div class="form-group">
-        <label for="idBrojFirme">ID broj firme</label>
-        <input type="text" id="idBrojFirme" placeholder="ID broj">
-      </div>
-
-      <div class="form-group">
-        <label for="pdvBroj">PDV broj</label>
-        <input type="text" id="pdvBroj" placeholder="PDV broj">
-      </div>
-
-      <div class="form-group">
-        <label for="telefonFirme">Telefon firme</label>
-        <input type="tel" id="telefonFirme" placeholder="+387...">
-      </div>
-
-      <div class="form-group">
-        <label for="emailFirme">E-mail firme</label>
-        <input type="email" id="emailFirme" placeholder="firma@primjer.ba">
-      </div>
-
-      <div class="form-group">
-        <label for="webStranicaFirme">Web stranica firme</label>
-        <input type="url" id="webStranicaFirme" placeholder="https://www.firma.ba">
-      </div>
-
-      <div class="form-group">
-        <label for="iban">IBAN</label>
-        <input type="text" id="iban" placeholder="IBAN računa">
-      </div>
-
-      <div class="form-group">
-        <label for="banka">Banka</label>
-        <input type="text" id="banka" placeholder="Naziv banke">
-      </div>
-
-      <div class="form-group">
-        <label for="logoFirmeUrl">URL logotipa firme</label>
-        <input type="url" id="logoFirmeUrl" placeholder="https://...">
-      </div>
-        
-      </div>
-
-
+    
       <div class="form-group">
 
         <label for="djelatnostInput">
@@ -2311,7 +2298,7 @@ async function updateProfile() {
 
   try {
 
-   const { error } = await supabaseClient
+const { data, error } = await supabaseClient
   .from("POSAO_KORISNICI")
   .update({
   IME: ime,
