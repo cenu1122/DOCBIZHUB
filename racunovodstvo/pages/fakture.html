@@ -6,8 +6,7 @@
   <title>Fakture | DocBizHub</title>
   <link rel="stylesheet" href="../css/style.css">
 <style>
-  <>
-    * { box-sizing: border-box; }
+     * { box-sizing: border-box; }
 
     .panel {
       background: #fff;
@@ -490,7 +489,7 @@ body.meni-sakriven .main-content {
 
           <tbody id="FAKTURE_TABELA">
             <tr>
-              <td colspan="8" data-i18n="loading">Učitavanje faktura...</td>
+              <td colspan="9" data-i18n="loading">Učitavanje faktura...</td>
             </tr>
           </tbody>
         </table>
@@ -786,24 +785,33 @@ body.meni-sakriven .main-content {
         .reduce((zbir, u) => zbir + Number(u.IZNOS || 0), 0);
     }
 
-    function STATUS_FAKTURE(faktura) {
-      const originalni = String(faktura.STATUS_FAKTURE || "NEPLACENA")
-        .toUpperCase();
+  function STATUS_FAKTURE(faktura) {
+  const originalni = String(
+    faktura.STATUS_FAKTURE || "NEPLACENA"
+  ).toUpperCase();
 
-      if (originalni === "STORNIRANA") return "STORNIRANA";
+  if (originalni === "STORNIRANA") {
+    return "STORNIRANA";
+  }
 
-      const iznos = Math.round(Number(faktura.IZNOS_FAKTURE || 0) * 100);
-      const uplaceno = Math.round(IZNOS_UPLATA(faktura.ID) * 100);
+  const iznos = Math.round(
+    Number(faktura.IZNOS_FAKTURE || 0) * 100
+  );
 
-    if (uplaceno <= 0) return "NEPLACENA";
+  const uplaceno = Math.round(
+    IZNOS_UPLATA(faktura.ID) * 100
+  );
 
-if (iznos > 0 && uplaceno >= iznos) return "PLACENA";
+  if (uplaceno <= 0) {
+    return "NEPLACENA";
+  }
 
-return "DJELIMICNO_PLACENA";
-      if (iznos > 0 && uplaceno >= iznos) return "PLACENA";
+  if (iznos > 0 && uplaceno >= iznos) {
+    return "PLACENA";
+  }
 
-      return "DJELIMICNO_PLACENA";
-    }
+  return "DJELIMICNO_PLACENA";
+}
 
     function NAZIV_STATUSA(status) {
       const kljucevi = {
