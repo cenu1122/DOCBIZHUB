@@ -694,8 +694,55 @@ let invoiceCache = [];
 let activeInvoiceId = null;
 let profileLoaded = false;
 
+const invoiceParams = new URLSearchParams(window.location.search);
+const requestedInvoiceId = invoiceParams.get("id");
+let invoiceMode = invoiceParams.get("mode") === "view" ? "view" : "edit";
+let invoiceReadOnly = invoiceMode === "view";
+
 function currentLang() {
   return document.getElementById('language').value || 'bs';
+}
+
+  function applyInvoiceMode() {
+  const readOnly = invoiceReadOnly;
+
+  document.querySelectorAll(
+    "#sellerName, #sellerAddress, #sellerTax, #sellerVat, " +
+    "#sellerContact, #sellerBank, #sellerAccount, #buyerName, " +
+    "#buyerAddress, #buyerTax, #buyerVat, #buyerContact, " +
+    "#invoiceNumber, #invoiceDate, #dueDate, #currency, #notes, " +
+    "#payment, #issuer"
+  ).forEach(el => {
+    el.disabled = readOnly;
+    el.readOnly = readOnly && el.tagName === "INPUT";
+  });
+
+  document.querySelectorAll("#items input").forEach(el => {
+    el.readOnly = readOnly;
+    el.disabled = readOnly;
+  });
+
+  document.querySelectorAll(
+    "#items .delete, button[onclick='addItem()']"
+  ).forEach(el => {
+    el.hidden = readOnly;
+  });
+
+  const saveButton = document.querySelector(
+    "button[onclick='saveInvoice()']"
+  );
+
+  if (saveButton) {
+    saveButton.hidden = readOnly;
+  }
+
+  const title = document.querySelector("h1[data-i18n='title']");
+
+  if (title) {
+    title.textContent = readOnly
+      ? (currentLang() === "en" ? "INVOICE — VIEW" : "FAKTURA — PREGLED")
+      : tr("title");
+  }
 }
 
 function tr(key) {
@@ -1003,10 +1050,12 @@ async function saveInvoice() {
   }
 }
 
-async function loadInvoice() {
-  const id = document.getElementById('invoiceList').value;
+async function loadInvoice(
+  id = document.getElementById("invoiceList").value,
+  { silent = false } = {}
+) {
   if (!id) {
-    alert(tr('chooseInvoice'));
+    if (!silent) alert(tr("chooseInvoice"));
     return;
   }
 
@@ -1084,9 +1133,13 @@ async function loadInvoice() {
 
     if (!lines?.length) addItem();
 
-    changeLanguage();
-    calculate();
-    alert(tr('loadedOk'));
+  changeLanguage();
+calculate();
+applyInvoiceMode();
+
+if (!silent) {
+  alert(tr("loadedOk"));
+}
   } catch (e) {
     console.error(e);
     alert(tr('loadError') + (e.message || e));
@@ -1148,9 +1201,33 @@ addItem();
     await ensureUser();
     await loadCompanyProfile();
     await refreshInvoiceList();
+
+    if (requestedInvoiceId) {
+      const exists = invoiceCache.some(
+        inv => String(inv.ID) === String(requestedInvoiceId)
+      );
+
+      if (!exists) {
+        throw new Error(
+          "Faktura nije pronađena ili nemate pravo pristupa."
+        );
+      }
+
+      document.getElementById("invoiceList").value =
+        requestedInvoiceId;
+
+      await loadInvoice(requestedInvoiceId, { silent: true });
+    } else {
+      activeInvoiceId = null;
+      invoiceReadOnly = false;
+      invoiceMode = "edit";
+      applyInvoiceMode();
+    }
   } catch (e) {
-    const hint = document.getElementById('invoiceListHint');
+    console.error(e);
+    const hint = document.getElementById("invoiceListHint");
     if (hint) hint.textContent = e.message || String(e);
+    else alert(e.message || String(e));
   }
 })();
 </script>
