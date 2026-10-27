@@ -78,7 +78,6 @@ th, td {
 }
 
 th { background: #edf4ff; }
-
 td input { min-width: 65px; }
 
 button {
@@ -112,7 +111,27 @@ button {
   font-weight: bold;
 }
 
+.invoice-tools {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(180px, 1fr) minmax(150px, .8fr);
+  gap: 12px;
+  align-items: end;
+  margin: 18px 0;
+  padding: 14px;
+  background: #f7faff;
+  border: 1px solid #dce5f0;
+  border-radius: 10px;
+}
+
+.invoice-tools label { margin-top: 0; }
+.invoice-tools .hint {
+  grid-column: 1/-1;
+  color: #52657e;
+  font-size: 12px;
+}
+
 @media(max-width: 750px) {
+  .invoice-tools { grid-template-columns: 1fr; }
   .grid { grid-template-columns: 1fr; }
   .table-wrap { overflow-x: auto; }
 }
@@ -157,7 +176,6 @@ button {
 <div class="grid">
   <section>
     <h2 data-i18n="seller">Podaci o prodavcu</h2>
-
     <label data-i18n="company">Firma</label>
     <input id="sellerName">
 
@@ -182,7 +200,6 @@ button {
 
   <section>
     <h2 data-i18n="buyer">Podaci o kupcu</h2>
-
     <label data-i18n="company">Firma / ime kupca</label>
     <input id="buyerName">
 
@@ -201,7 +218,6 @@ button {
 
   <section>
     <h2 data-i18n="details">Podaci o fakturi</h2>
-
     <label data-i18n="number">Broj fakture</label>
     <input id="invoiceNumber" value="2026-001">
 
@@ -259,39 +275,56 @@ button {
       <option value="cash">Gotovina</option>
       <option value="card">Kartica</option>
     </select>
+
     <label data-i18n="issuer">Fakturu izdao/la</label>
     <input id="issuer">
   </section>
 </div>
 
 <div class="totals">
+  <div><span data-i18n="subtotal">Osnovica</span><strong id="subtotal">0,00</strong></div>
+  <div><span data-i18n="discountTotal">Rabat</span><strong id="discountTotal">0,00</strong></div>
+  <div><span data-i18n="vatTotal">PDV</span><strong id="vatTotal">0,00</strong></div>
+  <div class="grand"><span data-i18n="total">UKUPNO</span><strong id="total">0,00</strong></div>
+</div>
+
+<div class="no-print invoice-tools">
   <div>
-    <span data-i18n="subtotal">Osnovica</span>
-    <strong id="subtotal">0,00</strong>
+    <label for="invoiceList" data-i18n="invoiceList">Lista faktura</label>
+    <select id="invoiceList">
+      <option value="" data-i18n="chooseInvoice">— Izaberi fakturu —</option>
+    </select>
   </div>
+
   <div>
-    <span data-i18n="discountTotal">Rabat</span>
-    <strong id="discountTotal">0,00</strong>
+    <label for="invoiceSearch" data-i18n="searchInvoices">Pretraga faktura</label>
+    <input id="invoiceSearch" type="search"
+      placeholder="Broj fakture ili kupac"
+      data-i18n-placeholder="searchPlaceholder">
   </div>
+
   <div>
-    <span data-i18n="vatTotal">PDV</span>
-    <strong id="vatTotal">0,00</strong>
+    <label for="invoiceStatusFilter" data-i18n="filterStatus">Filter statusa</label>
+    <select id="invoiceStatusFilter">
+      <option value="all" data-i18n="allStatuses">Svi statusi</option>
+      <option value="NEPLACENA" data-i18n="unpaid">Neplaćene</option>
+      <option value="PLACENA" data-i18n="paid">Plaćene</option>
+      <option value="DJELOMICNO_PLACENA" data-i18n="partial">Djelimično plaćene</option>
+    </select>
   </div>
-  <div class="grand">
-    <span data-i18n="total">UKUPNO</span>
-    <strong id="total">0,00</strong>
+
+  <div class="hint" id="invoiceListHint" data-i18n="listHint">
+    Fakture se učitavaju iz vašeg Supabase naloga.
   </div>
 </div>
 
-<div class="no-print" style="margin-top:20px">
-  <button onclick="saveInvoice()" data-i18n="save">Sačuvaj</button>
-  <button onclick="loadInvoice()" data-i18n="load">Učitaj sačuvano</button>
+<div class="no-print" style="margin-top:12px">
+  <button onclick="saveInvoice()" data-i18n="save">Sačuvaj fakturu</button>
+  <button onclick="refreshInvoiceList()" data-i18n="refreshInvoices">Osvježi listu</button>
   <button onclick="window.print()" data-i18n="print">Štampaj / PDF</button>
   <button onclick="newInvoice()" data-i18n="new">Nova faktura</button>
 </div>
-
-</div>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const translations = {
 bs: {
@@ -307,7 +340,21 @@ amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
 payment:"Plaćanje",method:"Način plaćanja",issuer:"Fakturu izdao/la",
 subtotal:"Osnovica",discountTotal:"Rabat",vatTotal:"PDV",
 total:"UKUPNO",save:"Sačuvaj",load:"Učitaj sačuvano",
-print:"Štampaj / PDF",new:"Nova faktura"
+print:"Štampaj / PDF",new:"Nova faktura",
+invoiceList:"Lista svih faktura",chooseInvoice:"— Izaberi fakturu —",
+searchInvoices:"Pretraga faktura",searchPlaceholder:"Broj fakture ili kupac",
+filterStatus:"Filter statusa",allStatuses:"Svi statusi",
+unpaid:"Neplaćene",paid:"Plaćene",partial:"Djelimično plaćene",
+listHint:"Fakture se učitavaju iz vašeg Supabase naloga.",
+refreshInvoices:"Osvježi listu",loadingInvoices:"Učitavam fakture…",
+noInvoices:"Nema faktura za izabrani filter.",
+savedOk:"Faktura je sačuvana u Supabase.",
+loadedOk:"Faktura je učitana.",
+loginRequired:"Niste prijavljeni. Prijavite se pa pokušajte ponovo.",
+saveError:"Greška pri čuvanju fakture: ",
+loadError:"Greška pri učitavanju: ",
+buyerRequired:"Unesite naziv kupca i broj fakture.",
+linesError:"Faktura je sačuvana, ali stavke nisu. Provjerite Supabase dozvole."
 },
 hr: {
 title:"RAČUN",language:"Jezik",seller:"Podaci o izdavatelju",
@@ -322,7 +369,20 @@ amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
 payment:"Plaćanje",method:"Način plaćanja",issuer:"Račun izdao/la",
 subtotal:"Osnovica",discountTotal:"Popust",vatTotal:"PDV",
 total:"UKUPNO",save:"Spremi",load:"Učitaj spremljeno",
-print:"Ispiši / PDF",new:"Novi račun"
+print:"Ispiši / PDF",new:"Novi račun",
+invoiceList:"Popis svih računa",chooseInvoice:"— Odaberite račun —",
+searchInvoices:"Pretraži račune",searchPlaceholder:"Broj računa ili kupac",
+filterStatus:"Filtriraj status",allStatuses:"Svi statusi",
+unpaid:"Neplaćeni",paid:"Plaćeni",partial:"Djelomično plaćeni",
+listHint:"Računi se učitavaju iz vašeg Supabase računa.",
+refreshInvoices:"Osvježi popis",loadingInvoices:"Učitavanje računa…",
+noInvoices:"Nema računa za odabrani filtar.",
+savedOk:"Račun je spremljen u Supabase.",loadedOk:"Račun je učitan.",
+loginRequired:"Niste prijavljeni. Prijavite se i pokušajte ponovno.",
+saveError:"Pogreška pri spremanju računa: ",
+loadError:"Pogreška pri učitavanju: ",
+buyerRequired:"Unesite naziv kupca i broj računa.",
+linesError:"Račun je spremljen, ali stavke nisu. Provjerite Supabase ovlasti."
 },
 sr: {
 title:"ФАКТУРА",language:"Језик",seller:"Подаци о продавцу",
@@ -337,7 +397,21 @@ amount:"Износ",add:"+ Додај ставку",notes:"Напомена",
 payment:"Плаћање",method:"Начин плаћања",issuer:"Фактуру издао/ла",
 subtotal:"Основица",discountTotal:"Попуст",vatTotal:"ПДВ",
 total:"УКУПНО",save:"Сачувај",load:"Учитај сачувано",
-print:"Штампај / PDF",new:"Нова фактура"
+print:"Штампај / PDF",new:"Нова фактура",
+invoiceList:"Листа свих фактура",chooseInvoice:"— Изабери фактуру —",
+searchInvoices:"Претрага фактура",searchPlaceholder:"Број фактуре или купац",
+filterStatus:"Филтер статуса",allStatuses:"Сви статуси",
+unpaid:"Неплаћене",paid:"Плаћене",partial:"Делимично плаћене",
+listHint:"Фактуре се учитавају из вашег Supabase налога.",
+refreshInvoices:"Освежи листу",loadingInvoices:"Учитавање фактура…",
+noInvoices:"Нема фактура за изабрани филтер.",
+savedOk:"Фактура је сачувана у Supabase.",
+loadedOk:"Фактура је учитана.",
+loginRequired:"Нисте пријављени. Пријавите се и покушајте поново.",
+saveError:"Грешка при чувању фактуре: ",
+loadError:"Грешка при учитавању: ",
+buyerRequired:"Унесите назив купца и број фактуре.",
+linesError:"Фактура је сачувана, али ставке нису. Проверите Supabase дозволе."
 },
 me: {
 title:"FAKTURA",language:"Jezik",seller:"Podaci o prodavcu",
@@ -352,7 +426,20 @@ amount:"Iznos",add:"+ Dodaj stavku",notes:"Napomena",
 payment:"Plaćanje",method:"Način plaćanja",issuer:"Fakturu izdao/la",
 subtotal:"Osnovica",discountTotal:"Popust",vatTotal:"PDV",
 total:"UKUPNO",save:"Sačuvaj",load:"Učitaj sačuvano",
-print:"Štampaj / PDF",new:"Nova faktura"
+print:"Štampaj / PDF",new:"Nova faktura",
+invoiceList:"Lista svih faktura",chooseInvoice:"— Izaberi fakturu —",
+searchInvoices:"Pretraga faktura",searchPlaceholder:"Broj fakture ili kupac",
+filterStatus:"Filter statusa",allStatuses:"Svi statusi",
+unpaid:"Neplaćene",paid:"Plaćene",partial:"Djelimično plaćene",
+listHint:"Fakture se učitavaju iz vašeg Supabase naloga.",
+refreshInvoices:"Osvježi listu",loadingInvoices:"Učitavam fakture…",
+noInvoices:"Nema faktura za izabrani filter.",
+savedOk:"Faktura je sačuvana u Supabase.",loadedOk:"Faktura je učitana.",
+loginRequired:"Nijeste prijavljeni. Prijavite se pa pokušajte ponovo.",
+saveError:"Greška pri čuvanju fakture: ",
+loadError:"Greška pri učitavanju: ",
+buyerRequired:"Unesite naziv kupca i broj fakture.",
+linesError:"Faktura je sačuvana, ali stavke nijesu. Provjerite Supabase dozvole."
 },
 sl: {
 title:"RAČUN",language:"Jezik",seller:"Podatki izdajatelja",
@@ -366,7 +453,19 @@ amount:"Znesek",add:"+ Dodaj postavko",notes:"Opomba",
 payment:"Plačilo",method:"Način plačila",issuer:"Izdajatelj računa",
 subtotal:"Osnova",discountTotal:"Popust",vatTotal:"DDV",
 total:"SKUPAJ",save:"Shrani",load:"Naloži shranjeno",
-print:"Natisni / PDF",new:"Nov račun"
+print:"Natisni / PDF",new:"Nov račun",
+invoiceList:"Seznam vseh računov",chooseInvoice:"— Izberite račun —",
+searchInvoices:"Iskanje računov",searchPlaceholder:"Številka računa ali kupec",
+filterStatus:"Filter statusa",allStatuses:"Vsi statusi",
+unpaid:"Neplačani",paid:"Plačani",partial:"Delno plačani",
+listHint:"Računi se nalagajo iz vašega računa Supabase.",
+refreshInvoices:"Osveži seznam",loadingInvoices:"Nalaganje računov…",
+noInvoices:"Za izbrani filter ni računov.",
+savedOk:"Račun je shranjen v Supabase.",loadedOk:"Račun je naložen.",
+loginRequired:"Niste prijavljeni. Prijavite se in poskusite znova.",
+saveError:"Napaka pri shranjevanju: ",loadError:"Napaka pri nalaganju: ",
+buyerRequired:"Vnesite ime kupca in številko računa.",
+linesError:"Račun je shranjen, postavke pa ne. Preverite dovoljenja Supabase."
 },
 mk: {
 title:"ФАКТУРА",language:"Јазик",seller:"Податоци за продавачот",
@@ -381,7 +480,19 @@ amount:"Износ",add:"+ Додај ставка",notes:"Забелешка",
 payment:"Плаќање",method:"Начин на плаќање",issuer:"Издал",
 subtotal:"Основица",discountTotal:"Попуст",vatTotal:"ДДВ",
 total:"ВКУПНО",save:"Зачувај",load:"Вчитај зачувано",
-print:"Печати / PDF",new:"Нова фактура"
+print:"Печати / PDF",new:"Нова фактура",
+invoiceList:"Листа на сите фактури",chooseInvoice:"— Изберете фактура —",
+searchInvoices:"Пребарај фактури",searchPlaceholder:"Број на фактура или купувач",
+filterStatus:"Филтер за статус",allStatuses:"Сите статуси",
+unpaid:"Неплатени",paid:"Платени",partial:"Делумно платени",
+listHint:"Фактурите се вчитуваат од вашиот Supabase профил.",
+refreshInvoices:"Освежи листа",loadingInvoices:"Се вчитуваат фактури…",
+noInvoices:"Нема фактури за избраниот филтер.",
+savedOk:"Фактурата е зачувана во Supabase.",loadedOk:"Фактурата е вчитана.",
+loginRequired:"Не сте најавени. Најавете се и обидете се повторно.",
+saveError:"Грешка при зачувување: ",loadError:"Грешка при вчитување: ",
+buyerRequired:"Внесете име на купувачот и број на фактура.",
+linesError:"Фактурата е зачувана, но ставките не се. Проверете ги Supabase дозволите."
 },
 en: {
 title:"INVOICE",language:"Language",seller:"Seller details",
@@ -394,7 +505,19 @@ price:"Price",discount:"Discount %",vat:"VAT %",
 amount:"Amount",add:"+ Add item",notes:"Notes",payment:"Payment",
 method:"Payment method",issuer:"Issued by",subtotal:"Subtotal",
 discountTotal:"Discount",vatTotal:"VAT",total:"TOTAL",
-save:"Save",load:"Load saved",print:"Print / PDF",new:"New invoice"
+save:"Save",load:"Load saved",print:"Print / PDF",new:"New invoice",
+invoiceList:"All invoices",chooseInvoice:"— Select invoice —",
+searchInvoices:"Search invoices",searchPlaceholder:"Invoice number or customer",
+filterStatus:"Status filter",allStatuses:"All statuses",
+unpaid:"Unpaid",paid:"Paid",partial:"Partially paid",
+listHint:"Invoices are loaded from your Supabase account.",
+refreshInvoices:"Refresh list",loadingInvoices:"Loading invoices…",
+noInvoices:"No invoices match this filter.",savedOk:"Invoice saved to Supabase.",
+loadedOk:"Invoice loaded.",
+loginRequired:"You are not signed in. Please sign in and try again.",
+saveError:"Error saving invoice: ",loadError:"Error loading: ",
+buyerRequired:"Enter a customer name and invoice number.",
+linesError:"The invoice was saved, but its line items were not. Check Supabase permissions."
 },
 de: {
 title:"RECHNUNG",language:"Sprache",seller:"Verkäuferdaten",
@@ -408,7 +531,19 @@ amount:"Betrag",add:"+ Position hinzufügen",notes:"Anmerkungen",
 payment:"Zahlung",method:"Zahlungsart",issuer:"Ausgestellt von",
 subtotal:"Zwischensumme",discountTotal:"Rabatt",vatTotal:"MwSt.",
 total:"GESAMT",save:"Speichern",load:"Gespeichertes laden",
-print:"Drucken / PDF",new:"Neue Rechnung"
+print:"Drucken / PDF",new:"Neue Rechnung",
+invoiceList:"Alle Rechnungen",chooseInvoice:"— Rechnung auswählen —",
+searchInvoices:"Rechnungen suchen",searchPlaceholder:"Rechnungsnummer oder Kunde",
+filterStatus:"Statusfilter",allStatuses:"Alle Status",unpaid:"Unbezahlt",
+paid:"Bezahlt",partial:"Teilweise bezahlt",
+listHint:"Rechnungen werden aus Ihrem Supabase-Konto geladen.",
+refreshInvoices:"Liste aktualisieren",loadingInvoices:"Rechnungen werden geladen…",
+noInvoices:"Keine Rechnungen für diesen Filter.",
+savedOk:"Rechnung in Supabase gespeichert.",loadedOk:"Rechnung geladen.",
+loginRequired:"Sie sind nicht angemeldet. Bitte melden Sie sich an.",
+saveError:"Fehler beim Speichern: ",loadError:"Fehler beim Laden: ",
+buyerRequired:"Kundenname und Rechnungsnummer eingeben.",
+linesError:"Rechnung gespeichert, Positionen jedoch nicht. Prüfen Sie die Supabase-Berechtigungen."
 },
 it: {
 title:"FATTURA",language:"Lingua",seller:"Dati del venditore",
@@ -421,7 +556,19 @@ qty:"Quantità",price:"Prezzo",discount:"Sconto %",vat:"IVA %",
 amount:"Importo",add:"+ Aggiungi voce",notes:"Note",payment:"Pagamento",
 method:"Metodo di pagamento",issuer:"Emessa da",subtotal:"Imponibile",
 discountTotal:"Sconto",vatTotal:"IVA",total:"TOTALE",
-save:"Salva",load:"Carica salvato",print:"Stampa / PDF",new:"Nuova fattura"
+save:"Salva",load:"Carica salvato",print:"Stampa / PDF",new:"Nuova fattura",
+invoiceList:"Tutte le fatture",chooseInvoice:"— Seleziona fattura —",
+searchInvoices:"Cerca fatture",searchPlaceholder:"Numero fattura o cliente",
+filterStatus:"Filtro stato",allStatuses:"Tutti gli stati",
+unpaid:"Non pagate",paid:"Pagate",partial:"Parzialmente pagate",
+listHint:"Le fatture vengono caricate dal tuo account Supabase.",
+refreshInvoices:"Aggiorna elenco",loadingInvoices:"Caricamento fatture…",
+noInvoices:"Nessuna fattura per questo filtro.",
+savedOk:"Fattura salvata in Supabase.",loadedOk:"Fattura caricata.",
+loginRequired:"Non hai effettuato l'accesso. Accedi e riprova.",
+saveError:"Errore durante il salvataggio: ",loadError:"Errore durante il caricamento: ",
+buyerRequired:"Inserisci il nome del cliente e il numero della fattura.",
+linesError:"Fattura salvata, ma le righe non sono state salvate. Controlla i permessi Supabase."
 }
 };
 
@@ -432,6 +579,11 @@ function changeLanguage() {
     const key = el.dataset.i18n;
     if (translations[lang][key]) el.textContent = translations[lang][key];
   });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (translations[lang][key]) el.placeholder = translations[lang][key];
+  });
+  renderInvoiceList();
 }
 
 function addItem(desc="", qty=1, price=0, discount=0, vat=17) {
@@ -447,7 +599,11 @@ function addItem(desc="", qty=1, price=0, discount=0, vat=17) {
     <td class="no-print"><button class="delete" type="button">×</button></td>`;
   document.getElementById("items").appendChild(row);
   row.querySelectorAll("input").forEach(input => input.addEventListener("input", calculate));
-  row.querySelector(".delete").onclick = () => { row.remove(); renumber(); calculate(); };
+  row.querySelector(".delete").onclick = () => {
+    row.remove();
+    renumber();
+    calculate();
+  };
   renumber();
   calculate();
 }
@@ -467,30 +623,44 @@ function renumber() {
 function money(value) {
   const currency = document.getElementById("currency").value;
   try {
-    return new Intl.NumberFormat("bs-BA", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value) + " " + currency;
-  } catch { return value.toFixed(2) + " " + currency; }
+    const localeByLang = {
+      bs:"bs-BA", hr:"hr-HR", sr:"sr-RS", me:"sr-ME",
+      sl:"sl-SI", mk:"mk-MK", en:"en-GB", de:"de-DE", it:"it-IT"
+    };
+    return new Intl.NumberFormat(
+      localeByLang[document.getElementById("language")?.value || "bs"] || "bs-BA",
+      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    ).format(value) + " " + currency;
+  } catch {
+    return value.toFixed(2) + " " + currency;
+  }
 }
 
 function calculate() {
   let subtotal = 0, discounts = 0, vatTotal = 0, total = 0;
+
   document.querySelectorAll("#items tr").forEach(row => {
     const qty = Math.max(0, Number(row.querySelector(".qty").value) || 0);
     const price = Math.max(0, Number(row.querySelector(".price").value) || 0);
-    const discount = Math.min(100, Math.max(0, Number(row.querySelector(".discount").value) || 0));
+    const discount = Math.min(
+      100,
+      Math.max(0, Number(row.querySelector(".discount").value) || 0)
+    );
     const vat = Math.max(0, Number(row.querySelector(".vat").value) || 0);
+
     const gross = qty * price;
     const discountAmount = gross * discount / 100;
     const base = gross - discountAmount;
     const tax = base * vat / 100;
+
     subtotal += gross;
     discounts += discountAmount;
     vatTotal += tax;
     total += base + tax;
+
     row.querySelector(".amount").textContent = money(base + tax);
   });
+
   document.getElementById("subtotal").textContent = money(subtotal);
   document.getElementById("discountTotal").textContent = money(discounts);
   document.getElementById("vatTotal").textContent = money(vatTotal);
@@ -499,9 +669,11 @@ function calculate() {
 
 function getFormData() {
   const data = {};
+
   document.querySelectorAll("input[id], textarea[id], select[id]").forEach(el => {
     if (el.id !== "language") data[el.id] = el.value;
   });
+
   data.items = [...document.querySelectorAll("#items tr")].map(row => ({
     desc: row.querySelector(".desc").value,
     qty: row.querySelector(".qty").value,
@@ -509,43 +681,478 @@ function getFormData() {
     discount: row.querySelector(".discount").value,
     vat: row.querySelector(".vat").value
   }));
+
   return data;
 }
 
-function saveInvoice() {
-  localStorage.setItem("docbizhub_invoice", JSON.stringify(getFormData()));
-  alert("Faktura je sačuvana u ovom pregledniku.");
+const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6IkFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUserId = null;
+let invoiceCache = [];
+let activeInvoiceId = null;
+let profileLoaded = false;
+
+function currentLang() {
+  return document.getElementById('language').value || 'bs';
 }
 
-function loadInvoice() {
-  const saved = localStorage.getItem("docbizhub_invoice");
-  if (!saved) return alert("Nema sačuvane fakture u ovom pregledniku.");
-  const data = JSON.parse(saved);
-  Object.entries(data).forEach(([key, value]) => {
-    const el = document.getElementById(key);
-    if (el && key !== "items") el.value = value;
+function tr(key) {
+  return (translations[currentLang()] || translations.bs)[key] ||
+    translations.bs[key] || key;
+}
+
+function numberValue(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function getTotals() {
+  let subtotal = 0, discounts = 0, vatTotal = 0, total = 0;
+
+  const items = [...document.querySelectorAll('#items tr')].map(row => {
+    const qty = Math.max(0, numberValue(row.querySelector('.qty').value));
+    const price = Math.max(0, numberValue(row.querySelector('.price').value));
+    const discount = Math.min(
+      100,
+      Math.max(0, numberValue(row.querySelector('.discount').value))
+    );
+    const vat = Math.max(0, numberValue(row.querySelector('.vat').value));
+
+    const base = qty * price * (1 - discount / 100);
+    const tax = base * vat / 100;
+    const lineTotal = base + tax;
+
+    subtotal += qty * price;
+    discounts += qty * price * discount / 100;
+    vatTotal += tax;
+    total += lineTotal;
+
+    return { row, qty, price, discount, vat, lineTotal };
   });
-  document.getElementById("items").innerHTML = "";
-  (data.items || []).forEach(item =>
-    addItem(item.desc, item.qty, item.price, item.discount, item.vat)
-  );
-  if (!data.items || !data.items.length) addItem();
+
+  return { subtotal, discounts, vatTotal, total, items };
+}
+
+async function ensureUser() {
+  const { data, error } = await _supabase.auth.getUser();
+
+  if (error || !data?.user) {
+    throw new Error(tr('loginRequired'));
+  }
+
+  currentUserId = data.user.id;
+  return data.user;
+}
+
+function languageFromCountry(country) {
+  const c = String(country || '').toLowerCase().trim();
+
+  if (/bosnia|herzegovina|bosna|bih/.test(c)) return 'bs';
+  if (/croatia|hrvatska/.test(c)) return 'hr';
+  if (/serbia|srbija/.test(c)) return 'sr';
+  if (/montenegro|crna gora/.test(c)) return 'me';
+  if (/slovenia|slovenija/.test(c)) return 'sl';
+  if (/macedonia|македонија/.test(c)) return 'mk';
+  if (/germany|deutschland|austria|österreich/.test(c)) return 'de';
+  if (/italy|italia/.test(c)) return 'it';
+  if (/united kingdom|ireland|united states|canada|australia/.test(c)) return 'en';
+
+  const browser = (navigator.language || 'bs').toLowerCase();
+  return ({
+    hr:'hr', sr:'sr', sl:'sl', mk:'mk', de:'de',
+    it:'it', en:'en', bs:'bs', me:'me'
+  })[browser.split('-')[0]] || 'bs';
+}
+
+async function loadCompanyProfile() {
+  if (profileLoaded) return;
+
+  const { data, error } = await _supabase
+    .from('POSAO_KORISNICI')
+    .select('*')
+    .eq('USER', currentUserId)
+    .maybeSingle();
+
+  if (error) {
+    console.warn('POSAO_KORISNICI profile:', error.message);
+    return;
+  }
+
+  if (!data) return;
+
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val != null && String(val).trim() && !el.value) {
+      el.value = val;
+    }
+  };
+
+  set('sellerName', data.NAZIV_FIRME);
+  set('sellerAddress', [
+    data.ADRESA_FIRME,
+    data.POSTANSKI_BROJ,
+    data.GRAD_FIRME,
+    data.DRZAVA_FIRME
+  ].filter(Boolean).join(', '));
+  set('sellerTax', data.ID_BROJ_FIRME);
+  set('sellerVat', data.PDV_BROJ);
+  set('sellerContact', [
+    data.TELEFON_FIRME,
+    data.EMAIL_FIRME
+  ].filter(Boolean).join(' / '));
+  set('sellerBank', data.BANKA);
+  set('sellerAccount', data.IBAN);
+
+  if (localStorage.getItem('docbizhub_language')) {
+    document.getElementById('language').value =
+      localStorage.getItem('docbizhub_language');
+  } else {
+    document.getElementById('language').value =
+      languageFromCountry(data.DRZAVA_FIRME);
+  }
+
   changeLanguage();
-  calculate();
+  profileLoaded = true;
+}
+
+function renderInvoiceList() {
+  const list = document.getElementById('invoiceList');
+  if (!list) return;
+
+  const search = (
+    document.getElementById('invoiceSearch')?.value || ''
+  ).toLocaleLowerCase();
+
+  const status =
+    document.getElementById('invoiceStatusFilter')?.value || 'all';
+
+  const selected = list.value;
+  list.innerHTML = '';
+
+  const first = document.createElement('option');
+  first.value = '';
+  first.textContent = tr('chooseInvoice');
+  list.appendChild(first);
+
+  const filtered = invoiceCache.filter(inv => {
+    const hay = `${inv.BROJ_FAKTURE || ''} ${inv.KUPAC || ''}`
+      .toLocaleLowerCase();
+
+    return (!search || hay.includes(search)) &&
+      (status === 'all' || inv.STATUS_FAKTURE === status);
+  });
+
+  filtered.forEach(inv => {
+    const option = document.createElement('option');
+    option.value = inv.ID;
+    option.textContent =
+      `${inv.BROJ_FAKTURE} — ${inv.KUPAC} — ` +
+      `${Number(inv.IZNOS_FAKTURE || 0).toFixed(2)} ` +
+      document.getElementById('currency').value;
+    list.appendChild(option);
+  });
+
+  if (filtered.some(inv => inv.ID === selected)) {
+    list.value = selected;
+  }
+
+  const hint = document.getElementById('invoiceListHint');
+  if (hint) {
+    hint.textContent = filtered.length
+      ? `${filtered.length} — ${tr('invoiceList')}`
+      : tr('noInvoices');
+  }
+}
+
+async function refreshInvoiceList() {
+  try {
+    await ensureUser();
+
+    const hint = document.getElementById('invoiceListHint');
+    if (hint) hint.textContent = tr('loadingInvoices');
+
+    const { data, error } = await _supabase
+      .from('FAKTURE')
+      .select(
+        'ID,USER_ID,BROJ_FAKTURE,KUPAC,DATUM_FAKTURE,ROK_PLACANJA,IZNOS_FAKTURE,STATUS_FAKTURE,OPIS_FAKTURE,KREIRANO'
+      )
+      .eq('USER_ID', currentUserId)
+      .order('KREIRANO', { ascending: false });
+
+    if (error) throw error;
+
+    invoiceCache = data || [];
+    renderInvoiceList();
+  } catch (e) {
+    alert(tr('loadError') + (e.message || e));
+  }
+}
+
+async function saveInvoice() {
+  try {
+    await ensureUser();
+
+    const data = getFormData();
+
+    if (!data.buyerName.trim() || !data.invoiceNumber.trim()) {
+      alert(tr('buyerRequired'));
+      return;
+    }
+
+    const totals = getTotals();
+
+    const invoicePayload = {
+      USER_ID: currentUserId,
+      BROJ_FAKTURE: data.invoiceNumber.trim(),
+      KUPAC: data.buyerName.trim(),
+      DATUM_FAKTURE: data.invoiceDate ||
+        new Date().toISOString().slice(0, 10),
+      ROK_PLACANJA: data.dueDate || null,
+      IZNOS_FAKTURE: Number(totals.total.toFixed(2)),
+      OPIS_FAKTURE: [
+        `Napomena: ${data.notes || ''}`,
+        `Plaćanje: ${data.payment || ''}`,
+        `Valuta: ${data.currency || 'BAM'}`,
+        `Prodavac: ${data.sellerName || ''}`,
+        `Adresa prodavca: ${data.sellerAddress || ''}`,
+        `ID prodavca: ${data.sellerTax || ''}`,
+        `PDV prodavca: ${data.sellerVat || ''}`,
+        `Kontakt prodavca: ${data.sellerContact || ''}`,
+        `Banka: ${data.sellerBank || ''}`,
+        `Račun: ${data.sellerAccount || ''}`,
+        `Kupac adresa: ${data.buyerAddress || ''}`,
+        `Kupac ID: ${data.buyerTax || ''}`,
+        `Kupac PDV: ${data.buyerVat || ''}`,
+        `Kupac kontakt: ${data.buyerContact || ''}`,
+        `Izdao: ${data.issuer || ''}`
+      ].join('\n')
+    };
+
+    let invoice;
+
+    if (activeInvoiceId) {
+      const { data: updated, error: updateError } = await _supabase
+        .from('FAKTURE')
+        .update(invoicePayload)
+        .eq('ID', activeInvoiceId)
+        .eq('USER_ID', currentUserId)
+        .select('ID')
+        .single();
+
+      if (updateError) throw updateError;
+      invoice = updated;
+
+      const { error: deleteLinesError } = await _supabase
+        .from('STAVKE_FAKTURA')
+        .delete()
+        .eq('FAKTURA_ID', invoice.ID)
+        .eq('USER_ID', currentUserId);
+
+      if (deleteLinesError) throw deleteLinesError;
+    } else {
+      const { data: created, error: insertError } = await _supabase
+        .from('FAKTURE')
+        .insert({
+          ...invoicePayload,
+          STATUS_FAKTURE: 'NEPLACENA'
+        })
+        .select('ID')
+        .single();
+
+      if (insertError) throw insertError;
+      invoice = created;
+    }
+
+    const lineRows = totals.items
+      .filter(x => x.row.querySelector('.desc').value.trim())
+      .map(x => ({
+        FAKTURA_ID: invoice.ID,
+        USER_ID: currentUserId,
+        NAZIV_STAVKE: x.row.querySelector('.desc').value.trim(),
+        OPIS: null,
+        KOLICINA: x.qty,
+        JEDINICA_MJERE: 'kom',
+        CIJENA: x.price,
+        POPUST: x.discount,
+        PDV_STOPA: x.vat,
+        UKUPNO: Number(x.lineTotal.toFixed(2))
+      }));
+
+    if (lineRows.length) {
+      const { error: lineError } = await _supabase
+        .from('STAVKE_FAKTURA')
+        .insert(lineRows);
+
+      if (lineError) {
+        console.error(lineError);
+        alert(tr('linesError') + '\n' + lineError.message);
+        await refreshInvoiceList();
+        return;
+      }
+    }
+
+    activeInvoiceId = invoice.ID;
+    await refreshInvoiceList();
+    document.getElementById('invoiceList').value = invoice.ID;
+    alert(tr('savedOk'));
+  } catch (e) {
+    console.error(e);
+    alert(tr('saveError') + (e.message || e));
+  }
+}
+
+async function loadInvoice() {
+  const id = document.getElementById('invoiceList').value;
+  if (!id) {
+    alert(tr('chooseInvoice'));
+    return;
+  }
+
+  try {
+    await ensureUser();
+
+    const { data: inv, error } = await _supabase
+      .from('FAKTURE')
+      .select('*')
+      .eq('ID', id)
+      .eq('USER_ID', currentUserId)
+      .single();
+
+    if (error) throw error;
+
+    const { data: lines, error: lineError } = await _supabase
+      .from('STAVKE_FAKTURA')
+      .select('*')
+      .eq('FAKTURA_ID', id)
+      .eq('USER_ID', currentUserId)
+      .order('KREIRANO', { ascending: true });
+
+    if (lineError) throw lineError;
+
+    activeInvoiceId = inv.ID;
+
+    const description = inv.OPIS_FAKTURE || '';
+    const getMeta = label => {
+      const m = description.split('\n').find(line => line.startsWith(label));
+      return m ? m.slice(label.length).trim() : '';
+    };
+
+    const noteLine = description.split('\n')
+      .find(line => line.startsWith('Napomena:')) || 'Napomena:';
+
+    const values = {
+      invoiceNumber: inv.BROJ_FAKTURE || '',
+      buyerName: inv.KUPAC || '',
+      invoiceDate: inv.DATUM_FAKTURE || '',
+      dueDate: inv.ROK_PLACANJA || '',
+      notes: noteLine.slice('Napomena:'.length).trim(),
+      payment: getMeta('Plaćanje:') || 'transfer',
+      currency: getMeta('Valuta:') || 'BAM',
+      sellerName: getMeta('Prodavac:'),
+      sellerAddress: getMeta('Adresa prodavca:'),
+      sellerTax: getMeta('ID prodavca:'),
+      sellerVat: getMeta('PDV prodavca:'),
+      sellerContact: getMeta('Kontakt prodavca:'),
+      sellerBank: getMeta('Banka:'),
+      sellerAccount: getMeta('Račun:'),
+      buyerAddress: getMeta('Kupac adresa:'),
+      buyerTax: getMeta('Kupac ID:'),
+      buyerVat: getMeta('Kupac PDV:'),
+      buyerContact: getMeta('Kupac kontakt:'),
+      issuer: getMeta('Izdao:')
+    };
+
+    Object.entries(values).forEach(([key, value]) => {
+      const el = document.getElementById(key);
+      if (el) el.value = value;
+    });
+
+    const tbody = document.getElementById('items');
+    tbody.innerHTML = '';
+
+    (lines || []).forEach(line => {
+      addItem(
+        line.NAZIV_STAVKE || '',
+        line.KOLICINA,
+        line.CIJENA,
+        line.POPOUST ?? line.POPUST ?? 0,
+        line.PDV_STOPA ?? 0
+      );
+    });
+
+    if (!lines?.length) addItem();
+
+    changeLanguage();
+    calculate();
+    alert(tr('loadedOk'));
+  } catch (e) {
+    console.error(e);
+    alert(tr('loadError') + (e.message || e));
+  }
 }
 
 function newInvoice() {
   if (!confirm("Započeti novu fakturu?")) return;
-  document.querySelectorAll("input[id], textarea[id]").forEach(el => el.value = "");
+
+  activeInvoiceId = null;
+  document.getElementById('invoiceList').value = '';
+
+  document.querySelectorAll("input[id], textarea[id]").forEach(el => {
+    el.value = "";
+  });
+
   document.getElementById("invoiceNumber").value = "";
   document.getElementById("items").innerHTML = "";
+
   addItem();
   calculate();
 }
 
 document.getElementById("currency").addEventListener("change", calculate);
-document.getElementById("invoiceDate").value = new Date().toISOString().slice(0,10);
+document.getElementById("invoiceDate").value =
+  new Date().toISOString().slice(0, 10);
+
+if (
+  localStorage.getItem('docbizhub_language') &&
+  translations[localStorage.getItem('docbizhub_language')]
+) {
+  document.getElementById('language').value =
+    localStorage.getItem('docbizhub_language');
+} else {
+  document.getElementById('language').value = languageFromCountry('');
+}
+
+changeLanguage();
+
+document.getElementById("invoiceSearch")
+  .addEventListener("input", renderInvoiceList);
+
+document.getElementById("invoiceStatusFilter")
+  .addEventListener("change", renderInvoiceList);
+
+document.getElementById("invoiceList").addEventListener("change", () => {
+  if (document.getElementById("invoiceList").value) loadInvoice();
+});
+
+document.getElementById("language").addEventListener("change", () => {
+  localStorage.setItem('docbizhub_language', currentLang());
+  renderInvoiceList();
+});
+
 addItem();
+
+(async function initInvoiceApp() {
+  try {
+    await ensureUser();
+    await loadCompanyProfile();
+    await refreshInvoiceList();
+  } catch (e) {
+    const hint = document.getElementById('invoiceListHint');
+    if (hint) hint.textContent = e.message || String(e);
+  }
+})();
 </script>
 </body>
 </html>
