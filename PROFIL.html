@@ -974,7 +974,7 @@ const SUPABASE_URL =
   'https://uduwpvdjmanrgpumdrfh.supabase.co';
 
 const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwiaWF0IjoxNzg0ODExMDg0LCJleHAiOjIxMDAzODcwODR9.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
+  'sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45';
 
 const supabaseClient =
   window.supabase.createClient(
@@ -1292,7 +1292,7 @@ if (data.NE_ZELI_KONTAKT === true) {
       document.getElementById(
         "webInput"
       ).value =
-        data.WEB_STRANICA || "";
+        data.SITE || "";
 
 
       if (data.SLIKE_URL) {
@@ -2237,7 +2237,7 @@ async function updateProfile() {
           LINKEDIN:
             linkedin || null,
 
-          WEB_STRANICA:
+          SITE:
             web || null
 
         })
