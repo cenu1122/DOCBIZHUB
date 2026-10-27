@@ -555,10 +555,99 @@
       </div>
 
 
-      <!-- POSLOVNI PODACI -->
+   <!-- POSLOVNI PODACI -->
+<div class="section-title">
+  💼 Poslovni podaci
+</div>
 
-      <div class="section-title">
-        💼 Poslovni podaci
+<!-- PODACI FIRME -->
+<div class="section-title">
+  🏢 Podaci firme
+</div>
+
+<div class="form-group">
+  <label for="nazivFirme">Naziv firme</label>
+  <input
+    type="text"
+    id="nazivFirme"
+    placeholder="Naziv firme"
+  >
+</div>
+
+<!-- PODACI FIRME -->
+<div class="section-title">
+  🏢 Podaci firme
+</div>
+
+      <div class="form-group">
+  <label for="nazivFirme">Naziv firme</label>
+  <input
+    type="text"
+    id="nazivFirme"
+    placeholder="Naziv firme"
+  >
+</div>
+      
+      <div class="form-group">
+        <label for="adresaFirme">Adresa firme</label>
+        <input type="text" id="adresaFirme" placeholder="Ulica i broj">
+      </div>
+
+      <div class="form-group">
+        <label for="gradFirme">Grad firme</label>
+        <input type="text" id="gradFirme" placeholder="Grad">
+      </div>
+
+      <div class="form-group">
+        <label for="postanskiBroj">Poštanski broj</label>
+        <input type="text" id="postanskiBroj" placeholder="Poštanski broj">
+      </div>
+
+      <div class="form-group">
+        <label for="drzavaFirme">Država firme</label>
+        <input type="text" id="drzavaFirme" placeholder="Država">
+      </div>
+
+      <div class="form-group">
+        <label for="idBrojFirme">ID broj firme</label>
+        <input type="text" id="idBrojFirme" placeholder="ID broj">
+      </div>
+
+      <div class="form-group">
+        <label for="pdvBroj">PDV broj</label>
+        <input type="text" id="pdvBroj" placeholder="PDV broj">
+      </div>
+
+      <div class="form-group">
+        <label for="telefonFirme">Telefon firme</label>
+        <input type="tel" id="telefonFirme" placeholder="+387...">
+      </div>
+
+      <div class="form-group">
+        <label for="emailFirme">E-mail firme</label>
+        <input type="email" id="emailFirme" placeholder="firma@primjer.ba">
+      </div>
+
+      <div class="form-group">
+        <label for="webStranicaFirme">Web stranica firme</label>
+        <input type="url" id="webStranicaFirme" placeholder="https://www.firma.ba">
+      </div>
+
+      <div class="form-group">
+        <label for="iban">IBAN</label>
+        <input type="text" id="iban" placeholder="IBAN računa">
+      </div>
+
+      <div class="form-group">
+        <label for="banka">Banka</label>
+        <input type="text" id="banka" placeholder="Naziv banke">
+      </div>
+
+      <div class="form-group">
+        <label for="logoFirmeUrl">URL logotipa firme</label>
+        <input type="url" id="logoFirmeUrl" placeholder="https://...">
+      </div>
+        
       </div>
 
 
@@ -1168,6 +1257,22 @@ async function ucitajProfil() {
 
     if (data) {
 
+
+document.getElementById("nazivFirme").value = data.NAZIV_FIRME || "";
+document.getElementById("adresaFirme").value = data.ADRESA_FIRME || "";
+document.getElementById("gradFirme").value = data.GRAD_FIRME || "";
+document.getElementById("postanskiBroj").value = data.POSTANSKI_BROJ || "";
+document.getElementById("drzavaFirme").value = data.DRZAVA_FIRME || "";
+document.getElementById("idBrojFirme").value = data.ID_BROJ_FIRME || "";
+document.getElementById("pdvBroj").value = data.PDV_BROJ || "";
+document.getElementById("telefonFirme").value = data.TELEFON_FIRME || "";
+document.getElementById("emailFirme").value = data.EMAIL_FIRME || "";
+document.getElementById("webStranicaFirme").value = data.WEB_STRANICA_FIRME || "";
+document.getElementById("iban").value = data.IBAN || "";
+document.getElementById("banka").value = data.BANKA || "";
+document.getElementById("logoFirmeUrl").value = data.LOGO_FIRME_URL || "";
+
+      
       /* =====================================================
    ZABRANA KONTAKTIRANJA
 ===================================================== */
@@ -2206,41 +2311,60 @@ async function updateProfile() {
 
   try {
 
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("POSAO_KORISNICI")
-        .update({
+   const { error } = await supabaseClient
+  .from("POSAO_KORISNICI")
+  .update({
+  IME: ime,
+  TELEFON: telefon,
+  GRAD: grad,
+  DJELATNOST: djelatnost,
+  VRSTA_SARADNJE: saradnja,
+  JA: ja,
+  TRAZIM: trazim,
+  LINKEDIN: linkedin || null,
+  SITE: web || null,
 
-          IME:
-            ime,
+  // Podaci firme — nisu obavezni
+  NAZIV_FIRME:
+    document.getElementById("nazivFirme").value.trim() || null,
 
-          TELEFON:
-            telefon,
+  ADRESA_FIRME:
+    document.getElementById("adresaFirme").value.trim() || null,
 
-          GRAD:
-            grad,
+  GRAD_FIRME:
+    document.getElementById("gradFirme").value.trim() || null,
 
-          DJELATNOST:
-            djelatnost,
+  POSTANSKI_BROJ:
+    document.getElementById("postanskiBroj").value.trim() || null,
 
-          VRSTA_SARADNJE:
-            saradnja,
+  DRZAVA_FIRME:
+    document.getElementById("drzavaFirme").value.trim() || null,
 
-          JA:
-            ja,
+  ID_BROJ_FIRME:
+    document.getElementById("idBrojFirme").value.trim() || null,
 
-          TRAZIM:
-            trazim,
+  PDV_BROJ:
+    document.getElementById("pdvBroj").value.trim() || null,
 
-          LINKEDIN:
-            linkedin || null,
+  TELEFON_FIRME:
+    document.getElementById("telefonFirme").value.trim() || null,
 
-          SITE:
-            web || null
+  EMAIL_FIRME:
+    document.getElementById("emailFirme").value.trim() || null,
 
-        })
+  WEB_STRANICA_FIRME:
+    document.getElementById("webStranicaFirme").value.trim() || null,
+
+  IBAN:
+    document.getElementById("iban").value.trim() || null,
+
+  BANKA:
+    document.getElementById("banka").value.trim() || null,
+
+  LOGO_FIRME_URL:
+    document.getElementById("logoFirmeUrl").value.trim() || null
+})
+
         .eq(
           "USER",
           currentUser.id
