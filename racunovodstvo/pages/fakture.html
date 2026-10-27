@@ -798,20 +798,18 @@
       const tabela = $("FAKTURE_TABELA");
       tabela.replaceChildren();
 
-      
-if (filtrirane.length === 0) {
- 
-        const red = document.createElement("tr");
-        const celija = document.createElement("td");
+  if (filtrirane.length === 0) {
+  const red = document.createElement("tr");
+  const celija = document.createElement("td");
 
-        celija.colSpan = 9;
-        celija.textContent = PREVOD("noInvoices");
-red.appendChild(akcije);
-        
-        red.appendChild(celija);
-        tabela.appendChild(red);
-        return;
-      }
+  celija.colSpan = 9;
+  celija.textContent = PREVOD("noInvoices");
+
+  red.appendChild(celija);
+  tabela.appendChild(red);
+  return;
+}
+
 
       filtrirane.forEach(faktura => {
         const red = document.createElement("tr");
