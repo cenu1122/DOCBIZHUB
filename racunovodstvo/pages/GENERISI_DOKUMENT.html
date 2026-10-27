@@ -245,21 +245,89 @@
             }, 800);
         }
 
-        function generateContract() {
-            const finalContractText = `========================================\n` +
-                                      `SLUŽBENI UGOVOR - GENERISAN PUTEM AI\n` +
-                                      `========================================\n\n` +
-                                      `1. OSNOVNE INFORMACIJE I STRANKE:\n${contractData.initialInfo}\n\n` +
-                                      `2. DEFINISANI USLOVI I ROKOVI:\n${contractData.additionalDetails}\n\n` +
-                                      `3. ZAVRŠNE ODREDBE:\nUgovor stupa na snagu danom potpisivanja od strane ovlaštenih lica obje ugovorne strane.\n\n` +
-                                      `Spremno za potpisivanje i arhiviranje.`;
+      
 
-            appendMessage('ai', `Evo konačnog nacrta ugovora:\n\n${finalContractText}`);
+async function generateContract() {
+    const container = document.getElementById('chat-container');
 
-            // Sakrij chat unos i prikaži sekciju za upload potpisanog ugovora
-            document.getElementById('chat-input-group').style.display = 'none';
-            document.getElementById('upload-section').style.display = 'block';
+    appendMessage('ai', 'Pripremam nacrt ugovora...');
+
+    try {
+        // Poziva sigurnu Supabase Edge Function koja će koristiti AI.
+        const { data, error } = await DB.functions.invoke(
+            'generate-contract',
+            {
+                body: {
+                    initialInfo: contractData.initialInfo,
+                    additionalDetails: contractData.additionalDetails,
+                    language: 'bs',
+                    documentType: 'ugovor_o_djelu',
+                    instructions: `
+Napiši kompletan, profesionalno strukturiran nacrt
+ugovora o djelu na bosanskom jeziku.
+
+Nemoj prepisivati korisnikove poruke kao sadržaj ugovora.
+Razumij njihove informacije i pretvori ih u ugovorne odredbe.
+
+Uključi:
+- naslov i podatke ugovornih strana;
+- predmet i opis djela;
+- ugovorenu cijenu i plaćanje;
+- rok izvršenja;
+- obaveze obje strane;
+- pregled i prijem djela;
+- odgovornost za nedostatke;
+- raskid ugovora;
+- rješavanje sporova;
+- završne odredbe i potpise.
+
+Ako podatak nedostaje, ostavi jasno označeno prazno polje.
+Ne izmišljaj poslovne podatke, rokove ni zakonske činjenice.
+Ako uloge ugovornih strana nisu jasne, označi ih za potvrdu.
+Cijenu 4000 KM prikaži kao 4.000,00 KM.
+Vrati samo tekst nacrta ugovora.
+                    `
+                }
+            }
+        );
+
+        if (error) {
+            throw new Error(error.message);
         }
+
+        // Podržava uobičajene nazive polja u odgovoru funkcije.
+        const contractText =
+            typeof data === 'string' ? data :
+            data?.contractText ||
+            data?.contract ||
+            data?.text ||
+            data?.content;
+
+        if (!contractText) {
+            throw new Error(
+                'AI funkcija nije vratila tekst ugovora.'
+            );
+        }
+
+        appendMessage(
+            'ai',
+            'NACRT UGOVORA — PROVJERITE PODATKE PRIJE POTPISIVANJA\n\n' +
+            contractText
+        );
+
+        document.getElementById('chat-input-group').style.display = 'none';
+        document.getElementById('upload-section').style.display = 'block';
+
+    } catch (err) {
+        console.error('Greška pri generisanju ugovora:', err);
+
+        appendMessage(
+            'ai',
+            'Nisam uspio generisati ugovor. Provjerite AI servis i Supabase Edge Function. Detalj greške: ' +
+            err.message
+        );
+    }
+}
 
         function uploadSignedContract() {
             const fileInput = document.getElementById('signed-file');
