@@ -2176,225 +2176,118 @@ async function neZelimKontakt() {
    SAČUVAJ PROFIL
 ========================================================= */
 
-async function updateProfile() {
 
+async function updateProfile() {
   if (!currentUser) {
+    alert("Korisnik nije prijavljen. Prijavite se ponovo.");
     return;
   }
 
+  const status = document.getElementById("statusMessage");
+  const saveBtn = document.getElementById("saveBtn");
 
-  const status =
-    document.getElementById(
-      "statusMessage"
-    );
+  const vrijednost = (id) =>
+    document.getElementById(id).value.trim() || null;
 
-  const saveBtn =
-    document.getElementById(
-      "saveBtn"
-    );
-
-
-  const ime =
-    document
-      .getElementById(
-        "nameInput"
-      )
-      .value
-      .trim();
-
-
-  const telefon =
-    document
-      .getElementById(
-        "phoneInput"
-      )
-      .value
-      .trim();
-
-
-  const grad =
-    document
-      .getElementById(
-        "gradInput"
-      )
-      .value
-      .trim();
-
-
-  const djelatnost =
-    document
-      .getElementById(
-        "djelatnostInput"
-      )
-      .value;
-
-
-  const saradnja =
-    document
-      .getElementById(
-        "saradnjaInput"
-      )
-      .value;
-
-
-  const ja =
-    document
-      .getElementById(
-        "jaInput"
-      )
-      .value
-      .trim();
-
-
-  const trazim =
-    document
-      .getElementById(
-        "trazimInput"
-      )
-      .value
-      .trim();
-
-
-  const linkedin =
-    document
-      .getElementById(
-        "linkedinInput"
-      )
-      .value
-      .trim();
-
-
-  const web =
-    document
-      .getElementById(
-        "webInput"
-      )
-      .value
-      .trim();
-
+  const ime = vrijednost("nameInput");
 
   if (!ime) {
-
-    status.style.color =
-      "red";
-
-    status.innerText =
-      "Molimo unesite ime ili naziv firme.";
-
+    status.style.color = "red";
+    status.innerText = "Unesite ime ili naziv firme.";
     return;
-
   }
 
+  const izmjene = {
+    IME: ime,
+    TELEFON: vrijednost("phoneInput"),
+    GRAD: vrijednost("gradInput"),
+    DJELATNOST: vrijednost("djelatnostInput"),
+    VRSTA_SARADNJE: vrijednost("saradnjaInput"),
+    JA: vrijednost("jaInput"),
+    TRAZIM: vrijednost("trazimInput"),
+    LINKEDIN: vrijednost("linkedinInput"),
+    SITE: vrijednost("webInput"),
 
-  saveBtn.disabled =
-    true;
+    NAZIV_FIRME: vrijednost("nazivFirme"),
+    ADRESA_FIRME: vrijednost("adresaFirme"),
+    GRAD_FIRME: vrijednost("gradFirme"),
+    POSTANSKI_BROJ: vrijednost("postanskiBroj"),
+    DRZAVA_FIRME: vrijednost("drzavaFirme"),
+    ID_BROJ_FIRME: vrijednost("idBrojFirme"),
+    PDV_BROJ: vrijednost("pdvBroj"),
+    TELEFON_FIRME: vrijednost("telefonFirme"),
+    EMAIL_FIRME: vrijednost("emailFirme"),
+    WEB_STRANICA_FIRME: vrijednost("webStranicaFirme"),
+    IBAN: vrijednost("iban"),
+    BANKA: vrijednost("banka"),
+    LOGO_FIRME_URL: vrijednost("logoFirmeUrl")
+  };
 
-  status.style.color =
-    "#2b2d42";
-
-  status.innerText =
-    "Spremanje...";
-
+  saveBtn.disabled = true;
+  status.style.color = "#2b2d42";
+  status.innerText = "Provjeravam profil i spremam izmjene...";
 
   try {
+    const { data: profili, error: provjeraGreska } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .select("id, USER")
+        .eq("USER", currentUser.id);
 
-const { data, error } = await supabaseClient
-  .from("POSAO_KORISNICI")
-  .update({
-  IME: ime,
-  TELEFON: telefon,
-  GRAD: grad,
-  DJELATNOST: djelatnost,
-  VRSTA_SARADNJE: saradnja,
-  JA: ja,
-  TRAZIM: trazim,
-  LINKEDIN: linkedin || null,
-  SITE: web || null,
-
-  // Podaci firme — nisu obavezni
-  NAZIV_FIRME:
-    document.getElementById("nazivFirme").value.trim() || null,
-
-  ADRESA_FIRME:
-    document.getElementById("adresaFirme").value.trim() || null,
-
-  GRAD_FIRME:
-    document.getElementById("gradFirme").value.trim() || null,
-
-  POSTANSKI_BROJ:
-    document.getElementById("postanskiBroj").value.trim() || null,
-
-  DRZAVA_FIRME:
-    document.getElementById("drzavaFirme").value.trim() || null,
-
-  ID_BROJ_FIRME:
-    document.getElementById("idBrojFirme").value.trim() || null,
-
-  PDV_BROJ:
-    document.getElementById("pdvBroj").value.trim() || null,
-
-  TELEFON_FIRME:
-    document.getElementById("telefonFirme").value.trim() || null,
-
-  EMAIL_FIRME:
-    document.getElementById("emailFirme").value.trim() || null,
-
-  WEB_STRANICA_FIRME:
-    document.getElementById("webStranicaFirme").value.trim() || null,
-
-  IBAN:
-    document.getElementById("iban").value.trim() || null,
-
-  BANKA:
-    document.getElementById("banka").value.trim() || null,
-
-  LOGO_FIRME_URL:
-    document.getElementById("logoFirmeUrl").value.trim() || null
-})
-
-        .eq(
-          "USER",
-          currentUser.id
-        );
-
-
-    if (error) {
-      throw error;
+    if (provjeraGreska) {
+      throw provjeraGreska;
     }
 
+    if (!profili || profili.length === 0) {
+      throw new Error(
+        "Profil nije pronađen za ovaj korisnički račun. " +
+        "Nijedna izmjena nije sačuvana. Potrebno je povezati " +
+        "račun s odgovarajućim redom u POSAO_KORISNICI."
+      );
+    }
 
-    document.getElementById(
-      "displayName"
-    ).innerText =
-      ime;
+    if (profili.length > 1) {
+      throw new Error(
+        "Pronađeno je više profila za ovaj račun. " +
+        "Izmjene nisu izvršene da se izbjegne promjena pogrešnih redova."
+      );
+    }
 
+    const { data: azurirani, error: updateGreska } =
+      await supabaseClient
+        .from("POSAO_KORISNICI")
+        .update(izmjene)
+        .eq("USER", currentUser.id)
+        .select("id");
 
-    status.style.color =
-      "green";
+    if (updateGreska) {
+      throw updateGreska;
+    }
 
+    if (!azurirani || azurirani.length !== 1) {
+      throw new Error(
+        "Supabase nije potvrdio izmjenu profila. " +
+        "Provjerite dozvole i RLS UPDATE politiku."
+      );
+    }
+
+    document.getElementById("displayName").innerText = ime;
+
+    status.style.color = "green";
     status.innerText =
-      "✅ Profil uspješno sačuvan!";
-
+      "✅ Profil je sačuvan. Izmijenjen red ID: " +
+      azurirani[0].id;
 
   } catch (error) {
+    console.error("Greška pri spremanju profila:", error);
 
-    console.error(
-      error
-    );
-
-    status.style.color =
-      "red";
-
+    status.style.color = "red";
     status.innerText =
-      "❌ Greška: " +
-      error.message;
-
+      "❌ Izmjene nisu potvrđene: " +
+      (error.message || "Nepoznata greška.");
+  } finally {
+    saveBtn.disabled = false;
   }
-
-
-  saveBtn.disabled =
-    false;
-
 }
 
 
