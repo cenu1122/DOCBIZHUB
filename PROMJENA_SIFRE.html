@@ -190,6 +190,38 @@
       .benefits { padding: 18px; }
       .benefit-grid { grid-template-columns: 1fr; }
     }
+
+    
+.dashboard-link {
+  display: block;
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #16a34a;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dashboard-link:hover {
+  background: #15803d;
+}
+
+.trust-message {
+  margin: 0 0 20px;
+  padding: 15px;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
   </style>
 </head>
 
@@ -214,13 +246,29 @@
     </div>
 
     <section class="container">
-      <div class="brand">DocBizHub</div>
-      <h1 data-i18n="title">Aktiviraj svoj račun</h1>
+      
+<div class="brand">DocBizHub</div>
+<h1 data-i18n="title">Aktiviraj svoj račun</h1>
 
-      <p class="intro" data-i18n="intro">
-        Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije
-        moći ćeš se prijavljivati svojim e-mailom i lozinkom.
-      </p>
+<a href="https://docbizhub.com/dashboard.html"
+   class="dashboard-link"
+   target="_blank"
+   rel="noopener noreferrer"
+   data-i18n="openDashboard">
+  Otvori DocBizHub
+</a>
+
+<p class="intro" data-i18n="intro">
+  Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije
+  moći ćeš se prijavljivati svojim e-mailom i lozinkom.
+</p>
+
+<div class="trust-message" data-i18n="trustMessage">
+  Vjerujemo u DocBizHub i nadamo se da će ti se svidjeti!
+  Prvo možeš pregledati stranicu bez promjene lozinke.
+  Lozinku možeš postaviti ili promijeniti kasnije u svom profilu.
+</div>
+
 
       <div id="formArea">
         <label for="password" data-i18n="passwordLabel">Nova lozinka</label>
@@ -319,6 +367,8 @@
 
     const translations = {
       bs: {
+        openDashboard: "Otvori DocBizHub",
+trustMessage: "Vjerujemo u DocBizHub i nadamo se da će ti se svidjeti! Prvo možeš pregledati stranicu bez promjene lozinke. Lozinku možeš postaviti ili promijeniti kasnije u svom profilu.",
         title:"Aktiviraj svoj račun",
         intro:"Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije moći ćeš se prijavljivati svojim e-mailom i lozinkom.",
         passwordLabel:"Nova lozinka",
@@ -351,6 +401,9 @@
         failed:"Aktivacija nije uspjela."
       },
       en: {
+        
+        openDashboard: "Open DocBizHub",
+        trustMessage: "We believe in DocBizHub and hope you will like it! You can explore the site first without changing your password. You can set or change your password later in your profile.",
         title:"Activate your account",
         intro:"Set a password for your DocBizHub account. After activation, you can sign in with your email and password.",
         passwordLabel:"New password",
