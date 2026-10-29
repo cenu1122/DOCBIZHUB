@@ -1,217 +1,327 @@
- 
+```html
 <!DOCTYPE html>
 <html lang="bs">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Promjena lozinke</title>
+  <title>Aktivacija računa | DocBizHub</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
+      padding: 24px;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      font-family: Arial, sans-serif;
       background: #f3f6fb;
-      color: #172033;
+      font-family: Arial, sans-serif;
+      color: #1f2937;
     }
 
-    .card {
+    .container {
       width: 100%;
-      max-width: 430px;
+      max-width: 470px;
       padding: 32px;
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 10px 35px rgba(20, 40, 80, .10);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     }
 
-    h1 { margin-top: 0; font-size: 26px; }
-    p { color: #596579; line-height: 1.5; }
+    h1 {
+      margin-top: 0;
+      font-size: 25px;
+      text-align: center;
+    }
+
+    .intro {
+      text-align: center;
+      line-height: 1.6;
+      color: #4b5563;
+    }
 
     label {
       display: block;
-      margin: 18px 0 7px;
+      margin-top: 18px;
+      margin-bottom: 7px;
       font-weight: 600;
     }
 
     input {
       width: 100%;
       padding: 13px;
-      border: 1px solid #ccd4e0;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-size: 16px;
-    }
-
-    input:focus {
-      outline: 2px solid #2563eb;
-      border-color: transparent;
     }
 
     button {
       width: 100%;
-      margin-top: 22px;
-      padding: 14px;
+      padding: 13px;
+      margin-top: 12px;
       border: 0;
       border-radius: 8px;
-      background: #1d4ed8;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    button:disabled { opacity: .6; cursor: wait; }
+    .generate {
+      background: #e8eefc;
+      color: #1d4ed8;
+    }
 
-    #poruka {
-      margin-top: 18px;
+    .copy {
+      background: #eef2f7;
+      color: #374151;
+    }
+
+    .save {
+      margin-top: 22px;
+      background: #2563eb;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .notice {
+      margin-top: 16px;
       padding: 12px;
       border-radius: 8px;
-      display: none;
+      background: #fff7df;
+      color: #795600;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    #status {
+      margin-top: 18px;
+      line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
-    #poruka.uspjeh { display: block; background: #dcfce7; color: #166534; }
-    #poruka.greska { display: block; background: #fee2e2; color: #991b1b; }
+    .success {
+      color: #166534;
+    }
 
-    .napomena { font-size: 13px; margin-top: 16px; }
+    .error {
+      color: #b91c1c;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .small {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
   </style>
 </head>
+
 <body>
-  <main class="card">
-    <h1>Promjena lozinke</h1>
-    <p>Unesite novu lozinku za svoj korisnički račun.</p>
+  <main class="container">
+    <h1>Aktiviraj svoj račun</h1>
 
-    <form id="forma">
-      <label for="lozinka">Nova lozinka</label>
+    <p class="intro">
+      Postavi lozinku za svoj DocBizHub račun.
+      Nakon aktivacije moći ćeš se prijavljivati svojim
+      e-mailom i lozinkom.
+    </p>
+
+    <div id="formArea">
+      <label for="password">Nova lozinka</label>
       <input
-        id="lozinka"
+        id="password"
         type="password"
-        minlength="8"
         autocomplete="new-password"
-        required
-        placeholder="Najmanje 8 znakova"
+        placeholder="Unesi ili generiši lozinku"
       >
 
-      <label for="potvrda">Potvrdite novu lozinku</label>
+      <label for="confirmPassword">Potvrdi lozinku</label>
       <input
-        id="potvrda"
+        id="confirmPassword"
         type="password"
-        minlength="8"
         autocomplete="new-password"
-        required
-        placeholder="Ponovite novu lozinku"
+        placeholder="Ponovi lozinku"
       >
 
-      <button id="dugme" type="submit">Promijeni lozinku</button>
-    </form>
+      <button type="button" class="generate" id="generateBtn">
+        Generiši lozinku
+      </button>
 
-    <div id="poruka" role="status" aria-live="polite"></div>
-    <p class="napomena">Ako je link istekao ili je već iskorišten, zatražite novi link za promjenu lozinke.</p>
+      <button type="button" class="copy" id="copyBtn">
+        Kopiraj lozinku
+      </button>
+
+      <div class="notice">
+        <strong>Važno!</strong> Obavezno kopiraj i sačuvaj lozinku
+        na sigurnom mjestu. Trebat će ti za buduće prijave.
+        Lozinku kasnije možeš promijeniti u svom profilu.
+      </div>
+
+      <button type="button" class="save" id="saveBtn">
+        Sačuvaj lozinku i aktiviraj račun
+      </button>
+
+      <p class="small">
+        Preporučujemo da lozinku sačuvaš u pouzdanom upravitelju
+        lozinki. Nemoj je dijeliti s drugim osobama.
+      </p>
+    </div>
+
+    <div id="status" role="status" aria-live="polite"></div>
   </main>
 
-  <script type="module">
-    import { createClient } from
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+  <script>
+    // Zamijeni ovim vrijednostima podatke svog Supabase projekta.
+    const SUPABASE_URL = "TVOJ_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "TVOJ_SUPABASE_ANON_ILI_PUBLISHABLE_KEY";
 
-    // Zamijenite ovim podacima iz Supabase projekta.
-    const SUPABASE_URL = "https://VASA-PROJEKT-REF.supabase.co";
-    const SUPABASE_ANON_KEY = "OVDJE_UNESITE_PUBLISHABLE_ILI_ANON_KLJUC";
-
-    const supabase = createClient(
+    const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
-    const forma = document.getElementById("forma");
-    const dugme = document.getElementById("dugme");
-    const poruka = document.getElementById("poruka");
+    const passwordInput = document.getElementById("password");
+    const confirmInput = document.getElementById("confirmPassword");
+    const statusBox = document.getElementById("status");
+    const saveBtn = document.getElementById("saveBtn");
 
-    function prikaziPoruku(tekst, tip) {
-      poruka.textContent = tekst;
-      poruka.className = tip;
+    function prikaziStatus(poruka, tip = "") {
+      statusBox.className = tip;
+      statusBox.textContent = poruka;
     }
 
-    // Supabase može vratiti grešku u URL-u ako je link nevažeći.
-    const parametri = new URLSearchParams(location.hash.slice(1));
-    const query = new URLSearchParams(location.search);
-    const greskaURL =
-      parametri.get("error_description") ||
-      query.get("error_description");
+    function generisiLozinku() {
+      // Koristi kriptografski siguran generator preglednika.
+      const alphabet =
+        "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
 
-    if (greskaURL) {
-      prikaziPoruku(
-        "Link nije važeći: " + greskaURL.replace(/\+/g, " "),
-        "greska"
+      const random = new Uint32Array(20);
+      crypto.getRandomValues(random);
+
+      let password = "";
+
+      for (let i = 0; i < random.length; i++) {
+        password += alphabet[random[i] % alphabet.length];
+      }
+
+      passwordInput.value = password;
+      confirmInput.value = password;
+
+      passwordInput.type = "text";
+      confirmInput.type = "text";
+
+      prikaziStatus(
+        "Lozinka je generisana. Kopiraj je i sačuvaj prije aktivacije."
       );
-      dugme.disabled = true;
     }
 
-    forma.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      generisiLozinku();
+    });
 
-      const lozinka = document.getElementById("lozinka").value;
-      const potvrda = document.getElementById("potvrda").value;
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const password = passwordInput.value;
 
-      if (lozinka.length < 8) {
-        prikaziPoruku(
+      if (!password) {
+        prikaziStatus("Prvo unesi ili generiši lozinku.", "error");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(password);
+        prikaziStatus(
+          "Lozinka je kopirana. Sačuvaj je na sigurnom mjestu.",
+          "success"
+        );
+      } catch {
+        passwordInput.type = "text";
+        passwordInput.focus();
+        passwordInput.select();
+
+        prikaziStatus(
+          "Automatsko kopiranje nije uspjelo. Označi lozinku i kopiraj je ručno.",
+          "error"
+        );
+      }
+    });
+
+    async function obradiAktivaciju() {
+      const password = passwordInput.value;
+      const confirmPassword = confirmInput.value;
+
+      if (!password || password.length < 8) {
+        prikaziStatus(
           "Lozinka mora imati najmanje 8 znakova.",
-          "greska"
+          "error"
         );
         return;
       }
 
-      if (lozinka !== potvrda) {
-        prikaziPoruku("Lozinke se ne podudaraju.", "greska");
+      if (password !== confirmPassword) {
+        prikaziStatus("Lozinke se ne podudaraju.", "error");
         return;
       }
 
-      dugme.disabled = true;
-      dugme.textContent = "Spremanje...";
-      prikaziPoruku("", "");
+      saveBtn.disabled = true;
+      prikaziStatus("Provjeravam aktivacijsku sesiju...");
 
       try {
-        // Ako je recovery sesija uspostavljena, Supabase će
-        // promijeniti lozinku prijavljenog korisnika.
-        const { data: { session }, error: sessionError } =
-          await supabase.auth.getSession();
+        // Supabase JS obrađuje recovery hash iz URL-a pri inicijalizaciji.
+        const {
+          data: { session },
+          error: sessionError
+        } = await supabaseClient.auth.getSession();
 
         if (sessionError) throw sessionError;
 
         if (!session) {
-          prikaziPoruku(
-            "Link za promjenu lozinke nije aktivan ili je istekao. Zatražite novi link iz e-maila.",
-            "greska"
+          prikaziStatus(
+            "Aktivacijski link je istekao ili nije ispravan. Zatraži novi aktivacijski e-mail i otvori njegov link.",
+            "error"
           );
           return;
         }
 
-        const { error } = await supabase.auth.updateUser({
-          password: lozinka
+        prikaziStatus("Čuvam tvoju lozinku...");
+
+        const { error } = await supabaseClient.auth.updateUser({
+          password: password
         });
 
         if (error) throw error;
 
-        prikaziPoruku(
-          "Lozinka je uspješno promijenjena. Sada se možete prijaviti novom lozinkom.",
-          "uspjeh"
-        );
+        document.getElementById("formArea").classList.add("hidden");
 
-        forma.reset();
+        prikaziStatus(
+          "Račun je uspješno aktiviran i lozinka je postavljena. Sačuvaj lozinku na sigurnom mjestu. Za buduće prijave koristi svoj e-mail i ovu lozinku. Lozinku možeš kasnije promijeniti u svom profilu.",
+          "success"
+        );
       } catch (error) {
-        prikaziPoruku(
-          "Promjena lozinke nije uspjela: " +
-            (error?.message || "Nepoznata greška"),
-          "greska"
+        prikaziStatus(
+          "Greška: " + (error.message || "Aktivacija nije uspjela."),
+          "error"
         );
       } finally {
-        dugme.disabled = false;
-        dugme.textContent = "Promijeni lozinku";
+        saveBtn.disabled = false;
       }
-    });
+    }
+
+    saveBtn.addEventListener("click", obradiAktivaciju);
   </script>
 </body>
 </html>
+```
