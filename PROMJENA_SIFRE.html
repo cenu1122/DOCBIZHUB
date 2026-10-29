@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -9,33 +9,57 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       padding: 24px;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background: #f3f6fb;
       font-family: Arial, sans-serif;
       color: #1f2937;
     }
 
+    .page {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+
+    #language {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+    }
+
     .container {
       width: 100%;
-      max-width: 470px;
+      max-width: 500px;
+      margin: 0 auto;
       padding: 32px;
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
+
+    .brand {
+      text-align: center;
+      color: #2563eb;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0 0 14px;
       font-size: 25px;
       text-align: center;
     }
@@ -72,6 +96,11 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
     .generate {
       background: #e8eefc;
       color: #1d4ed8;
@@ -88,13 +117,8 @@
       color: white;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
     .notice {
-      margin-top: 16px;
+      margin-top: 12px;
       padding: 12px;
       border-radius: 8px;
       background: #fff7df;
@@ -109,17 +133,9 @@
       overflow-wrap: anywhere;
     }
 
-    .success {
-      color: #166534;
-    }
-
-    .error {
-      color: #b91c1c;
-    }
-
-    .hidden {
-      display: none;
-    }
+    .success { color: #166534; }
+    .error { color: #b91c1c; }
+    .hidden { display: none !important; }
 
     .small {
       margin-top: 12px;
@@ -127,67 +143,166 @@
       color: #64748b;
       line-height: 1.5;
     }
+
+    .benefits {
+      margin-top: 22px;
+      padding: 24px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    }
+
+    .benefits h2 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    .benefit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .benefit {
+      padding: 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      line-height: 1.6;
+    }
+
+    .benefit h3 {
+      margin-top: 0;
+      color: #1d4ed8;
+      font-size: 17px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 12px;
+      margin: 20px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      .container { padding: 22px; }
+      .benefits { padding: 18px; }
+      .benefit-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 
 <body>
-  <main class="container">
-    <h1>Aktiviraj svoj račun</h1>
-
-    <p class="intro">
-      Postavi lozinku za svoj DocBizHub račun.
-      Nakon aktivacije moći ćeš se prijavljivati svojim
-      e-mailom i lozinkom.
-    </p>
-
-    <div id="formArea">
-      <label for="password">Nova lozinka</label>
-      <input
-        id="password"
-        type="password"
-        autocomplete="new-password"
-        placeholder="Unesi ili generiši lozinku"
-      >
-
-      <label for="confirmPassword">Potvrdi lozinku</label>
-      <input
-        id="confirmPassword"
-        type="password"
-        autocomplete="new-password"
-        placeholder="Ponovi lozinku"
-      >
-
-      <button type="button" class="generate" id="generateBtn">
-        Generiši lozinku
-      </button>
-
-      <button type="button" class="copy" id="copyBtn">
-        Kopiraj lozinku
-      </button>
-
-      <div class="notice">
-        <strong>Važno!</strong> Obavezno kopiraj i sačuvaj lozinku
-        na sigurnom mjestu. Trebat će ti za buduće prijave.
-        Lozinku kasnije možeš promijeniti u svom profilu.
-      </div>
-
-      <button type="button" class="save" id="saveBtn">
-        Sačuvaj lozinku i aktiviraj račun
-      </button>
-
-      <p class="small">
-        Preporučujemo da lozinku sačuvaš u pouzdanom upravitelju
-        lozinki. Nemoj je dijeliti s drugim osobama.
-      </p>
+  <main class="page">
+    <div class="topbar">
+      <select id="language" aria-label="Language">
+        <option value="bs">Bosanski</option>
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+        <option value="hr">Hrvatski</option>
+        <option value="sr">Srpski</option>
+        <option value="mk">Македонски</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+        <option value="it">Italiano</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+        <option value="ru">Русский</option>
+        <option value="zh">中文</option>
+      </select>
     </div>
 
-    <div id="status" role="status" aria-live="polite"></div>
+    <section class="container">
+      <div class="brand">DocBizHub</div>
+      <h1 data-i18n="title">Aktiviraj svoj račun</h1>
+
+      <p class="intro" data-i18n="intro">
+        Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije
+        moći ćeš se prijavljivati svojim e-mailom i lozinkom.
+      </p>
+
+      <div id="formArea">
+        <label for="password" data-i18n="passwordLabel">Nova lozinka</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="new-password"
+          data-i18n-placeholder="passwordPlaceholder"
+          placeholder="Unesi ili generiši lozinku"
+        >
+
+        <label for="confirmPassword" data-i18n="confirmLabel">
+          Potvrdi lozinku
+        </label>
+        <input
+          id="confirmPassword"
+          type="password"
+          autocomplete="new-password"
+          data-i18n-placeholder="confirmPlaceholder"
+          placeholder="Ponovi lozinku"
+        >
+
+        <button type="button" class="generate" id="generateBtn" data-i18n="generate">
+          Generiši lozinku
+        </button>
+
+        <div class="notice">
+          <strong data-i18n="important">Važno!</strong>
+          <span data-i18n="saveNotice">
+            Sačuvaj lozinku na sigurnom mjestu. Trebat će ti za buduće
+            prijave. Lozinku kasnije možeš promijeniti u svom profilu.
+          </span>
+        </div>
+
+        <button type="button" class="copy" id="copyBtn" data-i18n="copy">
+          Kopiraj lozinku
+        </button>
+
+        <button type="button" class="save" id="saveBtn" data-i18n="save">
+          Sačuvaj lozinku i aktiviraj račun
+        </button>
+
+        <p class="small" data-i18n="security">
+          Preporučujemo da lozinku sačuvaš u pouzdanom upravitelju
+          lozinki. Nemoj je dijeliti s drugim osobama.
+        </p>
+      </div>
+
+      <div id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="benefits">
+      <h2 data-i18n="benefitsTitle">Otkrij prednosti DocBizHuba</h2>
+
+      <div class="benefit-grid">
+        <article class="benefit">
+          <h3 data-i18n="translationTitle">🌍 Automatski prevod</h3>
+          <p data-i18n="translationText">
+            Predstavi svoju firmu i ponude korisnicima iz različitih
+            zemalja uz automatsko prevođenje na veliki broj svjetskih jezika.
+          </p>
+        </article>
+
+        <article class="benefit">
+          <h3 data-i18n="databaseTitle">🤝 Poslovne prilike</h3>
+          <p data-i18n="databaseText">
+            Istraži bazu oglasa i pronađi potencijalne partnere,
+            saradnike i nove poslovne mogućnosti.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer" data-i18n="footer">
+      DocBizHub — poveži se sa svijetom poslovnih mogućnosti.
+    </p>
   </main>
 
   <script>
-    // Zamijeni ovim vrijednostima podatke svog Supabase projekta.
-    const SUPABASE_URL = "TVOJ_SUPABASE_PROJECT_URL";
-    const SUPABASE_ANON_KEY = "TVOJ_SUPABASE_ANON_ILI_PUBLISHABLE_KEY";
+    const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45";
 
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
@@ -198,64 +313,537 @@
     const confirmInput = document.getElementById("confirmPassword");
     const statusBox = document.getElementById("status");
     const saveBtn = document.getElementById("saveBtn");
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const languageSelect = document.getElementById("language");
 
-    function prikaziStatus(poruka, tip = "") {
-      statusBox.className = tip;
-      statusBox.textContent = poruka;
+    const translations = {
+      bs: {
+        title:"Aktiviraj svoj račun",
+        intro:"Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije moći ćeš se prijavljivati svojim e-mailom i lozinkom.",
+        passwordLabel:"Nova lozinka",
+        passwordPlaceholder:"Unesi ili generiši lozinku",
+        confirmLabel:"Potvrdi lozinku",
+        confirmPlaceholder:"Ponovi lozinku",
+        generate:"Generiši lozinku",
+        important:"Važno!",
+        saveNotice:"Sačuvaj lozinku na sigurnom mjestu. Trebat će ti za buduće prijave. Lozinku kasnije možeš promijeniti u svom profilu.",
+        copy:"Kopiraj lozinku",
+        save:"Sačuvaj lozinku i aktiviraj račun",
+        security:"Preporučujemo da lozinku sačuvaš u pouzdanom upravitelju lozinki. Nemoj je dijeliti s drugim osobama.",
+        benefitsTitle:"Otkrij prednosti DocBizHuba",
+        translationTitle:"🌍 Automatski prevod",
+        translationText:"Predstavi svoju firmu i ponude korisnicima iz različitih zemalja uz automatsko prevođenje na veliki broj svjetskih jezika.",
+        databaseTitle:"🤝 Poslovne prilike",
+        databaseText:"Istraži bazu oglasa i pronađi potencijalne partnere, saradnike i nove poslovne mogućnosti.",
+        footer:"DocBizHub — poveži se sa svijetom poslovnih mogućnosti.",
+        generated:"Lozinka je generisana. Kopiraj je i sačuvaj prije aktivacije.",
+        needPassword:"Prvo unesi ili generiši lozinku.",
+        copied:"Lozinka je kopirana. Sačuvaj je na sigurnom mjestu.",
+        copyFail:"Automatsko kopiranje nije uspjelo. Označi lozinku i kopiraj je ručno.",
+        minLength:"Lozinka mora imati najmanje 8 znakova.",
+        mismatch:"Lozinke se ne podudaraju.",
+        checking:"Provjeravam aktivacijsku sesiju...",
+        noSession:"Aktivacijski link je istekao ili nije ispravan. Zatraži novi aktivacijski e-mail i otvori njegov link.",
+        saving:"Čuvam tvoju lozinku...",
+        activated:"Račun je uspješno aktiviran i lozinka je postavljena. Sačuvaj je na sigurnom mjestu. Za buduće prijave koristi svoj e-mail i ovu lozinku. Lozinku možeš kasnije promijeniti u svom profilu.",
+        error:"Greška: ",
+        failed:"Aktivacija nije uspjela."
+      },
+      en: {
+        title:"Activate your account",
+        intro:"Set a password for your DocBizHub account. After activation, you can sign in with your email and password.",
+        passwordLabel:"New password",
+        passwordPlaceholder:"Enter or generate a password",
+        confirmLabel:"Confirm password",
+        confirmPlaceholder:"Repeat your password",
+        generate:"Generate password",
+        important:"Important!",
+        saveNotice:"Save your password in a safe place. You will need it to sign in later. You can change it in your profile at any time.",
+        copy:"Copy password",
+        save:"Save password and activate account",
+        security:"We recommend storing your password in a trusted password manager. Do not share it with others.",
+        benefitsTitle:"Discover DocBizHub benefits",
+        translationTitle:"🌍 Automatic translation",
+        translationText:"Present your company and offers to users in different countries with automatic translation into a wide range of world languages.",
+        databaseTitle:"🤝 Business opportunities",
+        databaseText:"Explore the ads database to find potential partners, collaborators and new business opportunities.",
+        footer:"DocBizHub — connect with a world of business opportunities.",
+        generated:"Password generated. Copy and save it before activation.",
+        needPassword:"Enter or generate a password first.",
+        copied:"Password copied. Keep it in a safe place.",
+        copyFail:"Automatic copying failed. Select the password and copy it manually.",
+        minLength:"Password must contain at least 8 characters.",
+        mismatch:"The passwords do not match.",
+        checking:"Checking activation session...",
+        noSession:"This activation link has expired or is invalid. Request a new activation email and open its link.",
+        saving:"Saving your password...",
+        activated:"Your account is activated and your password has been set. Store it safely. Sign in with your email and this password. You can change the password later in your profile.",
+        error:"Error: ",
+        failed:"Activation failed."
+      },
+      de: {
+        title:"Konto aktivieren",
+        intro:"Lege ein Passwort für dein DocBizHub-Konto fest. Danach kannst du dich mit deiner E-Mail-Adresse und deinem Passwort anmelden.",
+        passwordLabel:"Neues Passwort",
+        passwordPlaceholder:"Passwort eingeben oder generieren",
+        confirmLabel:"Passwort bestätigen",
+        confirmPlaceholder:"Passwort wiederholen",
+        generate:"Passwort generieren",
+        important:"Wichtig!",
+        saveNotice:"Bewahre dein Passwort sicher auf. Du benötigst es für zukünftige Anmeldungen. Du kannst es später in deinem Profil ändern.",
+        copy:"Passwort kopieren",
+        save:"Passwort speichern und Konto aktivieren",
+        security:"Wir empfehlen einen vertrauenswürdigen Passwortmanager. Teile dein Passwort nicht mit anderen.",
+        benefitsTitle:"Entdecke die Vorteile von DocBizHub",
+        translationTitle:"🌍 Automatische Übersetzung",
+        translationText:"Präsentiere dein Unternehmen und deine Angebote mit automatischen Übersetzungen in zahlreiche Sprachen weltweit.",
+        databaseTitle:"🤝 Geschäftsmöglichkeiten",
+        databaseText:"Durchsuche die Anzeigen-Datenbank und finde potenzielle Partner, Kooperationen und neue Geschäftsmöglichkeiten.",
+        footer:"DocBizHub — verbinde dich mit neuen Geschäftsmöglichkeiten.",
+        generated:"Passwort generiert. Kopiere und speichere es vor der Aktivierung.",
+        needPassword:"Gib zuerst ein Passwort ein oder generiere eines.",
+        copied:"Passwort kopiert. Bewahre es sicher auf.",
+        copyFail:"Kopieren fehlgeschlagen. Markiere das Passwort und kopiere es manuell.",
+        minLength:"Das Passwort muss mindestens 8 Zeichen enthalten.",
+        mismatch:"Die Passwörter stimmen nicht überein.",
+        checking:"Aktivierungssitzung wird geprüft...",
+        noSession:"Der Aktivierungslink ist abgelaufen oder ungültig. Fordere eine neue Aktivierungs-E-Mail an.",
+        saving:"Passwort wird gespeichert...",
+        activated:"Dein Konto wurde aktiviert und das Passwort festgelegt. Bewahre es sicher auf. Melde dich mit deiner E-Mail-Adresse und diesem Passwort an. Du kannst es später in deinem Profil ändern.",
+        error:"Fehler: ",
+        failed:"Die Aktivierung ist fehlgeschlagen."
+      },
+      hr: {
+        title:"Aktiviraj svoj račun",
+        intro:"Postavi lozinku za svoj DocBizHub račun. Nakon aktivacije moći ćeš se prijavljivati e-poštom i lozinkom.",
+        passwordLabel:"Nova lozinka",
+        passwordPlaceholder:"Unesi ili generiraj lozinku",
+        confirmLabel:"Potvrdi lozinku",
+        confirmPlaceholder:"Ponovi lozinku",
+        generate:"Generiraj lozinku",
+        important:"Važno!",
+        saveNotice:"Spremi lozinku na sigurno mjesto. Trebat će ti za buduće prijave. Lozinku kasnije možeš promijeniti u svom profilu.",
+        copy:"Kopiraj lozinku",
+        save:"Spremi lozinku i aktiviraj račun",
+        security:"Preporučujemo spremanje lozinke u pouzdanom upravitelju lozinki. Nemoj je dijeliti s drugima.",
+        benefitsTitle:"Otkrij prednosti DocBizHuba",
+        translationTitle:"🌍 Automatski prijevod",
+        translationText:"Predstavi svoju tvrtku i ponude korisnicima iz različitih zemalja uz automatski prijevod na brojne svjetske jezike.",
+        databaseTitle:"🤝 Poslovne prilike",
+        databaseText:"Istraži bazu oglasa i pronađi potencijalne partnere, suradnike i nove poslovne mogućnosti.",
+        footer:"DocBizHub — poveži se sa svijetom poslovnih mogućnosti.",
+        generated:"Lozinka je generirana. Kopiraj je i spremi prije aktivacije.",
+        needPassword:"Najprije unesi ili generiraj lozinku.",
+        copied:"Lozinka je kopirana. Spremi je na sigurno mjesto.",
+        copyFail:"Automatsko kopiranje nije uspjelo. Označi lozinku i kopiraj je ručno.",
+        minLength:"Lozinka mora imati najmanje 8 znakova.",
+        mismatch:"Lozinke se ne podudaraju.",
+        checking:"Provjeravam aktivacijsku sesiju...",
+        noSession:"Poveznica za aktivaciju je istekla ili nije valjana. Zatraži novu aktivacijsku poruku.",
+        saving:"Spremam lozinku...",
+        activated:"Račun je aktiviran i lozinka je postavljena. Spremi je na sigurno mjesto. Prijavljuj se e-poštom i ovom lozinkom. Kasnije je možeš promijeniti u profilu.",
+        error:"Pogreška: ",
+        failed:"Aktivacija nije uspjela."
+      },
+      sr: {
+        title:"Aktiviraj svoj nalog",
+        intro:"Postavi lozinku za svoj DocBizHub nalog. Nakon aktivacije moći ćeš da se prijavljuješ e-poštom i lozinkom.",
+        passwordLabel:"Nova lozinka",
+        passwordPlaceholder:"Unesi ili generiši lozinku",
+        confirmLabel:"Potvrdi lozinku",
+        confirmPlaceholder:"Ponovi lozinku",
+        generate:"Generiši lozinku",
+        important:"Važno!",
+        saveNotice:"Sačuvaj lozinku na sigurnom mestu. Trebaće ti za buduće prijave. Lozinku kasnije možeš promeniti u svom profilu.",
+        copy:"Kopiraj lozinku",
+        save:"Sačuvaj lozinku i aktiviraj nalog",
+        security:"Preporučujemo da lozinku čuvaš u pouzdanom upravljaču lozinki. Nemoj je deliti s drugima.",
+        benefitsTitle:"Otkrij prednosti DocBizHuba",
+        translationTitle:"🌍 Automatski prevod",
+        translationText:"Predstavi svoju firmu i ponude korisnicima iz različitih zemalja uz automatsko prevođenje na brojne svetske jezike.",
+        databaseTitle:"🤝 Poslovne prilike",
+        databaseText:"Istraži bazu oglasa i pronađi potencijalne partnere, saradnike i nove poslovne mogućnosti.",
+        footer:"DocBizHub — poveži se sa svetom poslovnih mogućnosti.",
+        generated:"Lozinka je generisana. Kopiraj je i sačuvaj pre aktivacije.",
+        needPassword:"Prvo unesi ili generiši lozinku.",
+        copied:"Lozinka je kopirana. Sačuvaj je na sigurnom mestu.",
+        copyFail:"Automatsko kopiranje nije uspelo. Označi lozinku i kopiraj je ručno.",
+        minLength:"Lozinka mora imati najmanje 8 znakova.",
+        mismatch:"Lozinke se ne podudaraju.",
+        checking:"Proveravam aktivacionu sesiju...",
+        noSession:"Aktivacioni link je istekao ili nije ispravan. Zatraži novi aktivacioni e-mail.",
+        saving:"Čuvam tvoju lozinku...",
+        activated:"Nalog je aktiviran i lozinka je postavljena. Sačuvaj je na sigurnom mestu. Prijavljuj se svojim e-mailom i ovom lozinkom. Kasnije je možeš promeniti u profilu.",
+        error:"Greška: ",
+        failed:"Aktivacija nije uspela."
+      },
+      mk: {
+        title:"Активирај ја сметката",
+        intro:"Постави лозинка за твојата DocBizHub сметка. По активирањето ќе можеш да се најавуваш со е-пошта и лозинка.",
+        passwordLabel:"Нова лозинка",
+        passwordPlaceholder:"Внеси или генерирај лозинка",
+        confirmLabel:"Потврди ја лозинката",
+        confirmPlaceholder:"Повтори ја лозинката",
+        generate:"Генерирај лозинка",
+        important:"Важно!",
+        saveNotice:"Зачувај ја лозинката на безбедно место. Ќе ти треба за идни најавувања. Подоцна можеш да ја смениш во профилот.",
+        copy:"Копирај лозинка",
+        save:"Зачувај лозинка и активирај сметка",
+        security:"Препорачуваме да користиш доверлив менаџер за лозинки. Не ја споделувај со други.",
+        benefitsTitle:"Откриј ги предностите на DocBizHub",
+        translationTitle:"🌍 Автоматски превод",
+        translationText:"Претстави ја својата компанија и понуди на корисници од различни земји со автоматски превод на многу светски јазици.",
+        databaseTitle:"🤝 Деловни можности",
+        databaseText:"Истражи ја базата со огласи и пронајди потенцијални партнери и нови деловни можности.",
+        footer:"DocBizHub — поврзи се со светот на деловни можности.",
+        generated:"Лозинката е генерирана. Копирај ја и зачувај ја пред активирањето.",
+        needPassword:"Прво внеси или генерирај лозинка.",
+        copied:"Лозинката е копирана. Чувај ја на безбедно место.",
+        copyFail:"Автоматското копирање не успеа. Означи ја лозинката и копирај ја рачно.",
+        minLength:"Лозинката мора да содржи најмалку 8 знаци.",
+        mismatch:"Лозинките не се совпаѓаат.",
+        checking:"Се проверува сесијата за активирање...",
+        noSession:"Линкот за активирање е истечен или невалиден. Побарај нова порака за активирање.",
+        saving:"Лозинката се зачувува...",
+        activated:"Сметката е активирана и лозинката е поставена. Зачувај ја безбедно. Најавувај се со е-пошта и оваа лозинка. Подоцна можеш да ја смениш во профилот.",
+        error:"Грешка: ",
+        failed:"Активирањето не успеа."
+      },
+      fr: {
+        title:"Activez votre compte",
+        intro:"Définissez un mot de passe pour votre compte DocBizHub. Vous pourrez ensuite vous connecter avec votre adresse e-mail et votre mot de passe.",
+        passwordLabel:"Nouveau mot de passe",
+        passwordPlaceholder:"Saisissez ou générez un mot de passe",
+        confirmLabel:"Confirmer le mot de passe",
+        confirmPlaceholder:"Répétez le mot de passe",
+        generate:"Générer un mot de passe",
+        important:"Important !",
+        saveNotice:"Conservez votre mot de passe en lieu sûr. Vous en aurez besoin pour vous connecter. Vous pourrez le modifier plus tard dans votre profil.",
+        copy:"Copier le mot de passe",
+        save:"Enregistrer le mot de passe et activer le compte",
+        security:"Nous vous recommandons d'utiliser un gestionnaire de mots de passe fiable. Ne partagez pas votre mot de passe.",
+        benefitsTitle:"Découvrez les avantages de DocBizHub",
+        translationTitle:"🌍 Traduction automatique",
+        translationText:"Présentez votre entreprise et vos offres dans différents pays grâce à la traduction automatique dans de nombreuses langues.",
+        databaseTitle:"🤝 Opportunités commerciales",
+        databaseText:"Explorez la base d'annonces pour trouver des partenaires potentiels et de nouvelles opportunités commerciales.",
+        footer:"DocBizHub — connectez-vous à un monde d'opportunités commerciales.",
+        generated:"Mot de passe généré. Copiez-le et enregistrez-le avant l'activation.",
+        needPassword:"Saisissez ou générez d'abord un mot de passe.",
+        copied:"Mot de passe copié. Conservez-le en lieu sûr.",
+        copyFail:"La copie automatique a échoué. Sélectionnez le mot de passe et copiez-le manuellement.",
+        minLength:"Le mot de passe doit contenir au moins 8 caractères.",
+        mismatch:"Les mots de passe ne correspondent pas.",
+        checking:"Vérification de la session d'activation...",
+        noSession:"Le lien d'activation a expiré ou est invalide. Demandez un nouvel e-mail d'activation.",
+        saving:"Enregistrement du mot de passe...",
+        activated:"Votre compte est activé et votre mot de passe est défini. Conservez-le en lieu sûr. Connectez-vous avec votre e-mail et ce mot de passe. Vous pourrez le modifier dans votre profil.",
+        error:"Erreur : ",
+        failed:"L'activation a échoué."
+      },
+      es: {
+        title:"Activa tu cuenta",
+        intro:"Crea una contraseña para tu cuenta de DocBizHub. Después podrás iniciar sesión con tu correo electrónico y contraseña.",
+        passwordLabel:"Nueva contraseña",
+        passwordPlaceholder:"Introduce o genera una contraseña",
+        confirmLabel:"Confirmar contraseña",
+        confirmPlaceholder:"Repite la contraseña",
+        generate:"Generar contraseña",
+        important:"¡Importante!",
+        saveNotice:"Guarda tu contraseña en un lugar seguro. La necesitarás para iniciar sesión. Puedes cambiarla más adelante en tu perfil.",
+        copy:"Copiar contraseña",
+        save:"Guardar contraseña y activar cuenta",
+        security:"Te recomendamos usar un gestor de contraseñas fiable. No compartas tu contraseña.",
+        benefitsTitle:"Descubre las ventajas de DocBizHub",
+        translationTitle:"🌍 Traducción automática",
+        translationText:"Presenta tu empresa y tus ofertas en distintos países con traducción automática a numerosos idiomas.",
+        databaseTitle:"🤝 Oportunidades de negocio",
+        databaseText:"Explora la base de anuncios para encontrar socios potenciales y nuevas oportunidades de negocio.",
+        footer:"DocBizHub: conecta con un mundo de oportunidades de negocio.",
+        generated:"Contraseña generada. Cópiala y guárdala antes de activar la cuenta.",
+        needPassword:"Primero introduce o genera una contraseña.",
+        copied:"Contraseña copiada. Guárdala en un lugar seguro.",
+        copyFail:"No se pudo copiar automáticamente. Selecciona la contraseña y cópiala manualmente.",
+        minLength:"La contraseña debe tener al menos 8 caracteres.",
+        mismatch:"Las contraseñas no coinciden.",
+        checking:"Comprobando la sesión de activación...",
+        noSession:"El enlace de activación ha caducado o no es válido. Solicita un nuevo correo de activación.",
+        saving:"Guardando la contraseña...",
+        activated:"Tu cuenta está activada y la contraseña se ha establecido. Guárdala de forma segura. Inicia sesión con tu correo y esta contraseña. Puedes cambiarla después en tu perfil.",
+        error:"Error: ",
+        failed:"La activación ha fallado."
+      },
+      it: {
+        title:"Attiva il tuo account",
+        intro:"Imposta una password per il tuo account DocBizHub. Dopo l'attivazione potrai accedere con e-mail e password.",
+        passwordLabel:"Nuova password",
+        passwordPlaceholder:"Inserisci o genera una password",
+        confirmLabel:"Conferma password",
+        confirmPlaceholder:"Ripeti la password",
+        generate:"Genera password",
+        important:"Importante!",
+        saveNotice:"Conserva la password in un luogo sicuro. Ti servirà per accedere in futuro. Potrai modificarla successivamente nel tuo profilo.",
+        copy:"Copia password",
+        save:"Salva la password e attiva l'account",
+        security:"Ti consigliamo di usare un gestore di password affidabile. Non condividere la password.",
+        benefitsTitle:"Scopri i vantaggi di DocBizHub",
+        translationTitle:"🌍 Traduzione automatica",
+        translationText:"Presenta la tua azienda e le tue offerte in diversi Paesi grazie alla traduzione automatica in numerose lingue.",
+        databaseTitle:"🤝 Opportunità commerciali",
+        databaseText:"Esplora il database degli annunci per trovare partner e nuove opportunità commerciali.",
+        footer:"DocBizHub — connettiti con nuove opportunità commerciali.",
+        generated:"Password generata. Copiala e salvala prima dell'attivazione.",
+        needPassword:"Inserisci o genera prima una password.",
+        copied:"Password copiata. Conservala in un luogo sicuro.",
+        copyFail:"Copia automatica non riuscita. Seleziona la password e copiala manualmente.",
+        minLength:"La password deve contenere almeno 8 caratteri.",
+        mismatch:"Le password non corrispondono.",
+        checking:"Verifica della sessione di attivazione...",
+        noSession:"Il link di attivazione è scaduto o non valido. Richiedi una nuova e-mail di attivazione.",
+        saving:"Salvataggio della password...",
+        activated:"Account attivato e password impostata. Conservala in modo sicuro. Accedi con la tua e-mail e questa password. Potrai modificarla nel tuo profilo.",
+        error:"Errore: ",
+        failed:"Attivazione non riuscita."
+      },
+      tr: {
+        title:"Hesabını etkinleştir",
+        intro:"DocBizHub hesabın için bir parola belirle. Etkinleştirmeden sonra e-posta adresin ve parolanla giriş yapabilirsin.",
+        passwordLabel:"Yeni parola",
+        passwordPlaceholder:"Parola gir veya oluştur",
+        confirmLabel:"Parolayı doğrula",
+        confirmPlaceholder:"Parolayı tekrar gir",
+        generate:"Parola oluştur",
+        important:"Önemli!",
+        saveNotice:"Parolanı güvenli bir yerde sakla. Sonraki girişlerinde gerekecek. Daha sonra profilinden değiştirebilirsin.",
+        copy:"Parolayı kopyala",
+        save:"Parolayı kaydet ve hesabı etkinleştir",
+        security:"Güvenilir bir parola yöneticisi kullanmanı öneririz. Parolanı başkalarıyla paylaşma.",
+        benefitsTitle:"DocBizHub avantajlarını keşfet",
+        translationTitle:"🌍 Otomatik çeviri",
+        translationText:"Şirketini ve tekliflerini otomatik çeviri sayesinde dünyanın birçok dilinde farklı ülkelerdeki kullanıcılara tanıt.",
+        databaseTitle:"🤝 İş fırsatları",
+        databaseText:"İlan veritabanını inceleyerek potansiyel iş ortakları ve yeni iş fırsatları bul.",
+        footer:"DocBizHub — yeni iş fırsatlarıyla dünyaya bağlan.",
+        generated:"Parola oluşturuldu. Etkinleştirmeden önce kopyalayıp sakla.",
+        needPassword:"Önce bir parola gir veya oluştur.",
+        copied:"Parola kopyalandı. Güvenli bir yerde sakla.",
+        copyFail:"Otomatik kopyalama başarısız. Parolayı seçip elle kopyala.",
+        minLength:"Parola en az 8 karakter olmalıdır.",
+        mismatch:"Parolalar eşleşmiyor.",
+        checking:"Etkinleştirme oturumu kontrol ediliyor...",
+        noSession:"Etkinleştirme bağlantısı süresi dolmuş veya geçersiz. Yeni bir etkinleştirme e-postası iste.",
+        saving:"Parola kaydediliyor...",
+        activated:"Hesabın etkinleştirildi ve parolan ayarlandı. Güvenli şekilde sakla. E-posta adresin ve bu parolayla giriş yapabilirsin. Parolanı daha sonra profilinden değiştirebilirsin.",
+        error:"Hata: ",
+        failed:"Etkinleştirme başarısız oldu."
+      },
+      ar: {
+        title:"تفعيل حسابك",
+        intro:"أنشئ كلمة مرور لحساب DocBizHub. بعد التفعيل يمكنك تسجيل الدخول باستخدام بريدك الإلكتروني وكلمة المرور.",
+        passwordLabel:"كلمة مرور جديدة",
+        passwordPlaceholder:"أدخل كلمة مرور أو أنشئ واحدة",
+        confirmLabel:"تأكيد كلمة المرور",
+        confirmPlaceholder:"أعد إدخال كلمة المرور",
+        generate:"إنشاء كلمة مرور",
+        important:"مهم!",
+        saveNotice:"احفظ كلمة المرور في مكان آمن. ستحتاج إليها لتسجيل الدخول لاحقًا. يمكنك تغييرها لاحقًا من ملفك الشخصي.",
+        copy:"نسخ كلمة المرور",
+        save:"حفظ كلمة المرور وتفعيل الحساب",
+        security:"ننصح باستخدام مدير كلمات مرور موثوق. لا تشارك كلمة المرور مع الآخرين.",
+        benefitsTitle:"اكتشف مزايا DocBizHub",
+        translationTitle:"🌍 ترجمة تلقائية",
+        translationText:"اعرض شركتك وعروضك للمستخدمين في بلدان مختلفة من خلال الترجمة التلقائية إلى العديد من لغات العالم.",
+        databaseTitle:"🤝 فرص الأعمال",
+        databaseText:"استكشف قاعدة الإعلانات للعثور على شركاء محتملين وفرص أعمال جديدة.",
+        footer:"DocBizHub — تواصل مع عالم من فرص الأعمال.",
+        generated:"تم إنشاء كلمة المرور. انسخها واحفظها قبل التفعيل.",
+        needPassword:"أدخل كلمة مرور أو أنشئ واحدة أولاً.",
+        copied:"تم نسخ كلمة المرور. احفظها في مكان آمن.",
+        copyFail:"تعذر النسخ التلقائي. حدد كلمة المرور وانسخها يدويًا.",
+        minLength:"يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+        mismatch:"كلمتا المرور غير متطابقتين.",
+        checking:"جارٍ التحقق من جلسة التفعيل...",
+        noSession:"انتهت صلاحية رابط التفعيل أو أنه غير صالح. اطلب رسالة تفعيل جديدة.",
+        saving:"جارٍ حفظ كلمة المرور...",
+        activated:"تم تفعيل حسابك وتعيين كلمة المرور. احفظها بأمان. سجّل الدخول باستخدام بريدك الإلكتروني وكلمة المرور هذه. يمكنك تغييرها لاحقًا من ملفك الشخصي.",
+        error:"خطأ: ",
+        failed:"فشل التفعيل."
+      },
+      ru: {
+        title:"Активируйте аккаунт",
+        intro:"Создайте пароль для аккаунта DocBizHub. После активации вы сможете входить с помощью электронной почты и пароля.",
+        passwordLabel:"Новый пароль",
+        passwordPlaceholder:"Введите или создайте пароль",
+        confirmLabel:"Подтвердите пароль",
+        confirmPlaceholder:"Повторите пароль",
+        generate:"Создать пароль",
+        important:"Важно!",
+        saveNotice:"Сохраните пароль в безопасном месте. Он понадобится для будущих входов. Позже его можно изменить в профиле.",
+        copy:"Копировать пароль",
+        save:"Сохранить пароль и активировать аккаунт",
+        security:"Рекомендуем использовать надёжный менеджер паролей. Не сообщайте пароль другим людям.",
+        benefitsTitle:"Откройте преимущества DocBizHub",
+        translationTitle:"🌍 Автоматический перевод",
+        translationText:"Представляйте компанию и предложения пользователям разных стран благодаря автоматическому переводу на многие языки мира.",
+        databaseTitle:"🤝 Деловые возможности",
+        databaseText:"Изучайте базу объявлений, чтобы находить потенциальных партнёров и новые деловые возможности.",
+        footer:"DocBizHub — мир новых деловых возможностей.",
+        generated:"Пароль создан. Скопируйте и сохраните его до активации.",
+        needPassword:"Сначала введите или создайте пароль.",
+        copied:"Пароль скопирован. Храните его в безопасном месте.",
+        copyFail:"Не удалось скопировать автоматически. Выделите пароль и скопируйте вручную.",
+        minLength:"Пароль должен содержать не менее 8 символов.",
+        mismatch:"Пароли не совпадают.",
+        checking:"Проверка сеанса активации...",
+        noSession:"Ссылка активации истекла или недействительна. Запросите новое письмо активации.",
+        saving:"Сохранение пароля...",
+        activated:"Аккаунт активирован, пароль установлен. Сохраните его в безопасном месте. Входите с помощью электронной почты и этого пароля. Позже пароль можно изменить в профиле.",
+        error:"Ошибка: ",
+        failed:"Не удалось активировать аккаунт."
+      },
+      zh: {
+        title:"激活你的账户",
+        intro:"为你的 DocBizHub 账户设置密码。激活后，你可以使用电子邮箱和密码登录。",
+        passwordLabel:"新密码",
+        passwordPlaceholder:"输入或生成密码",
+        confirmLabel:"确认密码",
+        confirmPlaceholder:"再次输入密码",
+        generate:"生成密码",
+        important:"重要提示！",
+        saveNotice:"请将密码保存在安全的地方。以后登录时需要使用。你可以稍后在个人资料中更改密码。",
+        copy:"复制密码",
+        save:"保存密码并激活账户",
+        security:"建议使用可靠的密码管理器。请勿与他人分享密码。",
+        benefitsTitle:"了解 DocBizHub 的优势",
+        translationTitle:"🌍 自动翻译",
+        translationText:"通过自动翻译成多种世界语言，向不同国家的用户展示你的公司和业务信息。",
+        databaseTitle:"🤝 商业机会",
+        databaseText:"浏览广告数据库，寻找潜在合作伙伴和新的商业机会。",
+        footer:"DocBizHub — 连接全球商业机会。",
+        generated:"密码已生成。请在激活前复制并保存。",
+        needPassword:"请先输入或生成密码。",
+        copied:"密码已复制。请妥善保存。",
+        copyFail:"自动复制失败。请选中密码并手动复制。",
+        minLength:"密码至少需要 8 个字符。",
+        mismatch:"两次输入的密码不一致。",
+        checking:"正在检查激活会话...",
+        noSession:"激活链接已过期或无效。请重新申请激活邮件。",
+        saving:"正在保存密码...",
+        activated:"账户已激活，密码已设置。请安全保存密码。以后使用电子邮箱和此密码登录。你可以稍后在个人资料中更改密码。",
+        error:"错误：",
+        failed:"激活失败。"
+      }
+    };
+
+    let currentLanguage = "bs";
+
+    function t(key) {
+      return (translations[currentLanguage] || translations.bs)[key]
+        || translations.bs[key]
+        || key;
     }
 
+    function prikaziStatus(message, type = "") {
+      statusBox.className = type;
+      statusBox.textContent = message;
+    }
+
+    function postaviJezik(language) {
+      currentLanguage = translations[language] ? language : "bs";
+      document.documentElement.lang = currentLanguage;
+      document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = t(element.dataset.i18n);
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        element.placeholder = t(element.dataset.i18nPlaceholder);
+      });
+
+      document.title = "DocBizHub — " + t("title");
+    }
+
+    languageSelect.addEventListener("change", () => {
+      postaviJezik(languageSelect.value);
+    });
+
+    // Postavi početni jezik prema jeziku preglednika.
+    const browserLanguage = (navigator.language || "bs").toLowerCase();
+    const languagePrefix = browserLanguage.split("-")[0];
+    const supportedLanguages = Object.keys(translations);
+
+    const initialLanguage = supportedLanguages.includes(languagePrefix)
+      ? languagePrefix
+      : "bs";
+
+    languageSelect.value = initialLanguage;
+    postaviJezik(initialLanguage);
+
     function generisiLozinku() {
-      // Koristi kriptografski siguran generator preglednika.
+      if (!window.crypto || !window.crypto.getRandomValues) {
+        prikaziStatus(t("failed"), "error");
+        return;
+      }
+
       const alphabet =
         "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
 
-      const random = new Uint32Array(20);
-      crypto.getRandomValues(random);
-
+      // Rejection sampling izbjegava modulo pristrasnost.
+      const passwordLength = 20;
+      const limit = Math.floor(256 / alphabet.length) * alphabet.length;
       let password = "";
 
-      for (let i = 0; i < random.length; i++) {
-        password += alphabet[random[i] % alphabet.length];
+      while (password.length < passwordLength) {
+        const random = new Uint8Array(32);
+        crypto.getRandomValues(random);
+
+        for (const value of random) {
+          if (value < limit) {
+            password += alphabet[value % alphabet.length];
+            if (password.length === passwordLength) break;
+          }
+        }
       }
 
       passwordInput.value = password;
       confirmInput.value = password;
-
       passwordInput.type = "text";
       confirmInput.type = "text";
 
-      prikaziStatus(
-        "Lozinka je generisana. Kopiraj je i sačuvaj prije aktivacije."
-      );
+      prikaziStatus(t("generated"), "success");
     }
 
-    document.getElementById("generateBtn").addEventListener("click", () => {
-      generisiLozinku();
-    });
+    generateBtn.addEventListener("click", generisiLozinku);
 
-    document.getElementById("copyBtn").addEventListener("click", async () => {
+    copyBtn.addEventListener("click", async () => {
       const password = passwordInput.value;
 
       if (!password) {
-        prikaziStatus("Prvo unesi ili generiši lozinku.", "error");
+        prikaziStatus(t("needPassword"), "error");
         return;
       }
 
       try {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          throw new Error("Clipboard API unavailable");
+        }
+
         await navigator.clipboard.writeText(password);
-        prikaziStatus(
-          "Lozinka je kopirana. Sačuvaj je na sigurnom mjestu.",
-          "success"
-        );
+        prikaziStatus(t("copied"), "success");
       } catch {
         passwordInput.type = "text";
         passwordInput.focus();
         passwordInput.select();
 
-        prikaziStatus(
-          "Automatsko kopiranje nije uspjelo. Označi lozinku i kopiraj je ručno.",
-          "error"
-        );
+        try {
+          const copied = document.execCommand("copy");
+          prikaziStatus(copied ? t("copied") : t("copyFail"),
+                        copied ? "success" : "error");
+        } catch {
+          prikaziStatus(t("copyFail"), "error");
+        }
       }
     });
 
@@ -264,23 +852,23 @@
       const confirmPassword = confirmInput.value;
 
       if (!password || password.length < 8) {
-        prikaziStatus(
-          "Lozinka mora imati najmanje 8 znakova.",
-          "error"
-        );
+        prikaziStatus(t("minLength"), "error");
         return;
       }
 
       if (password !== confirmPassword) {
-        prikaziStatus("Lozinke se ne podudaraju.", "error");
+        prikaziStatus(t("mismatch"), "error");
         return;
       }
 
       saveBtn.disabled = true;
-      prikaziStatus("Provjeravam aktivacijsku sesiju...");
+      generateBtn.disabled = true;
+      copyBtn.disabled = true;
 
       try {
-        // Supabase JS obrađuje recovery hash iz URL-a pri inicijalizaciji.
+        prikaziStatus(t("checking"));
+
+        // Supabase JS v2 obrađuje sesiju iz recovery linka.
         const {
           data: { session },
           error: sessionError
@@ -289,34 +877,26 @@
         if (sessionError) throw sessionError;
 
         if (!session) {
-          prikaziStatus(
-            "Aktivacijski link je istekao ili nije ispravan. Zatraži novi aktivacijski e-mail i otvori njegov link.",
-            "error"
-          );
+          prikaziStatus(t("noSession"), "error");
           return;
         }
 
-        prikaziStatus("Čuvam tvoju lozinku...");
+        prikaziStatus(t("saving"));
 
         const { error } = await supabaseClient.auth.updateUser({
-          password: password
+          password
         });
 
         if (error) throw error;
 
         document.getElementById("formArea").classList.add("hidden");
-
-        prikaziStatus(
-          "Račun je uspješno aktiviran i lozinka je postavljena. Sačuvaj lozinku na sigurnom mjestu. Za buduće prijave koristi svoj e-mail i ovu lozinku. Lozinku možeš kasnije promijeniti u svom profilu.",
-          "success"
-        );
+        prikaziStatus(t("activated"), "success");
       } catch (error) {
-        prikaziStatus(
-          "Greška: " + (error.message || "Aktivacija nije uspjela."),
-          "error"
-        );
+        prikaziStatus(t("error") + (error.message || t("failed")), "error");
       } finally {
         saveBtn.disabled = false;
+        generateBtn.disabled = false;
+        copyBtn.disabled = false;
       }
     }
 
@@ -324,4 +904,3 @@
   </script>
 </body>
 </html>
-```
