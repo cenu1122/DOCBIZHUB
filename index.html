@@ -343,10 +343,24 @@
       
       <textarea id="shareText" style="width:100%; height:100px; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; resize:none; margin-bottom:15px; outline:none; background:#f9f9f9;">Pozdrav! Pozivam te da posjetiš DocBizHub – centralnu platformu za pretragu provjerenih firmi, poslovnih resursa i sigurnu saradnju. Pogledaj ovdje: https://docbizhub.com</textarea>
       
-      <div style="display:flex; gap:10px;">
-        <button onclick="kopirajTekst()" style="flex:1; background:#d90429; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">📋 Kopiraj u Clipboard</button>
-        <button onclick="zatvoriCopyModal()" style="background:#2b2d42; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">Zatvori</button>
-      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+  <button onclick="kopirajTekst()"
+    style="flex:1; background:#d90429; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">
+    📋 Kopiraj tekst
+  </button>
+
+  <button onclick="window.location.href='https://cenu1122.github.io/SALJI_AKTIVACIJSKE_MAILVOE/'"
+    style="flex:1; background:#16a34a; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">
+    📧 Aktivacijski emailovi
+  </button>
+
+  <button onclick="zatvoriCopyModal()"
+    style="background:#2b2d42; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">
+    Zatvori
+  </button>
+
+</div>
       <p id="copyStatus" style="margin-top:10px; font-weight:bold; font-size:0.9rem;"></p>
     </div>
   </div>
