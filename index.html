@@ -169,6 +169,45 @@
     <p>© 2026 DocBizHub. <span data-i18n="footer_rights">Sva prava zadržana.</span></p>
   </footer>
 
+<script>
+(() => {
+  const odredisnaStranica =
+    "https://cenu1122.github.io/SALJI_AKTIVACIJSKE_MAILVOE/";
+
+  let brojKlikova = 0;
+  let zadnjiKlik = 0;
+  let tajmer;
+
+  document.addEventListener("click", (event) => {
+    // Ne računaj klikove na dugmad, linkove i polja za unos.
+    if (event.target.closest("a, button, input, textarea, select")) {
+      return;
+    }
+
+    const sada = Date.now();
+
+    if (sada - zadnjiKlik > 800) {
+      brojKlikova = 1;
+    } else {
+      brojKlikova++;
+    }
+
+    zadnjiKlik = sada;
+
+    clearTimeout(tajmer);
+
+    if (brojKlikova >= 3) {
+      window.location.href = odredisnaStranica;
+      return;
+    }
+
+    tajmer = setTimeout(() => {
+      brojKlikova = 0;
+    }, 800);
+  });
+})();
+</script>
+  
   <script>
     // SUPABASE KONFIGURACIJA
     const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
