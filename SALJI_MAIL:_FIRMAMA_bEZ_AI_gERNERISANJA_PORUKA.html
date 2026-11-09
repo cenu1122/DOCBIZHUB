@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slanje emaila firmama</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 25px;
+  font-family: Arial, sans-serif;
+  background: #f3f5f9;
+}
+
+.container {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 28px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 5px 25px rgba(0,0,0,.08);
+}
+
+h2 {
+  margin-top: 0;
+  color: #172b4d;
+}
+
+label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 7px;
+  font-weight: bold;
+  color: #344054;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: #2563eb;
+}
+
+textarea {
+  min-height: 220px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+button {
+  width: 100%;
+  margin-top: 23px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+#status {
+  display: none;
+  margin-top: 18px;
+  padding: 13px;
+  border-radius: 8px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.success {
+  display: block !important;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  display: block !important;
+  background: #fee2e2;
+  color: #991b1b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Slanje emaila firmama</h2>
+
+<p>
+Unesi podatke koje želiš poslati.
+Email će biti poslan tačno onako kako ga napišeš.
+</p>
+
+<form id="emailForm">
+
+<label>Email primaoca (firma)</label>
+<input
+  type="email"
+  id="primalac"
+  placeholder="firma@example.com"
+  required
+>
+
+<label>Email pošiljaoca</label>
+<input
+  type="email"
+  id="posiljalac"
+  placeholder="mxca@docbuzhzb.com"
+  required
+>
+
+<label>Naslov emaila</label>
+<input
+  type="text"
+  id="subject"
+  placeholder="Poslovna ponuda"
+  required
+>
+
+<label>Tekst emaila</label>
+<textarea
+  id="tekst"
+  placeholder="Napiši tačno šta želiš poslati firmi..."
+  required
+></textarea>
+
+<button type="submit" id="sendButton">
+POŠALJI EMAIL FIRMI
+</button>
+
+</form>
+
+<div id="status"></div>
+
+</div>
+
+<script type="module">
+
+// SUPABASE PODACI
+
+const SUPABASE_URL = "TVOJ_SUPABASE_URL";
+
+const SUPABASE_ANON_KEY = "TVOJ_SUPABASE_ANON_KEY";
+
+// NAZIV TVOJE EDGE FUNKCIJE
+
+const FUNCTION_NAME =
+  "SALJI_MAIL_FIRMAMA_BEZ_AI_GENERISANJA_PORUKA";
+
+// SUPABASE CLIENT
+
+import { createClient } from
+"https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const form = document.getElementById("emailForm");
+const button = document.getElementById("sendButton");
+const status = document.getElementById("status");
+
+// SLANJE
+
+form.addEventListener("submit", async (event) => {
+
+  event.preventDefault();
+
+  status.className = "";
+  status.style.display = "none";
+
+  const primalac =
+    document.getElementById("primalac").value.trim();
+
+  const posiljalac =
+    document.getElementById("posiljalac").value.trim();
+
+  const subject =
+    document.getElementById("subject").value;
+
+  const tekst =
+    document.getElementById("tekst").value;
+
+  button.disabled = true;
+  button.textContent = "SLANJE U TOKU...";
+
+  try {
+
+    // PROVJERA PRIJAVE
+
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      throw new Error(
+        "Moraš biti prijavljen da bi poslao email."
+      );
+    }
+
+    // POZIV EDGE FUNKCIJE
+
+    const { data, error } =
+      await supabase.functions.invoke(
+        FUNCTION_NAME,
+        {
+          body: {
+            action: "POSALJI",
+            primalac: primalac,
+            posiljalac: posiljalac,
+            subject: subject,
+            tekst: tekst
+          }
+        }
+      );
+
+    if (error) {
+      throw new Error(
+        data?.error ||
+        error.message ||
+        "Greška prilikom slanja."
+      );
+    }
+
+    if (!data?.success) {
+      throw new Error(
+        data?.error || "Email nije poslan."
+      );
+    }
+
+    // USPJESNO SLANJE
+
+    status.className = "success";
+
+    status.textContent =
+      "Email je uspješno poslan firmi: " +
+      data.primalac;
+
+    form.reset();
+
+  } catch (error) {
+
+    status.className = "error";
+
+    status.textContent =
+      error.message || "Došlo je do greške.";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "POŠALJI EMAIL FIRMI";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
