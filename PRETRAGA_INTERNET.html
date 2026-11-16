@@ -100,114 +100,373 @@
   </footer>
 
 <script>
+ 
+  // ============================================================
   // SUPABASE KONFIGURACIJA
+  // ============================================================
+
   const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkdXdwdmRqbWFucmdwdW1kcmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MTEwODQsImV4cCI6MjEwMDM4NzA4NH0.zdxIxiCJcaauEP1pm75d1-4YXO1Dn6tsAhZehFh2vsQ';
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const SUPABASE_ANON_KEY = 'OVDJE_ZADRZI_SVOJ_POSTOJECI_ANON_KEY';
+
+  const _supabase = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  // ============================================================
+  // 1. POKRETANJE AI PITANJA
+  // ============================================================
 
   async function pokreniGroqAsistent() {
+
     const query = document.getElementById('searchInput').value.trim();
+
     const chatBox = document.getElementById('aiChatBox');
     const contentBox = document.getElementById('aiChatContent');
 
     if (!query) {
-      alert("Molimo unesite osnovnu ideju šta tražite!");
+      alert('Molimo unesite šta tražite!');
       return;
     }
 
     chatBox.style.display = 'block';
-    contentBox.innerHTML = "✨ Pozivam Edge funkciju PRETRAGA i čekam analizu...";
+
+    contentBox.textContent =
+      '✨ Groq AI priprema pitanja za precizniju internet pretragu...';
 
     try {
-      const { data, error } = await _supabase.functions.invoke('PRETRAGA', {
-        body: { pojam: query }
-      });
+
+      const { data, error } =
+        await _supabase.functions.invoke('PRETRAGA', {
+
+          body: {
+            pojam: query,
+            mode: 'pitanja'
+          }
+
+        });
 
       if (error) throw error;
 
-      let tekstZaPrikaz = "";
-      if (typeof data === 'string') {
-        try {
-          const parsed = JSON.parse(data);
-          tekstZaPrikaz = parsed.pitanja || parsed.odgovor || parsed.tekst || data;
-        } catch(e) {
-          tekstZaPrikaz = data;
-        }
-      } else if (typeof data === 'object' && data !== null) {
-        tekstZaPrikaz = data.pitanja || data.odgovor || data.tekst || JSON.stringify(data);
+      if (!data || !data.success) {
+        throw new Error(data?.error || 'Greška pri AI analizi.');
       }
 
-      contentBox.innerHTML = tekstZaPrikaz;
+      if (data.type === 'pitanja') {
+
+        contentBox.replaceChildren();
+
+        const lista = document.createElement('ol');
+
+        (data.pitanja || []).forEach(pitanje => {
+
+          const li = document.createElement('li');
+
+          li.textContent = pitanje;
+          li.style.marginBottom = '8px';
+
+          lista.appendChild(li);
+
+        });
+
+        contentBox.appendChild(lista);
+
+      } else {
+
+        contentBox.textContent =
+          'AI nije vratio očekivani format pitanja.';
+
+      }
+
     } catch (err) {
-      contentBox.innerHTML = `<span style="color: red;">Greška sa Edge funkcijom PRETRAGA: ${err.message}</span>`;
+
+      contentBox.textContent =
+        'Greška pri pozivanju PRETRAGA funkcije: ' + err.message;
+
+      contentBox.style.color = 'red';
+
     }
+
   }
+
+  // ============================================================
+  // 2. PRIKAZ REZULTATA FIRMI
+  // ============================================================
+
+  function prikaziAIRezultate(rezultati) {
+
+    const container =
+      document.getElementById('aiResultsContent');
+
+    container.replaceChildren();
+
+    if (!Array.isArray(rezultati) || rezultati.length === 0) {
+
+      container.textContent =
+        'Nisu pronađene potvrđene firme za ovaj zahtjev.';
+
+      return;
+
+    }
+
+    rezultati.forEach((firma, index) => {
+
+      const card = document.createElement('div');
+
+      card.className = 'firma-ai-card';
+
+      card.style.cssText = `
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 18px;
+      `;
+
+      const naslov = document.createElement('h3');
+
+      naslov.textContent =
+        `${index + 1}. ${firma.naziv || 'Nepoznata firma'}`;
+
+      naslov.style.color = '#d90429';
+
+      card.appendChild(naslov);
+
+      const polja = [
+        ['Djelatnost', firma.djelatnost],
+        ['Opis', firma.opis],
+        ['Lokacija', firma.lokacija],
+        ['Telefon', firma.telefon],
+        ['Email', firma.email]
+      ];
+
+      polja.forEach(([naziv, vrijednost]) => {
+
+        if (!vrijednost) return;
+
+        const p = document.createElement('p');
+
+        p.style.marginTop = '8px';
+
+        const strong = document.createElement('strong');
+
+        strong.textContent = naziv + ': ';
+
+        const span = document.createElement('span');
+
+        span.textContent = vrijednost;
+
+        p.append(strong, span);
+
+        card.appendChild(p);
+
+      });
+
+      // WEB STRANICA
+
+      if (firma.web) {
+
+        dodajSiguranLink(
+          card,
+          firma.web,
+          '🌐 Posjeti web stranicu'
+        );
+
+      }
+
+      // IZVOR
+
+      if (firma.izvor) {
+
+        dodajSiguranLink(
+          card,
+          firma.izvor,
+          '🔗 Pogledaj internet izvor'
+        );
+
+      }
+
+      container.appendChild(card);
+
+    });
+
+  }
+
+  // ============================================================
+  // SIGURNO DODAVANJE LINKOVA
+  // ============================================================
+
+  function dodajSiguranLink(container, vrijednost, tekst) {
+
+    try {
+
+      const url = new URL(vrijednost);
+
+      if (!['https:', 'http:'].includes(url.protocol)) {
+        return;
+      }
+
+      const link = document.createElement('a');
+
+      link.href = url.href;
+      link.textContent = tekst;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+
+      link.style.cssText = `
+        display: inline-block;
+        margin-top: 12px;
+        margin-right: 15px;
+        color: #4f46e5;
+        font-weight: bold;
+      `;
+
+      container.appendChild(link);
+
+    } catch {
+
+      // Ne prikazujemo neispravne URL adrese.
+
+    }
+
+  }
+
+  // ============================================================
+  // 3. TAVILY INTERNET PRETRAGA + GROQ ANALIZA
+  // ============================================================
 
   async function zatraziAIRezultate() {
-    const osnovniUpit = document.getElementById('searchInput').value.trim();
-    const odgovori = document.getElementById('dodatniOdgovori').value.trim();
-    const infoBox = document.getElementById('infoBox');
-    const resultsCardAI = document.getElementById('resultsCardAI');
-    const aiResultsContent = document.getElementById('aiResultsContent');
 
-    const konacniUpit = `${osnovniUpit} ${odgovori ? '- ' + odgovori : ''}`;
-    const trenutniLink = window.location.origin + window.location.pathname + `?q=${encodeURIComponent(konacniUpit)}`;
+    const osnovniUpit =
+      document.getElementById('searchInput').value.trim();
 
-    // 1. Slanje adminu u Supabase bazu
-    try {
-      const { data: { user } } = await _supabase.auth.getUser();
-      const korisnikMail = user ? user.email : "Gost";
+    const odgovori =
+      document.getElementById('dodatniOdgovori').value.trim();
 
-      await _supabase.from('PRETRAGA_INTERNET').insert([
-        {
-          korisnik: korisnikMail,
-          pojam: konacniUpit,
-          link_pretrage: trenutniLink,
-          status: 'Na cekanju'
-        }
-      ]);
+    const infoBox =
+      document.getElementById('infoBox');
 
-      infoBox.style.display = 'block';
-      infoBox.innerHTML = `✅ Upit je uspješno poslat administratoru na pregled sa sačuvanim linkom!`;
-    } catch (err) {
-      console.warn("Greška pri snimanju u bazu:", err);
+    const resultsCardAI =
+      document.getElementById('resultsCardAI');
+
+    const aiResultsContent =
+      document.getElementById('aiResultsContent');
+
+    if (!osnovniUpit) {
+
+      alert('Unesite osnovni pojam za pretragu.');
+
+      return;
+
     }
 
-    // 2. Tražimo od Groq AI (preko Edge funkcije PRETRAGA) da pretraži svoju bazu znanja i izbaci rezultate
     resultsCardAI.style.display = 'block';
-    aiResultsContent.innerHTML = "✨ Groq AI pretražuje bazu znanja i sastavlja listu firmi i preporuka...";
+
+    infoBox.style.display = 'none';
+
+    aiResultsContent.textContent =
+      '🌐 Tavily pretražuje internet. Groq AI analizira pronađene kompanije...';
 
     try {
-      // Šaljemo isti zahtjev ali sa naznakom da nam trebaju konkretne firme i rezultati
-      const { data, error } = await _supabase.functions.invoke('PRETRAGA', {
-        body: { pojam: `Pronađi i izlistaj stvarne firme, preduzeća ili partnere za ovaj zahtjev: ${konacniUpit}. Navedi nazive i detalje.` }
-      });
+
+      // --------------------------------------------------------
+      // KORISNIK
+      // --------------------------------------------------------
+
+      const { data: authData } =
+        await _supabase.auth.getUser();
+
+      const korisnikMail =
+        authData?.user?.email || 'Gost';
+
+      // --------------------------------------------------------
+      // POZIV POSTOJEĆE EDGE FUNCTION
+      // --------------------------------------------------------
+
+      const { data, error } =
+        await _supabase.functions.invoke('PRETRAGA', {
+
+          body: {
+
+            pojam: osnovniUpit,
+
+            detalji: odgovori,
+
+            korisnik: korisnikMail,
+
+            mode: 'rezultati'
+
+          }
+
+        });
 
       if (error) throw error;
 
-      let rezultatiTekst = "";
-      if (typeof data === 'string') {
-        try {
-          const parsed = JSON.parse(data);
-          rezultatiTekst = parsed.rezultati || parsed.odgovor || parsed.tekst || data;
-        } catch(e) {
-          rezultatiTekst = data;
-        }
-      } else if (typeof data === 'object' && data !== null) {
-        rezultatiTekst = data.rezultati || data.odgovor || data.tekst || JSON.stringify(data);
+      if (!data || !data.success) {
+
+        throw new Error(
+          data?.error || 'Internet pretraga nije uspjela.'
+        );
+
       }
 
-      aiResultsContent.innerHTML = rezultatiTekst;
+      // --------------------------------------------------------
+      // PRIKAZ REZULTATA
+      // --------------------------------------------------------
+
+      prikaziAIRezultate(data.rezultati);
+
+      // --------------------------------------------------------
+      // INFORMACIJE O PRETRAZI
+      // --------------------------------------------------------
+
+      infoBox.style.display = 'block';
+
+      infoBox.style.color = '#0056b3';
+
+      infoBox.textContent =
+        `Pronađeno firmi: ${data.broj_rezultata || 0}. ` +
+        `Internet izvora: ${data.broj_internet_izvora || 0}. ` +
+        `AI model: ${data.model_koristen || 'Nepoznat'}. ` +
+        `Internet pretraživač: ${data.internet_pretraga || 'Tavily'}.`;
+
+      // --------------------------------------------------------
+      // STATUS BAZE
+      // --------------------------------------------------------
+
+      if (data.baza && data.baza.upisano) {
+
+        infoBox.textContent +=
+          ' Rezultati su uspješno sačuvani u bazi.';
+
+      }
+
     } catch (err) {
-      aiResultsContent.innerHTML = `<span style="color: red;">Greška pri dobijanju AI rezultata: ${err.message}</span>`;
+
+      aiResultsContent.textContent =
+        'Greška pri internet pretrazi: ' + err.message;
+
+      aiResultsContent.style.color = 'red';
+
     }
+
   }
 
+  // ============================================================
+  // 4. ENTER ZA POKRETANJE
+  // ============================================================
+
   function handleKeyPress(event) {
+
     if (event.key === 'Enter') {
+
       pokreniGroqAsistent();
+
     }
+
   }
+
 </script>
 
 </body>
