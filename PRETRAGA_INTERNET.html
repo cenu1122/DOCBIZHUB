@@ -772,84 +772,51 @@ document.addEventListener('DOMContentLoaded', async function () {
 // 7. UČITAVANJE DRŽAVE KORISNIKA
 // ============================================================
 
+
 async function ucitajDrzavuKorisnika() {
-
-    const countryInfo =
-        document.getElementById('countryInfo');
-
     try {
-
-        const { data: authData, error: authError } =
+        const { data: { user }, error: authError } =
             await _supabase.auth.getUser();
 
-        if (authError) {
-            throw authError;
-        }
+        if (authError) throw authError;
 
-        const korisnik = authData?.user;
-
-        if (!korisnik) {
-
-            countryInfo.textContent =
-                'Korisnik nije prijavljen.';
-
+        if (!user) {
+            console.warn("Korisnik nije prijavljen.");
             return;
         }
 
-        korisnikMail = korisnik.email || '';
-
         const { data, error } = await _supabase
-            .from('POSAO_KORISNICI')
-            .select('DRZAVA, DRZAVA_FIRME')
-            .eq('user_id', korisnik.id)
+            .from("POSAO_KORISNICI")
+            .select("DRZAVA, DRZAVA_FIRME")
+            .eq("user_id", user.id)
             .maybeSingle();
 
         if (error) {
-            throw error;
+            console.error("Supabase greška:", error.message, error.details, error.hint);
+            return;
         }
 
-        drzavaKorisnika =
-            String(data?.DRZAVA || '').trim() ||
-            String(data?.DRZAVA_FIRME || '').trim();
+        if (!data) {
+            console.warn("Nije pronađen zapis za korisnika:", user.id);
+            return;
+        }
 
-        const drzava = normalizujTekst(drzavaKorisnika);
+        const drzava = data.DRZAVA_FIRME || data.DRZAVA || "";
 
-        const podaci = drzavaJezici[drzava];
+        console.log("Učitana država:", drzava);
 
-        if (podaci) {
-
-            automatskiJezik = podaci.jezik;
-
-            countryInfo.textContent =
-                'Država korisnika: ' + drzavaKorisnika +
-                ' | Automatski jezik: ' + podaci.naziv;
-
-        } else {
-
-            automatskiJezik = 'bs-BA';
-
-            countryInfo.textContent =
-                'Država: ' +
-                (drzavaKorisnika || 'Nije unesena') +
-                ' | Podrazumijevani jezik: Bosanski';
-
+        if (drzava) {
+            const countryInfo = document.getElementById("countryInfo");
+            if (countryInfo) {
+                countryInfo.textContent = drzava;
+            }
         }
 
         postaviAktivniJezik();
 
     } catch (error) {
-
-        console.error('Greška učitavanja države:', error);
-
-        automatskiJezik = 'bs-BA';
-
-        countryInfo.textContent =
-            'Nije moguće učitati državu. Koristi se bosanski.';
-
-        postaviAktivniJezik();
-
+        console.error("Greška pri učitavanju države:", error);
     }
-
 }
 
 
