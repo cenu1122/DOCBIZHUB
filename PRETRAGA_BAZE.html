@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DocBizHub - Pametna poslovna pretraga</title>
+<title>DocBizHub - Pametna poslovna PRETRAGA_GLAVNA</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -210,7 +210,7 @@ footer {
 
 <div class="card">
 
-<h2>🤖 Pametna poslovna pretraga</h2>
+<h2>🤖 Pametna poslovna PRETRAGA_GLAVNA</h2>
 
 <p class="sub">
 Unesite šta nudite i šta tražite.
@@ -505,7 +505,7 @@ async function pokreniPretragu() {
     // Poziv funkcije
     const {data,error} =
       await _supabase.functions.invoke(
-        'PRETRAGA_BAZE_BEZ_GROQA',
+        'PRETRAGA_GLAVNA',
         {
           body: {
             pojam: pojam,
@@ -525,7 +525,7 @@ async function pokreniPretragu() {
 
     if(!data || !data.success) {
       throw new Error(
-        data?.error || 'Pretraga nije uspjela.'
+        data?.error || 'PRETRAGA_GLAVNA nije uspjela.'
       );
     }
 
@@ -582,7 +582,7 @@ async function pokreniPretragu() {
     info.style.color = '#166534';
 
     info.textContent =
-      'Pretraga uspješno završena. ' +
+      'PRETRAGA_GLAVNA uspješno završena. ' +
       'Rezultati su učitani direktno iz Supabase baze. ' +
       'Groq i Tavily nisu korišteni.';
 
