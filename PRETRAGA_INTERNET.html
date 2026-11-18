@@ -2,756 +2,721 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-  <link rel="shortcut icon" href="#">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Pretraga Firmi i Tržišta | LjubavNaPrviKlik</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pretraga Firmi i Tržišta | LjubavNaPrviKlik</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="shortcut icon" href="#">
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f9;
-      color: #2b2d42;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    header {
-      background-color: #2b2d42;
-      color: #fff;
-      padding: 15px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #2b2d42;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-    .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #fff;
-      text-decoration: none;
-    }
+header {
+    background: #2b2d42;
+    color: white;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
 
-    .btn-back {
-      background: #d90429;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
+.btn-back {
+    background: #d90429;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+}
 
-    .btn-back:hover { background: #ef233c; }
+.main-container {
+    flex: 1;
+    max-width: 950px;
+    width: 100%;
+    margin: 30px auto;
+    padding: 0 15px;
+}
 
-    .main-container {
-      flex: 1;
-      max-width: 950px;
-      width: 100%;
-      margin: 30px auto;
-      padding: 0 15px;
-    }
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      margin-bottom: 25px;
-    }
+h2 {
+    color: #d90429;
+    margin-bottom: 8px;
+}
 
-    h2 {
-      color: #d90429;
-      margin-bottom: 8px;
-      font-size: 1.5rem;
-    }
+.sub {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
 
-    p.sub {
-      color: #666;
-      font-size: 0.95rem;
-      margin-bottom: 25px;
-    }
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-    .form-group {
-      margin-bottom: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+.form-group label {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
 
-    .form-group label {
-      font-weight: bold;
-      font-size: 0.9rem;
-      color: #2b2d42;
-    }
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95rem;
+    width: 100%;
+    background: white;
+}
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      padding: 12px 14px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      outline: none;
-      font-size: 0.95rem;
-      width: 100%;
-      background: #fff;
-    }
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #d90429;
+}
 
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      border-color: #d90429;
-    }
+.form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+}
 
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
+.search-row {
+    display: flex;
+    gap: 8px;
+}
 
-    .search-row {
-      display: flex;
-      gap: 8px;
-      align-items: stretch;
-    }
+.search-row input {
+    flex: 1;
+    min-width: 0;
+}
 
-    .search-row input {
-      flex: 1;
-      min-width: 0;
-    }
+.btn-mic {
+    min-width: 52px;
+    border: none;
+    border-radius: 8px;
+    background: #334155;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
 
-    .btn-mic {
-      min-width: 52px;
-      border: none;
-      border-radius: 8px;
-      background: #334155;
-      color: white;
-      font-size: 1.3rem;
-      cursor: pointer;
-    }
+.btn-mic.recording {
+    background: #dc2626;
+    animation: pulse 1s infinite;
+}
 
-    .btn-mic:hover { background: #1e293b; }
+@keyframes pulse {
+    50% { opacity: 0.55; }
+}
 
-    .btn-mic.recording {
-      background: #dc2626;
-      animation: pulse 1s infinite;
-    }
+.btn-submit {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 10px;
+}
 
-    @keyframes pulse {
-      50% { opacity: 0.55; }
-    }
+.btn-submit:hover {
+    background: #4338ca;
+}
 
-    .btn-submit {
-      background: #4f46e5;
-      color: #fff;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-      width: 100%;
-      margin-top: 10px;
-      transition: background 0.2s;
-    }
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-    .btn-submit:hover { background: #4338ca; }
+.btn-ai-search {
+    background: #d90429;
+}
 
-    .btn-ai-search {
-      background: #d90429;
-      margin-top: 10px;
-    }
+.btn-ai-search:hover {
+    background: #b50322;
+}
 
-    .btn-ai-search:hover { background: #b50322; }
+#aiChatBox {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    display: none;
+}
 
-    #aiChatBox {
-      margin-top: 20px;
-      padding: 20px;
-      border-radius: 8px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      display: none;
-    }
+#aiChatBox h3 {
+    color: #4f46e5;
+    margin-bottom: 10px;
+}
 
-    #aiChatBox h3 {
-      color: #4f46e5;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-    }
+#aiChatContent {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
 
-    #aiChatContent {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #1e293b;
-      font-weight: 500;
-      margin-bottom: 15px;
-    }
+.ai-message {
+    padding: 12px;
+    margin: 10px 0;
+    background: #eef2ff;
+    border-radius: 8px;
+    line-height: 1.6;
+}
 
-    #infoBox {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #e8f4fd;
-      color: #0056b3;
-      font-size: 0.9rem;
-      border: 1px solid #b8daff;
-      display: none;
-    }
+.ai-message.user-message {
+    background: #e0f2fe;
+}
 
-    #voiceStatus {
-      color: #64748b;
-      font-size: 0.85rem;
-      margin-top: 5px;
-    }
+#infoBox {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #e8f4fd;
+    color: #0056b3;
+    font-size: 0.9rem;
+    border: 1px solid #b8daff;
+    display: none;
+}
 
-    #settingsBox {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
+#voiceStatus {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
 
-    #settingsBox h3 {
-      font-size: 1rem;
-      margin-bottom: 12px;
-      color: #334155;
-    }
+#settingsBox {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 
-    #countryInfo {
-      font-size: 0.85rem;
-      color: #64748b;
-      margin-top: 5px;
-    }
+#settingsBox h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
 
-    .results-card-ai {
-      background: #fff;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 25px;
-      margin-top: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      display: none;
-    }
+#countryInfo {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 5px;
+}
 
-    .results-card-ai h3 {
-      color: #0f172a;
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-    }
+.results-card-ai {
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    display: none;
+}
 
-    .ai-results-content {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: #334155;
-      white-space: pre-line;
-    }
+.results-card-ai h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
 
-    footer {
-      background-color: #2b2d42;
-      color: #fff;
-      text-align: center;
-      padding: 20px 0;
-      margin-top: auto;
-    }
+.ai-results-content {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #334155;
+    white-space: pre-line;
+}
 
-    @media (max-width: 600px) {
-      .card { padding: 20px; }
-      header { justify-content: center; }
-      .search-row { gap: 6px; }
-    }
-  </style>
+.firma-card {
+    padding: 18px;
+    margin-top: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.firma-card h3 {
+    color: #d90429;
+    margin-bottom: 10px;
+}
+
+.firma-card p {
+    margin: 6px 0;
+    overflow-wrap: anywhere;
+}
+
+.firma-card a {
+    color: #2563eb;
+    overflow-wrap: anywhere;
+}
+
+.pitanje-lista {
+    margin: 12px 0 15px 22px;
+}
+
+.pitanje-lista li {
+    margin-bottom: 9px;
+    line-height: 1.5;
+}
+
+footer {
+    background: #2b2d42;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+@media (max-width: 600px) {
+    .card { padding: 20px; }
+    header { justify-content: center; }
+    .search-row { gap: 6px; }
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <a href="DASHBOARD.html" class="logo">❤️ LjubavNaPrviKlik</a>
+    <a href="DASHBOARD.html" class="logo">
+        ❤️ LjubavNaPrviKlik
+    </a>
 
-  <div class="nav-actions">
-    <a href="DASHBOARD.html" class="btn-back">⬅️ Nazad na Dashboard</a>
-  </div>
+    <div>
+        <a href="DASHBOARD.html" class="btn-back">
+            ⬅️ Nazad na Dashboard
+        </a>
+    </div>
 </header>
 
 <div class="main-container">
 
-  <div class="card">
+    <div class="card">
 
-    <h2>🤖 Groq AI Pametna Pretraga Tržišta</h2>
+        <h2>🤖 Groq AI Pametna Pretraga Tržišta</h2>
 
-    <p class="sub">
-      Unesite šta tražite. AI će postaviti pitanja, a zatim pronaći
-      odgovarajuće firme i preporuke.
-    </p>
+        <p class="sub">
+            Unesite šta tražite. AI će postavljati dodatna pitanja,
+            analizirati vaše odgovore i pronaći odgovarajuće firme.
+        </p>
 
-    <!-- POSTAVKE JEZIKA -->
-    <div id="settingsBox">
+        <div id="settingsBox">
 
-      <h3>⚙️ Postavke govora i jezika</h3>
+            <h3>⚙️ Postavke govora i jezika</h3>
 
-      <div class="form-group">
-        <label for="languageSelect">🌍 Jezik prepoznavanja govora:</label>
+            <div class="form-group">
 
-        <select id="languageSelect" onchange="promijeniJezikGovora()">
-          <option value="auto">Automatski prema državi</option>
-          <option value="bs-BA">Bosanski</option>
-          <option value="hr-HR">Hrvatski</option>
-          <option value="sr-RS">Srpski</option>
-          <option value="de-DE">Njemački</option>
-          <option value="de-AT">Njemački - Austrija</option>
-          <option value="de-CH">Njemački - Švicarska</option>
-          <option value="fr-FR">Francuski</option>
-          <option value="it-IT">Italijanski</option>
-          <option value="es-ES">Španski</option>
-          <option value="tr-TR">Turski</option>
-          <option value="en-GB">Engleski - UK</option>
-          <option value="en-US">Engleski - SAD</option>
-          <option value="nl-NL">Holandski</option>
-          <option value="pl-PL">Poljski</option>
-          <option value="ru-RU">Ruski</option>
-          <option value="zh-CN">Kineski</option>
-          <option value="ar-SA">Arapski</option>
-        </select>
+                <label for="languageSelect">
+                    🌍 Jezik prepoznavanja govora:
+                </label>
 
-        <div id="countryInfo">
-          Država korisnika: učitavanje...
+                <select id="languageSelect"
+                        onchange="promijeniJezikGovora()">
+
+                    <option value="auto">Automatski prema državi</option>
+                    <option value="bs-BA">Bosanski</option>
+                    <option value="hr-HR">Hrvatski</option>
+                    <option value="sr-RS">Srpski</option>
+                    <option value="de-DE">Njemački</option>
+                    <option value="de-AT">Njemački - Austrija</option>
+                    <option value="de-CH">Njemački - Švicarska</option>
+                    <option value="fr-FR">Francuski</option>
+                    <option value="it-IT">Italijanski</option>
+                    <option value="es-ES">Španski</option>
+                    <option value="tr-TR">Turski</option>
+                    <option value="en-GB">Engleski - UK</option>
+                    <option value="en-US">Engleski - SAD</option>
+                    <option value="nl-NL">Holandski</option>
+                    <option value="pl-PL">Poljski</option>
+                    <option value="ru-RU">Ruski</option>
+                    <option value="zh-CN">Kineski</option>
+                    <option value="ar-SA">Arapski</option>
+
+                </select>
+
+                <div id="countryInfo">
+                    Država korisnika: učitavanje...
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="activeLanguageDisplay">
+                    🎙️ Aktivni jezik mikrofona:
+                </label>
+
+                <input
+                    type="text"
+                    id="activeLanguageDisplay"
+                    readonly
+                    value="Bosanski"
+                >
+
+            </div>
+
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>🎙️ Aktivni jezik mikrofona:</label>
-        <input type="text" id="activeLanguageDisplay" readonly value="Bosanski">
-      </div>
+        <div class="form-group">
 
-    </div>
+            <label for="searchInput">
+                🔍 Šta tražite? (Firma, usluga, proizvod):
+            </label>
 
-    <!-- GLAVNA PRETRAGA -->
-    <div class="form-group">
+            <div class="search-row">
 
-      <label for="searchInput">
-        🔍 Šta tražite? (Firma, usluga, proizvod):
-      </label>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Npr. Otkup paleta Sarajevo..."
+                    onkeydown="handleKeyPress(event)"
+                >
 
-      <div class="search-row">
+                <button
+                    type="button"
+                    id="micButton"
+                    class="btn-mic"
+                    onclick="pokreniMikrofon()"
+                    title="Unos glasom"
+                >🎙️</button>
 
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Npr. Otkup paleta Sarajevo..."
-          onkeypress="handleKeyPress(event)"
-        >
+            </div>
+
+            <div id="voiceStatus">
+                Pritisnite mikrofon za glasovni unos.
+            </div>
+
+        </div>
 
         <button
-          type="button"
-          id="micButton"
-          class="btn-mic"
-          onclick="pokreniMikrofon()"
-          title="Unos glasom"
-        >🎙️</button>
+            class="btn-submit"
+            id="startButton"
+            type="button"
+            onclick="PRETRAGA_GLAVNA('pocetak')"
+        >
+            ✨ 1. Pokreni AI analizu i pitanja
+        </button>
 
-      </div>
+        <div id="aiChatBox">
 
-      <div id="voiceStatus">
-        Pritisnite mikrofon za glasovni unos. Prepoznati govor će biti upisan u polje.
-      </div>
+            <h3>💬 AI razgovor i dodatna pitanja</h3>
 
-    </div>
+            <div id="aiChatContent"></div>
 
-    <button class="btn-submit" onclick="pokreniGroqAsistent()">
-      ✨ 1. Pokreni AI Analizu i Pitanja
-    </button>
+            <div class="form-group" style="margin-top:15px;">
 
-    <!-- AI DIJALOG I PITANJA -->
-    <div id="aiChatBox">
+                <label for="dodatniOdgovori">
+                    Unesite odgovore ili dodatne detalje:
+                </label>
 
-      <h3>💬 Prijedlozi i Dodatna Pitanja:</h3>
+                <textarea
+                    id="dodatniOdgovori"
+                    placeholder="Unesite odgovore na postavljena pitanja..."
+                ></textarea>
 
-      <div id="aiChatContent">Učitavanje...</div>
+            </div>
 
-      <div class="form-group" style="margin-top: 15px;">
+            <button
+                class="btn-submit btn-ai-search"
+                id="continueButton"
+                type="button"
+                onclick="PRETRAGA_GLAVNA('nastavak')"
+            >
+                🚀 2. Pošalji odgovore i nastavi AI analizu
+            </button>
 
-        <label for="dodatniOdgovori">
-          Unesite vaše odgovore ili dodatne detalje (lokacija, količina itd.):
-        </label>
+        </div>
 
-        <textarea
-          id="dodatniOdgovori"
-          placeholder="Npr. Tražim u Sarajevu, oko 500 komada..."
-        ></textarea>
-
-      </div>
-
-      <button class="btn-submit btn-ai-search" onclick="zatraziAIRezultate()">
-        🚀 2. Generiši rezultate, pretraži AI bazu i pošalji adminu
-      </button>
+        <div id="infoBox"></div>
 
     </div>
 
-    <div id="infoBox"></div>
+    <div class="results-card-ai" id="resultsCardAI">
 
-  </div>
+        <h3>📋 Rezultati i preporuke sa Groq AI tržišta</h3>
 
-  <!-- PRIKAZ REZULTATA -->
-  <div class="results-card-ai" id="resultsCardAI">
+        <div id="aiResultsContent" class="ai-results-content"></div>
 
-    <h3>📋 Rezultati i Preporuke sa Groq AI Tržišta</h3>
-
-    <div id="aiResultsContent" class="ai-results-content"></div>
-
-  </div>
+    </div>
 
 </div>
 
 <footer>
-  <p>© 2026 LjubavNaPrviKlik (Langlove). Sva prava zadržana.</p>
+    <p>© 2026 LjubavNaPrviKlik (Langlove). Sva prava zadržana.</p>
 </footer>
 
 <script>
 
 // ============================================================
-// SUPABASE KONFIGURACIJA
+// 1. SUPABASE KONFIGURACIJA
 // ============================================================
 
-const SUPABASE_URL = 'https://uduwpvdjmanrgpumdrfh.supabase.co';
+const SUPABASE_URL =
+    'https://uduwpvdjmanrgpumdrfh.supabase.co';
 
 const SUPABASE_ANON_KEY =
-  'sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45';
+    'sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45';
 
 const _supabase = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
 );
 
+
 // ============================================================
-// GLOBALNE POSTAVKE GOVORA
+// 2. GLOBALNE VARIJABLE
 // ============================================================
 
-let automatskiJezik = 'bs-BA';
 let aktivniJezik = 'bs-BA';
+let automatskiJezik = 'bs-BA';
 let drzavaKorisnika = '';
+let korisnikMail = '';
+
 let speechRecognition = null;
+let istorijaRazgovora = [];
+let osnovniUpit = '';
+
+let pretragaUToku = false;
+
 
 // ============================================================
-// MAPIRANJE DRŽAVA I JEZIKA
+// 3. MAPIRANJE DRŽAVA I JEZIKA
 // ============================================================
 
 const drzavaJezici = {
 
-  'bosna i hercegovina': {
-    jezik: 'bs-BA',
-    naziv: 'Bosanski'
-  },
+    'bosna i hercegovina': {
+        jezik: 'bs-BA',
+        naziv: 'Bosanski'
+    },
 
-  'bosnia and herzegovina': {
-    jezik: 'bs-BA',
-    naziv: 'Bosanski'
-  },
+    'bosnia and herzegovina': {
+        jezik: 'bs-BA',
+        naziv: 'Bosanski'
+    },
 
-  'hrvatska': {
-    jezik: 'hr-HR',
-    naziv: 'Hrvatski'
-  },
+    'hrvatska': {
+        jezik: 'hr-HR',
+        naziv: 'Hrvatski'
+    },
 
-  'croatia': {
-    jezik: 'hr-HR',
-    naziv: 'Hrvatski'
-  },
+    'croatia': {
+        jezik: 'hr-HR',
+        naziv: 'Hrvatski'
+    },
 
-  'srbija': {
-    jezik: 'sr-RS',
-    naziv: 'Srpski'
-  },
+    'srbija': {
+        jezik: 'sr-RS',
+        naziv: 'Srpski'
+    },
 
-  'serbia': {
-    jezik: 'sr-RS',
-    naziv: 'Srpski'
-  },
+    'serbia': {
+        jezik: 'sr-RS',
+        naziv: 'Srpski'
+    },
 
-  'njemacka': {
-    jezik: 'de-DE',
-    naziv: 'Njemački'
-  },
+    'njemacka': {
+        jezik: 'de-DE',
+        naziv: 'Njemački'
+    },
 
-  'germany': {
-    jezik: 'de-DE',
-    naziv: 'Njemački'
-  },
+    'germany': {
+        jezik: 'de-DE',
+        naziv: 'Njemački'
+    },
 
-  'austrija': {
-    jezik: 'de-AT',
-    naziv: 'Njemački - Austrija'
-  },
+    'austrija': {
+        jezik: 'de-AT',
+        naziv: 'Njemački - Austrija'
+    },
 
-  'austria': {
-    jezik: 'de-AT',
-    naziv: 'Njemački - Austrija'
-  },
+    'austria': {
+        jezik: 'de-AT',
+        naziv: 'Njemački - Austrija'
+    },
 
-  'svicarska': {
-    jezik: 'de-CH',
-    naziv: 'Njemački - Švicarska'
-  },
+    'svicarska': {
+        jezik: 'de-CH',
+        naziv: 'Njemački - Švicarska'
+    },
 
-  'switzerland': {
-    jezik: 'de-CH',
-    naziv: 'Njemački - Švicarska'
-  },
+    'switzerland': {
+        jezik: 'de-CH',
+        naziv: 'Njemački - Švicarska'
+    },
 
-  'francuska': {
-    jezik: 'fr-FR',
-    naziv: 'Francuski'
-  },
+    'francuska': {
+        jezik: 'fr-FR',
+        naziv: 'Francuski'
+    },
 
-  'france': {
-    jezik: 'fr-FR',
-    naziv: 'Francuski'
-  },
+    'france': {
+        jezik: 'fr-FR',
+        naziv: 'Francuski'
+    },
 
-  'italija': {
-    jezik: 'it-IT',
-    naziv: 'Italijanski'
-  },
+    'italija': {
+        jezik: 'it-IT',
+        naziv: 'Italijanski'
+    },
 
-  'italy': {
-    jezik: 'it-IT',
-    naziv: 'Italijanski'
-  },
+    'italy': {
+        jezik: 'it-IT',
+        naziv: 'Italijanski'
+    },
 
-  'spanija': {
-    jezik: 'es-ES',
-    naziv: 'Španski'
-  },
+    'spanija': {
+        jezik: 'es-ES',
+        naziv: 'Španski'
+    },
 
-  'spain': {
-    jezik: 'es-ES',
-    naziv: 'Španski'
-  },
+    'spain': {
+        jezik: 'es-ES',
+        naziv: 'Španski'
+    },
 
-  'turska': {
-    jezik: 'tr-TR',
-    naziv: 'Turski'
-  },
+    'turska': {
+        jezik: 'tr-TR',
+        naziv: 'Turski'
+    },
 
-  'turkey': {
-    jezik: 'tr-TR',
-    naziv: 'Turski'
-  },
+    'turkey': {
+        jezik: 'tr-TR',
+        naziv: 'Turski'
+    },
 
-  'ujedinjeno kraljevstvo': {
-    jezik: 'en-GB',
-    naziv: 'Engleski - UK'
-  },
+    'ujedinjeno kraljevstvo': {
+        jezik: 'en-GB',
+        naziv: 'Engleski - UK'
+    },
 
-  'united kingdom': {
-    jezik: 'en-GB',
-    naziv: 'Engleski - UK'
-  },
+    'united kingdom': {
+        jezik: 'en-GB',
+        naziv: 'Engleski - UK'
+    },
 
-  'velika britanija': {
-    jezik: 'en-GB',
-    naziv: 'Engleski - UK'
-  },
+    'velika britanija': {
+        jezik: 'en-GB',
+        naziv: 'Engleski - UK'
+    },
 
-  'sjedinjene americke drzave': {
-    jezik: 'en-US',
-    naziv: 'Engleski - SAD'
-  },
+    'sjedinjene americke drzave': {
+        jezik: 'en-US',
+        naziv: 'Engleski - SAD'
+    },
 
-  'united states': {
-    jezik: 'en-US',
-    naziv: 'Engleski - SAD'
-  },
+    'united states': {
+        jezik: 'en-US',
+        naziv: 'Engleski - SAD'
+    },
 
-  'amerika': {
-    jezik: 'en-US',
-    naziv: 'Engleski - SAD'
-  },
+    'amerika': {
+        jezik: 'en-US',
+        naziv: 'Engleski - SAD'
+    },
 
-  'holandija': {
-    jezik: 'nl-NL',
-    naziv: 'Holandski'
-  },
+    'holandija': {
+        jezik: 'nl-NL',
+        naziv: 'Holandski'
+    },
 
-  'nizozemska': {
-    jezik: 'nl-NL',
-    naziv: 'Holandski'
-  },
+    'nizozemska': {
+        jezik: 'nl-NL',
+        naziv: 'Holandski'
+    },
 
-  'netherlands': {
-    jezik: 'nl-NL',
-    naziv: 'Holandski'
-  },
+    'netherlands': {
+        jezik: 'nl-NL',
+        naziv: 'Holandski'
+    },
 
-  'poljska': {
-    jezik: 'pl-PL',
-    naziv: 'Poljski'
-  },
+    'poljska': {
+        jezik: 'pl-PL',
+        naziv: 'Poljski'
+    },
 
-  'poland': {
-    jezik: 'pl-PL',
-    naziv: 'Poljski'
-  },
+    'poland': {
+        jezik: 'pl-PL',
+        naziv: 'Poljski'
+    },
 
-  'rusija': {
-    jezik: 'ru-RU',
-    naziv: 'Ruski'
-  },
+    'rusija': {
+        jezik: 'ru-RU',
+        naziv: 'Ruski'
+    },
 
-  'russia': {
-    jezik: 'ru-RU',
-    naziv: 'Ruski'
-  },
+    'russia': {
+        jezik: 'ru-RU',
+        naziv: 'Ruski'
+    },
 
-  'kina': {
-    jezik: 'zh-CN',
-    naziv: 'Kineski'
-  },
+    'kina': {
+        jezik: 'zh-CN',
+        naziv: 'Kineski'
+    },
 
-  'china': {
-    jezik: 'zh-CN',
-    naziv: 'Kineski'
-  },
+    'china': {
+        jezik: 'zh-CN',
+        naziv: 'Kineski'
+    },
 
-  'saudijska arabija': {
-    jezik: 'ar-SA',
-    naziv: 'Arapski'
-  },
+    'saudijska arabija': {
+        jezik: 'ar-SA',
+        naziv: 'Arapski'
+    },
 
-  'saudi arabia': {
-    jezik: 'ar-SA',
-    naziv: 'Arapski'
-  }
+    'saudi arabia': {
+        jezik: 'ar-SA',
+        naziv: 'Arapski'
+    }
 
 };
 
-// ============================================================
-// NORMALIZACIJA NAZIVA DRŽAVE
-// ============================================================
-
-function normalizujTekst(tekst) {
-
-  return String(tekst || '')
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-
-}
 
 // ============================================================
-// UČITAVANJE DRŽAVE PRIJAVLJENOG KORISNIKA
-// TABELA: POSAO_KORISNICI
-// KLJUČ: user_id
-// PRVO POLJE: DRZAVA
-// REZERVNO POLJE: DRZAVA_FIRME
+// 4. NAZIVI JEZIKA
 // ============================================================
 
-async function ucitajDrzavuKorisnika() {
+const naziviJezika = {
 
-  const countryInfo = document.getElementById('countryInfo');
-
-  try {
-
-    const { data: authData, error: authError } =
-      await _supabase.auth.getUser();
-
-    if (authError) throw authError;
-
-    const korisnik = authData?.user;
-
-    if (!korisnik) {
-      drzavaKorisnika = '';
-      automatskiJezik = 'bs-BA';
-
-      countryInfo.textContent =
-        'Država korisnika nije dostupna. Koristi se bosanski jezik.';
-
-      postaviAktivniJezik();
-      return;
-    }
-
-    const { data, error } = await _supabase
-      .from('POSAO_KORISNICI')
-      .select('DRZAVA, DRZAVA_FIRME')
-      .eq('user_id', korisnik.id)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    // Prvo koristimo DRZAVA.
-    // Ako je prazno, koristimo DRZAVA_FIRME.
-    drzavaKorisnika =
-      String(data?.DRZAVA || '').trim() ||
-      String(data?.DRZAVA_FIRME || '').trim();
-
-    if (!drzavaKorisnika) {
-
-      automatskiJezik = 'bs-BA';
-
-      countryInfo.textContent =
-        'Država nije unesena u profilu. Koristi se bosanski jezik.';
-
-      postaviAktivniJezik();
-      return;
-    }
-
-    const trazenaDrzava = normalizujTekst(drzavaKorisnika);
-
-    const podaciJezika = drzavaJezici[trazenaDrzava];
-
-    if (podaciJezika) {
-
-      automatskiJezik = podaciJezika.jezik;
-
-      countryInfo.textContent =
-        'Država korisnika: ' + drzavaKorisnika +
-        ' | Automatski jezik: ' + podaciJezika.naziv;
-
-    } else {
-
-      automatskiJezik = 'bs-BA';
-
-      countryInfo.textContent =
-        'Država korisnika: ' + drzavaKorisnika +
-        ' | Jezik nije prepoznat. Koristi se bosanski.';
-    }
-
-    postaviAktivniJezik();
-
-  } catch (error) {
-
-    console.error('Greška pri učitavanju države:', error);
-
-    drzavaKorisnika = '';
-    automatskiJezik = 'bs-BA';
-
-    countryInfo.textContent =
-      'Državu nije moguće učitati. Koristi se bosanski jezik.';
-
-    postaviAktivniJezik();
-  }
-}
-
-// ============================================================
-// NAZIV JEZIKA PREMA JEZIČKOM KODU
-// ============================================================
-
-function nazivJezika(kod) {
-
-  const jezici = {
     'bs-BA': 'Bosanski',
     'hr-HR': 'Hrvatski',
     'sr-RS': 'Srpski',
@@ -769,475 +734,1016 @@ function nazivJezika(kod) {
     'ru-RU': 'Ruski',
     'zh-CN': 'Kineski',
     'ar-SA': 'Arapski'
-  };
 
-  return jezici[kod] || 'Bosanski';
-}
+};
+
 
 // ============================================================
-// POSTAVLJANJE AKTIVNOG JEZIKA
+// 5. NORMALIZACIJA TEKSTA
+// ============================================================
+
+function normalizujTekst(tekst) {
+
+    return String(tekst || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+}
+
+
+// ============================================================
+// 6. INICIJALIZACIJA STRANICE
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', async function () {
+
+    await ucitajDrzavuKorisnika();
+
+    inicijalizujMikrofon();
+
+    postaviAktivniJezik();
+
+});
+
+
+// ============================================================
+// 7. UČITAVANJE DRŽAVE KORISNIKA
+// ============================================================
+
+async function ucitajDrzavuKorisnika() {
+
+    const countryInfo =
+        document.getElementById('countryInfo');
+
+    try {
+
+        const { data: authData, error: authError } =
+            await _supabase.auth.getUser();
+
+        if (authError) {
+            throw authError;
+        }
+
+        const korisnik = authData?.user;
+
+        if (!korisnik) {
+
+            countryInfo.textContent =
+                'Korisnik nije prijavljen.';
+
+            return;
+        }
+
+        korisnikMail = korisnik.email || '';
+
+        const { data, error } = await _supabase
+            .from('POSAO_KORISNICI')
+            .select('DRZAVA, DRZAVA_FIRME')
+            .eq('user_id', korisnik.id)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        drzavaKorisnika =
+            String(data?.DRZAVA || '').trim() ||
+            String(data?.DRZAVA_FIRME || '').trim();
+
+        const drzava = normalizujTekst(drzavaKorisnika);
+
+        const podaci = drzavaJezici[drzava];
+
+        if (podaci) {
+
+            automatskiJezik = podaci.jezik;
+
+            countryInfo.textContent =
+                'Država korisnika: ' + drzavaKorisnika +
+                ' | Automatski jezik: ' + podaci.naziv;
+
+        } else {
+
+            automatskiJezik = 'bs-BA';
+
+            countryInfo.textContent =
+                'Država: ' +
+                (drzavaKorisnika || 'Nije unesena') +
+                ' | Podrazumijevani jezik: Bosanski';
+
+        }
+
+        postaviAktivniJezik();
+
+    } catch (error) {
+
+        console.error('Greška učitavanja države:', error);
+
+        automatskiJezik = 'bs-BA';
+
+        countryInfo.textContent =
+            'Nije moguće učitati državu. Koristi se bosanski.';
+
+        postaviAktivniJezik();
+
+    }
+
+}
+
+
+// ============================================================
+// 8. POSTAVLJANJE AKTIVNOG JEZIKA
 // ============================================================
 
 function postaviAktivniJezik() {
 
-  const select = document.getElementById('languageSelect');
+    const select =
+        document.getElementById('languageSelect');
 
-  if (select.value === 'auto') {
-    aktivniJezik = automatskiJezik || 'bs-BA';
-  } else {
-    aktivniJezik = select.value;
-  }
+    if (select && select.value === 'auto') {
 
-  document.getElementById('activeLanguageDisplay').value =
-    nazivJezika(aktivniJezik);
+        aktivniJezik = automatskiJezik;
+
+    } else if (select && select.value) {
+
+        aktivniJezik = select.value;
+
+    }
+
+    const prikaz =
+        document.getElementById('activeLanguageDisplay');
+
+    if (prikaz) {
+
+        prikaz.value =
+            naziviJezika[aktivniJezik] || aktivniJezik;
+
+    }
+
+    if (speechRecognition) {
+
+        speechRecognition.lang = aktivniJezik;
+
+    }
+
 }
 
+
 // ============================================================
-// RUČNA PROMJENA JEZIKA
+// 9. PROMJENA JEZIKA
 // ============================================================
 
 function promijeniJezikGovora() {
 
-  const select = document.getElementById('languageSelect');
+    postaviAktivniJezik();
 
-  // Ako korisnik promijeni jezik dok mikrofon radi,
-  // zaustavljamo trenutno prepoznavanje.
-  if (speechRecognition) {
-    try {
-      speechRecognition.stop();
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-
-  postaviAktivniJezik();
-
-  document.getElementById('voiceStatus').textContent =
-    'Aktivni jezik mikrofona: ' + nazivJezika(aktivniJezik);
 }
 
+
 // ============================================================
-// GLASOVNI UNOS PREKO MIKROFONA
+// 10. INICIJALIZACIJA MIKROFONA
+// ============================================================
+
+function inicijalizujMikrofon() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    const micButton =
+        document.getElementById('micButton');
+
+    if (!SpeechRecognition) {
+
+        micButton.disabled = true;
+
+        prikaziStatusGlasa(
+            'Preglednik ne podržava govornu pretragu.'
+        );
+
+        return;
+
+    }
+
+    speechRecognition = new SpeechRecognition();
+
+    speechRecognition.lang = aktivniJezik;
+    speechRecognition.continuous = false;
+    speechRecognition.interimResults = false;
+
+    speechRecognition.onstart = function () {
+
+        micButton.classList.add('recording');
+
+        prikaziStatusGlasa('Slušam... govorite sada.');
+
+    };
+
+    speechRecognition.onresult = function (event) {
+
+        const tekst =
+            event.results[0][0].transcript;
+
+        const searchInput =
+            document.getElementById('searchInput');
+
+        searchInput.value = tekst;
+
+        prikaziStatusGlasa('Govor je prepoznat.');
+
+    };
+
+    speechRecognition.onerror = function (event) {
+
+        prikaziStatusGlasa(
+            'Greška mikrofona: ' + event.error
+        );
+
+    };
+
+    speechRecognition.onend = function () {
+
+        micButton.classList.remove('recording');
+
+    };
+
+}
+
+
+// ============================================================
+// 11. POKRETANJE MIKROFONA
 // ============================================================
 
 function pokreniMikrofon() {
 
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+    if (!speechRecognition) {
 
-  const micButton = document.getElementById('micButton');
-  const voiceStatus = document.getElementById('voiceStatus');
-  const searchInput = document.getElementById('searchInput');
+        alert(
+            'Vaš preglednik ne podržava prepoznavanje govora.'
+        );
 
-  if (!SpeechRecognition) {
+        return;
 
-    voiceStatus.textContent =
-      'Vaš preglednik ne podržava prepoznavanje govora. ' +
-      'Pokušajte koristiti Google Chrome.';
-
-    return;
-  }
-
-  // Ako prepoznavanje već radi, zaustavi ga.
-  if (speechRecognition) {
+    }
 
     try {
-      speechRecognition.stop();
+
+        speechRecognition.lang = aktivniJezik;
+
+        speechRecognition.start();
+
     } catch (error) {
-      console.warn(error);
+
+        console.warn('Mikrofon nije mogao biti pokrenut:', error);
+
     }
 
-    return;
-  }
-
-  postaviAktivniJezik();
-
-  speechRecognition = new SpeechRecognition();
-
-  speechRecognition.lang = aktivniJezik;
-  speechRecognition.continuous = false;
-  speechRecognition.interimResults = false;
-  speechRecognition.maxAlternatives = 1;
-
-  voiceStatus.textContent =
-    '🎙️ Slušam... Govorite sada.';
-
-  micButton.classList.add('recording');
-  micButton.textContent = '⏹️';
-
-  speechRecognition.onresult = function(event) {
-
-    let prepoznatiTekst = '';
-
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
-
-      if (event.results[i].isFinal) {
-        prepoznatiTekst +=
-          event.results[i][0].transcript;
-      }
-    }
-
-    prepoznatiTekst = prepoznatiTekst.trim();
-
-    if (prepoznatiTekst) {
-
-      const postojeciTekst = searchInput.value.trim();
-
-      searchInput.value = postojeciTekst
-        ? postojeciTekst + ' ' + prepoznatiTekst
-        : prepoznatiTekst;
-
-      voiceStatus.textContent =
-        'Prepoznati govor je upisan u polje za pretragu.';
-    }
-  };
-
-  speechRecognition.onerror = function(event) {
-
-    console.error('Greška mikrofona:', event.error);
-
-    if (event.error === 'not-allowed') {
-
-      voiceStatus.textContent =
-        'Pristup mikrofonu nije dozvoljen. Omogućite mikrofon u pregledniku.';
-
-    } else if (event.error === 'no-speech') {
-
-      voiceStatus.textContent =
-        'Govor nije prepoznat. Pokušajte ponovo.';
-
-    } else {
-
-      voiceStatus.textContent =
-        'Greška pri prepoznavanju govora: ' + event.error;
-    }
-  };
-
-  speechRecognition.onend = function() {
-
-    speechRecognition = null;
-
-    micButton.classList.remove('recording');
-    micButton.textContent = '🎙️';
-  };
-
-  try {
-
-    speechRecognition.start();
-
-  } catch (error) {
-
-    console.error(error);
-
-    speechRecognition = null;
-
-    micButton.classList.remove('recording');
-    micButton.textContent = '🎙️';
-
-    voiceStatus.textContent =
-      'Mikrofon nije moguće pokrenuti. Pokušajte ponovo.';
-  }
 }
 
+
 // ============================================================
-// KRAJ DRUGOG DIJELA
-// NASTAVAK JE U DIJELU 3/3
+// 12. STATUS GOVORA
 // ============================================================
 
-    // PRIKAZ GREŠKE
-    function prikaziGresku(element, poruka) {
-        element.innerHTML = '';
+function prikaziStatusGlasa(tekst) {
 
-        const greska = document.createElement('div');
-        greska.className = 'greska';
-        greska.textContent = poruka;
+    const status =
+        document.getElementById('voiceStatus');
 
-        element.appendChild(greska);
+    if (status) {
+
+        status.textContent = tekst;
+
     }
 
-    // PRIKAZ PITANJA
-    function prikaziPitanja(pitanja) {
-        const container = document.getElementById('pitanjaContainer');
+}
 
-        container.innerHTML = '';
 
-        const naslov = document.createElement('h2');
-        naslov.textContent = 'Potrebne su dodatne informacije';
-        container.appendChild(naslov);
+// ============================================================
+// 13. PRIKAZ PORUKE U AI RAZGOVORU
+// ============================================================
 
-        const opis = document.createElement('p');
-        opis.textContent = 'Odgovorite na sljedeća pitanja kako bismo precizirali pretragu:';
-        container.appendChild(opis);
+function prikaziPorukuAI(tekst, tip = 'ai') {
 
-        const forma = document.createElement('div');
-        forma.id = 'formaPitanja';
+    const box =
+        document.getElementById('aiChatBox');
 
-        pitanja.forEach((pitanje, index) => {
-            const grupa = document.createElement('div');
-            grupa.className = 'pitanje-item';
+    const content =
+        document.getElementById('aiChatContent');
 
-            const label = document.createElement('label');
-            label.textContent = (index + 1) + '. ' + pitanje;
-            label.setAttribute('for', 'odgovor_' + index);
+    box.style.display = 'block';
 
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = 'odgovor_' + index;
-            input.placeholder = 'Unesite odgovor...';
+    const poruka =
+        document.createElement('div');
 
-            grupa.appendChild(label);
-            grupa.appendChild(input);
-            forma.appendChild(grupa);
-        });
+    poruka.className =
+        tip === 'user'
+            ? 'ai-message user-message'
+            : 'ai-message';
 
-        container.appendChild(forma);
+    poruka.textContent = tekst;
 
-        const dugme = document.createElement('button');
-        dugme.type = 'button';
-        dugme.textContent = 'Prikaži rezultate';
-        dugme.style.background = '#16a34a';
-        dugme.style.color = '#fff';
-        dugme.style.marginTop = '15px';
-        dugme.onclick = zatraziAIRezultate;
+    content.appendChild(poruka);
 
-        container.appendChild(dugme);
-    }
+}
 
-    // PRIKAZ REZULTATA
-    function prikaziRezultate(rezultati) {
-        const container = document.getElementById('rezultatiContainer');
 
-        container.innerHTML = '';
+// ============================================================
+// 14. PRIKAZ PITANJA AI ASISTENTA
+// ============================================================
 
-        if (!rezultati || rezultati.length === 0) {
-            container.textContent = 'Nema pronađenih rezultata.';
-            return;
+function prikaziPitanja(pitanja) {
+
+    const box =
+        document.getElementById('aiChatBox');
+
+    const content =
+        document.getElementById('aiChatContent');
+
+    const odgovori =
+        document.getElementById('dodatniOdgovori');
+
+    box.style.display = 'block';
+
+    const naslov =
+        document.createElement('h3');
+
+    naslov.textContent =
+        'AI treba još nekoliko informacija:';
+
+    content.appendChild(naslov);
+
+    const lista =
+        document.createElement('ol');
+
+    lista.className = 'pitanje-lista';
+
+    pitanja.forEach(function (pitanje) {
+
+        const stavka =
+            document.createElement('li');
+
+        if (typeof pitanje === 'string') {
+
+            stavka.textContent = pitanje;
+
+        } else {
+
+            stavka.textContent =
+                pitanje.pitanje ||
+                pitanje.tekst ||
+                pitanje.naziv ||
+                'Dodatno pitanje';
+
         }
 
-        const naslov = document.createElement('h2');
-        naslov.textContent = 'Pronađene firme (' + rezultati.length + ')';
-        container.appendChild(naslov);
+        lista.appendChild(stavka);
 
-        rezultati.forEach(firma => {
-            const kartica = document.createElement('div');
-            kartica.className = 'firma-card';
+    });
 
-            const naziv = document.createElement('h3');
-            naziv.textContent = firma.naziv || 'Naziv nije dostupan';
-            kartica.appendChild(naziv);
+    content.appendChild(lista);
 
-            const podaci = [
-                ['Djelatnost', firma.djelatnost],
-                ['Opis', firma.opis],
-                ['Lokacija', firma.lokacija],
-                ['Telefon', firma.telefon],
-                ['Email', firma.email]
-            ];
+    odgovori.style.display = 'block';
 
-            podaci.forEach(([label, vrijednost]) => {
-                if (vrijednost) {
-                    const p = document.createElement('p');
-                    const strong = document.createElement('strong');
+    odgovori.value = '';
 
-                    strong.textContent = label + ': ';
-                    p.appendChild(strong);
-                    p.appendChild(document.createTextNode(vrijednost));
+    odgovori.placeholder =
+        'Odgovorite na sva pitanja i unesite dodatne detalje...';
 
-                    kartica.appendChild(p);
-                }
-            });
+    const infoBox =
+        document.getElementById('infoBox');
 
-            if (firma.web) {
-                const p = document.createElement('p');
-                const strong = document.createElement('strong');
-                strong.textContent = 'Web: ';
+    infoBox.style.display = 'block';
 
-                const link = document.createElement('a');
-                let webAdresa = firma.web;
+    infoBox.textContent =
+        'Odgovorite na pitanja. AI može postaviti dodatna pitanja u više krugova prije konačnih rezultata.';
 
-                if (!/^https?:\/\//i.test(webAdresa)) {
-                    webAdresa = 'https://' + webAdresa;
-                }
+}
 
-                link.href = webAdresa;
-                link.textContent = firma.web;
+
+// ============================================================
+// 15. SIGURNA OBRADA WEB ADRESE
+// ============================================================
+
+function napraviSiguranLink(url) {
+
+    try {
+
+        let vrijednost = String(url).trim();
+
+        if (!/^https?:\/\//i.test(vrijednost)) {
+
+            vrijednost = 'https://' + vrijednost;
+
+        }
+
+        const parsed = new URL(vrijednost);
+
+        if (
+            parsed.protocol !== 'https:' &&
+            parsed.protocol !== 'http:'
+        ) {
+
+            return null;
+
+        }
+
+        return parsed.href;
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+// ============================================================
+// 16. DODAVANJE POLJA U REZULTATE
+// ============================================================
+
+function dodajPolje(roditelj, naziv, vrijednost) {
+
+    if (
+        vrijednost === undefined ||
+        vrijednost === null ||
+        vrijednost === ''
+    ) {
+
+        return;
+
+    }
+
+    const red =
+        document.createElement('p');
+
+    const label =
+        document.createElement('strong');
+
+    label.textContent = naziv + ': ';
+
+    red.appendChild(label);
+
+    red.appendChild(
+        document.createTextNode(String(vrijednost))
+    );
+
+    roditelj.appendChild(red);
+
+}
+
+
+// ============================================================
+// 17. PRIKAZ REZULTATA FIRMI
+// ============================================================
+
+function prikaziRezultate(data) {
+
+    const resultsCard =
+        document.getElementById('resultsCardAI');
+
+    const resultsContent =
+        document.getElementById('aiResultsContent');
+
+    resultsCard.style.display = 'block';
+
+    resultsContent.replaceChildren();
+
+    if (data.analiza) {
+
+        const analiza =
+            document.createElement('div');
+
+        const naslov =
+            document.createElement('h3');
+
+        naslov.textContent = 'AI analiza tržišta';
+
+        const tekst =
+            document.createElement('p');
+
+        tekst.textContent = data.analiza;
+
+        analiza.appendChild(naslov);
+        analiza.appendChild(tekst);
+
+        resultsContent.appendChild(analiza);
+
+    }
+
+    const rezultati =
+        Array.isArray(data.rezultati)
+            ? data.rezultati
+            : [];
+
+    const broj =
+        document.createElement('p');
+
+    broj.style.marginTop = '15px';
+
+    broj.textContent =
+        'Pronađeno firmi: ' +
+        (data.broj_rezultata ?? rezultati.length);
+
+    resultsContent.appendChild(broj);
+
+    if (rezultati.length === 0) {
+
+        const poruka =
+            document.createElement('p');
+
+        poruka.textContent =
+            'Nema pronađenih firmi za zadane kriterije.';
+
+        resultsContent.appendChild(poruka);
+
+        return;
+
+    }
+
+    rezultati.forEach(function (firma, index) {
+
+        const kartica =
+            document.createElement('div');
+
+        kartica.className = 'firma-card';
+
+        const naziv =
+            document.createElement('h3');
+
+        naziv.textContent =
+            firma.naziv ||
+            firma.naziv_firme ||
+            firma.name ||
+            'Firma ' + (index + 1);
+
+        kartica.appendChild(naziv);
+
+        dodajPolje(
+            kartica,
+            'Djelatnost',
+            firma.djelatnost || firma.delatnost
+        );
+
+        dodajPolje(
+            kartica,
+            'Opis',
+            firma.opis || firma.description
+        );
+
+        dodajPolje(
+            kartica,
+            'Lokacija',
+            firma.lokacija || firma.adresa || firma.location
+        );
+
+        dodajPolje(
+            kartica,
+            'Telefon',
+            firma.telefon || firma.phone
+        );
+
+        dodajPolje(
+            kartica,
+            'E-mail',
+            firma.email
+        );
+
+        const web =
+            firma.web || firma.website || firma.url;
+
+        if (web) {
+
+            const siguranLink =
+                napraviSiguranLink(web);
+
+            if (siguranLink) {
+
+                const red =
+                    document.createElement('p');
+
+                const label =
+                    document.createElement('strong');
+
+                label.textContent = 'Web: ';
+
+                const link =
+                    document.createElement('a');
+
+                link.href = siguranLink;
+                link.textContent = web;
                 link.target = '_blank';
                 link.rel = 'noopener noreferrer';
 
-                p.appendChild(strong);
-                p.appendChild(link);
-                kartica.appendChild(p);
+                red.appendChild(label);
+                red.appendChild(link);
+
+                kartica.appendChild(red);
+
             }
 
-            if (firma.izvor) {
-                const p = document.createElement('p');
-                const strong = document.createElement('strong');
-                strong.textContent = 'Izvor: ';
+        }
 
-                const link = document.createElement('a');
-                link.href = firma.izvor;
-                link.textContent = firma.izvor;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
+        dodajPolje(
+            kartica,
+            'Izvor',
+            firma.izvor || firma.source
+        );
 
-                p.appendChild(strong);
-                p.appendChild(link);
-                kartica.appendChild(p);
-            }
+        resultsContent.appendChild(kartica);
 
-            container.appendChild(kartica);
-        });
+    });
+
+    dodajPolje(
+        resultsContent,
+        'Broj internet izvora',
+        data.broj_internet_izvora
+    );
+
+    dodajPolje(
+        resultsContent,
+        'AI model',
+        data.model_koristen
+    );
+
+}
+
+
+// ============================================================
+// 18. GLAVNA AI FUNKCIJA
+// OVA FUNKCIJA POZIVA SAMO PRETRAGA_GLAVNA
+// ============================================================
+
+async function PRETRAGA_GLAVNA(faza = 'pocetak') {
+
+    if (pretragaUToku) {
+        return;
     }
 
-    // PRVA FAZA: AI POSTAVLJA DODATNA PITANJA
-    async function pokreniGroqAsistent() {
-        const query = document.getElementById('searchInput').value.trim();
+    const searchInput =
+        document.getElementById('searchInput');
 
-        const pitanjaContainer = document.getElementById('pitanjaContainer');
-        const rezultatiContainer = document.getElementById('rezultatiContainer');
+    const odgovoriInput =
+        document.getElementById('dodatniOdgovori');
 
-        pitanjaContainer.innerHTML = '';
-        rezultatiContainer.innerHTML = '';
+    const chatContent =
+        document.getElementById('aiChatContent');
 
-        if (!query) {
-            prikaziGresku(pitanjaContainer, 'Unesite pojam za pretragu.');
+    const resultsContent =
+        document.getElementById('aiResultsContent');
+
+    const resultsCard =
+        document.getElementById('resultsCardAI');
+
+    const startButton =
+        document.getElementById('startButton');
+
+    const continueButton =
+        document.getElementById('continueButton');
+
+    if (!searchInput) {
+
+        alert('Polje za pretragu nije pronađeno.');
+
+        return;
+
+    }
+
+    // ------------------------------------------
+    // POČETAK NOVE PRETRAGE
+    // ------------------------------------------
+
+    if (faza === 'pocetak') {
+
+        osnovniUpit = searchInput.value.trim();
+
+        if (!osnovniUpit) {
+
+            alert('Unesite šta želite pretražiti.');
+
+            searchInput.focus();
+
             return;
+
         }
 
-        const dugme = document.getElementById('searchButton');
-        dugme.disabled = true;
-        dugme.textContent = 'Obrađujem...';
+        istorijaRazgovora = [];
 
-        try {
-            const { data, error } = await _supabase.functions.invoke(
-                'PRETRAGA',
-                {
-                    body: {
-                        pojam: query,
-                        mode: 'pitanja'
-                    }
-                }
-            );
+        chatContent.replaceChildren();
 
-            if (error) throw error;
+        resultsContent.replaceChildren();
 
-            if (!data || !data.success) {
-                throw new Error(data?.error || 'Greška pri obradi zahtjeva.');
-            }
+        resultsCard.style.display = 'none';
 
-            if (data.type === 'pitanja' && data.pitanja) {
-                prikaziPitanja(data.pitanja);
-            } else {
-                throw new Error('Odgovor AI asistenta nije u očekivanom formatu.');
-            }
+        odgovoriInput.value = '';
+        odgovoriInput.style.display = 'none';
 
-        } catch (error) {
-            console.error('Greška prve faze:', error);
-            prikaziGresku(pitanjaContainer, error.message || 'Došlo je do greške.');
-        } finally {
-            dugme.disabled = false;
-            dugme.textContent = 'Pretraži';
-        }
+        document.getElementById('aiChatBox').style.display = 'block';
+
+        const infoBox =
+            document.getElementById('infoBox');
+
+        infoBox.style.display = 'block';
+
+        infoBox.textContent =
+            'AI analizira vaš zahtjev. Molimo sačekajte...';
+
+        prikaziPorukuAI(
+            'Pokrenuo sam analizu vašeg zahtjeva.'
+        );
+
     }
 
-    // DRUGA FAZA: POZIV GLAVNE EDGE FUNKCIJE ZA REZULTATE
-    async function zatraziAIRezultate() {
-        const pitanjaContainer = document.getElementById('pitanjaContainer');
-        const rezultatiContainer = document.getElementById('rezultatiContainer');
+    // ------------------------------------------
+    // NASTAVAK NAKON ODGOVORA KORISNIKA
+    // ------------------------------------------
 
-        const osnovniUpit = document.getElementById('searchInput').value.trim();
+    if (faza === 'nastavak') {
 
-        const forma = document.getElementById('formaPitanja');
+        const odgovor =
+            odgovoriInput.value.trim();
 
-        const odgovori = {};
+        if (!odgovor) {
 
-        if (forma) {
-            const inputi = forma.querySelectorAll('input');
+            alert('Molimo unesite odgovore na pitanja.');
 
-            inputi.forEach((input, index) => {
-                odgovori[index] = input.value.trim();
+            odgovoriInput.focus();
+
+            return;
+
+        }
+
+        istorijaRazgovora.push({
+
+            tip: 'odgovori_korisnika',
+
+            sadrzaj: odgovor
+
+        });
+
+        prikaziPorukuAI(
+            odgovor,
+            'user'
+        );
+
+        odgovoriInput.value = '';
+
+        prikaziPorukuAI(
+            'Hvala. Nastavljam analizu vaših odgovora.'
+        );
+
+        const infoBox =
+            document.getElementById('infoBox');
+
+        infoBox.style.display = 'block';
+
+        infoBox.textContent =
+            'AI obrađuje vaše odgovore i nastavlja pretragu...';
+
+    }
+
+    // ------------------------------------------
+    // ZAŠTITA OD VIŠESTRUKOG SLANJA
+    // ------------------------------------------
+
+    pretragaUToku = true;
+
+    startButton.disabled = true;
+    continueButton.disabled = true;
+
+    startButton.textContent = '⏳ AI obrađuje...';
+    continueButton.textContent = '⏳ Molimo sačekajte...';
+
+    try {
+
+        // --------------------------------------
+        // PROVJERA PRIJAVLJENOG KORISNIKA
+        // --------------------------------------
+
+        const {
+            data: authData,
+            error: authError
+        } = await _supabase.auth.getUser();
+
+        if (authError) {
+            throw authError;
+        }
+
+        const user = authData?.user;
+
+        if (!user) {
+
+            throw new Error(
+                'Morate biti prijavljeni da biste koristili AI pretragu.'
+            );
+
+        }
+
+        korisnikMail = user.email || korisnikMail;
+
+        // --------------------------------------
+        // PODACI KOJI SE ŠALJU AI FUNKCIJI
+        // --------------------------------------
+
+        const payload = {
+
+            pojam: osnovniUpit,
+
+            istorija: istorijaRazgovora,
+
+            korisnik: korisnikMail,
+
+            drzava: drzavaKorisnika,
+
+            jezik: aktivniJezik,
+
+            mode: 'analiza',
+
+            faza: faza
+
+        };
+
+        console.log(
+            'Šaljem zahtjev PRETRAGA_GLAVNA:',
+            payload
+        );
+
+        // --------------------------------------
+        // POZIV JEDINE EDGE FUNKCIJE
+        // --------------------------------------
+
+        const {
+            data,
+            error
+        } = await _supabase.functions.invoke(
+            'PRETRAGA_GLAVNA',
+            {
+                body: payload
+            }
+        );
+
+        if (error) {
+
+            console.error(
+                'Supabase funkcija:',
+                error
+            );
+
+            throw new Error(
+                error.message ||
+                'Greška prilikom pozivanja AI funkcije.'
+            );
+
+        }
+
+        if (!data) {
+
+            throw new Error(
+                'AI nije vratio nikakav odgovor.'
+            );
+
+        }
+
+        console.log(
+            'Odgovor AI funkcije:',
+            data
+        );
+
+        // --------------------------------------
+        // SLUČAJ 1: AI POSTAVLJA PITANJA
+        // --------------------------------------
+
+        if (
+            data.type === 'pitanja' ||
+            data.status === 'potrebne_informacije'
+        ) {
+
+            const pitanja =
+                Array.isArray(data.pitanja)
+                    ? data.pitanja
+                    : [];
+
+            if (pitanja.length === 0) {
+
+                throw new Error(
+                    'AI nije vratio tekst dodatnih pitanja.'
+                );
+
+            }
+
+            istorijaRazgovora.push({
+
+                tip: 'pitanja_ai',
+
+                sadrzaj: pitanja
+
             });
+
+            prikaziPitanja(pitanja);
+
+            return;
+
         }
 
-        rezultatiContainer.innerHTML = '';
+        // --------------------------------------
+        // SLUČAJ 2: AI VRAĆA REZULTATE
+        // --------------------------------------
 
-        const status = document.createElement('div');
-        status.className = 'info';
-        status.textContent = 'AI pretražuje internet i pronalazi firme. Molimo sačekajte...';
+        if (
+            data.type === 'rezultati' ||
+            data.status === 'zavrseno'
+        ) {
 
-        rezultatiContainer.appendChild(status);
+            prikaziRezultate(data);
 
-        try {
-            const { data: authData, error: authError } =
-                await _supabase.auth.getUser();
+            odgovoriInput.style.display = 'none';
 
-            if (authError) throw authError;
-
-            const korisnikMail = authData?.user?.email || '';
-
-            const { data, error } = await _supabase.functions.invoke(
-                'PRETRAGA_GLAVNA',
-                {
-                    body: {
-                        pojam: osnovniUpit,
-                        detalji: odgovori,
-                        korisnik: korisnikMail,
-                        mode: 'rezultati'
-                    }
-                }
+            prikaziPorukuAI(
+                'Analiza je završena. Rezultati su prikazani ispod.'
             );
 
-            if (error) throw error;
+            const infoBox =
+                document.getElementById('infoBox');
 
-            if (!data || !data.success) {
-                throw new Error(data?.error || 'Greška pri pretrazi rezultata.');
-            }
+            infoBox.style.display = 'block';
 
-            prikaziRezultate(data.rezultati);
+            infoBox.textContent =
+                'AI analiza je uspješno završena.';
 
-            const statistika = document.createElement('div');
-            statistika.className = 'info';
+            return;
 
-            statistika.textContent =
-                'Broj rezultata: ' + (data.broj_rezultata ?? 0) +
-                ' | Internet izvori: ' + (data.broj_internet_izvora ?? 0) +
-                ' | Model: ' + (data.model_koristen ?? 'Nije navedeno') +
-                ' | Internet pretraga: ' + (data.internet_pretraga ? 'Da' : 'Ne');
-
-            rezultatiContainer.appendChild(statistika);
-
-            if (data.baza?.upisano) {
-                const uspjeh = document.createElement('div');
-                uspjeh.className = 'success';
-                uspjeh.textContent = 'Rezultati su uspješno sačuvani u bazu podataka.';
-                rezultatiContainer.appendChild(uspjeh);
-            }
-
-        } catch (error) {
-            console.error('Greška druge faze:', error);
-            prikaziGresku(
-                rezultatiContainer,
-                error.message || 'Došlo je do greške pri pronalaženju rezultata.'
-            );
         }
+
+        // --------------------------------------
+        // SLUČAJ 3: GREŠKA ILI NEPOZNAT ODGOVOR
+        // --------------------------------------
+
+        throw new Error(
+            data.message ||
+            data.error ||
+            'AI je vratio neočekivan format odgovora.'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Greška AI pretrage:',
+            error
+        );
+
+        prikaziPorukuAI(
+            'Greška: ' + error.message
+        );
+
+        const infoBox =
+            document.getElementById('infoBox');
+
+        infoBox.style.display = 'block';
+
+        infoBox.textContent =
+            'Pretraga nije završena. Provjerite vezu i pokušajte ponovo.';
+
+        alert(error.message);
+
+    } finally {
+
+        pretragaUToku = false;
+
+        startButton.disabled = false;
+
+        continueButton.disabled = false;
+
+        startButton.textContent =
+            '✨ 1. Pokreni AI analizu i pitanja';
+
+        continueButton.textContent =
+            '🚀 2. Pošalji odgovore i nastavi AI analizu';
+
     }
 
-    // ENTER POKREĆE PRVU FAZU PRETRAGE
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            pokreniGroqAsistent();
-        }
+}
+
+
+// ============================================================
+// 19. PRETRAGA NA ENTER
+// ============================================================
+
+function handleKeyPress(event) {
+
+    if (event.key === 'Enter') {
+
+        event.preventDefault();
+
+        PRETRAGA_GLAVNA('pocetak');
+
     }
 
-    // POČETNO UČITAVANJE DRŽAVE I JEZIKA
-    postaviAktivniJezik();
-    ucitajDrzavuKorisnika();
+}
 
 </script>
+
 </body>
 </html>
