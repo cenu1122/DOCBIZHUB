@@ -4,611 +4,986 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DocBizHub - Pametna poslovna PRETRAGA_GLAVNA</title>
+<title>Glavna pretraga firmi</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {margin:0;padding:0;box-sizing:border-box}
+* {
+    box-sizing: border-box;
+}
 
 body {
-  font-family:Segoe UI,Tahoma,sans-serif;
-  background:#f4f6f9;
-  color:#2b2d42;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f3f5f8;
+    color: #222;
 }
 
-header {
-  background:#2b2d42;
-  color:white;
-  padding:18px 5%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
+.container {
+    max-width: 950px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
 }
 
-.logo {
-  color:white;
-  font-size:1.4rem;
-  font-weight:bold;
-  text-decoration:none;
+h1 {
+    text-align: center;
+    margin-top: 0;
 }
 
-.btn-back {
-  background:#d90429;
-  color:white;
-  padding:9px 16px;
-  border-radius:20px;
-  text-decoration:none;
+label {
+    display: block;
+    font-weight: bold;
+    margin: 15px 0 7px;
 }
 
-.main-container {
-  max-width:1000px;
-  width:100%;
-  margin:30px auto;
-  padding:0 15px;
-  flex:1;
-}
-
-.card {
-  background:white;
-  border-radius:12px;
-  padding:25px;
-  margin-bottom:22px;
-  box-shadow:0 4px 12px rgba(0,0,0,.07);
-}
-
-h2 {color:#d90429;margin-bottom:10px}
-
-.sub {
-  color:#666;
-  margin-bottom:22px;
-  line-height:1.5;
-}
-
-.form-group {
-  margin-bottom:17px;
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-label {font-weight:bold;font-size:.92rem}
-
-input,textarea {
-  padding:13px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:15px;
-  width:100%;
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
 }
 
 textarea {
-  min-height:85px;
-  resize:vertical;
+    min-height: 90px;
+    resize: vertical;
 }
 
-input:focus,textarea:focus {
-  outline:none;
-  border-color:#4f46e5;
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.btn {
-  width:100%;
-  padding:15px;
-  border:0;
-  border-radius:8px;
-  color:white;
-  font-weight:bold;
-  font-size:16px;
-  cursor:pointer;
-  background:#4f46e5;
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
-.btn:hover {background:#4338ca}
-.btn:disabled {opacity:.6;cursor:wait}
-
-#infoBox {
-  display:none;
-  padding:14px;
-  margin-top:18px;
-  border-radius:8px;
-  background:#e8f4fd;
-  color:#075985;
-  line-height:1.6;
+.primary {
+    width: 100%;
+    background: #1769d2;
+    color: white;
+    margin-top: 20px;
 }
 
-#results {
-  display:none;
+.mic {
+    background: #198754;
+    color: white;
+    width: 100%;
+}
+
+.mic.listening {
+    background: #dc3545;
+}
+
+.secondary {
+    background: #e9ecef;
+    color: #222;
+}
+
+.settings {
+    margin-top: 25px;
+    padding: 18px;
+    background: #f5f7fa;
+    border: 1px solid #dce2e8;
+    border-radius: 10px;
+}
+
+.info {
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid #e1e5ea;
+}
+
+.info small {
+    display: block;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.status {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.results {
+    margin-top: 25px;
 }
 
 .result-card {
-  background:#f8fafc;
-  border:1px solid #dbe2ea;
-  padding:18px;
-  border-radius:10px;
-  margin-bottom:14px;
-  line-height:1.65;
-  overflow-wrap:anywhere;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    margin: 10px 0;
+    overflow-wrap: anywhere;
 }
 
 .result-card h3 {
-  color:#d90429;
-  margin-bottom:10px;
+    margin-top: 0;
 }
 
-.result-card p {margin-top:6px}
-
-.score {
-  display:inline-block;
-  background:#dcfce7;
-  color:#166534;
-  padding:4px 10px;
-  border-radius:15px;
-  font-weight:bold;
-  font-size:13px;
-  margin-bottom:10px;
+.source {
+    padding: 13px;
+    background: #e9f5ee;
+    border-radius: 8px;
+    margin-top: 15px;
 }
 
-.type {
-  display:inline-block;
-  background:#e0e7ff;
-  color:#3730a3;
-  padding:4px 10px;
-  border-radius:15px;
-  font-size:12px;
-  margin-bottom:10px;
+.error {
+    color: #b02a37;
 }
 
-.section-title {
-  margin:25px 0 15px;
-  color:#2b2d42;
-  border-bottom:2px solid #e5e7eb;
-  padding-bottom:9px;
+.success {
+    color: #198754;
 }
 
-.result-link {
-  display:inline-block;
-  margin-top:10px;
-  color:#2563eb;
-  font-weight:bold;
-}
-
-.empty {
-  background:#fff7ed;
-  padding:15px;
-  border-radius:8px;
-  color:#9a3412;
-}
-
-footer {
-  background:#2b2d42;
-  color:white;
-  text-align:center;
-  padding:20px;
+.hidden {
+    display: none;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <a href="DASHBOARD.html" class="logo">
-    ❤️ DocBizHub
-  </a>
+<div class="container">
 
-  <a href="DASHBOARD.html" class="btn-back">
-    ⬅ Nazad
-  </a>
-</header>
+<h1>PRETRAGA FIRMI</h1>
 
-<main class="main-container">
+<label for="pojam">Šta tražite?</label>
+<input id="pojam" placeholder="Npr. aluminijski profili">
 
-<div class="card">
+<label for="ponuda">Ponuda</label>
+<textarea id="ponuda" placeholder="Šta nudite?"></textarea>
 
-<h2>🤖 Pametna poslovna PRETRAGA_GLAVNA</h2>
+<label for="potraznja">Potražnja</label>
+<textarea id="potraznja" placeholder="Šta tražite od drugih firmi?"></textarea>
 
-<p class="sub">
-Unesite šta nudite i šta tražite.
-Sistem će direktno pretražiti poslovnu bazu,
-pronaći potencijalne kupce, dobavljače i oglase.
+<label for="detalji">Dodatni detalji</label>
+<textarea id="detalji" placeholder="Država, grad, djelatnost..."></textarea>
+
+
+<!-- POSTAVKE MIKROFONA -->
+
+<div class="settings">
+
+<h3>🎙️ POSTAVKE GLASOVNE PRETRAGE</h3>
+
+<div class="info">
+    <small>DRŽAVA ZA ODREĐIVANJE JEZIKA</small>
+    <strong id="displayCountry">Nije učitana</strong>
+    <small id="countrySource">Izvor: nije određen</small>
+</div>
+
+<div class="info">
+    <small>JEZIK MIKROFONA</small>
+    <strong id="displayLanguage">Bosanski</strong>
+    <small id="displayLocale">bs-BA</small>
+</div>
+
+<label for="languageSelect">Promijeni jezik ručno:</label>
+
+<select id="languageSelect">
+    <option value="auto">Automatski prema državi</option>
+    <option value="bs-BA">Bosanski</option>
+    <option value="hr-HR">Hrvatski</option>
+    <option value="sr-RS">Srpski</option>
+    <option value="de-DE">Njemački</option>
+    <option value="en-US">Engleski (SAD)</option>
+    <option value="en-GB">Engleski (UK)</option>
+    <option value="fr-FR">Francuski</option>
+    <option value="it-IT">Italijanski</option>
+    <option value="es-ES">Španski</option>
+    <option value="tr-TR">Turski</option>
+    <option value="ar-SA">Arapski</option>
+    <option value="nl-NL">Holandski</option>
+    <option value="pl-PL">Poljski</option>
+    <option value="ru-RU">Ruski</option>
+    <option value="zh-CN">Kineski</option>
+</select>
+
+<p class="status" id="micStatus">
+    Mikrofon je spreman.
 </p>
 
-<div class="form-group">
-<label>🔍 Osnovni pojam pretrage</label>
-<input id="searchInput"
-placeholder="Npr. EUR palete, transport, građevinski materijal">
-</div>
-
-<div class="form-group">
-<label>📦 Šta nudite?</label>
-<textarea id="ponuda"
-placeholder="Npr. Nudim 5000 EUR paleta mjesečno, isporuka Njemačka..."></textarea>
-</div>
-
-<div class="form-group">
-<label>🎯 Šta tražite?</label>
-<textarea id="potraznja"
-placeholder="Npr. Tražim kupce, distributere i veletrgovce..."></textarea>
-</div>
-
-<div class="form-group">
-<label>📍 Dodatni detalji</label>
-<textarea id="detalji"
-placeholder="Npr. Njemačka, Bavarska, veleprodaja..."></textarea>
-</div>
-
-<button class="btn" id="searchButton"
-onclick="pokreniPretragu()">
-🚀 PRETRAŽI POSLOVNU BAZU
+<button class="mic" id="micButton" type="button">
+    🎙️ POKRENI MIKROFON
 </button>
 
-<div id="infoBox"></div>
+</div>
+
+
+<button class="primary" id="searchButton" type="button">
+    🔍 PRETRAŽI
+</button>
+
+<div id="mainStatus" class="status"></div>
+
+<div id="results" class="results hidden">
+
+    <h2>REZULTATI PRETRAGE</h2>
+
+    <div id="sourceInfo" class="source"></div>
+
+    <div id="stats"></div>
+
+    <h3>Firme</h3>
+    <div id="companyResults"></div>
+
+    <h3>Potencijalni kupci</h3>
+    <div id="buyerResults"></div>
+
+    <h3>Potvrđena potražnja</h3>
+    <div id="demandResults"></div>
+
+    <h3>Dobavljači</h3>
+    <div id="supplierResults"></div>
+
+    <h3>Oglasi</h3>
+    <div id="adResults"></div>
 
 </div>
 
-<div class="card" id="results">
-
-<h2>📊 Rezultati poslovne pretrage</h2>
-
-<div id="summary"></div>
-
-<h3 class="section-title">
-🏢 Pronađene firme
-</h3>
-
-<div id="companyResults"></div>
-
-<h3 class="section-title">
-📢 Pronađeni oglasi
-</h3>
-
-<div id="adResults"></div>
-
-<h3 class="section-title">
-💰 Potencijalni kupci
-</h3>
-
-<div id="buyerResults"></div>
-
 </div>
 
-</main>
-
-<footer>
-© 2026 DocBizHub. Sva prava zadržana.
-</footer>
 
 <script>
 
-// =====================================================
-// SUPABASE
-// =====================================================
+// ============================================
+// 1. SUPABASE PODEŠAVANJA
+// ============================================
 
 const SUPABASE_URL =
-'https://uduwpvdjmanrgpumdrfh.supabase.co';
+"https://uduwpvdjmanrgpumdrfh.supabase.co";
 
-const SUPABASE_ANON_KEY =
-'sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45';
+const SUPABASE_KEY =
+"sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45";
 
-const _supabase = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
-// =====================================================
-// HELPERS
-// =====================================================
 
-function text(value) {
-  return String(value ?? '').trim();
+// ============================================
+// 2. PODACI O DRŽAVI
+// ============================================
+
+// OVE DVIJE VRIJEDNOSTI POVEŽI SA SVOJIM PODACIMA.
+// Ako ih već učitavaš iz baze, ovdje postavi njihove vrijednosti.
+
+let DRZAVA = "";
+let DRZAVA_FIRME = "";
+
+// Primjer:
+// DRZAVA = "Njemačka";
+// DRZAVA_FIRME = "Austrija";
+
+
+// ============================================
+// 3. MAPIRANJE DRŽAVA I JEZIKA
+// ============================================
+
+const countryLanguages = {
+
+    "bosna i hercegovina": {
+        name: "Bosanski",
+        locale: "bs-BA"
+    },
+
+    "bosnia and herzegovina": {
+        name: "Bosanski",
+        locale: "bs-BA"
+    },
+
+    "hrvatska": {
+        name: "Hrvatski",
+        locale: "hr-HR"
+    },
+
+    "croatia": {
+        name: "Hrvatski",
+        locale: "hr-HR"
+    },
+
+    "srbija": {
+        name: "Srpski",
+        locale: "sr-RS"
+    },
+
+    "serbia": {
+        name: "Srpski",
+        locale: "sr-RS"
+    },
+
+    "njemacka": {
+        name: "Njemački",
+        locale: "de-DE"
+    },
+
+    "germany": {
+        name: "Njemački",
+        locale: "de-DE"
+    },
+
+    "austrija": {
+        name: "Njemački",
+        locale: "de-AT"
+    },
+
+    "austria": {
+        name: "Njemački",
+        locale: "de-AT"
+    },
+
+    "svicarska": {
+        name: "Njemački",
+        locale: "de-CH"
+    },
+
+    "switzerland": {
+        name: "Njemački",
+        locale: "de-CH"
+    },
+
+    "francuska": {
+        name: "Francuski",
+        locale: "fr-FR"
+    },
+
+    "france": {
+        name: "Francuski",
+        locale: "fr-FR"
+    },
+
+    "italija": {
+        name: "Italijanski",
+        locale: "it-IT"
+    },
+
+    "italy": {
+        name: "Italijanski",
+        locale: "it-IT"
+    },
+
+    "spanija": {
+        name: "Španski",
+        locale: "es-ES"
+    },
+
+    "spain": {
+        name: "Španski",
+        locale: "es-ES"
+    },
+
+    "turska": {
+        name: "Turski",
+        locale: "tr-TR"
+    },
+
+    "turkey": {
+        name: "Turski",
+        locale: "tr-TR"
+    },
+
+    "ujedinjeno kraljevstvo": {
+        name: "Engleski",
+        locale: "en-GB"
+    },
+
+    "united kingdom": {
+        name: "Engleski",
+        locale: "en-GB"
+    },
+
+    "sad": {
+        name: "Engleski",
+        locale: "en-US"
+    },
+
+    "usa": {
+        name: "Engleski",
+        locale: "en-US"
+    },
+
+    "united states": {
+        name: "Engleski",
+        locale: "en-US"
+    },
+
+    "holandija": {
+        name: "Holandski",
+        locale: "nl-NL"
+    },
+
+    "nizozemska": {
+        name: "Holandski",
+        locale: "nl-NL"
+    },
+
+    "netherlands": {
+        name: "Holandski",
+        locale: "nl-NL"
+    },
+
+    "poljska": {
+        name: "Poljski",
+        locale: "pl-PL"
+    },
+
+    "poland": {
+        name: "Poljski",
+        locale: "pl-PL"
+    },
+
+    "rusija": {
+        name: "Ruski",
+        locale: "ru-RU"
+    },
+
+    "russia": {
+        name: "Ruski",
+        locale: "ru-RU"
+    },
+
+    "kina": {
+        name: "Kineski",
+        locale: "zh-CN"
+    },
+
+    "china": {
+        name: "Kineski",
+        locale: "zh-CN"
+    },
+
+    "saudijska arabija": {
+        name: "Arapski",
+        locale: "ar-SA"
+    },
+
+    "saudi arabia": {
+        name: "Arapski",
+        locale: "ar-SA"
+    }
+};
+
+
+// ============================================
+// 4. ODREĐIVANJE JEZIKA
+// ============================================
+
+let selectedLanguage = "bs-BA";
+let selectedLanguageName = "Bosanski";
+let manualLanguage = false;
+
+function normalizeCountry(value) {
+
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
 }
 
-function safeLink(value,label) {
-  if(!value) return '';
+function updateLanguage() {
 
-  try {
-    const url = new URL(value);
+    let country = DRZAVA;
+    let source = "DRZAVA";
 
-    if(!['http:','https:'].includes(url.protocol))
-      return '';
+    if (!country || !country.trim()) {
 
-    const a = document.createElement('a');
-    a.href = url.href;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.className = 'result-link';
-    a.textContent = label;
+        country = DRZAVA_FIRME;
+        source = "DRZAVA_FIRME";
 
-    return a;
-
-  } catch {
-    return '';
-  }
-}
-
-function addField(card,label,value) {
-  if(!text(value)) return;
-
-  const p = document.createElement('p');
-
-  const strong = document.createElement('strong');
-  strong.textContent = label + ': ';
-
-  const span = document.createElement('span');
-  span.textContent = value;
-
-  p.append(strong,span);
-  card.appendChild(p);
-}
-
-// =====================================================
-// GENERIC RESULT CARD
-// =====================================================
-
-function napraviKarticu(item,index,vrsta) {
-
-  const card = document.createElement('div');
-  card.className = 'result-card';
-
-  const naslov = document.createElement('h3');
-
-  naslov.textContent =
-    `${index+1}. ${
-      text(item.naziv) ||
-      text(item.naslov) ||
-      'Nepoznat rezultat'
-    }`;
-
-  card.appendChild(naslov);
-
-  if(item.score !== undefined) {
-    const score = document.createElement('div');
-    score.className = 'score';
-    score.textContent = 'Podudaranje: ' + item.score + '%';
-    card.appendChild(score);
-  }
-
-  if(item.tip) {
-    const tip = document.createElement('div');
-    tip.className = 'type';
-
-    tip.textContent =
-      item.tip === 'POTENCIJALNI_KUPAC'
-      ? 'POTENCIJALNI KUPAC'
-      : item.tip === 'DOBAVLJAC'
-      ? 'DOBAVLJAČ'
-      : item.tip;
-
-    card.appendChild(tip);
-  }
-
-  addField(card,'Djelatnost',item.djelatnost);
-  addField(card,'Opis',item.opis);
-  addField(card,'Šta nudi',item.ja);
-  addField(card,'Šta traži',item.trazim);
-  addField(card,'Oglas',item.tip_oglasa);
-  addField(card,'Vrsta posla',item.vrsta_posla);
-  addField(card,'Lokacija',[
-    item.grad,
-    item.drzava
-  ].filter(Boolean).join(', '));
-
-  addField(card,'Poštanski broj',item.postanski_broj);
-  addField(card,'Telefon',item.telefon);
-  addField(card,'Email',item.email);
-  addField(card,'Email prodaja',item.mail_prodaja);
-  addField(card,'Email nabavka',item.mail_nabavka);
-
-  addField(card,'Razlog podudaranja',item.razlog);
-
-  if(item.podudarne_rijeci?.length) {
-    addField(
-      card,
-      'Podudarne riječi',
-      item.podudarne_rijeci.join(', ')
-    );
-  }
-
-  addField(card,'Izvor podataka',item.izvor_podatka);
-  addField(card,'Status oglasa',item.status_oglasa);
-
-  const web = safeLink(item.web,'🌐 Posjeti web stranicu');
-
-  if(web) card.appendChild(web);
-
-  const oglas = safeLink(item.url,'📢 Otvori oglas');
-
-  if(oglas) card.appendChild(oglas);
-
-  const izvor = safeLink(item.izvor,'🔗 Pogledaj izvor');
-
-  if(izvor) card.appendChild(izvor);
-
-  return card;
-}
-
-// =====================================================
-// DISPLAY RESULTS
-// =====================================================
-
-function prikaziListu(containerId,items,vrsta) {
-
-  const container = document.getElementById(containerId);
-  container.replaceChildren();
-
-  if(!Array.isArray(items) || !items.length) {
-
-    const empty = document.createElement('div');
-    empty.className = 'empty';
-    empty.textContent = 'Nema pronađenih rezultata.';
-
-    container.appendChild(empty);
-    return;
-  }
-
-  items.forEach((item,index) => {
-    container.appendChild(
-      napraviKarticu(item,index,vrsta)
-    );
-  });
-}
-
-// =====================================================
-// MAIN SEARCH
-// =====================================================
-
-async function pokreniPretragu() {
-
-  const pojam =
-    text(document.getElementById('searchInput').value);
-
-  const ponuda =
-    text(document.getElementById('ponuda').value);
-
-  const potraznja =
-    text(document.getElementById('potraznja').value);
-
-  const detalji =
-    text(document.getElementById('detalji').value);
-
-  const button =
-    document.getElementById('searchButton');
-
-  const info =
-    document.getElementById('infoBox');
-
-  const results =
-    document.getElementById('results');
-
-  if(!pojam) {
-    alert('Unesite pojam pretrage.');
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = '⏳ Pretražujem poslovnu bazu...';
-
-  info.style.display = 'block';
-  info.style.color = '#075985';
-  info.textContent =
-    'Učitavam firme i oglase iz Supabase baze...';
-
-  results.style.display = 'none';
-
-  try {
-
-    // Poziv funkcije
-    const {data,error} =
-      await _supabase.functions.invoke(
-        'PRETRAGA_GLAVNA',
-        {
-          body: {
-            pojam: pojam,
-            detalji: detalji,
-
-            poslovna_analiza: {
-              sta_korisnik_nudi: ponuda,
-              sta_korisnik_trazi: potraznja,
-              ponuda: ponuda,
-              potraznja: potraznja
-            }
-          }
-        }
-      );
-
-    if(error) throw error;
-
-    if(!data || !data.success) {
-      throw new Error(
-        data?.error || 'PRETRAGA_GLAVNA nije uspjela.'
-      );
     }
 
-    // Prikaz statistike
-    const summary =
-      document.getElementById('summary');
+    if (!country || !country.trim()) {
 
-    summary.replaceChildren();
+        document.getElementById("displayCountry").textContent =
+            "Država nije dostupna";
 
-    const statistika = [
-      ['Pregledano firmi',data.pregledano_firmi],
-      ['Pregledano oglasa',data.pregledano_oglasa],
-      ['Pronađeno firmi',data.broj_firmi],
-      ['Pronađeno oglasa',data.broj_oglasa],
-      ['Potencijalnih kupaca',data.broj_potencijalnih_kupaca]
-    ];
+        document.getElementById("countrySource").textContent =
+            "Izvor: ručni izbor jezika";
 
-    statistika.forEach(([label,value]) => {
+        if (!manualLanguage) {
+            selectedLanguage = "bs-BA";
+            selectedLanguageName = "Bosanski";
+        }
 
-      const p = document.createElement('p');
-      p.style.margin = '8px 0';
+    } else {
 
-      const strong = document.createElement('strong');
-      strong.textContent = label + ': ';
+        document.getElementById("displayCountry").textContent =
+            country;
 
-      const span = document.createElement('span');
-      span.textContent = value ?? 0;
+        document.getElementById("countrySource").textContent =
+            "Izvor: kolona " + source;
 
-      p.append(strong,span);
-      summary.appendChild(p);
-    });
+        const key = normalizeCountry(country);
 
-    // Tri kategorije rezultata
-    prikaziListu(
-      'companyResults',
-      data.podudaranja_u_bazi,
-      'firma'
-    );
+        const language = countryLanguages[key];
 
-    prikaziListu(
-      'adResults',
-      data.oglasi_u_bazi,
-      'oglas'
-    );
+        if (language && !manualLanguage) {
 
-    prikaziListu(
-      'buyerResults',
-      data.potencijalni_kupci,
-      'kupac'
-    );
+            selectedLanguage = language.locale;
+            selectedLanguageName = language.name;
 
-    results.style.display = 'block';
+        } else if (!language && !manualLanguage) {
 
-    info.style.color = '#166534';
+            selectedLanguage = "bs-BA";
+            selectedLanguageName = "Bosanski";
 
-    info.textContent =
-      'PRETRAGA_GLAVNA uspješno završena. ' +
-      'Rezultati su učitani direktno iz Supabase baze. ' +
-      'Groq i Tavily nisu korišteni.';
+        }
 
-  } catch(error) {
+    }
 
-    info.style.color = '#dc2626';
-
-    info.textContent =
-      'Greška pri pretrazi: ' + error.message;
-
-  } finally {
-
-    button.disabled = false;
-
-    button.textContent =
-      '🚀 PRETRAŽI POSLOVNU BAZU';
-  }
+    showLanguage();
 }
 
-// ENTER
-document.getElementById('searchInput')
-.addEventListener('keypress',function(event) {
-  if(event.key === 'Enter') {
-    pokreniPretragu();
-  }
+
+function showLanguage() {
+
+    document.getElementById("displayLanguage").textContent =
+        selectedLanguageName;
+
+    document.getElementById("displayLocale").textContent =
+        selectedLanguage;
+
+}
+
+
+// ============================================
+// 5. RUČNA PROMJENA JEZIKA
+// ============================================
+
+document.getElementById("languageSelect")
+.addEventListener("change", function() {
+
+    const value = this.value;
+
+    if (value === "auto") {
+
+        manualLanguage = false;
+
+        updateLanguage();
+
+        document.getElementById("micStatus").textContent =
+            "Jezik je automatski određen prema državi.";
+
+        return;
+
+    }
+
+    manualLanguage = true;
+
+    selectedLanguage = value;
+
+    const selectedOption =
+        this.options[this.selectedIndex];
+
+    selectedLanguageName = selectedOption.textContent;
+
+    showLanguage();
+
+    document.getElementById("micStatus").textContent =
+        "Ručno izabran jezik: " + selectedLanguageName;
+
 });
+
+
+// ============================================
+// 6. GOVOR U TEKST - MIKROFON
+// ============================================
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+let isListening = false;
+
+const micButton =
+    document.getElementById("micButton");
+
+const micStatus =
+    document.getElementById("micStatus");
+
+if (!SpeechRecognition) {
+
+    micButton.disabled = true;
+
+    micStatus.textContent =
+        "Vaš preglednik ne podržava prepoznavanje govora. Pokušajte u Chromeu ili Edgeu.";
+
+} else {
+
+    recognition = new SpeechRecognition();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+
+        isListening = true;
+
+        micButton.textContent = "⏹ ZAUSTAVI MIKROFON";
+
+        micButton.classList.add("listening");
+
+        micStatus.textContent =
+            "Slušam... Govorite na jeziku: " +
+            selectedLanguageName;
+
+    };
+
+
+    recognition.onresult = function(event) {
+
+        let finalTranscript = "";
+        let interimTranscript = "";
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+            const transcript =
+                event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+
+                finalTranscript += transcript + " ";
+
+            } else {
+
+                interimTranscript += transcript;
+
+            }
+
+        }
+
+        const input = document.getElementById("pojam");
+
+        if (finalTranscript) {
+
+            const existing = input.value.trim();
+
+            input.value =
+                existing
+                ? existing + " " + finalTranscript.trim()
+                : finalTranscript.trim();
+
+        }
+
+        micStatus.textContent =
+            "Prepoznato: " +
+            (finalTranscript + interimTranscript);
+
+    };
+
+
+    recognition.onerror = function(event) {
+
+        micStatus.textContent =
+            "Greška mikrofona: " + event.error;
+
+        stopMicrophone();
+
+    };
+
+
+    recognition.onend = function() {
+
+        isListening = false;
+
+        micButton.textContent = "🎙️ POKRENI MIKROFON";
+
+        micButton.classList.remove("listening");
+
+    };
+
+
+    micButton.addEventListener("click", function() {
+
+        if (isListening) {
+
+            recognition.stop();
+
+            stopMicrophone();
+
+        } else {
+
+            recognition.lang = selectedLanguage;
+
+            try {
+
+                recognition.start();
+
+            } catch(error) {
+
+                micStatus.textContent =
+                    "Mikrofon nije moguće pokrenuti: " +
+                    error.message;
+
+            }
+
+        }
+
+    });
+
+}
+
+
+function stopMicrophone() {
+
+    isListening = false;
+
+    micButton.textContent = "🎙️ POKRENI MIKROFON";
+
+    micButton.classList.remove("listening");
+
+}
+
+
+// ============================================
+// 7. PRIKAZ REZULTATA
+// ============================================
+
+function safeText(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value);
+
+}
+
+
+function renderList(elementId, items) {
+
+    const container = document.getElementById(elementId);
+
+    container.innerHTML = "";
+
+    if (!Array.isArray(items) || items.length === 0) {
+
+        container.textContent = "Nema rezultata.";
+
+        return;
+
+    }
+
+    items.forEach(item => {
+
+        const card = document.createElement("div");
+
+        card.className = "result-card";
+
+        const title = document.createElement("h3");
+
+        title.textContent =
+            safeText(
+                item.naziv ||
+                item.ime ||
+                item.firma ||
+                item.name ||
+                "Firma"
+            );
+
+        card.appendChild(title);
+
+        Object.entries(item).forEach(([key, value]) => {
+
+            if (
+                value === null ||
+                value === undefined ||
+                typeof value === "object"
+            ) return;
+
+            const paragraph = document.createElement("p");
+
+            paragraph.textContent =
+                key + ": " + String(value);
+
+            card.appendChild(paragraph);
+
+        });
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+// ============================================
+// 8. GLAVNA PRETRAGA
+// ============================================
+
+document.getElementById("searchButton")
+.addEventListener("click", async function() {
+
+    const pojam =
+        document.getElementById("pojam").value.trim();
+
+    const ponuda =
+        document.getElementById("ponuda").value.trim();
+
+    const potraznja =
+        document.getElementById("potraznja").value.trim();
+
+    const detalji =
+        document.getElementById("detalji").value.trim();
+
+    const status =
+        document.getElementById("mainStatus");
+
+    if (!pojam) {
+
+        status.textContent =
+            "Unesite ili izgovorite pojam za pretragu.";
+
+        status.className = "status error";
+
+        return;
+
+    }
+
+    if (!ponuda && !potraznja && !detalji) {
+
+        status.textContent =
+            "Unesite ponudu, potražnju ili dodatne detalje.";
+
+        status.className = "status error";
+
+        return;
+
+    }
+
+    stopMicrophone();
+
+    this.disabled = true;
+
+    status.textContent = "Pretraga je u toku...";
+
+    status.className = "status";
+
+    document.getElementById("results")
+        .classList.add("hidden");
+
+    try {
+
+        const { data, error } =
+            await supabase.functions.invoke(
+                "PRETRAGA_GLAVNA",
+                {
+                    body: {
+                        pojam,
+                        ponuda,
+                        potraznja,
+                        detalji
+                    }
+                }
+            );
+
+        if (error) throw error;
+
+        if (!data) {
+            throw new Error("Server nije vratio podatke.");
+        }
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message || "Pretraga nije uspjela."
+            );
+
+        }
+
+        const sourceNames = {
+            "SUPABASE_BAZA": "SUPABASE BAZA",
+            "INTERNET": "INTERNET",
+            "NEMA_REZULTATA": "NEMA REZULTATA"
+        };
+
+        document.getElementById("sourceInfo").textContent =
+            "Izvor rezultata: " +
+            (sourceNames[data.izabrani_izvor] ||
+             data.izabrani_izvor ||
+             "Nepoznat");
+
+        document.getElementById("stats").textContent =
+            "Ukupno firmi: " +
+            (data.statistika?.ukupno_firmi ?? 0);
+
+        renderList(
+            "companyResults",
+            data.sve_firme
+        );
+
+        renderList(
+            "buyerResults",
+            data.potencijalni_kupci
+        );
+
+        renderList(
+            "demandResults",
+            data.potvrdjena_potraznja
+        );
+
+        renderList(
+            "supplierResults",
+            data.dobavljaci
+        );
+
+        renderList(
+            "adResults",
+            data.oglasi_u_bazi
+        );
+
+        document.getElementById("results")
+            .classList.remove("hidden");
+
+        status.textContent =
+            "Pretraga je završena.";
+
+        status.className = "status success";
+
+    } catch(error) {
+
+        status.textContent =
+            "Greška: " + error.message;
+
+        status.className = "status error";
+
+    } finally {
+
+        this.disabled = false;
+
+    }
+
+});
+
+
+// ============================================
+// 9. POČETNO UČITAVANJE
+// ============================================
+
+updateLanguage();
 
 </script>
 
