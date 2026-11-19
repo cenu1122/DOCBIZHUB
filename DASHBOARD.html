@@ -2166,6 +2166,58 @@ footer{
 
 }
 
+
+
+/* =========================================================
+   DOCBIZHUB AI GLOBAL PARTNER MATCHING
+========================================================= */
+.partner-match-section{
+    position:relative;
+    overflow:hidden;
+    border-radius:26px;
+    padding:clamp(24px,4vw,42px);
+    color:#fff;
+    background:linear-gradient(125deg,#0b1730 0%,#17356d 58%,#3155ff 100%);
+    box-shadow:0 22px 55px rgba(11,23,48,.16);
+}
+.partner-match-section:after{
+    content:"";position:absolute;width:360px;height:360px;border-radius:50%;
+    right:-140px;top:-190px;background:rgba(255,255,255,.08);pointer-events:none;
+}
+.partner-match-inner{position:relative;z-index:1;max-width:900px}
+.partner-match-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;
+    border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(255,255,255,.09);
+    font-size:.76rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+.partner-match-section h2{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.08;letter-spacing:-1px;margin-bottom:12px}
+.partner-match-section .partner-lead{max-width:760px;color:#dce6ff;line-height:1.7;margin-bottom:22px}
+.partner-match-form{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
+.partner-match-form textarea{width:100%;min-height:112px;resize:vertical;border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;padding:15px;background:#fff;color:#13213b;outline:none;line-height:1.5}
+.partner-match-form textarea:focus{box-shadow:0 0 0 3px rgba(255,255,255,.22)}
+.partner-match-form button{border:0;border-radius:14px;padding:0 22px;min-height:54px;background:#fff;color:#13213b;
+    font-weight:900;cursor:pointer;transition:.2s}
+.partner-match-form button:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.18)}
+.partner-match-form button:disabled{opacity:.65;cursor:wait;transform:none}
+.partner-match-examples{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.partner-match-examples button{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;
+    padding:7px 11px;border-radius:999px;font-size:.78rem;cursor:pointer}
+#partnerMatchStatus{min-height:24px;margin-top:16px;color:#e3eaff;font-size:.92rem}
+#partnerMatchResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.partner-candidate{background:#fff;color:#13213b;border:1px solid #e7ebf3;border-radius:16px;padding:17px;box-shadow:0 8px 25px rgba(0,0,0,.1);min-width:0}
+.partner-candidate h3{font-size:1rem;margin-bottom:7px;overflow-wrap:anywhere}
+.partner-candidate p{font-size:.88rem;line-height:1.55;color:#526078;margin:5px 0;overflow-wrap:anywhere}
+.partner-candidate .partner-meta{font-size:.76rem;color:#667085;margin-top:10px}
+.partner-candidate a{display:inline-block;margin-top:10px;color:#3155ff;font-weight:800;font-size:.85rem}
+.partner-match-note{font-size:.78rem;color:#d4def7;margin-top:14px;line-height:1.5}
+@media(max-width:720px){.partner-match-form{grid-template-columns:1fr}.partner-match-form button{min-height:50px}#partnerMatchResults{grid-template-columns:1fr}}
+.partner-auto-contact{display:flex;gap:11px;align-items:flex-start;margin-top:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.partner-auto-contact input{width:18px;height:18px;flex:0 0 auto;margin-top:2px;accent-color:#9cc4ff}
+.partner-auto-contact span{display:grid;gap:4px}
+.partner-auto-contact small{color:#dce6ff;line-height:1.45;font-size:.8rem}
+.partner-contact-status{margin-top:10px;font-size:.82rem;font-weight:700;color:#176b43}
+.partner-contact-status.pending{color:#8a5a00}
+
+
 </style>
 
 </head>
@@ -2530,6 +2582,43 @@ footer{
 
     </section>
 
+
+
+
+    <!-- =====================================================
+         AI GLOBAL BUSINESS PARTNER MATCHING
+    ===================================================== -->
+    <section class="partner-match-section" id="ai-partner-matching">
+        <div class="partner-match-inner">
+            <div class="partner-match-kicker">🌍 DocBizHub AI · Global Business Matching</div>
+            <h2>Pronađite najbolje poslovne partnere širom svijeta.</h2>
+            <p class="partner-lead">
+                Opišite kakvog poslovnog partnera tražite. DocBizHub AI će pretražiti dostupnu bazu
+                kompanija i izdvojiti kandidate koji najviše odgovaraju vašim potrebama.
+                Proizvode i poslovne informacije možete pregledati uz podršku višejezičnog prevođenja.
+            </p>
+            <form class="partner-match-form" id="partnerMatchForm">
+                <textarea id="partnerMatchQuery" minlength="10" required
+                    placeholder="Primjer: Tražimo pouzdanog proizvođača kartonske ambalaže u Evropi, koji može isporučivati najmanje 20.000 komada mjesečno."></textarea>
+                <button id="partnerMatchButton" type="submit">🤖 Pronađi partnere</button>
+            </form>
+            <div class="partner-match-examples" aria-label="Primjeri zahtjeva">
+                <button type="button" data-example="Tražimo proizvođača namještaja od punog drveta u Evropi.">Proizvođač namještaja</button>
+                <button type="button" data-example="Tražimo veleprodajnog dobavljača organske hrane za njemačko tržište.">Dobavljač hrane</button>
+                <button type="button" data-example="Tražimo distributere naših građevinskih materijala u zemljama EU.">Distributeri u EU</button>
+            </div>
+            <label class="partner-auto-contact">
+                <input type="checkbox" id="partnerAutoContact" checked>
+                <span><strong>Automatski započni komunikaciju</strong><small>Nakon pronalaska, DocBizHub će poslati kratku uvodnu poruku odgovarajućim firmama putem interne platforme, ako su dostupne za kontakt.</small></span>
+            </label>
+            <div id="partnerMatchStatus" role="status" aria-live="polite"></div>
+            <div id="partnerMatchResults" aria-live="polite"></div>
+            <p class="partner-match-note">
+                Rezultati zavise od kompanija i podataka dostupnih u DocBizHub bazi. Prikazani kandidati
+                predstavljaju prijedloge za provjeru, a ne garanciju poslovne saradnje.
+            </p>
+        </div>
+    </section>
 
     <!-- =====================================================
          STATS
@@ -5943,6 +6032,217 @@ window.addEventListener(
 
 </script>
 
+
+
+
+<!-- =========================================================
+     DOCBIZHUB AI PARTNER MATCHING + AUTOMATIC INTERNAL OUTREACH
+     Edge Function contract:
+       mode=business_partner_match, action=find_business_partners
+       action=start_partner_conversations
+     The Edge Function must verify user authentication, candidate eligibility,
+     contact preferences, deduplication and rate limits before sending messages.
+========================================================= -->
+<script>
+(function(){
+    const form = document.getElementById('partnerMatchForm');
+    if (!form) return;
+
+    const queryInput = document.getElementById('partnerMatchQuery');
+    const button = document.getElementById('partnerMatchButton');
+    const status = document.getElementById('partnerMatchStatus');
+    const results = document.getElementById('partnerMatchResults');
+    const autoContact = document.getElementById('partnerAutoContact');
+
+    function safeText(value){
+        return value == null ? '' : String(value).trim();
+    }
+
+    function addText(parent, tag, value, className){
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        el.textContent = safeText(value);
+        parent.appendChild(el);
+        return el;
+    }
+
+    async function getAuthHeaders(){
+        let accessToken = '';
+        if (typeof _supabase !== 'undefined' && _supabase && _supabase.auth) {
+            const sessionResult = await _supabase.auth.getSession();
+            accessToken = sessionResult?.data?.session?.access_token || '';
+        }
+        const headers = {'Content-Type':'application/json'};
+        if (typeof SUPABASE_ANON_KEY !== 'undefined') headers.apikey = SUPABASE_ANON_KEY;
+        if (accessToken) headers.Authorization = 'Bearer ' + accessToken;
+        return headers;
+    }
+
+    async function callPartnerFunction(payload){
+        const response = await fetch(SITE_SEARCH_FUNCTION_URL, {
+            method:'POST',
+            headers: await getAuthHeaders(),
+            body:JSON.stringify(payload)
+        });
+        let data = {};
+        try { data = await response.json(); } catch (_) {}
+        if (!response.ok) {
+            throw new Error(data.error || data.message || ('AI servis je vratio grešku (' + response.status + ').'));
+        }
+        if (data.error) throw new Error(data.error);
+        return data;
+    }
+
+    function getCandidateId(item){
+        return item.company_id || item.business_id || item.user_id ||
+               item.profile_id || item.id || item.uuid || null;
+    }
+
+    async function startCommunication(items, query){
+        const eligible = items.map(item => ({item, id:getCandidateId(item)}))
+            .filter(x => x.id);
+
+        if (!eligible.length) {
+            status.textContent += ' AI nije vratio ID-jeve profila potrebne za otvaranje internih razgovora.';
+            return;
+        }
+
+        status.textContent += ' Pokrećem komunikaciju s pronađenim firmama...';
+
+        const introMessage =
+            'Poštovani, DocBizHub AI je prepoznao moguću poslovnu podudarnost s vašom kompanijom. ' +
+            'Naša potreba: "' + query.slice(0, 700) + '". ' +
+            'Da li ste zainteresovani da razgovaramo o mogućoj saradnji?';
+
+        try {
+            const data = await callPartnerFunction({
+                mode:'business_partner_match',
+                action:'start_partner_conversations',
+                candidate_ids:eligible.map(x => x.id),
+                original_query:query,
+                message:introMessage,
+                channel:'internal',
+                source:'docbizhub_ai_matching'
+            });
+
+            const started = Number(data.started ?? data.sent ?? data.created ?? 0);
+            const skipped = Number(data.skipped ?? 0);
+            const failed = Number(data.failed ?? 0);
+
+            const report = document.createElement('p');
+            report.className = 'partner-contact-status';
+            report.textContent = 'Komunikacija pokrenuta: ' + started +
+                (skipped ? ' · Preskočeno: ' + skipped : '') +
+                (failed ? ' · Neuspjelo: ' + failed : '') +
+                '. Poruke su poslane kroz DocBizHub interne razgovore.';
+            results.appendChild(report);
+        } catch (error) {
+            console.error('DocBizHub automatic partner communication:', error);
+            const report = document.createElement('p');
+            report.className = 'partner-contact-status pending';
+            report.textContent = 'Partneri su pronađeni, ali automatsko slanje nije završeno: ' +
+                (error.message || 'provjerite podršku Edge Function akcije start_partner_conversations.');
+            results.appendChild(report);
+        }
+    }
+
+    function renderCandidates(items){
+        results.replaceChildren();
+        if (!Array.isArray(items) || items.length === 0){
+            status.textContent = 'Pretraga je završena, ali AI nije vratio kandidate za ovaj zahtjev. Pokušajte opisati djelatnost, proizvod i željenu državu detaljnije.';
+            return;
+        }
+
+        status.textContent = 'Pronađeno kandidata: ' + items.length + '.';
+        items.slice(0, 10).forEach((item, index) => {
+            const card = document.createElement('article');
+            card.className = 'partner-candidate';
+            const name = item.company_name || item.name || item.company || item.title || ('Kandidat ' + (index + 1));
+            addText(card, 'h3', name);
+            const description = item.description || item.summary || item.reason || item.match_reason || item.about;
+            if (description) addText(card, 'p', description);
+            const country = item.country || item.location || item.city || '';
+            const industry = item.industry || item.category || item.sector || '';
+            const details = [country, industry].filter(Boolean).join(' · ');
+            if (details) addText(card, 'div', details, 'partner-meta');
+            const score = item.match_score ?? item.score ?? item.relevance;
+            if (score !== undefined && score !== null && score !== '') {
+                const numeric = Number(score);
+                addText(card, 'div', 'Podudaranje: ' + (Number.isFinite(numeric) ? (numeric <= 1 ? Math.round(numeric * 100) : Math.round(numeric)) + '%' : safeText(score)), 'partner-meta');
+            }
+            const url = item.website || item.url || item.profile_url || item.link;
+            if (url) {
+                try {
+                    const parsed = new URL(url, window.location.origin);
+                    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+                        const link = document.createElement('a');
+                        link.href = parsed.href;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.textContent = 'Otvori profil / web-stranicu →';
+                        card.appendChild(link);
+                    }
+                } catch (_) {}
+            }
+            results.appendChild(card);
+        });
+    }
+
+    async function findPartners(query){
+        button.disabled = true;
+        button.textContent = '🤖 AI pretražuje...';
+        status.textContent = 'Analiziram vaš zahtjev i tražim odgovarajuće poslovne partnere u DocBizHub bazi...';
+        results.replaceChildren();
+
+        try {
+            const data = await callPartnerFunction({
+                mode:'business_partner_match',
+                action:'find_business_partners',
+                query:query,
+                limit:10,
+                language:(navigator.language || 'en').toLowerCase()
+            });
+
+            const candidates = Array.isArray(data.matches) ? data.matches :
+                (Array.isArray(data.candidates) ? data.candidates :
+                (Array.isArray(data.results) ? data.results : []));
+            renderCandidates(candidates);
+
+            if (candidates.length && autoContact && autoContact.checked) {
+                await startCommunication(candidates.slice(0, 10), query);
+            } else if (candidates.length) {
+                status.textContent += ' Automatska komunikacija je isključena.';
+            }
+        } catch (error) {
+            console.error('DocBizHub AI partner matching:', error);
+            status.textContent = 'Trenutno nije moguće dobiti rezultate: ' +
+                (error.message || 'nepoznata greška') +
+                '. Provjerite podržava li SITE_sEARCH akciju business_partner_match.';
+        } finally {
+            button.disabled = false;
+            button.textContent = '🤖 Pronađi partnere';
+        }
+    }
+
+    form.addEventListener('submit', function(event){
+        event.preventDefault();
+        const query = queryInput.value.trim();
+        if (query.length < 10) {
+            status.textContent = 'Molimo opišite šta tražite u najmanje 10 znakova.';
+            queryInput.focus();
+            return;
+        }
+        findPartners(query);
+    });
+
+    document.querySelectorAll('.partner-match-examples [data-example]').forEach(btn => {
+        btn.addEventListener('click', function(){
+            queryInput.value = this.getAttribute('data-example') || '';
+            queryInput.focus();
+        });
+    });
+})();
+</script>
 
 </body>
 
