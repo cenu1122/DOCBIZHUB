@@ -798,7 +798,7 @@ async function ucitajDrzavuKorisnika() {
         const { data, error } = await _supabase
             .from("POSAO_KORISNICI")
             .select("DRZAVA, DRZAVA_FIRME")
-            .eq("user_id", user.id)
+           .eq("AUTH_USER_ID", user.id)
             .maybeSingle();
 
         if (error) {
@@ -1538,22 +1538,29 @@ async function PRETRAGA_GLAVNA(faza = 'pocetak') {
 
         korisnikMail = user.email || korisnikMail;
 
+const korisnikID = user.id;
+
+console.log("ID prijavljenog korisnika:", korisnikID);
+        
         // --------------------------------------
         // PODACI KOJI SE ŠALJU AI FUNKCIJI
         // --------------------------------------
 
-        const payload = {
+  const payload = {
     pojam: osnovniUpit,
 
     ponuda: osnovniUpit,
     potraznja: '',
     detalji: '',
 
-            
-    istorija: istorijaRazgovora,
+    korisnik_id: korisnikID,
     korisnik: korisnikMail,
+
+    istorija: istorijaRazgovora,
+
     drzava: drzavaKorisnika,
     jezik: aktivniJezik,
+
     mode: 'analiza',
     faza: faza
 };
