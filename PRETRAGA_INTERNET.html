@@ -1522,8 +1522,7 @@ async function PRETRAGA_GLAVNA(faza = 'pocetak') {
     potraznja: '',
     detalji: '',
 
-            korisnik_id: user.id,
-
+            
     istorija: istorijaRazgovora,
     korisnik: korisnikMail,
     drzava: drzavaKorisnika,
@@ -1614,34 +1613,39 @@ async function PRETRAGA_GLAVNA(faza = 'pocetak') {
 
         }
 
-        // --------------------------------------
-        // SLUČAJ 2: AI VRAĆA REZULTATE
-        // --------------------------------------
+     // --------------------------------------
+// SLUČAJ 2: AI VRAĆA OBJEDINJENE REZULTATE
+// --------------------------------------
 
-        if (
-            data.type === 'rezultati' ||
-            data.status === 'zavrseno'
-        ) {
+if (
+    data.type === 'objedinjena_pretraga' ||
+    [
+        'USPJESNO_BAZA',
+        'USPJESNO_INTERNET',
+        'NEMA_REZULTATA'
+    ].includes(data.status)
+) {
 
-            prikaziRezultate(data);
+    prikaziRezultate(data);
 
-            odgovoriInput.style.display = 'none';
+    odgovoriInput.style.display = 'none';
 
-            prikaziPorukuAI(
-                'Analiza je završena. Rezultati su prikazani ispod.'
-            );
+    prikaziPorukuAI(
+        'Analiza je završena. Rezultati su prikazani ispod.'
+    );
 
-            const infoBox =
-                document.getElementById('infoBox');
+    const infoBox =
+        document.getElementById('infoBox');
 
-            infoBox.style.display = 'block';
+    infoBox.style.display = 'block';
 
-            infoBox.textContent =
-                'AI analiza je uspješno završena.';
+    infoBox.textContent =
+        data.status === 'NEMA_REZULTATA'
+            ? 'Pretraga je završena, ali nema pronađenih rezultata.'
+            : 'AI analiza je uspješno završena.';
 
-            return;
-
-        }
+    return;
+}
 
         // --------------------------------------
         // SLUČAJ 3: GREŠKA ILI NEPOZNAT ODGOVOR
