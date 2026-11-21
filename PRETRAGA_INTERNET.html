@@ -342,6 +342,15 @@ footer {
 
             <h3>⚙️ Postavke govora i jezika</h3>
 
+<div class="form-group">
+    <label>🌐 Prevod kompletne stranice:</label>
+    <div id="google_translate_element"></div>
+    <small>
+        Izaberite jezik na koji želite prevesti cijelu stranicu.
+    </small>
+</div>
+
+            
             <div class="form-group">
 
                 <label for="languageSelect">
@@ -773,6 +782,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 // ============================================================
 
 
+
 async function ucitajDrzavuKorisnika() {
     try {
         const { data: { user }, error: authError } =
@@ -803,21 +813,34 @@ async function ucitajDrzavuKorisnika() {
 
         const drzava = data.DRZAVA_FIRME || data.DRZAVA || "";
 
-        console.log("Učitana država:", drzava);
+        // ISPRAVKA: čuvanje države u globalnoj varijabli
+        drzavaKorisnika = drzava;
 
-        if (drzava) {
-            const countryInfo = document.getElementById("countryInfo");
-            if (countryInfo) {
-                countryInfo.textContent = drzava;
-            }
+        console.log("Učitana država:", drzavaKorisnika);
+
+        const countryInfo = document.getElementById("countryInfo");
+
+        if (countryInfo) {
+            countryInfo.textContent = drzava || "Država nije navedena";
         }
 
+        // ISPRAVKA: automatsko određivanje jezika prema državi
+        const normalizovanaDrzava = normalizujTekst(drzava);
+
+        const podaciDrzave = drzavaJezici[normalizovanaDrzava];
+
+        if (podaciDrzave) {
+            automatskiJezik = podaciDrzave.jezik;
+        }
+
+        // Ako je izabran automatski jezik, primijeni novi jezik
         postaviAktivniJezik();
 
     } catch (error) {
         console.error("Greška pri učitavanju države:", error);
     }
 }
+
 
 
 // ============================================================
@@ -1072,20 +1095,24 @@ function prikaziPitanja(pitanja) {
 
     content.appendChild(lista);
 
-    odgovori.style.display = 'block';
+  
+odgovori.style.display = 'block';
 
-    odgovori.value = '';
+odgovori.value = '';
 
-    odgovori.placeholder =
-        'Odgovorite na sva pitanja i unesite dodatne detalje...';
+odgovori.placeholder =
+    'Ovdje unesite odgovore na pitanja koja je Groq postavio...';
 
-    const infoBox =
-        document.getElementById('infoBox');
+document.getElementById('continueButton').style.display = 'block';
+document.getElementById('continueButton').disabled = false;
 
-    infoBox.style.display = 'block';
+const infoBox =
+    document.getElementById('infoBox');
 
-    infoBox.textContent =
-        'Odgovorite na pitanja. AI može postaviti dodatna pitanja u više krugova prije konačnih rezultata.';
+infoBox.style.display = 'block';
+
+infoBox.textContent =
+    'Odgovorite na pitanja Groq AI asistenta. Nakon slanja, AI može postaviti nova pitanja ili prikazati konačne rezultate.';
 
 }
 
@@ -1715,5 +1742,25 @@ function handleKeyPress(event) {
 
 </script>
 
+
+<script>
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'bs',
+            includedLanguages: '',
+            autoDisplay: false,
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+    );
+}
+</script>
+
+<script
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+    
 </body>
 </html>
