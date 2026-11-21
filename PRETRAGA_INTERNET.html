@@ -1516,22 +1516,19 @@ async function PRETRAGA_GLAVNA(faza = 'pocetak') {
         // --------------------------------------
 
         const payload = {
+    pojam: osnovniUpit,
 
-            pojam: osnovniUpit,
+    ponuda: osnovniUpit,
+    potraznja: '',
+    detalji: '',
 
-            istorija: istorijaRazgovora,
-
-            korisnik: korisnikMail,
-
-            drzava: drzavaKorisnika,
-
-            jezik: aktivniJezik,
-
-            mode: 'analiza',
-
-            faza: faza
-
-        };
+    istorija: istorijaRazgovora,
+    korisnik: korisnikMail,
+    drzava: drzavaKorisnika,
+    jezik: aktivniJezik,
+    mode: 'analiza',
+    faza: faza
+};
 
         console.log(
             'Šaljem zahtjev PRETRAGA_GLAVNA:',
