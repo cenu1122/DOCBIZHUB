@@ -1228,10 +1228,11 @@ function prikaziRezultate(data) {
 
     }
 
-    const rezultati =
-        Array.isArray(data.rezultati)
-            ? data.rezultati
-            : [];
+ const rezultati =
+    Array.isArray(data.sve_firme) ? data.sve_firme :
+    Array.isArray(data.internet_rezultati) ? data.internet_rezultati :
+    Array.isArray(data.podudaranja_u_bazi) ? data.podudaranja_u_bazi :
+    [];
 
     const broj =
         document.createElement('p');
@@ -1269,42 +1270,56 @@ function prikaziRezultate(data) {
             document.createElement('h3');
 
         naziv.textContent =
-            firma.naziv ||
-            firma.naziv_firme ||
-            firma.name ||
-            'Firma ' + (index + 1);
+    firma.naziv ||
+    firma.naziv_firme ||
+    firma.NAZIV_FIRME ||
+    firma.name ||
+    firma.ime ||
+    firma.title ||
+    firma.naziv_firme ||
+    'Firma ' + (index + 1);
 
         kartica.appendChild(naziv);
 
-        dodajPolje(
-            kartica,
-            'Djelatnost',
-            firma.djelatnost || firma.delatnost
-        );
+    dodajPolje(
+    kartica,
+    'Djelatnost',
+    firma.djelatnost ||
+    firma.delatnost ||
+    firma.industry ||
+    firma.kategorija
+);
 
-        dodajPolje(
-            kartica,
-            'Opis',
-            firma.opis || firma.description
-        );
+dodajPolje(
+    kartica,
+    'Opis',
+    firma.opis ||
+    firma.description ||
+    firma.snippet
+);
 
-        dodajPolje(
-            kartica,
-            'Lokacija',
-            firma.lokacija || firma.adresa || firma.location
-        );
+dodajPolje(
+    kartica,
+    'Lokacija',
+    firma.lokacija ||
+    firma.adresa ||
+    firma.address ||
+    firma.location
+);
 
-        dodajPolje(
-            kartica,
-            'Telefon',
-            firma.telefon || firma.phone
-        );
+dodajPolje(
+    kartica,
+    'Telefon',
+    firma.telefon ||
+    firma.phone
+);
 
-        dodajPolje(
-            kartica,
-            'E-mail',
-            firma.email
-        );
+dodajPolje(
+    kartica,
+    'E-mail',
+    firma.email ||
+    firma.e_mail
+);
 
         const web =
             firma.web || firma.website || firma.url;
