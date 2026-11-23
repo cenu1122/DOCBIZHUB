@@ -170,6 +170,17 @@
                     class="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 outline-none focus:border-blue-500"
                 >
 
+                <select
+    id="filterStatus"
+    class="px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-blue-500"
+>
+    <option value="">Svi statusi</option>
+    <option value="OTVOEREN">Otvoren</option>
+    <option value="KLIKNKNUT">Kliknut</option>
+    <option value="PRIMLJENO">Primljeno</option>
+    <option value="POSLANO">Poslano</option>
+</select>
+
                 <button
                     onclick="ucitajMailove()"
                     class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition"
@@ -263,8 +274,7 @@
                 sviMailovi = data || [];
 
 
-                prikaziMailove(sviMailovi);
-
+filtrirajMailove();
 
                 // STATISTIKA
 
@@ -578,65 +588,55 @@
         // PRETRAGA
         // ---------------------------------------------------------
 
-        document
-            .getElementById("pretraga")
-            .addEventListener("input", function () {
+        // ---------------------------------------------------------
+// PRETRAGA I FILTER STATUSA
+// ---------------------------------------------------------
 
-                const tekst =
-                    this.value.toLowerCase().trim();
+function filtrirajMailove() {
 
+    const tekst = document
+        .getElementById("pretraga")
+        .value
+        .toLowerCase()
+        .trim();
 
-                if (!tekst) {
+    const odabraniStatus = document
+        .getElementById("filterStatus")
+        .value
+        .toUpperCase();
 
-                    prikaziMailove(sviMailovi);
+    const filtrirani = sviMailovi.filter(mail => {
 
-                    return;
-                }
+        const odgovaraTekst =
+            String(mail.EMAIL_PRIMAOCA || "").toLowerCase().includes(tekst) ||
+            String(mail.EMAIL_POSILJAOCA || "").toLowerCase().includes(tekst) ||
+            String(mail.NASLOV || "").toLowerCase().includes(tekst) ||
+            String(mail.SADRZAJ || "").toLowerCase().includes(tekst) ||
+            String(mail.TIP || "").toLowerCase().includes(tekst) ||
+            String(mail.STATUS || "").toLowerCase().includes(tekst);
 
+        const odgovaraStatus =
+            !odabraniStatus ||
+            String(mail.STATUS || "").trim().toUpperCase() === odabraniStatus;
 
-                const filtrirani =
-                    sviMailovi.filter(mail => {
+        return odgovaraTekst && odgovaraStatus;
 
-                        return (
+    });
 
-                            String(mail.EMAIL_PRIMAOCA || "")
-                                .toLowerCase()
-                                .includes(tekst)
-
-                            ||
-
-                            String(mail.NASLOV || "")
-                                .toLowerCase()
-                                .includes(tekst)
-
-                            ||
-
-                            String(mail.SADRZAJ || "")
-                                .toLowerCase()
-                                .includes(tekst)
-
-                            ||
-
-                            String(mail.TIP || "")
-                                .toLowerCase()
-                                .includes(tekst)
-
-                            ||
-
-                            String(mail.STATUS || "")
-                                .toLowerCase()
-                                .includes(tekst)
-
-                        );
-
-                    });
+    prikaziMailove(filtrirani);
+}
 
 
-                prikaziMailove(filtrirani);
+// Pretraga po tekstu
+document
+    .getElementById("pretraga")
+    .addEventListener("input", filtrirajMailove);
 
-            });
 
-
+// Filter po statusu
+document
+    .getElementById("filterStatus")
+    .addEventListener("change", filtrirajMailove);
 
         // ---------------------------------------------------------
         // DATUM
