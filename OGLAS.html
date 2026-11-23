@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -224,6 +225,27 @@
       margin-top: 7px;
     }
 
+    /* DUGME OTVORI OGLAS */
+    .open-ad-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 13px 16px;
+      background: #2563eb;
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.2s;
+    }
+
+    .open-ad-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
     /* PRAZNO */
     .empty {
       grid-column: 1 / -1;
@@ -318,7 +340,6 @@
 
   </header>
 
-
   <!-- MAIN -->
   <main class="container">
 
@@ -326,7 +347,6 @@
       <h1>OGLASI</h1>
       <p>Pregled svih aktivnih oglasa na DocBizHub platformi.</p>
     </div>
-
 
     <!-- PRETRAGA -->
     <div class="search-box">
@@ -348,12 +368,10 @@
 
     </div>
 
-
     <!-- STATUS -->
     <div class="status" id="status">
       UČITAVANJE OGLASA...
     </div>
-
 
     <!-- OGLASI -->
     <div class="ads-grid" id="adsGrid">
@@ -365,7 +383,6 @@
     </div>
 
   </main>
-
 
   <script>
 
@@ -391,6 +408,9 @@
 
     let sviOglasi = [];
 
+    // TRENUTNO PRIJAVLJENI KORISNIK
+    let trenutniKorisnik = null;
+
 
     /* ==========================================
        UČITAVANJE OGLASA
@@ -406,6 +426,18 @@
           UČITAVANJE OGLASA...
         </div>
       `;
+
+      // DOHVATANJE TRENUTNO PRIJAVLJENOG KORISNIKA
+      const {
+        data: { user },
+        error: authError
+      } = await _supabase.auth.getUser();
+
+      if (authError) {
+        console.error('GREŠKA KORISNIKA:', authError);
+      }
+
+      trenutniKorisnik = user || null;
 
       const { data, error } = await _supabase
         .from('OGLASI')
@@ -670,6 +702,15 @@
                 `
                 : ''
             }
+
+            <!-- OTVARANJE OGLASA -->
+            <a
+              href="MAIL_GENERATOR.html?id_oglasa=${encodeURIComponent(oglas.ID)}&id_korisnika=${encodeURIComponent(trenutniKorisnik ? trenutniKorisnik.id : '')}&email=${encodeURIComponent(oglas.EMAIL || '')}"
+              class="open-ad-btn"
+              onclick="event.stopPropagation()"
+            >
+              OTVORI OGLAS →
+            </a>
 
           </div>
 
