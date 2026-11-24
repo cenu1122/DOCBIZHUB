@@ -2,181 +2,455 @@
 <!DOCTYPE html>
 <html lang="bs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOCBIZHUB | Business Portal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Business Portal</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #172033;
-      min-height: 100vh;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+    min-height: 100vh;
+}
 
+header {
+    background: #101c35;
+    color: white;
+    padding: 25px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #35a8ff;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-right p {
+    color: #c5d3e8;
+    font-size: 14px;
+}
+
+.language-select {
+    padding: 9px 12px;
+    border-radius: 7px;
+    border: 1px solid #53637d;
+    background: #1b2b49;
+    color: white;
+    cursor: pointer;
+}
+
+main {
+    max-width: 1250px;
+    margin: 50px auto;
+    padding: 0 22px;
+}
+
+.intro {
+    margin-bottom: 35px;
+}
+
+.intro h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.intro p {
+    color: #68758a;
+    font-size: 15px;
+}
+
+.section-title {
+    font-size: 19px;
+    margin: 32px 0 17px;
+    color: #263750;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+    gap: 19px;
+}
+
+.link-card {
+    background: white;
+    border: 1px solid #e1e7f0;
+    border-radius: 13px;
+    padding: 24px;
+    text-decoration: none;
+    color: #172033;
+    transition: 0.2s;
+    display: block;
+    min-height: 155px;
+}
+
+.link-card:hover {
+    transform: translateY(-4px);
+    border-color: #238be5;
+    box-shadow: 0 8px 25px rgba(20, 50, 90, 0.10);
+}
+
+.link-icon {
+    font-size: 29px;
+    margin-bottom: 15px;
+}
+
+.link-card h2 {
+    font-size: 18px;
+    margin-bottom: 9px;
+}
+
+.link-card p {
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+footer {
+    text-align: center;
+    padding: 30px 15px;
+    color: #8290a5;
+    font-size: 13px;
+}
+
+@media(max-width: 600px) {
     header {
-      background: #101c35;
-      color: white;
-      padding: 25px 7%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
+        padding: 20px;
     }
 
-    .logo {
-      font-size: 27px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    .logo span {
-      color: #35a8ff;
-    }
-
-    header p {
-      color: #c5d3e8;
-      font-size: 14px;
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
     }
 
     main {
-      max-width: 1200px;
-      margin: 55px auto;
-      padding: 0 20px;
-    }
-
-    .intro {
-      margin-bottom: 35px;
+        margin-top: 30px;
     }
 
     .intro h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
+        font-size: 26px;
     }
-
-    .intro p {
-      color: #68758a;
-      font-size: 16px;
-    }
-
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .link-card {
-      background: white;
-      border: 1px solid #e1e7f0;
-      border-radius: 13px;
-      padding: 25px;
-      text-decoration: none;
-      color: #172033;
-      transition: 0.2s;
-      display: block;
-    }
-
-    .link-card:hover {
-      transform: translateY(-4px);
-      border-color: #238be5;
-      box-shadow: 0 8px 25px rgba(20, 50, 90, 0.10);
-    }
-
-    .link-icon {
-      font-size: 30px;
-      margin-bottom: 17px;
-    }
-
-    .link-card h2 {
-      font-size: 19px;
-      margin-bottom: 9px;
-    }
-
-    .link-card p {
-      color: #718096;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 15px;
-      color: #8290a5;
-      font-size: 13px;
-    }
-  </style>
+}
+</style>
 </head>
 
 <body>
 
-  <header>
+<header>
     <div class="logo">DOCBIZ<span>HUB</span></div>
-    <p>European Business Ecosystem</p>
-  </header>
 
-  <main>
+    <div class="header-right">
+        <p data-i18n="subtitle">European Business Ecosystem</p>
+
+        <select class="language-select" id="languageSelect"
+                onchange="changeLanguage(this.value)">
+            <option value="bs">Bosanski</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+</header>
+
+<main>
 
     <div class="intro">
-      <h1>Business Portal</h1>
-      <p>Odaberite modul kojem želite pristupiti.</p>
+        <h1 data-i18n="welcome">Business Portal</h1>
+        <p data-i18n="description">
+            Odaberite poslovni modul kojem želite pristupiti.
+        </p>
     </div>
+
+    <h2 class="section-title" data-i18n="section1">
+        Poslovni ekosistem
+    </h2>
 
     <div class="links-grid">
 
-      <!-- NOVI LINKOVI SE DODAJU OVDJE -->
+        <a class="link-card" href="BUSINESS_NETWORK.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">🌍</div>
+            <h2 data-i18n="network">Business Network</h2>
+            <p data-i18n="networkDesc">Kompanije, dobavljači, kupci i poslovni partneri.</p>
+        </a>
 
-      <a class="link-card"
-         href="business-assistant.html"
-         target="_blank"
-         rel="noopener noreferrer">
-        <div class="link-icon">🤖</div>
-        <h2>Business Assistant</h2>
-        <p>Poslovne procedure, dokumentacija i AI podrška.</p>
-      </a>
+        <a class="link-card" href="BUSINESS_OPPORTUNITIES.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📈</div>
+            <h2 data-i18n="opportunities">Business Opportunities</h2>
+            <p data-i18n="opportunitiesDesc">Grantovi, tenderi i poslovne prilike.</p>
+        </a>
 
-      <a class="link-card"
-         href="business-network.html"
-         target="_blank"
-         rel="noopener noreferrer">
-        <div class="link-icon">🌍</div>
-        <h2>Business Network</h2>
-        <p>Kompanije, dobavljači, kupci i poslovni partneri.</p>
-      </a>
-
-      <a class="link-card"
-         href="business-opportunities.html"
-         target="_blank"
-         rel="noopener noreferrer">
-        <div class="link-icon">📈</div>
-        <h2>Business Opportunities</h2>
-        <p>Grantovi, tenderi i poslovne prilike.</p>
-      </a>
-
-      <a class="link-card"
-         href="documents.html"
-         target="_blank"
-         rel="noopener noreferrer">
-        <div class="link-icon">📄</div>
-        <h2>Document Center</h2>
-        <p>Poslovni obrasci, ugovori i dokumentacija.</p>
-      </a>
-
-      <!-- KRAJ LINKOVA -->
+        <a class="link-card" href="BUSINESS_ASSISTANT.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">🤖</div>
+            <h2 data-i18n="assistant">Business Assistant</h2>
+            <p data-i18n="assistantDesc">Digitalni asistent za vođenje poslovnih procesa.</p>
+        </a>
 
     </div>
 
-  </main>
+    <h2 class="section-title" data-i18n="section2">
+        Business Assistant Modules
+    </h2>
 
-  <footer>
+    <div class="links-grid">
+
+        <a class="link-card" href="BUSINESS_PROCEDURES.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📋</div>
+            <h2 data-i18n="procedures">Business Procedures</h2>
+            <p data-i18n="proceduresDesc">Vođene poslovne procedure korak po korak.</p>
+        </a>
+
+        <a class="link-card" href="DOCUMENT_GENERATOR.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📝</div>
+            <h2 data-i18n="generator">Document Generator</h2>
+            <p data-i18n="generatorDesc">Automatsko kreiranje poslovnih dokumenata.</p>
+        </a>
+
+        <a class="link-card" href="AI_BUSINESS_ASSISTANT.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">🧠</div>
+            <h2 data-i18n="ai">AI Business Assistant</h2>
+            <p data-i18n="aiDesc">AI podrška, odgovori i poslovne preporuke.</p>
+        </a>
+
+        <a class="link-card" href="COMPLIANCE_CENTER.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">⚖️</div>
+            <h2 data-i18n="compliance">Compliance Center</h2>
+            <p data-i18n="complianceDesc">Regulatorni zahtjevi, provjere i usklađenost.</p>
+        </a>
+
+        <a class="link-card" href="MY_DOCUMENTS.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📁</div>
+            <h2 data-i18n="documents">My Documents</h2>
+            <p data-i18n="documentsDesc">Vaša poslovna dokumentacija i arhiva.</p>
+        </a>
+
+        <a class="link-card" href="TASKS_DEADLINES.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📅</div>
+            <h2 data-i18n="tasks">Tasks & Deadlines</h2>
+            <p data-i18n="tasksDesc">Zadaci, rokovi i praćenje obaveza.</p>
+        </a>
+
+        <a class="link-card" href="EXPERT_SUPPORT.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">👨‍💼</div>
+            <h2 data-i18n="experts">Expert Support</h2>
+            <p data-i18n="expertsDesc">Podrška stručnjaka i poslovnih savjetnika.</p>
+        </a>
+
+        <a class="link-card" href="COMPANY_PROFILE.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">🏢</div>
+            <h2 data-i18n="profile">Company Profile</h2>
+            <p data-i18n="profileDesc">Podaci o kompaniji i poslovni profil.</p>
+        </a>
+
+        <a class="link-card" href="NOTIFICATIONS.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">🔔</div>
+            <h2 data-i18n="notifications">Notifications</h2>
+            <p data-i18n="notificationsDesc">Obavještenja, promjene i važni podsjetnici.</p>
+        </a>
+
+        <a class="link-card" href="ADMIN_PROCEDURE_BUILDER.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">⚙️</div>
+            <h2 data-i18n="admin">Admin Procedure Builder</h2>
+            <p data-i18n="adminDesc">Kreiranje i upravljanje poslovnim procedurama.</p>
+        </a>
+
+        <a class="link-card" href="DOCUMENT_CENTER.html" target="_blank" rel="noopener noreferrer">
+            <div class="link-icon">📚</div>
+            <h2 data-i18n="documentCenter">Document Center</h2>
+            <p data-i18n="documentCenterDesc">Biblioteka obrazaca, ugovora i poslovnih dokumenata.</p>
+        </a>
+
+    </div>
+
+</main>
+
+<footer data-i18n="footer">
     © 2026 DOCBIZHUB — European Business Ecosystem
-  </footer>
+</footer>
+
+<script>
+const translations = {
+    bs: {
+        subtitle: "European Business Ecosystem",
+        welcome: "Business Portal",
+        description: "Odaberite poslovni modul kojem želite pristupiti.",
+        section1: "Poslovni ekosistem",
+        section2: "Business Assistant Modules",
+        network: "Business Network",
+        networkDesc: "Kompanije, dobavljači, kupci i poslovni partneri.",
+        opportunities: "Business Opportunities",
+        opportunitiesDesc: "Grantovi, tenderi i poslovne prilike.",
+        assistant: "Business Assistant",
+        assistantDesc: "Digitalni asistent za vođenje poslovnih procesa.",
+        procedures: "Business Procedures",
+        proceduresDesc: "Vođene poslovne procedure korak po korak.",
+        generator: "Document Generator",
+        generatorDesc: "Automatsko kreiranje poslovnih dokumenata.",
+        ai: "AI Business Assistant",
+        aiDesc: "AI podrška, odgovori i poslovne preporuke.",
+        compliance: "Compliance Center",
+        complianceDesc: "Regulatorni zahtjevi, provjere i usklađenost.",
+        documents: "My Documents",
+        documentsDesc: "Vaša poslovna dokumentacija i arhiva.",
+        tasks: "Tasks & Deadlines",
+        tasksDesc: "Zadaci, rokovi i praćenje obaveza.",
+        experts: "Expert Support",
+        expertsDesc: "Podrška stručnjaka i poslovnih savjetnika.",
+        profile: "Company Profile",
+        profileDesc: "Podaci o kompaniji i poslovni profil.",
+        notifications: "Notifications",
+        notificationsDesc: "Obavještenja, promjene i važni podsjetnici.",
+        admin: "Admin Procedure Builder",
+        adminDesc: "Kreiranje i upravljanje poslovnim procedurama.",
+        documentCenter: "Document Center",
+        documentCenterDesc: "Biblioteka obrazaca, ugovora i poslovnih dokumenata.",
+        footer: "© 2026 DOCBIZHUB — European Business Ecosystem"
+    },
+
+    en: {
+        subtitle: "European Business Ecosystem",
+        welcome: "Business Portal",
+        description: "Select the business module you want to access.",
+        section1: "Business Ecosystem",
+        section2: "Business Assistant Modules",
+        network: "Business Network",
+        networkDesc: "Companies, suppliers, customers and business partners.",
+        opportunities: "Business Opportunities",
+        opportunitiesDesc: "Grants, tenders and business opportunities.",
+        assistant: "Business Assistant",
+        assistantDesc: "Digital assistant for managing business processes.",
+        procedures: "Business Procedures",
+        proceduresDesc: "Guided business procedures, step by step.",
+        generator: "Document Generator",
+        generatorDesc: "Automatic generation of business documents.",
+        ai: "AI Business Assistant",
+        aiDesc: "AI support, answers and business recommendations.",
+        compliance: "Compliance Center",
+        complianceDesc: "Regulatory requirements, checks and compliance.",
+        documents: "My Documents",
+        documentsDesc: "Your business documents and archive.",
+        tasks: "Tasks & Deadlines",
+        tasksDesc: "Tasks, deadlines and obligation tracking.",
+        experts: "Expert Support",
+        expertsDesc: "Support from experts and business advisors.",
+        profile: "Company Profile",
+        profileDesc: "Company information and business profile.",
+        notifications: "Notifications",
+        notificationsDesc: "Notifications, updates and important reminders.",
+        admin: "Admin Procedure Builder",
+        adminDesc: "Create and manage business procedures.",
+        documentCenter: "Document Center",
+        documentCenterDesc: "Library of forms, contracts and business documents.",
+        footer: "© 2026 DOCBIZHUB — European Business Ecosystem"
+    },
+
+    de: {
+        subtitle: "Europäisches Geschäftsökosystem",
+        welcome: "Geschäftsportal",
+        description: "Wählen Sie das Geschäftsmodul aus, auf das Sie zugreifen möchten.",
+        section1: "Geschäftsökosystem",
+        section2: "Business-Assistant-Module",
+        network: "Business Network",
+        networkDesc: "Unternehmen, Lieferanten, Kunden und Geschäftspartner.",
+        opportunities: "Business Opportunities",
+        opportunitiesDesc: "Fördermittel, Ausschreibungen und Geschäftsmöglichkeiten.",
+        assistant: "Business Assistant",
+        assistantDesc: "Digitaler Assistent zur Verwaltung von Geschäftsprozessen.",
+        procedures: "Business Procedures",
+        proceduresDesc: "Geführte Geschäftsverfahren Schritt für Schritt.",
+        generator: "Document Generator",
+        generatorDesc: "Automatische Erstellung von Geschäftsdokumenten.",
+        ai: "AI Business Assistant",
+        aiDesc: "KI-Unterstützung, Antworten und Geschäftsempfehlungen.",
+        compliance: "Compliance Center",
+        complianceDesc: "Regulatorische Anforderungen, Prüfungen und Compliance.",
+        documents: "My Documents",
+        documentsDesc: "Ihre Geschäftsdokumente und Ihr Archiv.",
+        tasks: "Tasks & Deadlines",
+        tasksDesc: "Aufgaben, Fristen und Überwachung von Verpflichtungen.",
+        experts: "Expert Support",
+        expertsDesc: "Unterstützung durch Experten und Unternehmensberater.",
+        profile: "Company Profile",
+        profileDesc: "Unternehmensdaten und Geschäftsprofil.",
+        notifications: "Notifications",
+        notificationsDesc: "Benachrichtigungen, Änderungen und wichtige Erinnerungen.",
+        admin: "Admin Procedure Builder",
+        adminDesc: "Geschäftsverfahren erstellen und verwalten.",
+        documentCenter: "Document Center",
+        documentCenterDesc: "Bibliothek mit Formularen, Verträgen und Geschäftsdokumenten.",
+        footer: "© 2026 DOCBIZHUB — Europäisches Geschäftsökosystem"
+    }
+};
+
+function normalizeLanguage(value) {
+    if (!value) return null;
+
+    const lang = String(value).toLowerCase().split(/[-_]/)[0];
+
+    if (["bs", "ba", "hr", "sr"].includes(lang)) return "bs";
+    if (lang === "de") return "de";
+    if (lang === "en") return "en";
+
+    return null;
+}
+
+function changeLanguage(language) {
+    const selected = normalizeLanguage(language) || "en";
+
+    localStorage.setItem("docbiz_language", selected);
+    applyLanguage(selected);
+}
+
+function applyLanguage(language) {
+    const selected = normalizeLanguage(language) || "en";
+    const dictionary = translations[selected];
+
+    document.documentElement.lang = selected;
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.getAttribute("data-i18n");
+
+        if (dictionary[key]) {
+            element.textContent = dictionary[key];
+        }
+    });
+
+    document.getElementById("languageSelect").value = selected;
+}
+
+function detectUserLanguage() {
+    // Koristi jezik koji je postavljen na postojećoj DOCBIZHUB login stranici.
+    const savedLanguage = localStorage.getItem("docbiz_language");
+
+    if (savedLanguage) {
+        return normalizeLanguage(savedLanguage) || "en";
+    }
+
+    // Rezervna opcija ako jezik nije sačuvan.
+    return normalizeLanguage(navigator.language) || "en";
+}
+
+applyLanguage(detectUserLanguage());
+</script>
 
 </body>
 </html>
