@@ -1,0 +1,883 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Document Generator</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+    min-height: 100vh;
+}
+
+header {
+    background: #101c35;
+    color: white;
+    padding: 23px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #35a8ff;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-right p {
+    color: #c5d3e8;
+    font-size: 14px;
+}
+
+.language-select {
+    padding: 9px 12px;
+    border-radius: 7px;
+    border: 1px solid #53637d;
+    background: #1b2b49;
+    color: white;
+    cursor: pointer;
+}
+
+main {
+    max-width: 1250px;
+    margin: 40px auto;
+    padding: 0 22px;
+}
+
+.intro {
+    margin-bottom: 30px;
+}
+
+.intro h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.intro p {
+    color: #718096;
+    line-height: 1.6;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e1e7f0;
+    border-radius: 13px;
+    padding: 27px;
+    margin-bottom: 25px;
+}
+
+.panel h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #203451;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #354761;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8e0eb;
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    color: #172033;
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #238be5;
+    box-shadow: 0 0 0 3px rgba(35,139,229,.1);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 23px;
+}
+
+.btn {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.btn-primary {
+    background: #1679d2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0864b6;
+}
+
+.btn-secondary {
+    background: #e9eff7;
+    color: #203451;
+}
+
+.btn-secondary:hover {
+    background: #dce6f2;
+}
+
+.preview {
+    background: #fff;
+    border: 1px solid #dce3ed;
+    border-radius: 8px;
+    padding: 40px;
+    min-height: 350px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.preview h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #172033;
+}
+
+.preview p {
+    margin-bottom: 12px;
+}
+
+.preview .doc-footer {
+    margin-top: 50px;
+}
+
+.preview .signature {
+    margin-top: 50px;
+}
+
+.status {
+    display: none;
+    background: #e8f5ed;
+    color: #176b39;
+    border-radius: 7px;
+    padding: 13px;
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #8290a5;
+    font-size: 13px;
+}
+
+@media(max-width: 650px) {
+    header {
+        padding: 20px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .panel {
+        padding: 19px;
+    }
+
+    .preview {
+        padding: 20px;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    header, footer, .intro, .form-panel,
+    .preview-heading, .actions {
+        display: none !important;
+    }
+
+    main {
+        margin: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    .panel {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .preview {
+        border: none;
+        padding: 20mm;
+        min-height: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">DOCBIZ<span>HUB</span></div>
+
+    <div class="header-right">
+        <p>European Business Ecosystem</p>
+
+        <select class="language-select" id="languageSelect"
+                onchange="changeLanguage(this.value)">
+            <option value="bs">Bosanski</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+</header>
+
+<main>
+
+    <div class="intro">
+        <h1 data-i18n="title">Document Generator</h1>
+        <p data-i18n="intro">
+            Kreirajte profesionalne poslovne dokumente brzo i jednostavno.
+        </p>
+    </div>
+
+    <section class="panel form-panel">
+
+        <h2 data-i18n="documentSettings">1. Postavke dokumenta</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group full">
+                <label data-i18n="documentTypeLabel">
+                    Vrsta dokumenta
+                </label>
+
+                <select id="documentType">
+                    <option value="offer" data-i18n="offer">
+                        Poslovna ponuda
+                    </option>
+                    <option value="invoice" data-i18n="invoice">
+                        Faktura
+                    </option>
+                    <option value="contract" data-i18n="contract">
+                        Poslovni ugovor
+                    </option>
+                    <option value="request" data-i18n="request">
+                        Poslovni zahtjev
+                    </option>
+                    <option value="decision" data-i18n="decision">
+                        Poslovna odluka
+                    </option>
+                    <option value="letter" data-i18n="letter">
+                        Poslovno pismo
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
+        <h2 style="margin-top:30px"
+            data-i18n="companyInformation">
+            2. Podaci o kompaniji
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label data-i18n="company">Naziv kompanije</label>
+                <input id="company" placeholder="DOCBIZHUB d.o.o.">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="companyId">ID / Registracijski broj</label>
+                <input id="companyId">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="address">Adresa</label>
+                <input id="address">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="city">Grad i država</label>
+                <input id="city">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="email">E-mail</label>
+                <input id="email" type="email">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="phone">Telefon</label>
+                <input id="phone">
+            </div>
+
+        </div>
+
+        <h2 style="margin-top:30px"
+            data-i18n="recipientInformation">
+            3. Podaci o primaocu
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label data-i18n="recipient">Naziv primaoca</label>
+                <input id="recipient">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="recipientAddress">Adresa primaoca</label>
+                <input id="recipientAddress">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="date">Datum dokumenta</label>
+                <input id="date" type="date">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="reference">Broj dokumenta</label>
+                <input id="reference" placeholder="DBH-001/2026">
+            </div>
+
+            <div class="form-group full">
+                <label data-i18n="subject">Predmet dokumenta</label>
+                <input id="subject">
+            </div>
+
+            <div class="form-group full">
+                <label data-i18n="description">Opis i sadržaj dokumenta</label>
+                <textarea id="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="amount">Iznos</label>
+                <input id="amount" type="number" min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="currency">Valuta</label>
+                <select id="currency">
+                    <option value="BAM">BAM</option>
+                    <option value="EUR">EUR</option>
+                    <option value="USD">USD</option>
+                    <option value="CHF">CHF</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary"
+                    onclick="generateDocument()"
+                    data-i18n="generate">
+                Generiši dokument
+            </button>
+
+            <button class="btn btn-secondary"
+                    onclick="clearForm()"
+                    data-i18n="clear">
+                Očisti polja
+            </button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+    </section>
+
+    <section class="panel">
+
+        <h2 class="preview-heading"
+            data-i18n="previewTitle">
+            4. Pregled dokumenta
+        </h2>
+
+        <div id="preview" class="preview">
+            <h2>DOCBIZHUB</h2>
+            <p style="text-align:center;color:#718096">
+                Document Generator
+            </p>
+            <p style="text-align:center;margin-top:80px">
+                Odaberite podatke i kliknite na dugme
+                "Generiši dokument".
+            </p>
+        </div>
+
+        <div class="actions">
+
+            <button class="btn btn-primary"
+                    onclick="window.print()"
+                    data-i18n="print">
+                Štampaj / Sačuvaj PDF
+            </button>
+
+            <button class="btn btn-secondary"
+                    onclick="downloadDocument()"
+                    data-i18n="download">
+                Preuzmi HTML dokument
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    © 2026 DOCBIZHUB — European Business Ecosystem
+</footer>
+
+<script>
+
+const translations = {
+
+bs: {
+title:"Document Generator",
+intro:"Kreirajte profesionalne poslovne dokumente brzo i jednostavno.",
+documentSettings:"1. Postavke dokumenta",
+documentTypeLabel:"Vrsta dokumenta",
+offer:"Poslovna ponuda",
+invoice:"Faktura",
+contract:"Poslovni ugovor",
+request:"Poslovni zahtjev",
+decision:"Poslovna odluka",
+letter:"Poslovno pismo",
+companyInformation:"2. Podaci o kompaniji",
+company:"Naziv kompanije",
+companyId:"ID / Registracijski broj",
+address:"Adresa",
+city:"Grad i država",
+email:"E-mail",
+phone:"Telefon",
+recipientInformation:"3. Podaci o primaocu",
+recipient:"Naziv primaoca",
+recipientAddress:"Adresa primaoca",
+date:"Datum dokumenta",
+reference:"Broj dokumenta",
+subject:"Predmet dokumenta",
+description:"Opis i sadržaj dokumenta",
+amount:"Iznos",
+currency:"Valuta",
+generate:"Generiši dokument",
+clear:"Očisti polja",
+previewTitle:"4. Pregled dokumenta",
+print:"Štampaj / Sačuvaj PDF",
+download:"Preuzmi HTML dokument",
+dateLabel:"Datum",
+sender:"Pošiljalac",
+receiver:"Primalac",
+amountLabel:"Ukupan iznos",
+signature:"Potpis i pečat",
+success:"Dokument je uspješno generisan.",
+required:"Molimo unesite naziv kompanije i predmet dokumenta.",
+generated:"Dokument"
+},
+
+en: {
+title:"Document Generator",
+intro:"Create professional business documents quickly and easily.",
+documentSettings:"1. Document Settings",
+documentTypeLabel:"Document Type",
+offer:"Business Offer",
+invoice:"Invoice",
+contract:"Business Contract",
+request:"Business Request",
+decision:"Business Decision",
+letter:"Business Letter",
+companyInformation:"2. Company Information",
+company:"Company Name",
+companyId:"Company Registration Number",
+address:"Address",
+city:"City and Country",
+email:"Email",
+phone:"Phone",
+recipientInformation:"3. Recipient Information",
+recipient:"Recipient Name",
+recipientAddress:"Recipient Address",
+date:"Document Date",
+reference:"Document Number",
+subject:"Document Subject",
+description:"Description and Content",
+amount:"Amount",
+currency:"Currency",
+generate:"Generate Document",
+clear:"Clear Fields",
+previewTitle:"4. Document Preview",
+print:"Print / Save PDF",
+download:"Download HTML Document",
+dateLabel:"Date",
+sender:"Sender",
+receiver:"Recipient",
+amountLabel:"Total Amount",
+signature:"Signature and Stamp",
+success:"Document successfully generated.",
+required:"Please enter the company name and document subject.",
+generated:"Document"
+},
+
+de: {
+title:"Document Generator",
+intro:"Erstellen Sie professionelle Geschäftsdokumente schnell und einfach.",
+documentSettings:"1. Dokumenteinstellungen",
+documentTypeLabel:"Dokumenttyp",
+offer:"Geschäftsangebot",
+invoice:"Rechnung",
+contract:"Geschäftsvertrag",
+request:"Geschäftsanfrage",
+decision:"Geschäftsbeschluss",
+letter:"Geschäftsbrief",
+companyInformation:"2. Unternehmensinformationen",
+company:"Firmenname",
+companyId:"Registrierungsnummer",
+address:"Adresse",
+city:"Stadt und Land",
+email:"E-Mail",
+phone:"Telefon",
+recipientInformation:"3. Empfängerinformationen",
+recipient:"Name des Empfängers",
+recipientAddress:"Empfängeradresse",
+date:"Dokumentdatum",
+reference:"Dokumentnummer",
+subject:"Dokumentbetreff",
+description:"Beschreibung und Inhalt",
+amount:"Betrag",
+currency:"Währung",
+generate:"Dokument erstellen",
+clear:"Felder leeren",
+previewTitle:"4. Dokumentvorschau",
+print:"Drucken / Als PDF speichern",
+download:"HTML-Dokument herunterladen",
+dateLabel:"Datum",
+sender:"Absender",
+receiver:"Empfänger",
+amountLabel:"Gesamtbetrag",
+signature:"Unterschrift und Stempel",
+success:"Dokument erfolgreich erstellt.",
+required:"Bitte geben Sie den Firmennamen und den Dokumentbetreff ein.",
+generated:"Dokument"
+}
+
+};
+
+let currentLanguage = "bs";
+let generatedHTML = "";
+
+function normalizeLanguage(value) {
+
+    if (!value) return null;
+
+    const lang = String(value)
+        .toLowerCase()
+        .split(/[-_]/)[0];
+
+    if (["bs","ba","hr","sr"].includes(lang)) return "bs";
+    if (lang === "de") return "de";
+    if (lang === "en") return "en";
+
+    return null;
+}
+
+function changeLanguage(language) {
+
+    const selected = normalizeLanguage(language) || "en";
+
+    localStorage.setItem("docbiz_language", selected);
+
+    applyLanguage(selected);
+}
+
+function applyLanguage(language) {
+
+    currentLanguage = normalizeLanguage(language) || "en";
+
+    const dictionary = translations[currentLanguage];
+
+    document.documentElement.lang = currentLanguage;
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+
+        const key = element.getAttribute("data-i18n");
+
+        if (dictionary[key]) {
+            element.textContent = dictionary[key];
+        }
+
+    });
+
+    document.getElementById("languageSelect").value = currentLanguage;
+
+}
+
+function detectUserLanguage() {
+
+    const savedLanguage = localStorage.getItem("docbiz_language");
+
+    if (savedLanguage) {
+        return normalizeLanguage(savedLanguage) || "en";
+    }
+
+    return normalizeLanguage(navigator.language) || "en";
+}
+
+function escapeHTML(value) {
+
+    return String(value || "").replace(/[&<>"']/g, char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+    })[char]);
+
+}
+
+function getValue(id) {
+
+    return document.getElementById(id).value.trim();
+
+}
+
+function generateDocument() {
+
+    const t = translations[currentLanguage];
+
+    const company = getValue("company");
+    const subject = getValue("subject");
+
+    if (!company || !subject) {
+
+        alert(t.required);
+        return;
+
+    }
+
+    const typeElement = document.getElementById("documentType");
+
+    const type = typeElement.options[typeElement.selectedIndex]
+        .textContent;
+
+    const date = getValue("date") ||
+        new Date().toISOString().split("T")[0];
+
+    const amount = getValue("amount");
+
+    const description = escapeHTML(getValue("description"))
+        .replace(/\n/g, "<br>");
+
+    const amountHTML = amount
+        ? `<p><strong>${t.amountLabel}:</strong>
+           ${escapeHTML(amount)} ${escapeHTML(getValue("currency"))}</p>`
+        : "";
+
+    generatedHTML = `
+
+    <div class="document-content">
+
+        <h2>${escapeHTML(type)}</h2>
+
+        <p style="text-align:center">
+            <strong>${escapeHTML(company)}</strong>
+        </p>
+
+        <hr style="margin:25px 0">
+
+        <p><strong>${t.sender}:</strong>
+        ${escapeHTML(company)}</p>
+
+        <p><strong>${t.receiver}:</strong>
+        ${escapeHTML(getValue("recipient"))}</p>
+
+        <p><strong>${t.dateLabel}:</strong>
+        ${escapeHTML(date)}</p>
+
+        <p><strong>${escapeHTML(getValue("reference"))}</strong></p>
+
+        <h3 style="margin-top:30px">
+        ${escapeHTML(subject)}
+        </h3>
+
+        <p style="white-space:normal;margin-top:20px">
+        ${description || "—"}
+        </p>
+
+        ${amountHTML}
+
+        <div style="margin-top:60px">
+
+            <p>${t.signature}</p>
+
+            <br><br>
+
+            __________________________
+
+            <p>${escapeHTML(company)}</p>
+
+        </div>
+
+    </div>
+
+    `;
+
+    document.getElementById("preview").innerHTML = generatedHTML;
+
+    const status = document.getElementById("status");
+
+    status.textContent = t.success;
+    status.style.display = "block";
+
+}
+
+function clearForm() {
+
+    document.querySelectorAll(
+        ".form-panel input, .form-panel textarea"
+    ).forEach(input => {
+
+        input.value = "";
+
+    });
+
+    document.getElementById("status").style.display = "none";
+
+    generatedHTML = "";
+
+    document.getElementById("preview").innerHTML = `
+        <h2>DOCBIZHUB</h2>
+        <p style="text-align:center">
+            Document Generator
+        </p>
+    `;
+
+}
+
+function downloadDocument() {
+
+    if (!generatedHTML) {
+
+        alert(translations[currentLanguage].required);
+        return;
+
+    }
+
+    const fullDocument = `
+    <!DOCTYPE html>
+    <html lang="${currentLanguage}">
+    <head>
+        <meta charset="UTF-8">
+        <title>DOCBIZHUB Document</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 50px;
+                color: #172033;
+                line-height: 1.8;
+            }
+            h2 {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        ${generatedHTML}
+    </body>
+    </html>
+    `;
+
+    const blob = new Blob(
+        [fullDocument],
+        {type:"text/html;charset=utf-8"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "DOCBIZHUB_DOCUMENT.html";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+}
+
+document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
+
+applyLanguage(detectUserLanguage());
+
+</script>
+
+</body>
+</html>
