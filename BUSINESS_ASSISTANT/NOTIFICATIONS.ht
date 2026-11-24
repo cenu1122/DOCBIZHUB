@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Notifications</title>
+<style>
+:root {
+  --navy:#102b46;
+  --blue:#2474c6;
+  --blue-light:#eaf3fc;
+  --bg:#f3f6fa;
+  --white:#fff;
+  --text:#26374a;
+  --muted:#718096;
+  --border:#e1e8f0;
+  --green:#16845b;
+  --red:#d64545;
+  --orange:#d88719;
+  --shadow:0 5px 18px rgba(16,43,70,.07);
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:23px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.brand {font-size:21px;font-weight:800;letter-spacing:.5px}
+.brand span {color:#63b3ff}
+.header-right {display:flex;align-items:center;gap:12px}
+header a {color:#d8e9fb;text-decoration:none;font-size:13px}
+select,input,textarea,button {font:inherit}
+.language {
+  padding:9px 12px;
+  border-radius:8px;
+  border:1px solid #49627a;
+  background:#183b5d;
+  color:white;
+}
+.container {max-width:1200px;margin:30px auto;padding:0 20px}
+.page-heading {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;margin-bottom:23px
+}
+h1 {font-size:27px;margin:0 0 7px;color:var(--navy)}
+.subtitle {color:var(--muted);font-size:14px;margin:0}
+.btn {
+  border:0;border-radius:8px;padding:11px 16px;
+  cursor:pointer;font-weight:700;font-size:13px;
+  transition:.2s;
+}
+.btn-primary {background:var(--blue);color:white}
+.btn-primary:hover {background:#185da2}
+.btn-light {background:var(--blue-light);color:var(--blue)}
+.btn-danger {background:#fff0f0;color:var(--red)}
+.btn-small {padding:7px 10px;font-size:12px}
+.stats {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:15px;margin-bottom:22px
+}
+.stat {
+  background:white;border:1px solid var(--border);
+  padding:19px;border-radius:12px;box-shadow:var(--shadow)
+}
+.stat-label {font-size:13px;color:var(--muted);margin-bottom:9px}
+.stat-value {font-size:27px;font-weight:800;color:var(--navy)}
+.toolbar {
+  background:white;padding:16px;border-radius:12px;
+  border:1px solid var(--border);display:flex;gap:10px;
+  flex-wrap:wrap;margin-bottom:20px
+}
+.toolbar input,.toolbar select {
+  border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;background:white;color:var(--text);
+  min-width:150px;flex:1
+}
+.content-grid {
+  display:grid;grid-template-columns:340px 1fr;gap:20px;
+  align-items:start
+}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:20px;box-shadow:var(--shadow)
+}
+.panel h2 {font-size:17px;color:var(--navy);margin:0 0 18px}
+.field {margin-bottom:14px}
+.field label {
+  display:block;font-size:12px;font-weight:700;
+  margin-bottom:7px;color:#526477
+}
+.field input,.field select,.field textarea {
+  width:100%;border:1px solid var(--border);
+  border-radius:8px;padding:11px 12px;
+  color:var(--text);background:white;outline:none
+}
+.field input:focus,.field select:focus,.field textarea:focus {
+  border-color:var(--blue)
+}
+.field textarea {min-height:105px;resize:vertical}
+.form-actions {display:flex;gap:9px;flex-wrap:wrap}
+.list-heading {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin-bottom:15px
+}
+.list-heading h2 {margin:0}
+.notification {
+  border:1px solid var(--border);border-radius:10px;
+  padding:16px;margin-bottom:12px;
+  display:flex;gap:13px;align-items:flex-start;
+  background:white
+}
+.notification.unread {
+  background:#f8fbff;border-left:4px solid var(--blue)
+}
+.notification-icon {
+  width:39px;height:39px;border-radius:10px;
+  background:var(--blue-light);display:flex;
+  align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0
+}
+.notification-main {flex:1;min-width:0}
+.notification-title {
+  font-weight:700;color:var(--navy);
+  font-size:14px;margin:0 0 7px;overflow-wrap:anywhere
+}
+.notification-message {
+  color:#58697b;font-size:13px;line-height:1.55;
+  white-space:pre-wrap;overflow-wrap:anywhere
+}
+.notification-meta {
+  display:flex;gap:8px;flex-wrap:wrap;
+  align-items:center;margin-top:11px
+}
+.tag {
+  padding:4px 8px;border-radius:20px;
+  font-size:10px;font-weight:700;background:#edf1f5;color:#566779
+}
+.tag.high {background:#ffeded;color:#c43e3e}
+.tag.medium {background:#fff4df;color:#a96b0c}
+.tag.low {background:#e8f7ef;color:#16845b}
+.meta-date {font-size:11px;color:var(--muted)}
+.notification-actions {
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:12px
+}
+.notification-actions button {
+  border:0;border-radius:6px;padding:7px 9px;
+  font-size:11px;cursor:pointer;font-weight:700
+}
+.empty {
+  text-align:center;padding:45px 15px;
+  color:var(--muted);font-size:14px
+}
+.empty-icon {font-size:34px;margin-bottom:12px}
+.footer {
+  text-align:center;color:var(--muted);
+  font-size:12px;padding:30px 15px
+}
+.toast {
+  position:fixed;right:20px;bottom:20px;
+  background:var(--navy);color:white;padding:13px 18px;
+  border-radius:9px;box-shadow:var(--shadow);
+  font-size:13px;display:none;z-index:10
+}
+@media(max-width:850px) {
+  .content-grid {grid-template-columns:1fr}
+}
+@media(max-width:600px) {
+  .stats {grid-template-columns:1fr}
+  .page-heading {align-items:flex-start}
+  .notification {padding:12px}
+  .container {padding:0 13px;margin-top:20px}
+  header {padding:18px 5%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DOC<span>BIZ</span>HUB</div>
+  <div class="header-right">
+    <a href="index.html" data-i18n="back">← Glavni portal</a>
+    <select class="language" id="language">
+      <option value="bs">BS</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-heading">
+    <div>
+      <h1 data-i18n="heading">Centar obavještenja</h1>
+      <p class="subtitle" data-i18n="subtitle">Važne informacije, podsjetnici i poslovni rokovi na jednom mjestu.</p>
+    </div>
+    <button class="btn btn-primary" id="markAllBtn" data-i18n="markAll">✓ Označi sve kao pročitano</button>
+  </div>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label" data-i18n="total">Ukupno obavještenja</div>
+      <div class="stat-value" id="totalCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" data-i18n="unread">Nepročitana</div>
+      <div class="stat-value" id="unreadCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" data-i18n="read">Pročitana</div>
+      <div class="stat-value" id="readCount">0</div>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <input type="search" id="search" data-placeholder="search" placeholder="Pretraži obavještenja...">
+    <select id="categoryFilter" aria-label="Category filter">
+      <option value="all" data-i18n="allCategories">Sve kategorije</option>
+      <option value="general" data-i18n="general">Opšte</option>
+      <option value="task" data-i18n="task">Zadatak</option>
+      <option value="deadline" data-i18n="deadline">Rok</option>
+      <option value="document" data-i18n="document">Dokument</option>
+      <option value="system" data-i18n="system">Sistem</option>
+    </select>
+    <select id="statusFilter">
+      <option value="all" data-i18n="allStatuses">Svi statusi</option>
+      <option value="unread" data-i18n="unreadOnly">Nepročitana</option>
+      <option value="read" data-i18n="readOnly">Pročitana</option>
+    </select>
+    <select id="priorityFilter">
+      <option value="all" data-i18n="allPriorities">Svi prioriteti</option>
+      <option value="high" data-i18n="high">Visok</option>
+      <option value="medium" data-i18n="medium">Srednji</option>
+      <option value="low" data-i18n="low">Nizak</option>
+    </select>
+  </section>
+
+  <section class="content-grid">
+    <div class="panel">
+      <h2 data-i18n="newNotification">Novo obavještenje</h2>
+      <form id="notificationForm">
+        <div class="field">
+          <label for="title" data-i18n="titleLabel">Naslov</label>
+          <input id="title" maxlength="120" required data-placeholder="titlePlaceholder" placeholder="Unesite naslov">
+        </div>
+        <div class="field">
+          <label for="message" data-i18n="messageLabel">Poruka</label>
+          <textarea id="message" maxlength="1500" required data-placeholder="messagePlaceholder" placeholder="Unesite tekst obavještenja..."></textarea>
+        </div>
+        <div class="field">
+          <label for="category" data-i18n="categoryLabel">Kategorija</label>
+          <select id="category">
+            <option value="general" data-i18n="general">Opšte</option>
+            <option value="task" data-i18n="task">Zadatak</option>
+            <option value="deadline" data-i18n="deadline">Rok</option>
+            <option value="document" data-i18n="document">Dokument</option>
+            <option value="system" data-i18n="system">Sistem</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="priority" data-i18n="priorityLabel">Prioritet</label>
+          <select id="priority">
+            <option value="medium" data-i18n="medium">Srednji</option>
+            <option value="high" data-i18n="high">Visok</option>
+            <option value="low" data-i18n="low">Nizak</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="dueDate" data-i18n="dateLabel">Datum / rok (opcionalno)</label>
+          <input type="date" id="dueDate">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit" data-i18n="add">+ Dodaj obavještenje</button>
+          <button class="btn btn-light" type="reset" data-i18n="clear">Očisti</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="list-heading">
+        <h2 data-i18n="notificationList">Lista obavještenja</h2>
+        <span class="tag" id="visibleCount">0</span>
+      </div>
+      <div id="notificationList"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  DOCBIZHUB © 2026 — <span data-i18n="footer">Centar poslovnih obavještenja</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const translations = {
+  bs: {
+    back:"← Glavni portal",heading:"Centar obavještenja",
+    subtitle:"Važne informacije, podsjetnici i poslovni rokovi na jednom mjestu.",
+    markAll:"✓ Označi sve kao pročitano",total:"Ukupno obavještenja",
+    unread:"Nepročitana",read:"Pročitana",search:"Pretraži obavještenja...",
+    allCategories:"Sve kategorije",allStatuses:"Svi statusi",
+    unreadOnly:"Nepročitana",readOnly:"Pročitana",
+    allPriorities:"Svi prioriteti",general:"Opšte",task:"Zadatak",
+    deadline:"Rok",document:"Dokument",system:"Sistem",
+    high:"Visok",medium:"Srednji",low:"Nizak",
+    newNotification:"Novo obavještenje",titleLabel:"Naslov",
+    titlePlaceholder:"Unesite naslov",messageLabel:"Poruka",
+    messagePlaceholder:"Unesite tekst obavještenja...",
+    categoryLabel:"Kategorija",priorityLabel:"Prioritet",
+    dateLabel:"Datum / rok (opcionalno)",add:"+ Dodaj obavještenje",
+    clear:"Očisti",notificationList:"Lista obavještenja",
+    footer:"Centar poslovnih obavještenja",empty:"Nema obavještenja za prikaz.",
+    markRead:"Označi kao pročitano",markUnread:"Označi kao nepročitano",
+    delete:"Obriši",confirmDelete:"Da li sigurno želite obrisati ovo obavještenje?",
+    added:"Obavještenje je dodano.",deleted:"Obavještenje je obrisano.",
+    saved:"Status je ažuriran.",allRead:"Sva obavještenja su označena kao pročitana.",
+    noTitle:"Bez naslova",due:"Rok:",created:"Kreirano:",
+    duePassed:"Rok je istekao",dueToday:"Rok je danas",
+    dueUpcoming:"Predstojeći rok",invalid:"Popunite naslov i poruku."
+  },
+  en: {
+    back:"← Main portal",heading:"Notification Center",
+    subtitle:"Important information, reminders and business deadlines in one place.",
+    markAll:"✓ Mark all as read",total:"Total notifications",
+    unread:"Unread",read:"Read",search:"Search notifications...",
+    allCategories:"All categories",allStatuses:"All statuses",
+    unreadOnly:"Unread",readOnly:"Read",
+    allPriorities:"All priorities",general:"General",task:"Task",
+    deadline:"Deadline",document:"Document",system:"System",
+    high:"High",medium:"Medium",low:"Low",
+    newNotification:"New notification",titleLabel:"Title",
+    titlePlaceholder:"Enter a title",messageLabel:"Message",
+    messagePlaceholder:"Enter notification text...",
+    categoryLabel:"Category",priorityLabel:"Priority",
+    dateLabel:"Date / deadline (optional)",add:"+ Add notification",
+    clear:"Clear",notificationList:"Notification list",
+    footer:"Business Notification Center",empty:"No notifications to display.",
+    markRead:"Mark as read",markUnread:"Mark as unread",
+    delete:"Delete",confirmDelete:"Are you sure you want to delete this notification?",
+    added:"Notification added.",deleted:"Notification deleted.",
+    saved:"Status updated.",allRead:"All notifications marked as read.",
+    noTitle:"Untitled",due:"Deadline:",created:"Created:",
+    duePassed:"Deadline has passed",dueToday:"Due today",
+    dueUpcoming:"Upcoming deadline",invalid:"Please enter a title and message."
+  },
+  de: {
+    back:"← Hauptportal",heading:"Benachrichtigungszentrum",
+    subtitle:"Wichtige Informationen, Erinnerungen und geschäftliche Fristen an einem Ort.",
+    markAll:"✓ Alle als gelesen markieren",total:"Benachrichtigungen gesamt",
+    unread:"Ungelesen",read:"Gelesen",search:"Benachrichtigungen suchen...",
+    allCategories:"Alle Kategorien",allStatuses:"Alle Status",
+    unreadOnly:"Ungelesen",readOnly:"Gelesen",
+    allPriorities:"Alle Prioritäten",general:"Allgemein",task:"Aufgabe",
+    deadline:"Frist",document:"Dokument",system:"System",
+    high:"Hoch",medium:"Mittel",low:"Niedrig",
+    newNotification:"Neue Benachrichtigung",titleLabel:"Titel",
+    titlePlaceholder:"Titel eingeben",messageLabel:"Nachricht",
+    messagePlaceholder:"Benachrichtigungstext eingeben...",
+    categoryLabel:"Kategorie",priorityLabel:"Priorität",
+    dateLabel:"Datum / Frist (optional)",add:"+ Benachrichtigung hinzufügen",
+    clear:"Leeren",notificationList:"Benachrichtigungsliste",
+    footer:"Zentrum für geschäftliche Benachrichtigungen",
+    empty:"Keine Benachrichtigungen vorhanden.",
+    markRead:"Als gelesen markieren",markUnread:"Als ungelesen markieren",
+    delete:"Löschen",confirmDelete:"Möchten Sie diese Benachrichtigung wirklich löschen?",
+    added:"Benachrichtigung hinzugefügt.",deleted:"Benachrichtigung gelöscht.",
+    saved:"Status aktualisiert.",allRead:"Alle Benachrichtigungen wurden als gelesen markiert.",
+    noTitle:"Ohne Titel",due:"Frist:",created:"Erstellt:",
+    duePassed:"Frist abgelaufen",dueToday:"Frist ist heute",
+    dueUpcoming:"Bevorstehende Frist",invalid:"Bitte Titel und Nachricht eingeben."
+  }
+};
+
+const STORAGE_KEY = "docbiz_notifications";
+const languageSelect = document.getElementById("language");
+let notifications = loadNotifications();
+let currentLanguage = "bs";
+
+function loadNotifications() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(data) ? data.filter(item =>
+      item && typeof item === "object" &&
+      typeof item.id === "string" &&
+      typeof item.title === "string" &&
+      typeof item.message === "string"
+    ) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveNotifications() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
+}
+
+function t(key) {
+  return translations[currentLanguage][key] || translations.bs[key] || key;
+}
+
+function escapeText(value) {
+  return String(value ?? "");
+}
+
+function setLanguage(lang) {
+  currentLanguage = translations[lang] ? lang : "bs";
+  document.documentElement.lang = currentLanguage;
+  languageSelect.value = currentLanguage;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+
+  document.querySelectorAll("[data-placeholder]").forEach(el => {
+    el.placeholder = t(el.dataset.placeholder);
+  });
+
+  render();
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.style.display = "none", 2600);
+}
+
+function categoryIcon(category) {
+  return {
+    general:"📢",task:"✓",deadline:"⏰",
+    document:"📄",system:"⚙️"
+  }[category] || "🔔";
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString + "T00:00:00");
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat(
+    currentLanguage === "bs" ? "bs-BA" :
+    currentLanguage === "de" ? "de-DE" : "en-GB"
+  ).format(date);
+}
+
+function getDeadlineLabel(dateString) {
+  if (!dateString) return "";
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const due = new Date(dateString + "T00:00:00");
+  if (Number.isNaN(due.getTime())) return "";
+
+  const prefix = due < today ? t("duePassed") :
+    due.getTime() === today.getTime() ? t("dueToday") :
+    t("dueUpcoming");
+
+  return prefix + " · " + formatDate(dateString);
+}
+
+function render() {
+  const total = notifications.length;
+  const unread = notifications.filter(n => !n.read).length;
+
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("unreadCount").textContent = unread;
+  document.getElementById("readCount").textContent = total - unread;
+
+  const search = document.getElementById("search").value.trim().toLowerCase();
+  const category = document.getElementById("categoryFilter").value;
+  const status = document.getElementById("statusFilter").value;
+  const priority = document.getElementById("priorityFilter").value;
+
+  const filtered = notifications
+    .filter(n => {
+      const text = (n.title + " " + n.message).toLowerCase();
+      return (!search || text.includes(search)) &&
+        (category === "all" || n.category === category) &&
+        (status === "all" || (status === "read" ? n.read : !n.read)) &&
+        (priority === "all" || n.priority === priority);
+    })
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const list = document.getElementById("notificationList");
+  list.replaceChildren();
+  document.getElementById("visibleCount").textContent = filtered.length;
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    const icon = document.createElement("div");
+    icon.className = "empty-icon";
+    icon.textContent = "🔔";
+    const message = document.createElement("div");
+    message.textContent = t("empty");
+    empty.append(icon,message);
+    list.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(n => {
+    const card = document.createElement("article");
+    card.className = "notification" + (n.read ? "" : " unread");
+
+    const icon = document.createElement("div");
+    icon.className = "notification-icon";
+    icon.textContent = categoryIcon(n.category);
+
+    const main = document.createElement("div");
+    main.className = "notification-main";
+
+    const title = document.createElement("div");
+    title.className = "notification-title";
+    title.textContent = n.title || t("noTitle");
+
+    const message = document.createElement("div");
+    message.className = "notification-message";
+    message.textContent = n.message;
+
+    const meta = document.createElement("div");
+    meta.className = "notification-meta";
+
+    const categoryTag = document.createElement("span");
+    categoryTag.className = "tag";
+    categoryTag.textContent = t(n.category || "general");
+
+    const priorityTag = document.createElement("span");
+    priorityTag.className = "tag " + (n.priority || "medium");
+    priorityTag.textContent = t(n.priority || "medium");
+
+    const date = document.createElement("span");
+    date.className = "meta-date";
+    date.textContent = t("created") + " " + formatDate((n.createdAt || "").slice(0,10));
+
+    meta.append(categoryTag,priorityTag,date);
+
+    if (n.dueDate) {
+      const due = document.createElement("span");
+      due.className = "tag";
+      due.textContent = t("due") + " " + getDeadlineLabel(n.dueDate);
+      meta.appendChild(due);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "notification-actions";
+
+    const toggle = document.createElement("button");
+    toggle.className = "btn-light";
+    toggle.textContent = n.read ? t("markUnread") : t("markRead");
+    toggle.addEventListener("click", () => toggleRead(n.id));
+
+    const remove = document.createElement("button");
+    remove.className = "btn-danger";
+    remove.textContent = t("delete");
+    remove.addEventListener("click", () => deleteNotification(n.id));
+
+    actions.append(toggle,remove);
+    main.append(title,message,meta,actions);
+    card.append(icon,main);
+    list.appendChild(card);
+  });
+}
+
+function addNotification(event) {
+  event.preventDefault();
+
+  const title = document.getElementById("title").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if (!title || !message) {
+    showToast(t("invalid"));
+    return;
+  }
+
+  notifications.push({
+    id: (crypto.randomUUID ? crypto.randomUUID() :
+      Date.now().toString() + Math.random().toString(16).slice(2)),
+    title,
+    message,
+    category: document.getElementById("category").value,
+    priority: document.getElementById("priority").value,
+    dueDate: document.getElementById("dueDate").value,
+    read:false,
+    createdAt:new Date().toISOString()
+  });
+
+  saveNotifications();
+  document.getElementById("notificationForm").reset();
+  render();
+  showToast(t("added"));
+}
+
+function toggleRead(id) {
+  notifications = notifications.map(n =>
+    n.id === id ? {...n,read:!n.read} : n
+  );
+  saveNotifications();
+  render();
+  showToast(t("saved"));
+}
+
+function deleteNotification(id) {
+  if (!confirm(t("confirmDelete"))) return;
+  notifications = notifications.filter(n => n.id !== id);
+  saveNotifications();
+  render();
+  showToast(t("deleted"));
+}
+
+function markAllRead() {
+  notifications = notifications.map(n => ({...n,read:true}));
+  saveNotifications();
+  render();
+  showToast(t("allRead"));
+}
+
+document.getElementById("notificationForm").addEventListener("submit",addNotification);
+document.getElementById("markAllBtn").addEventListener("click",markAllRead);
+
+["search","categoryFilter","statusFilter","priorityFilter"].forEach(id => {
+  document.getElementById(id).addEventListener("input",render);
+  document.getElementById(id).addEventListener("change",render);
+});
+
+languageSelect.addEventListener("change", e => {
+  localStorage.setItem("docbiz_language",e.target.value);
+  setLanguage(e.target.value);
+});
+
+const savedLanguage = localStorage.getItem("docbiz_language") || "bs";
+setLanguage(savedLanguage);
+</script>
+</body>
+</html>
