@@ -1,0 +1,1039 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Compliance Center</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:Arial,sans-serif;
+background:#f3f6fb;
+color:#172033;
+min-height:100vh;
+}
+
+header{
+background:#101c35;
+color:white;
+padding:23px 7%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.logo{
+font-size:27px;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+.logo span{color:#35a8ff}
+
+.header-right{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+.header-right p{
+color:#c5d3e8;
+font-size:14px;
+}
+
+.language-select{
+padding:9px 12px;
+border-radius:7px;
+border:1px solid #53637d;
+background:#1b2b49;
+color:white;
+cursor:pointer;
+}
+
+main{
+max-width:1250px;
+margin:40px auto;
+padding:0 22px;
+}
+
+.intro{margin-bottom:30px}
+
+.intro h1{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.intro p{
+color:#718096;
+line-height:1.6;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+margin-bottom:25px;
+}
+
+.stat-card{
+background:white;
+border:1px solid #e1e7f0;
+border-radius:12px;
+padding:20px;
+}
+
+.stat-card p{
+color:#718096;
+font-size:13px;
+margin-bottom:12px;
+}
+
+.stat-card h2{
+font-size:28px;
+}
+
+.panel{
+background:white;
+border:1px solid #e1e7f0;
+border-radius:13px;
+padding:25px;
+margin-bottom:24px;
+}
+
+.panel h2{
+font-size:19px;
+margin-bottom:20px;
+color:#203451;
+}
+
+.category-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+}
+
+.category{
+padding:18px;
+border:1px solid #e1e7f0;
+border-radius:10px;
+background:#fff;
+}
+
+.category h3{
+font-size:15px;
+margin-bottom:9px;
+}
+
+.category p{
+font-size:13px;
+color:#718096;
+line-height:1.5;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:17px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.form-group.full{grid-column:1/-1}
+
+label{
+font-size:14px;
+font-weight:bold;
+color:#354761;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid #d8e0eb;
+border-radius:7px;
+font-size:14px;
+font-family:Arial,sans-serif;
+}
+
+textarea{
+min-height:85px;
+resize:vertical;
+}
+
+input:focus,select:focus,textarea:focus{
+outline:none;
+border-color:#238be5;
+}
+
+.btn{
+border:none;
+padding:12px 19px;
+border-radius:7px;
+cursor:pointer;
+font-size:14px;
+font-weight:bold;
+}
+
+.btn-primary{
+background:#1679d2;
+color:white;
+}
+
+.btn-primary:hover{background:#0864b6}
+
+.btn-secondary{
+background:#e9eff7;
+color:#203451;
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:20px;
+}
+
+.table-wrap{overflow-x:auto}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:700px;
+}
+
+th,td{
+text-align:left;
+padding:14px 12px;
+border-bottom:1px solid #e8edf4;
+font-size:13px;
+}
+
+th{
+color:#52637a;
+background:#f7f9fc;
+}
+
+.status{
+display:inline-block;
+padding:6px 9px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+}
+
+.status-ok{
+background:#e5f6ec;
+color:#187343;
+}
+
+.status-pending{
+background:#fff4dc;
+color:#93620a;
+}
+
+.status-overdue{
+background:#fde8e8;
+color:#b42323;
+}
+
+.status-review{
+background:#e8f1ff;
+color:#205da5;
+}
+
+.delete-btn{
+border:none;
+background:#fff0f0;
+color:#b42323;
+padding:7px 10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.empty{
+text-align:center;
+color:#8290a5;
+padding:25px;
+}
+
+.notice{
+background:#edf6ff;
+border:1px solid #d4e9fc;
+padding:15px;
+border-radius:9px;
+color:#315777;
+font-size:13px;
+line-height:1.6;
+margin-bottom:24px;
+}
+
+footer{
+text-align:center;
+padding:30px;
+color:#8290a5;
+font-size:13px;
+}
+
+@media(max-width:850px){
+.stats{grid-template-columns:repeat(2,1fr)}
+.category-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+header{padding:20px}
+.header-right{
+width:100%;
+justify-content:space-between;
+}
+.stats,.category-grid,.form-grid{
+grid-template-columns:1fr;
+}
+.form-group.full{grid-column:auto}
+.panel{padding:18px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">DOCBIZ<span>HUB</span></div>
+
+<div class="header-right">
+<p>European Business Ecosystem</p>
+
+<select class="language-select" id="languageSelect"
+onchange="changeLanguage(this.value)">
+<option value="bs">Bosanski</option>
+<option value="en">English</option>
+<option value="de">Deutsch</option>
+</select>
+</div>
+</header>
+
+<main>
+
+<div class="intro">
+<h1 data-i18n="title">Compliance Center</h1>
+<p data-i18n="intro">
+Centralno mjesto za praćenje regulatornih zahtjeva i usklađenosti poslovanja.
+</p>
+</div>
+
+<div class="notice" data-i18n="notice">
+Ovaj modul služi za internu evidenciju. Zakonske obaveze i rokove potrebno je provjeriti prema važećim propisima nadležne države.
+</div>
+
+<div class="stats">
+
+<div class="stat-card">
+<p data-i18n="total">Ukupno obaveza</p>
+<h2 id="totalCount">0</h2>
+</div>
+
+<div class="stat-card">
+<p data-i18n="completed">Završeno</p>
+<h2 id="completedCount">0</h2>
+</div>
+
+<div class="stat-card">
+<p data-i18n="pending">Na čekanju</p>
+<h2 id="pendingCount">0</h2>
+</div>
+
+<div class="stat-card">
+<p data-i18n="overdue">Istekli rokovi</p>
+<h2 id="overdueCount">0</h2>
+</div>
+
+</div>
+
+<section class="panel">
+
+<h2 data-i18n="categories">Oblasti usklađenosti</h2>
+
+<div class="category-grid">
+
+<div class="category">
+<h3>🔐 <span data-i18n="gdpr">GDPR i zaštita podataka</span></h3>
+<p data-i18n="gdprDesc">Zaštita ličnih podataka, privatnost i upravljanje pristupom.</p>
+</div>
+
+<div class="category">
+<h3>💶 <span data-i18n="tax">Porezi i finansije</span></h3>
+<p data-i18n="taxDesc">Poreske prijave, finansijske evidencije i izvještavanje.</p>
+</div>
+
+<div class="category">
+<h3>👥 <span data-i18n="labor">Radno pravo</span></h3>
+<p data-i18n="laborDesc">Ugovori o radu, evidencija zaposlenih i radne obaveze.</p>
+</div>
+
+<div class="category">
+<h3>🏢 <span data-i18n="corporate">Korporativna usklađenost</span></h3>
+<p data-i18n="corporateDesc">Registracija, korporativni akti i poslovna dokumentacija.</p>
+</div>
+
+<div class="category">
+<h3>🌱 <span data-i18n="environment">Zaštita okoliša</span></h3>
+<p data-i18n="environmentDesc">Ekološke obaveze, dozvole i izvještavanje.</p>
+</div>
+
+<div class="category">
+<h3>🛡️ <span data-i18n="security">Sigurnost poslovanja</span></h3>
+<p data-i18n="securityDesc">Interna kontrola, upravljanje rizicima i sigurnosne procedure.</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<h2 data-i18n="addTitle">Dodavanje regulatorne obaveze</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label data-i18n="obligation">Naziv obaveze</label>
+<input id="obligation" placeholder="Npr. Poreska prijava">
+</div>
+
+<div class="form-group">
+<label data-i18n="category">Oblast</label>
+<select id="category">
+<option value="GDPR">GDPR</option>
+<option value="Finance">Finansije i porezi</option>
+<option value="Labor">Radno pravo</option>
+<option value="Corporate">Korporativna usklađenost</option>
+<option value="Environment">Zaštita okoliša</option>
+<option value="Security">Sigurnost poslovanja</option>
+<option value="Other">Ostalo</option>
+</select>
+</div>
+
+<div class="form-group">
+<label data-i18n="deadline">Rok izvršenja</label>
+<input type="date" id="deadline">
+</div>
+
+<div class="form-group">
+<label data-i18n="responsible">Odgovorna osoba</label>
+<input id="responsible">
+</div>
+
+<div class="form-group">
+<label data-i18n="statusLabel">Status</label>
+<select id="obligationStatus">
+<option value="pending" data-i18n="statusPending">Na čekanju</option>
+<option value="review" data-i18n="statusReview">U provjeri</option>
+<option value="completed" data-i18n="statusCompleted">Završeno</option>
+</select>
+</div>
+
+<div class="form-group">
+<label data-i18n="reference">Referenca / Propis</label>
+<input id="reference">
+</div>
+
+<div class="form-group full">
+<label data-i18n="notes">Napomene</label>
+<textarea id="notes"></textarea>
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn btn-primary"
+onclick="addObligation()"
+data-i18n="addButton">
+Dodaj obavezu
+</button>
+
+<button class="btn btn-secondary"
+onclick="clearForm()"
+data-i18n="clear">
+Očisti polja
+</button>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<h2 data-i18n="register">Registar regulatornih obaveza</h2>
+
+<div class="form-group" style="margin-bottom:18px">
+<label data-i18n="filter">Filtriraj obaveze</label>
+
+<select id="filterStatus" onchange="renderTable()">
+<option value="all" data-i18n="all">Sve obaveze</option>
+<option value="pending" data-i18n="statusPending">Na čekanju</option>
+<option value="review" data-i18n="statusReview">U provjeri</option>
+<option value="completed" data-i18n="statusCompleted">Završeno</option>
+<option value="overdue" data-i18n="overdue">Istekli rokovi</option>
+</select>
+</div>
+
+<div class="table-wrap">
+
+<table>
+<thead>
+<tr>
+<th data-i18n="thObligation">Obaveza</th>
+<th data-i18n="thCategory">Oblast</th>
+<th data-i18n="thDeadline">Rok</th>
+<th data-i18n="thResponsible">Odgovorna osoba</th>
+<th data-i18n="thStatus">Status</th>
+<th data-i18n="thAction">Akcija</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+© 2026 DOCBIZHUB — European Business Ecosystem
+</footer>
+
+<script>
+
+const translations = {
+
+bs:{
+title:"Compliance Center",
+intro:"Centralno mjesto za praćenje regulatornih zahtjeva i usklađenosti poslovanja.",
+notice:"Ovaj modul služi za internu evidenciju. Zakonske obaveze i rokove potrebno je provjeriti prema važećim propisima nadležne države.",
+total:"Ukupno obaveza",
+completed:"Završeno",
+pending:"Na čekanju",
+overdue:"Istekli rokovi",
+categories:"Oblasti usklađenosti",
+gdpr:"GDPR i zaštita podataka",
+gdprDesc:"Zaštita ličnih podataka, privatnost i upravljanje pristupom.",
+tax:"Porezi i finansije",
+taxDesc:"Poreske prijave, finansijske evidencije i izvještavanje.",
+labor:"Radno pravo",
+laborDesc:"Ugovori o radu, evidencija zaposlenih i radne obaveze.",
+corporate:"Korporativna usklađenost",
+corporateDesc:"Registracija, korporativni akti i poslovna dokumentacija.",
+environment:"Zaštita okoliša",
+environmentDesc:"Ekološke obaveze, dozvole i izvještavanje.",
+security:"Sigurnost poslovanja",
+securityDesc:"Interna kontrola, upravljanje rizicima i sigurnosne procedure.",
+addTitle:"Dodavanje regulatorne obaveze",
+obligation:"Naziv obaveze",
+category:"Oblast",
+deadline:"Rok izvršenja",
+responsible:"Odgovorna osoba",
+statusLabel:"Status",
+statusPending:"Na čekanju",
+statusReview:"U provjeri",
+statusCompleted:"Završeno",
+reference:"Referenca / Propis",
+notes:"Napomene",
+addButton:"Dodaj obavezu",
+clear:"Očisti polja",
+register:"Registar regulatornih obaveza",
+filter:"Filtriraj obaveze",
+all:"Sve obaveze",
+thObligation:"Obaveza",
+thCategory:"Oblast",
+thDeadline:"Rok",
+thResponsible:"Odgovorna osoba",
+thStatus:"Status",
+thAction:"Akcija",
+empty:"Nema evidentiranih obaveza.",
+required:"Unesite naziv obaveze i rok.",
+added:"Obaveza je uspješno dodana.",
+deleteConfirm:"Da li želite obrisati ovu obavezu?",
+delete:"Obriši",
+gdprCat:"GDPR",
+financeCat:"Finansije i porezi",
+laborCat:"Radno pravo",
+corporateCat:"Korporativna usklađenost",
+environmentCat:"Zaštita okoliša",
+securityCat:"Sigurnost poslovanja",
+otherCat:"Ostalo"
+},
+
+en:{
+title:"Compliance Center",
+intro:"Central place for monitoring regulatory requirements and business compliance.",
+notice:"This module is for internal recordkeeping. Legal obligations and deadlines must be verified against the applicable laws of the relevant jurisdiction.",
+total:"Total Obligations",
+completed:"Completed",
+pending:"Pending",
+overdue:"Overdue",
+categories:"Compliance Areas",
+gdpr:"GDPR and Data Protection",
+gdprDesc:"Personal data protection, privacy and access management.",
+tax:"Tax and Finance",
+taxDesc:"Tax filings, financial records and reporting.",
+labor:"Employment Law",
+laborDesc:"Employment contracts, employee records and labor obligations.",
+corporate:"Corporate Compliance",
+corporateDesc:"Registration, corporate documents and business records.",
+environment:"Environmental Protection",
+environmentDesc:"Environmental obligations, permits and reporting.",
+security:"Business Security",
+securityDesc:"Internal controls, risk management and security procedures.",
+addTitle:"Add Regulatory Obligation",
+obligation:"Obligation Name",
+category:"Category",
+deadline:"Deadline",
+responsible:"Responsible Person",
+statusLabel:"Status",
+statusPending:"Pending",
+statusReview:"Under Review",
+statusCompleted:"Completed",
+reference:"Reference / Regulation",
+notes:"Notes",
+addButton:"Add Obligation",
+clear:"Clear Fields",
+register:"Regulatory Obligations Register",
+filter:"Filter Obligations",
+all:"All Obligations",
+thObligation:"Obligation",
+thCategory:"Category",
+thDeadline:"Deadline",
+thResponsible:"Responsible Person",
+thStatus:"Status",
+thAction:"Action",
+empty:"No obligations recorded.",
+required:"Enter an obligation name and deadline.",
+added:"Obligation successfully added.",
+deleteConfirm:"Do you want to delete this obligation?",
+delete:"Delete",
+gdprCat:"GDPR",
+financeCat:"Finance and Tax",
+laborCat:"Employment Law",
+corporateCat:"Corporate Compliance",
+environmentCat:"Environmental Protection",
+securityCat:"Business Security",
+otherCat:"Other"
+},
+
+de:{
+title:"Compliance Center",
+intro:"Zentrale Stelle zur Überwachung regulatorischer Anforderungen und der Unternehmens-Compliance.",
+notice:"Dieses Modul dient der internen Dokumentation. Gesetzliche Verpflichtungen und Fristen müssen anhand der geltenden Vorschriften geprüft werden.",
+total:"Gesamtzahl der Pflichten",
+completed:"Abgeschlossen",
+pending:"Ausstehend",
+overdue:"Überfällig",
+categories:"Compliance-Bereiche",
+gdpr:"DSGVO und Datenschutz",
+gdprDesc:"Schutz personenbezogener Daten, Privatsphäre und Zugriffsverwaltung.",
+tax:"Steuern und Finanzen",
+taxDesc:"Steuererklärungen, Finanzunterlagen und Berichterstattung.",
+labor:"Arbeitsrecht",
+laborDesc:"Arbeitsverträge, Mitarbeiterunterlagen und arbeitsrechtliche Pflichten.",
+corporate:"Unternehmens-Compliance",
+corporateDesc:"Registrierung, Unternehmensdokumente und Geschäftsunterlagen.",
+environment:"Umweltschutz",
+environmentDesc:"Umweltauflagen, Genehmigungen und Berichterstattung.",
+security:"Unternehmenssicherheit",
+securityDesc:"Interne Kontrollen, Risikomanagement und Sicherheitsverfahren.",
+addTitle:"Regulatorische Verpflichtung hinzufügen",
+obligation:"Bezeichnung der Verpflichtung",
+category:"Bereich",
+deadline:"Frist",
+responsible:"Verantwortliche Person",
+statusLabel:"Status",
+statusPending:"Ausstehend",
+statusReview:"In Prüfung",
+statusCompleted:"Abgeschlossen",
+reference:"Referenz / Vorschrift",
+notes:"Anmerkungen",
+addButton:"Verpflichtung hinzufügen",
+clear:"Felder leeren",
+register:"Register regulatorischer Verpflichtungen",
+filter:"Verpflichtungen filtern",
+all:"Alle Verpflichtungen",
+thObligation:"Verpflichtung",
+thCategory:"Bereich",
+thDeadline:"Frist",
+thResponsible:"Verantwortliche Person",
+thStatus:"Status",
+thAction:"Aktion",
+empty:"Keine Verpflichtungen erfasst.",
+required:"Bitte geben Sie eine Bezeichnung und eine Frist ein.",
+added:"Verpflichtung erfolgreich hinzugefügt.",
+deleteConfirm:"Möchten Sie diese Verpflichtung löschen?",
+delete:"Löschen",
+gdprCat:"DSGVO",
+financeCat:"Finanzen und Steuern",
+laborCat:"Arbeitsrecht",
+corporateCat:"Unternehmens-Compliance",
+environmentCat:"Umweltschutz",
+securityCat:"Unternehmenssicherheit",
+otherCat:"Sonstiges"
+}
+
+};
+
+let obligations=[];
+
+const storageKey="docbiz_compliance_obligations";
+
+function normalizeLanguage(value){
+
+if(!value)return null;
+
+const lang=String(value).toLowerCase().split(/[-_]/)[0];
+
+if(["bs","ba","hr","sr"].includes(lang))return "bs";
+if(lang==="en")return "en";
+if(lang==="de")return "de";
+
+return null;
+}
+
+function changeLanguage(language){
+
+const selected=normalizeLanguage(language)||"en";
+
+localStorage.setItem("docbiz_language",selected);
+
+applyLanguage(selected);
+
+}
+
+function applyLanguage(language){
+
+const selected=normalizeLanguage(language)||"en";
+const dictionary=translations[selected];
+
+document.documentElement.lang=selected;
+
+document.querySelectorAll("[data-i18n]").forEach(element=>{
+
+const key=element.getAttribute("data-i18n");
+
+if(dictionary[key]){
+element.textContent=dictionary[key];
+}
+
+});
+
+document.getElementById("languageSelect").value=selected;
+
+renderTable();
+updateStats();
+
+}
+
+function detectLanguage(){
+
+const saved=localStorage.getItem("docbiz_language");
+
+return saved
+?normalizeLanguage(saved)||"en"
+:normalizeLanguage(navigator.language)||"en";
+
+}
+
+function loadData(){
+
+try{
+
+obligations=JSON.parse(
+localStorage.getItem(storageKey)||"[]"
+);
+
+if(!Array.isArray(obligations))obligations=[];
+
+}catch{
+
+obligations=[];
+
+}
+
+}
+
+function saveData(){
+
+localStorage.setItem(
+storageKey,
+JSON.stringify(obligations)
+);
+
+}
+
+function addObligation(){
+
+const t=translations[document.getElementById("languageSelect").value];
+
+const name=document.getElementById("obligation").value.trim();
+const deadline=document.getElementById("deadline").value;
+
+if(!name||!deadline){
+
+alert(t.required);
+return;
+
+}
+
+const item={
+
+id:Date.now(),
+name:name,
+category:document.getElementById("category").value,
+deadline:deadline,
+responsible:document.getElementById("responsible").value.trim(),
+status:document.getElementById("obligationStatus").value,
+reference:document.getElementById("reference").value.trim(),
+notes:document.getElementById("notes").value.trim()
+
+};
+
+obligations.push(item);
+
+saveData();
+clearForm();
+renderTable();
+updateStats();
+
+alert(t.added);
+
+}
+
+function clearForm(){
+
+[
+"obligation",
+"deadline",
+"responsible",
+"reference",
+"notes"
+].forEach(id=>{
+
+document.getElementById(id).value="";
+
+});
+
+document.getElementById("category").value="GDPR";
+document.getElementById("obligationStatus").value="pending";
+
+}
+
+function getStatus(item){
+
+if(item.status==="completed")return "completed";
+
+const today=new Date();
+today.setHours(0,0,0,0);
+
+const deadline=new Date(item.deadline+"T00:00:00");
+
+if(deadline<today)return "overdue";
+
+return item.status;
+
+}
+
+function categoryName(category,t){
+
+const keys={
+
+GDPR:"gdprCat",
+Finance:"financeCat",
+Labor:"laborCat",
+Corporate:"corporateCat",
+Environment:"environmentCat",
+Security:"securityCat",
+Other:"otherCat"
+
+};
+
+return t[keys[category]]||category;
+
+}
+
+function renderTable(){
+
+const body=document.getElementById("tableBody");
+const t=translations[document.getElementById("languageSelect").value];
+
+body.innerHTML="";
+
+const filter=document.getElementById("filterStatus").value;
+
+const filtered=obligations.filter(item=>{
+
+const status=getStatus(item);
+
+return filter==="all"||status===filter;
+
+});
+
+if(!filtered.length){
+
+const row=document.createElement("tr");
+const cell=document.createElement("td");
+
+cell.colSpan=6;
+cell.className="empty";
+cell.textContent=t.empty;
+
+row.appendChild(cell);
+body.appendChild(row);
+
+return;
+
+}
+
+filtered.forEach(item=>{
+
+const status=getStatus(item);
+
+const row=document.createElement("tr");
+
+const values=[
+
+item.name,
+categoryName(item.category,t),
+item.deadline,
+item.responsible||"—"
+
+];
+
+values.forEach(value=>{
+
+const cell=document.createElement("td");
+cell.textContent=value;
+row.appendChild(cell);
+
+});
+
+const statusCell=document.createElement("td");
+
+const badge=document.createElement("span");
+
+badge.className="status";
+
+const statusMap={
+
+completed:["status-ok",t.statusCompleted],
+pending:["status-pending",t.statusPending],
+review:["status-review",t.statusReview],
+overdue:["status-overdue",t.overdue]
+
+};
+
+badge.classList.add(statusMap[status][0]);
+badge.textContent=statusMap[status][1];
+
+statusCell.appendChild(badge);
+row.appendChild(statusCell);
+
+const actionCell=document.createElement("td");
+
+const select=document.createElement("select");
+
+["pending","review","completed"].forEach(value=>{
+
+const option=document.createElement("option");
+
+option.value=value;
+option.textContent={
+pending:t.statusPending,
+review:t.statusReview,
+completed:t.statusCompleted
+}[value];
+
+if(item.status===value)option.selected=true;
+
+select.appendChild(option);
+
+});
+
+select.addEventListener("change",()=>{
+
+item.status=select.value;
+
+saveData();
+renderTable();
+updateStats();
+
+});
+
+actionCell.appendChild(select);
+
+const del=document.createElement("button");
+
+del.className="delete-btn";
+del.textContent=t.delete;
+del.style.marginLeft="6px";
+
+del.onclick=()=>{
+
+if(!confirm(t.deleteConfirm))return;
+
+obligations=obligations.filter(x=>x.id!==item.id);
+
+saveData();
+renderTable();
+updateStats();
+
+};
+
+actionCell.appendChild(del);
+row.appendChild(actionCell);
+
+body.appendChild(row);
+
+});
+
+}
+
+function updateStats(){
+
+const total=obligations.length;
+
+let completed=0;
+let pending=0;
+let overdue=0;
+
+obligations.forEach(item=>{
+
+const status=getStatus(item);
+
+if(status==="completed")completed++;
+else if(status==="overdue")overdue++;
+else pending++;
+
+});
+
+document.getElementById("totalCount").textContent=total;
+document.getElementById("completedCount").textContent=completed;
+document.getElementById("pendingCount").textContent=pending;
+document.getElementById("overdueCount").textContent=overdue;
+
+}
+
+loadData();
+applyLanguage(detectLanguage());
+
+</script>
+
+</body>
+</html>
