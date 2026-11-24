@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOCBIZHUB | Cooperation Management</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#172033;min-height:100vh}
+header{background:#101c35;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:26px;font-weight:bold}.logo span{color:#35a8ff}
+.header-right{display:flex;align-items:center;gap:15px}
+.language{width:auto;background:#1b2b49;color:white;border:1px solid #53637d;padding:10px;border-radius:7px}
+main{max-width:1400px;margin:35px auto;padding:0 22px}
+.intro{margin-bottom:25px}.intro h1{font-size:29px;margin-bottom:9px}.intro p{color:#718096;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:15px;margin-bottom:25px}
+.stat,.panel{background:white;border:1px solid #e1e7f0;border-radius:12px;padding:20px}
+.stat p{font-size:13px;color:#718096;margin-bottom:10px}.stat strong{font-size:29px;color:#238be5}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}
+.tab,.btn{border:0;border-radius:7px;padding:11px 15px;cursor:pointer;font-weight:bold}
+.tab{background:white;border:1px solid #dce3ed;color:#34445e}
+.tab.active,.btn{background:#238be5;color:white}
+.panel{display:none;margin-bottom:22px}.panel.active{display:block}
+.panel h2{font-size:20px;margin-bottom:18px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+.field label{display:block;font-size:13px;font-weight:bold;color:#526178;margin-bottom:7px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #dce3ed;border-radius:7px;font:inherit;background:white;color:#172033}
+textarea{min-height:85px;resize:vertical}
+.field.full{grid-column:1/-1}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn.secondary{background:#64748b}.btn.danger{background:#dc4444}.btn.small{padding:7px 9px;font-size:12px}
+.search{max-width:360px;margin:18px 0}
+.table-wrap{overflow-x:auto;margin-top:20px}
+table{width:100%;min-width:680px;border-collapse:collapse}
+th,td{padding:12px 10px;border-bottom:1px solid #e8edf4;text-align:left;font-size:13px;line-height:1.5}
+th{background:#f4f7fb;color:#526178}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#e8f2ff;color:#1765aa;font-size:11px;font-weight:bold}
+.status.done{background:#e5f7ec;color:#16804a}
+.status.wait{background:#fff2d9;color:#a56a00}
+.status.closed{background:#f0e9ed;color:#785767}
+.empty{text-align:center;padding:25px;color:#8995a7}
+.info{background:#f0f6ff;padding:15px;border-radius:8px;color:#385c83;line-height:1.6;font-size:13px}
+footer{text-align:center;padding:30px;color:#8290a5;font-size:13px}
+@media(max-width:600px){header{padding:18px}.header-right{width:100%;justify-content:space-between}.intro h1{font-size:24px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">DOCBIZ<span>HUB</span></div>
+ <div class="header-right">
+  <span>Business Cooperation Management</span>
+  <select class="language" id="language">
+   <option value="bs">Bosanski</option>
+   <option value="en">English</option>
+   <option value="de">Deutsch</option>
+  </select>
+ </div>
+</header>
+
+<main>
+ <div class="intro">
+  <h1 data-i="title">Upravljanje poslovnom saradnjom</h1>
+  <p data-i="desc">Centralno mjesto za upravljanje partnerima, projektima, ugovorima, sastancima i obavezama.</p>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><p data-i="partners">Poslovni partneri</p><strong id="nPartners">0</strong></div>
+  <div class="stat"><p data-i="projects">Projekti</p><strong id="nProjects">0</strong></div>
+  <div class="stat"><p data-i="contracts">Ugovori</p><strong id="nContracts">0</strong></div>
+  <div class="stat"><p data-i="tasks">Aktivne obaveze</p><strong id="nTasks">0</strong></div>
+ </div>
+
+ <div class="tabs">
+  <button class="tab active" data-tab="dashboard" data-i="overview">Pregled</button>
+  <button class="tab" data-tab="partners" data-i="partners">Partneri</button>
+  <button class="tab" data-tab="projects" data-i="projects">Projekti</button>
+  <button class="tab" data-tab="contracts" data-i="contracts">Ugovori</button>
+  <button class="tab" data-tab="meetings" data-i="meetings">Sastanci</button>
+  <button class="tab" data-tab="tasks" data-i="tasks">Obaveze</button>
+  <button class="tab" data-tab="backup" data-i="backup">Arhiva</button>
+ </div>
+
+ <section class="panel active" id="dashboard">
+  <h2 data-i="overview">Pregled saradnje</h2>
+  <div class="info" data-i="welcome">Ovdje pratite sve poslovne odnose, projekte, ugovore i rokove.</div>
+  <h3 style="margin-top:24px" data-i="upcoming">Nadolazeće obaveze</h3>
+  <div class="table-wrap"><table>
+   <thead><tr><th data-i="taskName">Obaveza</th><th data-i="partner">Partner</th><th data-i="deadline">Rok</th><th data-i="status">Status</th></tr></thead>
+   <tbody id="dashboardTasks"></tbody>
+  </table></div>
+ </section>
+
+ <section class="panel" id="partners">
+  <h2 data-i="partnerManagement">Evidencija poslovnih partnera</h2>
+  <form id="partnerForm">
+   <input type="hidden" id="partnerId">
+   <div class="form-grid">
+    <div class="field"><label data-i="company">Naziv kompanije *</label><input id="company" required></div>
+    <div class="field"><label data-i="country">Država</label><input id="country"></div>
+    <div class="field"><label data-i="contact">Kontakt osoba</label><input id="contact"></div>
+    <div class="field"><label>E-mail</label><input id="email" type="email"></div>
+    <div class="field"><label data-i="phone">Telefon</label><input id="phone"></div>
+    <div class="field"><label data-i="type">Vrsta partnera</label>
+     <select id="partnerType">
+      <option value="Supplier" data-i="supplier">Dobavljač</option>
+      <option value="Customer" data-i="customer">Kupac</option>
+      <option value="Distributor" data-i="distributor">Distributer</option>
+      <option value="Investor" data-i="investor">Investitor</option>
+      <option value="Other" data-i="other">Ostalo</option>
+     </select>
+    </div>
+    <div class="field"><label data-i="status">Status</label>
+     <select id="partnerStatus">
+      <option value="New" data-i="new">Nova</option>
+      <option value="Active" data-i="active">Aktivna</option>
+      <option value="Waiting" data-i="waiting">Na čekanju</option>
+      <option value="Finished" data-i="finished">Završena</option>
+     </select>
+    </div>
+    <div class="field full"><label data-i="notes">Napomene</label><textarea id="partnerNotes"></textarea></div>
+   </div>
+   <div class="actions"><button class="btn" type="submit" data-i="savePartner">Sačuvaj partnera</button><button class="btn secondary" type="reset" data-i="clear">Očisti</button></div>
+  </form>
+  <input class="search" id="searchPartners" placeholder="Pretraži partnere...">
+  <div class="table-wrap"><table>
+   <thead><tr><th data-i="company">Kompanija</th><th data-i="country">Država</th><th data-i="contact">Kontakt</th><th data-i="type">Vrsta</th><th data-i="status">Status</th><th data-i="actions">Akcije</th></tr></thead>
+   <tbody id="partnersTable"></tbody>
+  </table></div>
+ </section>
+
+ <section class="panel" id="projects">
+  <h2 data-i="projectManagement">Upravljanje projektima</h2>
+  <form id="projectForm">
+   <input type="hidden" id="projectId">
+   <div class="form-grid">
+    <div class="field"><label data-i="projectName">Naziv projekta *</label><input id="projectName" required></div>
+    <div class="field"><label data-i="partner">Partner</label><select id="projectPartner"></select></div>
+    <div class="field"><label data-i="start">Početak</label><input id="projectStart" type="date"></div>
+    <div class="field"><label data-i="end">Završetak</label><input id="projectEnd" type="date"></div>
+    <div class="field"><label data-i="status">Status</label><select id="projectStatus">
+     <option value="New" data-i="new">Novi</option><option value="Active" data-i="active">Aktivan</option><option value="Finished" data-i="finished">Završen</option><option value="Waiting" data-i="waiting">Na čekanju</option>
+    </select></div>
+    <div class="field"><label data-i="budget">Budžet</label><input id="projectBudget" type="number" min="0" step="0.01"></div>
+    <div class="field full"><label data-i="notes">Opis i napomene</label><textarea id="projectNotes"></textarea></div>
+   </div>
+   <div class="actions"><button class="btn" type="submit" data-i="saveProject">Sačuvaj projekat</button><button class="btn secondary" type="reset" data-i="clear">Očisti</button></div>
+  </form>
+  <div class="table-wrap"><table><thead><tr><th data-i="projectName">Projekat</th><th data-i="partner">Partner</th><th data-i="start">Početak</th><th data-i="end">Završetak</th><th data-i="status">Status</th><th data-i="actions">Akcije</th></tr></thead><tbody id="projectsTable"></tbody></table></div>
+ </section>
+
+ <section class="panel" id="contracts">
+  <h2 data-i="contractManagement">Ugovori i sporazumi</h2>
+  <form id="contractForm">
+   <input type="hidden" id="contractId">
+   <div class="form-grid">
+    <div class="field"><label data-i="contractName">Naziv ugovora *</label><input id="contractName" required></div>
+    <div class="field"><label data-i="partner">Partner</label><select id="contractPartner"></select></div>
+    <div class="field"><label data-i="contractType">Vrsta dokumenta</label><select id="contractType"><option>NDA</option><option>Cooperation Agreement</option><option>Service Contract</option><option>Supply Contract</option><option>Other</option></select></div>
+    <div class="field"><label data-i="signed">Datum potpisivanja</label><input id="contractDate" type="date"></div>
+    <div class="field"><label data-i="expiry">Datum isteka</label><input id="contractExpiry" type="date"></div>
+    <div class="field"><label data-i="status">Status</label><select id="contractStatus"><option value="Draft" data-i="draft">Nacrt</option><option value="Active" data-i="active">Aktivan</option><option value="Finished" data-i="finished">Završen</option></select></div>
+    <div class="field full"><label data-i="notes">Napomene</label><textarea id="contractNotes"></textarea></div>
+   </div>
+   <div class="actions"><button class="btn" type="submit" data-i="saveContract">Sačuvaj ugovor</button><button class="btn secondary" type="reset" data-i="clear">Očisti</button></div>
+  </form>
+  <div class="table-wrap"><table><thead><tr><th data-i="contractName">Ugovor</th><th data-i="partner">Partner</th><th data-i="contractType">Vrsta</th><th data-i="expiry">Istek</th><th data-i="status">Status</th><th data-i="actions">Akcije</th></tr></thead><tbody id="contractsTable"></tbody></table></div>
+ </section>
+
+ <section class="panel" id="meetings">
+  <h2 data-i="meetingManagement">Sastanci i poslovni dogovori</h2>
+  <form id="meetingForm">
+   <input type="hidden" id="meetingId">
+   <div class="form-grid">
+    <div class="field"><label data-i="meetingName">Tema sastanka *</label><input id="meetingName" required></div>
+    <div class="field"><label data-i="partner">Partner</label><select id="meetingPartner"></select></div>
+    <div class="field"><label data-i="meetingDate">Datum sastanka</label><input id="meetingDate" type="date"></div>
+    <div class="field"><label data-i="location">Lokacija</label><input id="meetingLocation"></div>
+    <div class="field full"><label data-i="notes">Zapisnik i dogovori</label><textarea id="meetingNotes"></textarea></div>
+   </div>
+   <div class="actions"><button class="btn" type="submit" data-i="saveMeeting">Sačuvaj sastanak</button><button class="btn secondary" type="reset" data-i="clear">Očisti</button></div>
+  </form>
+  <div class="table-wrap"><table><thead><tr><th data-i="meetingName">Tema</th><th data-i="partner">Partner</th><th data-i="meetingDate">Datum</th><th data-i="location">Lokacija</th><th data-i="actions">Akcije</th></tr></thead><tbody id="meetingsTable"></tbody></table></div>
+ </section>
+
+ <section class="panel" id="tasks">
+  <h2 data-i="taskManagement">Obaveze i rokovi</h2>
+  <form id="taskForm">
+   <input type="hidden" id="taskId">
+   <div class="form-grid">
+    <div class="field"><label data-i="taskName">Naziv obaveze *</label><input id="taskName" required></div>
+    <div class="field"><label data-i="partner">Partner</label><select id="taskPartner"></select></div>
+    <div class="field"><label data-i="deadline">Rok</label><input id="taskDeadline" type="date"></div>
+    <div class="field"><label data-i="responsible">Odgovorna osoba</label><input id="taskResponsible"></div>
+    <div class="field"><label data-i="status">Status</label><select id="taskStatus"><option value="New" data-i="new">Nova</option><option value="Active" data-i="active">U toku</option><option value="Finished" data-i="finished">Završena</option></select></div>
+    <div class="field full"><label data-i="notes">Opis obaveze</label><textarea id="taskNotes"></textarea></div>
+   </div>
+   <div class="actions"><button class="btn" type="submit" data-i="saveTask">Sačuvaj obavezu</button><button class="btn secondary" type="reset" data-i="clear">Očisti</button></div>
+  </form>
+  <div class="table-wrap"><table><thead><tr><th data-i="taskName">Obaveza</th><th data-i="partner">Partner</th><th data-i="deadline">Rok</th><th data-i="responsible">Odgovorna osoba</th><th data-i="status">Status</th><th data-i="actions">Akcije</th></tr></thead><tbody id="tasksTable"></tbody></table></div>
+ </section>
+
+ <section class="panel" id="backup">
+  <h2 data-i="backup">Arhiva i sigurnost</h2>
+  <div class="info" data-i="backupInfo">Izvezite podatke u JSON datoteku kako biste imali sigurnosnu kopiju. Uvoz podataka zamjenjuje postojeću evidenciju.</div>
+  <div class="actions">
+   <button class="btn" id="exportBtn" data-i="export">Izvezi podatke</button>
+   <button class="btn secondary" id="importBtn" data-i="import">Uvezi podatke</button>
+   <input type="file" id="importFile" accept=".json,application/json" hidden>
+  </div>
+  <div class="actions"><button class="btn danger" id="deleteAll" data-i="deleteAll">Obriši sve podatke</button></div>
+  <p style="margin-top:20px;color:#718096;font-size:13px" data-i="localInfo">Podaci se čuvaju u ovom pregledniku i na ovom uređaju. Redovno pravite rezervne kopije.</p>
+ </section>
+</main>
+
+<footer>© 2026 DOCBIZHUB — Business Cooperation Management</footer>
+
+<script>
+"use strict";
+
+const KEY="docbiz_cooperation_v1";
+const blank=()=>({partners:[],projects:[],contracts:[],meetings:[],tasks:[]});
+let db=blank();
+let lang=localStorage.getItem("docbiz_language")||"bs";
+const $=id=>document.getElementById(id);
+
+const T={
+bs:{
+title:"Upravljanje poslovnom saradnjom",desc:"Centralno mjesto za upravljanje partnerima, projektima, ugovorima, sastancima i obavezama.",partners:"Poslovni partneri",projects:"Projekti",contracts:"Ugovori",tasks:"Aktivne obaveze",overview:"Pregled",meetings:"Sastanci",backup:"Arhiva",welcome:"Ovdje pratite sve poslovne odnose, projekte, ugovore i rokove.",upcoming:"Nadolazeće obaveze",taskName:"Obaveza",partner:"Partner",deadline:"Rok",status:"Status",partnerManagement:"Evidencija poslovnih partnera",company:"Naziv kompanije",country:"Država",contact:"Kontakt osoba",phone:"Telefon",type:"Vrsta partnera",supplier:"Dobavljač",customer:"Kupac",distributor:"Distributer",investor:"Investitor",other:"Ostalo",new:"Nova",active:"Aktivna",waiting:"Na čekanju",finished:"Završena",notes:"Napomene",savePartner:"Sačuvaj partnera",clear:"Očisti",actions:"Akcije",projectManagement:"Upravljanje projektima",projectName:"Naziv projekta",start:"Početak",end:"Završetak",budget:"Budžet",saveProject:"Sačuvaj projekat",contractManagement:"Ugovori i sporazumi",contractName:"Naziv ugovora",contractType:"Vrsta dokumenta",signed:"Datum potpisivanja",expiry:"Datum isteka",draft:"Nacrt",saveContract:"Sačuvaj ugovor",meetingManagement:"Sastanci i poslovni dogovori",meetingName:"Tema sastanka",meetingDate:"Datum sastanka",location:"Lokacija",saveMeeting:"Sačuvaj sastanak",taskManagement:"Obaveze i rokovi",responsible:"Odgovorna osoba",saveTask:"Sačuvaj obavezu",backupInfo:"Izvezite podatke u JSON datoteku kako biste imali sigurnosnu kopiju. Uvoz podataka zamjenjuje postojeću evidenciju.",export:"Izvezi podatke",import:"Uvezi podatke",deleteAll:"Obriši sve podatke",localInfo:"Podaci se čuvaju u ovom pregledniku i na ovom uređaju. Redovno pravite rezervne kopije.",search:"Pretraži partnere...",edit:"Uredi",delete:"Obriši",none:"Nema zapisa.",confirmDelete:"Želite li obrisati ovaj zapis?",confirmAll:"Sigurno želite obrisati SVE podatke?",importConfirm:"Uvoz će zamijeniti postojeće podatke. Nastaviti?",saved:"Podaci su sačuvani.",badFile:"Neispravna datoteka.",exported:"DOCBIZHUB sigurnosna kopija",overdue:"Kasni",due:"Na vrijeme",unknown:"Nepoznat partner",choose:"Izaberite partnera",noPartner:"Bez partnera",invalidDate:"Datum završetka ne može biti prije početka."
+},
+en:{
+title:"Business Cooperation Management",desc:"Manage partners, projects, contracts, meetings and business obligations in one place.",partners:"Business Partners",projects:"Projects",contracts:"Contracts",tasks:"Active Tasks",overview:"Dashboard",meetings:"Meetings",backup:"Backup",welcome:"Monitor all business relationships, projects, contracts and deadlines here.",upcoming:"Upcoming Tasks",taskName:"Task",partner:"Partner",deadline:"Deadline",status:"Status",partnerManagement:"Business Partner Records",company:"Company Name",country:"Country",contact:"Contact Person",phone:"Phone",type:"Partner Type",supplier:"Supplier",customer:"Customer",distributor:"Distributor",investor:"Investor",other:"Other",new:"New",active:"Active",waiting:"Waiting",finished:"Finished",notes:"Notes",savePartner:"Save Partner",clear:"Clear",actions:"Actions",projectManagement:"Project Management",projectName:"Project Name",start:"Start Date",end:"End Date",budget:"Budget",saveProject:"Save Project",contractManagement:"Contracts and Agreements",contractName:"Contract Name",contractType:"Document Type",signed:"Signing Date",expiry:"Expiry Date",draft:"Draft",saveContract:"Save Contract",meetingManagement:"Meetings and Business Agreements",meetingName:"Meeting Topic",meetingDate:"Meeting Date",location:"Location",saveMeeting:"Save Meeting",taskManagement:"Tasks and Deadlines",responsible:"Responsible Person",saveTask:"Save Task",backupInfo:"Export your records as a JSON backup. Importing replaces existing records.",export:"Export Data",import:"Import Data",deleteAll:"Delete All Data",localInfo:"Data is stored in this browser and on this device. Back up regularly.",search:"Search partners...",edit:"Edit",delete:"Delete",none:"No records.",confirmDelete:"Delete this record?",confirmAll:"Are you sure you want to delete ALL data?",importConfirm:"Importing will replace existing data. Continue?",saved:"Data saved.",badFile:"Invalid file.",exported:"DOCBIZHUB backup",overdue:"Overdue",due:"On time",unknown:"Unknown partner",choose:"Select a partner",noPartner:"No partner",invalidDate:"End date cannot be before start date."
+},
+de:{
+title:"Verwaltung der Geschäftsbeziehungen",desc:"Verwalten Sie Partner, Projekte, Verträge, Besprechungen und Aufgaben an einem Ort.",partners:"Geschäftspartner",projects:"Projekte",contracts:"Verträge",tasks:"Aktive Aufgaben",overview:"Übersicht",meetings:"Besprechungen",backup:"Archiv",welcome:"Verwalten Sie hier Ihre Geschäftsbeziehungen, Projekte, Verträge und Termine.",upcoming:"Anstehende Aufgaben",taskName:"Aufgabe",partner:"Partner",deadline:"Frist",status:"Status",partnerManagement:"Geschäftspartnerverwaltung",company:"Firmenname",country:"Land",contact:"Kontaktperson",phone:"Telefon",type:"Partnertyp",supplier:"Lieferant",customer:"Kunde",distributor:"Händler",investor:"Investor",other:"Sonstiges",new:"Neu",active:"Aktiv",waiting:"Wartend",finished:"Abgeschlossen",notes:"Notizen",savePartner:"Partner speichern",clear:"Leeren",actions:"Aktionen",projectManagement:"Projektverwaltung",projectName:"Projektname",start:"Startdatum",end:"Enddatum",budget:"Budget",saveProject:"Projekt speichern",contractManagement:"Verträge und Vereinbarungen",contractName:"Vertragsname",contractType:"Dokumenttyp",signed:"Unterzeichnungsdatum",expiry:"Ablaufdatum",draft:"Entwurf",saveContract:"Vertrag speichern",meetingManagement:"Besprechungen und Vereinbarungen",meetingName:"Besprechungsthema",meetingDate:"Besprechungsdatum",location:"Ort",saveMeeting:"Besprechung speichern",taskManagement:"Aufgaben und Fristen",responsible:"Verantwortliche Person",saveTask:"Aufgabe speichern",backupInfo:"Exportieren Sie Ihre Daten als JSON-Sicherung. Der Import ersetzt vorhandene Daten.",export:"Daten exportieren",import:"Daten importieren",deleteAll:"Alle Daten löschen",localInfo:"Die Daten werden in diesem Browser und auf diesem Gerät gespeichert. Erstellen Sie regelmäßig Sicherungen.",search:"Partner suchen...",edit:"Bearbeiten",delete:"Löschen",none:"Keine Einträge.",confirmDelete:"Diesen Eintrag löschen?",confirmAll:"Möchten Sie wirklich ALLE Daten löschen?",importConfirm:"Der Import ersetzt vorhandene Daten. Fortfahren?",saved:"Daten gespeichert.",badFile:"Ungültige Datei.",exported:"DOCBIZHUB Sicherung",overdue:"Überfällig",due:"Pünktlich",unknown:"Unbekannter Partner",choose:"Partner auswählen",noPartner:"Kein Partner",invalidDate:"Das Enddatum darf nicht vor dem Startdatum liegen."
+}
+};
+
+function tr(k){return T[lang][k]||T.bs[k]||k}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(db));render();}
+ catch(e){alert("Storage error: "+e.message)}
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function id(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function partnerName(pid){return db.partners.find(p=>p.id===pid)?.company||tr("unknown")}
+function date(v){return v||"—"}
+function statusClass(s){return s==="Finished"?"done":s==="Waiting"?"wait":s==="Draft"?"wait":""}
+function statusLabel(s){
+ const keys={New:"new",Active:"active",Waiting:"waiting",Finished:"finished",Draft:"draft"};
+ return tr(keys[s]||s||"new");
+}
+function optionsPartners(selected){
+ return `<option value="">${tr("noPartner")}</option>`+
+ db.partners.map(p=>`<option value="${esc(p.id)}" ${p.id===selected?"selected":""}>${esc(p.company)}</option>`).join("");
+}
+function updatePartnerOptions(){
+ ["projectPartner","contractPartner","meetingPartner","taskPartner"].forEach(id=>{
+ const el=$(id),old=el.value;
+ el.innerHTML=optionsPartners(old);
+ });
+}
+function rowEmpty(cols){return `<tr><td colspan="${cols}" class="empty">${tr("none")}</td></tr>`}
+function actions(type,item){
+ return `<button class="btn small" data-edit="${type}" data-id="${esc(item.id)}">${tr("edit")}</button>
+ <button class="btn small danger" data-delete="${type}" data-id="${esc(item.id)}">${tr("delete")}</button>`;
+}
+function tableRows(type,columns){
+ const data=db[type];
+ return data.length?data.map(item=>`<tr>${columns(item)}<td>${actions(type,item)}</td></tr>`).join(""):rowEmpty(columns.length?columns({}).split("<td>").length-1+1:1);
+}
+function render(){
+ $("nPartners").textContent=db.partners.length;
+ $("nProjects").textContent=db.projects.length;
+ $("nContracts").textContent=db.contracts.length;
+ $("nTasks").textContent=db.tasks.filter(t=>t.status!=="Finished").length;
+ updatePartnerOptions();
+
+ $("partnersTable").innerHTML=db.partners.filter(p=>{
+ const q=$("searchPartners").value.toLowerCase();
+ return [p.company,p.country,p.contact,p.email,p.phone].some(v=>(v||"").toLowerCase().includes(q));
+ }).map(p=>`<tr><td>${esc(p.company)}</td><td>${esc(p.country)}</td><td>${esc(p.contact)}<br>${esc(p.email)}</td><td>${esc(tr(p.type==="Supplier"?"supplier":p.type==="Customer"?"customer":p.type==="Distributor"?"distributor":p.type==="Investor"?"investor":"other"))}</td><td><span class="status ${statusClass(p.status)}">${statusLabel(p.status)}</span></td><td>${actions("partners",p)}</td></tr>`).join("")||rowEmpty(6);
+
+ $("projectsTable").innerHTML=db.projects.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(partnerName(p.partner))}</td><td>${date(p.start)}</td><td>${date(p.end)}</td><td><span class="status ${statusClass(p.status)}">${statusLabel(p.status)}</span></td><td>${actions("projects",p)}</td></tr>`).join("")||rowEmpty(6);
+
+ $("contractsTable").innerHTML=db.contracts.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(partnerName(c.partner))}</td><td>${esc(c.type)}</td><td>${date(c.expiry)}</td><td><span class="status ${statusClass(c.status)}">${statusLabel(c.status)}</span></td><td>${actions("contracts",c)}</td></tr>`).join("")||rowEmpty(6);
+
+ $("meetingsTable").innerHTML=db.meetings.map(m=>`<tr><td>${esc(m.name)}</td><td>${esc(partnerName(m.partner))}</td><td>${date(m.date)}</td><td>${esc(m.location)}</td><td>${actions("meetings",m)}</td></tr>`).join("")||rowEmpty(5);
+
+ $("tasksTable").innerHTML=db.tasks.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(partnerName(t.partner))}</td><td>${date(t.deadline)}</td><td>${esc(t.responsible)}</td><td><span class="status ${statusClass(t.status)}">${statusLabel(t.status)}</span></td><td>${actions("tasks",t)}</td></tr>`).join("")||rowEmpty(6);
+
+ const upcoming=db.tasks.filter(t=>t.status!=="Finished").sort((a,b)=>(a.deadline||"9999").localeCompare(b.deadline||"9999")).slice(0,10);
+ $("dashboardTasks").innerHTML=upcoming.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(partnerName(t.partner))}</td><td>${date(t.deadline)}</td><td><span class="status ${t.deadline&&t.deadline<new Date().toISOString().slice(0,10)?"wait":""}">${t.deadline&&t.deadline<new Date().toISOString().slice(0,10)?tr("overdue"):statusLabel(t.status)}</span></td></tr>`).join("")||rowEmpty(4);
+}
+function translate(){
+ document.documentElement.lang=lang;
+ document.querySelectorAll("[data-i]").forEach(el=>el.textContent=tr(el.dataset.i));
+ document.querySelectorAll("[data-i-placeholder]").forEach(el=>el.placeholder=tr(el.dataset.iPlaceholder));
+ $("language").value=lang;
+ render();
+}
+$("language").addEventListener("change",e=>{
+ lang=e.target.value;
+ localStorage.setItem("docbiz_language",lang);
+ translate();
+});
+
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll(".tab,.panel").forEach(el=>el.classList.remove("active"));
+ btn.classList.add("active");
+ $(btn.dataset.tab).classList.add("active");
+}));
+
+function formData(ids){
+ return Object.fromEntries(ids.map(k=>[k,$(k).value.trim()]));
+}
+function bindForm(formId,type,ids){
+ $(formId).addEventListener("submit",e=>{
+ e.preventDefault();
+ const d=formData(ids);
+ const existing=d[type.slice(0,-1)+"Id"];
+ delete d[type.slice(0,-1)+"Id"];
+ if(type==="projects"&&d.start&&d.end&&d.end<d.start){alert(tr("invalidDate"));return;}
+ const index=db[type].findIndex(x=>x.id===existing);
+ if(index>=0)db[type][index]={...db[type][index],...d};
+ else db[type].push({id:id(),...d});
+ $(formId).reset();
+ $(formId).querySelector('input[type="hidden"]').value="";
+ save();
+ alert(tr("saved"));
+ });
+}
+
+bindForm("partnerForm","partners",["partnerId","company","country","contact","email","phone","partnerType","partnerStatus","partnerNotes"]);
+bindForm("projectForm","projects",["projectId","projectName","projectPartner","projectStart","projectEnd","projectStatus","projectBudget","projectNotes"]);
+bindForm("contractForm","contracts",["contractId","contractName","contractPartner","contractType","contractDate","contractExpiry","contractStatus","contractNotes"]);
+bindForm("meetingForm","meetings",["meetingId","meetingName","meetingPartner","meetingDate","meetingLocation","meetingNotes"]);
+bindForm("taskForm","tasks",["taskId","taskName","taskPartner","taskDeadline","taskResponsible","taskStatus","taskNotes"]);
+
+const fields={
+ partners:["partnerId","company","country","contact","email","phone","partnerType","partnerStatus","partnerNotes"],
+ projects:["projectId","projectName","projectPartner","projectStart","projectEnd","projectStatus","projectBudget","projectNotes"],
+ contracts:["contractId","contractName","contractPartner","contractType","contractDate","contractExpiry","contractStatus","contractNotes"],
+ meetings:["meetingId","meetingName","meetingPartner","meetingDate","meetingLocation","meetingNotes"],
+ tasks:["taskId","taskName","taskPartner","taskDeadline","taskResponsible","taskStatus","taskNotes"]
+};
+const properties={
+ partners:["id","company","country","contact","email","phone","type","status","notes"],
+ projects:["id","name","partner","start","end","status","budget","notes"],
+ contracts:["id","name","partner","type","date","expiry","status","notes"],
+ meetings:["id","name","partner","date","location","notes"],
+ tasks:["id","name","partner","deadline","responsible","status","notes"]
+};
+document.addEventListener("click",e=>{
+ const edit=e.target.closest("[data-edit]");
+ if(edit){
+  const type=edit.dataset.edit,item=db[type].find(x=>x.id===edit.dataset.id);
+  if(!item)return;
+  const props=properties[type];
+  fields[type].forEach((field,i)=>{
+   $(field).value=item[props[i]]||"";
+  });
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===type));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===type));
+  window.scrollTo({top:0,behavior:"smooth"});
+ }
+ const del=e.target.closest("[data-delete]");
+ if(del){
+  const type=del.dataset.delete;
+  if(!confirm(tr("confirmDelete")))return;
+  db[type]=db[type].filter(x=>x.id!==del.dataset.id);
+  save();
+ }
+});
+$("searchPartners").addEventListener("input",render);
+
+$("exportBtn").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="DOCBIZHUB_backup.json";a.click();
+ URL.revokeObjectURL(url);
+});
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const obj=JSON.parse(await file.text());
+  const incoming=obj.data||obj;
+  const keys=Object.keys(blank());
+  if(!keys.every(k=>Array.isArray(incoming[k])))throw Error("Invalid");
+  if(!confirm(tr("importConfirm")))return;
+  db=Object.fromEntries(keys.map(k=>[k,incoming[k]]));
+  save();
+ }catch(err){alert(tr("badFile"));}
+ finally{e.target.value="";}
+});
+$("deleteAll").addEventListener("click",()=>{
+ if(!confirm(tr("confirmAll")))return;
+ db=blank();save();
+});
+try{
+ const stored=localStorage.getItem(KEY);
+ if(stored){
+  const incoming=JSON.parse(stored);
+  for(const k of Object.keys(db))if(Array.isArray(incoming[k]))db[k]=incoming[k];
+ }
+}catch(e){console.error(e);}
+translate();
+</script>
+</body>
+</html>
