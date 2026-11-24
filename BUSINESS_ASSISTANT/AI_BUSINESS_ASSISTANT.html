@@ -1,0 +1,884 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | AI Business Assistant</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+    min-height: 100vh;
+}
+
+header {
+    background: #101c35;
+    color: white;
+    padding: 23px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #35a8ff;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-right p {
+    color: #c5d3e8;
+    font-size: 14px;
+}
+
+.language-select {
+    padding: 9px 12px;
+    border-radius: 7px;
+    border: 1px solid #53637d;
+    background: #1b2b49;
+    color: white;
+    cursor: pointer;
+}
+
+main {
+    max-width: 1250px;
+    margin: 40px auto;
+    padding: 0 22px;
+}
+
+.intro {
+    margin-bottom: 30px;
+}
+
+.intro h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.intro p {
+    color: #718096;
+    line-height: 1.6;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 22px;
+    align-items: start;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e1e7f0;
+    border-radius: 13px;
+    padding: 23px;
+}
+
+.panel h2 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: #203451;
+}
+
+.topic {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #e1e7f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #263750;
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.topic:hover, .topic.active {
+    background: #edf6ff;
+    border-color: #238be5;
+    color: #0864b6;
+}
+
+.chat-panel {
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e8edf4;
+    margin-bottom: 15px;
+}
+
+.chat-header p {
+    color: #718096;
+    font-size: 13px;
+    margin-top: 7px;
+}
+
+.messages {
+    flex: 1;
+    min-height: 350px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 10px 2px;
+}
+
+.message {
+    max-width: 88%;
+    padding: 14px 16px;
+    border-radius: 11px;
+    margin-bottom: 14px;
+    line-height: 1.6;
+    font-size: 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message.assistant {
+    background: #edf3fa;
+    color: #263750;
+    border-top-left-radius: 2px;
+}
+
+.message.user {
+    background: #1679d2;
+    color: white;
+    margin-left: auto;
+    border-top-right-radius: 2px;
+}
+
+.message-actions {
+    margin-top: 9px;
+}
+
+.small-btn {
+    padding: 6px 10px;
+    border: 1px solid #d4deeb;
+    background: white;
+    color: #344761;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.chat-input {
+    border-top: 1px solid #e8edf4;
+    padding-top: 17px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 13px;
+    border: 1px solid #d8e0eb;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #238be5;
+}
+
+.chat-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.btn {
+    border: none;
+    padding: 12px 19px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #1679d2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0864b6;
+}
+
+.btn-secondary {
+    background: #e9eff7;
+    color: #203451;
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.info {
+    background: #edf6ff;
+    border: 1px solid #d4e9fc;
+    padding: 14px;
+    border-radius: 9px;
+    color: #315777;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+.history-list {
+    margin-top: 15px;
+}
+
+.history-item {
+    padding: 11px;
+    background: #f4f7fb;
+    border-radius: 7px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.history-item:hover {
+    background: #e8f2fd;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #8290a5;
+    font-size: 13px;
+}
+
+@media(max-width:850px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-panel {
+        min-height: 550px;
+    }
+}
+
+@media(max-width:600px) {
+    header {
+        padding: 20px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .message {
+        max-width: 96%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">DOCBIZ<span>HUB</span></div>
+
+    <div class="header-right">
+        <p>European Business Ecosystem</p>
+
+        <select class="language-select" id="languageSelect"
+                onchange="changeLanguage(this.value)">
+            <option value="bs">Bosanski</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+</header>
+
+<main>
+
+<div class="intro">
+    <h1 data-i18n="title">AI Business Assistant</h1>
+    <p data-i18n="intro">
+        Vaš digitalni poslovni savjetnik za analizu, planiranje i razvoj poslovanja.
+    </p>
+</div>
+
+<div class="layout">
+
+    <aside>
+
+        <section class="panel">
+
+            <h2 data-i18n="topics">Poslovne oblasti</h2>
+
+            <button class="topic active" onclick="selectTopic(this,'strategy')" data-i18n="strategy">
+                📊 Poslovna strategija
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'finance')" data-i18n="finance">
+                💶 Finansijsko planiranje
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'marketing')" data-i18n="marketing">
+                📈 Marketing i prodaja
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'market')" data-i18n="market">
+                🌍 Analiza tržišta
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'businessplan')" data-i18n="businessplan">
+                📝 Poslovni plan
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'operations')" data-i18n="operations">
+                ⚙️ Operativno poslovanje
+            </button>
+
+            <button class="topic" onclick="selectTopic(this,'funding')" data-i18n="funding">
+                💡 Grantovi i finansiranje
+            </button>
+
+        </section>
+
+        <section class="panel" style="margin-top:20px">
+
+            <h2 data-i18n="history">Historija razgovora</h2>
+
+            <div id="historyList" class="history-list"></div>
+
+            <button class="btn btn-secondary"
+                    style="width:100%;margin-top:10px"
+                    onclick="clearHistory()"
+                    data-i18n="clearHistory">
+                Obriši historiju
+            </button>
+
+        </section>
+
+        <div class="info" data-i18n="notice">
+            AI odgovori predstavljaju informativnu podršku i ne zamjenjuju stručni, pravni ili finansijski savjet.
+        </div>
+
+    </aside>
+
+    <section class="panel chat-panel">
+
+        <div class="chat-header">
+            <h2>🤖 AI Business Assistant</h2>
+            <p data-i18n="chatDescription">
+                Postavite pitanje i započnite razgovor sa poslovnim asistentom.
+            </p>
+        </div>
+
+        <div class="messages" id="messages">
+
+            <div class="message assistant" data-i18n="welcome">
+                Dobro došli u DOCBIZHUB AI Business Assistant.
+                Kako vam mogu pomoći u poslovanju danas?
+            </div>
+
+        </div>
+
+        <div class="chat-input">
+
+            <textarea id="userInput"
+                      data-i18n-placeholder="placeholder"
+                      placeholder="Unesite vaše poslovno pitanje..."></textarea>
+
+            <div class="chat-actions">
+
+                <button class="btn btn-secondary"
+                        onclick="newConversation()"
+                        data-i18n="newChat">
+                    Novi razgovor
+                </button>
+
+                <button class="btn btn-primary"
+                        id="sendButton"
+                        onclick="sendMessage()"
+                        data-i18n="send">
+                    Pošalji pitanje
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</main>
+
+<footer>
+    © 2026 DOCBIZHUB — European Business Ecosystem
+</footer>
+
+<script>
+
+const translations = {
+
+bs: {
+title:"AI Business Assistant",
+intro:"Vaš digitalni poslovni savjetnik za analizu, planiranje i razvoj poslovanja.",
+topics:"Poslovne oblasti",
+strategy:"📊 Poslovna strategija",
+finance:"💶 Finansijsko planiranje",
+marketing:"📈 Marketing i prodaja",
+market:"🌍 Analiza tržišta",
+businessplan:"📝 Poslovni plan",
+operations:"⚙️ Operativno poslovanje",
+funding:"💡 Grantovi i finansiranje",
+history:"Historija razgovora",
+clearHistory:"Obriši historiju",
+notice:"AI odgovori predstavljaju informativnu podršku i ne zamjenjuju stručni, pravni ili finansijski savjet.",
+chatDescription:"Postavite pitanje i započnite razgovor sa poslovnim asistentom.",
+welcome:"Dobro došli u DOCBIZHUB AI Business Assistant. Kako vam mogu pomoći u poslovanju danas?",
+placeholder:"Unesite vaše poslovno pitanje...",
+newChat:"Novi razgovor",
+send:"Pošalji pitanje",
+thinking:"Asistent priprema odgovor...",
+empty:"Molimo unesite pitanje.",
+noHistory:"Još nema sačuvanih razgovora.",
+copy:"Kopiraj",
+copied:"Odgovor je kopiran.",
+clearConfirm:"Da li želite obrisati cijelu historiju?",
+topicHelp:"Odabrana oblast",
+introHelp:"Navedite problem, cilj ili poslovnu ideju. Za konkretnu analizu dodajte što više relevantnih podataka.",
+offline:"Ovaj modul trenutno radi u demonstracijskom režimu. Za stvarne AI odgovore potrebno je povezati AI API preko sigurnog serverskog sistema.",
+error:"Došlo je do greške."
+},
+
+en: {
+title:"AI Business Assistant",
+intro:"Your digital business advisor for analysis, planning and business development.",
+topics:"Business Areas",
+strategy:"📊 Business Strategy",
+finance:"💶 Financial Planning",
+marketing:"📈 Marketing and Sales",
+market:"🌍 Market Analysis",
+businessplan:"📝 Business Plan",
+operations:"⚙️ Business Operations",
+funding:"💡 Grants and Funding",
+history:"Conversation History",
+clearHistory:"Clear History",
+notice:"AI responses provide informational support and do not replace professional, legal or financial advice.",
+chatDescription:"Ask a question and start a conversation with your business assistant.",
+welcome:"Welcome to DOCBIZHUB AI Business Assistant. How can I help your business today?",
+placeholder:"Enter your business question...",
+newChat:"New Conversation",
+send:"Send Question",
+thinking:"The assistant is preparing an answer...",
+empty:"Please enter a question.",
+noHistory:"No saved conversations yet.",
+copy:"Copy",
+copied:"Answer copied.",
+clearConfirm:"Do you want to delete the entire history?",
+topicHelp:"Selected area",
+introHelp:"Describe your problem, goal or business idea. Include as much relevant information as possible.",
+offline:"This module is currently running in demonstration mode. To receive real AI answers, connect an AI API through a secure server.",
+error:"An error occurred."
+},
+
+de: {
+title:"AI Business Assistant",
+intro:"Ihr digitaler Unternehmensberater für Analyse, Planung und Geschäftsentwicklung.",
+topics:"Geschäftsbereiche",
+strategy:"📊 Geschäftsstrategie",
+finance:"💶 Finanzplanung",
+marketing:"📈 Marketing und Vertrieb",
+market:"🌍 Marktanalyse",
+businessplan:"📝 Geschäftsplan",
+operations:"⚙️ Geschäftsbetrieb",
+funding:"💡 Fördermittel und Finanzierung",
+history:"Gesprächsverlauf",
+clearHistory:"Verlauf löschen",
+notice:"KI-Antworten dienen der Information und ersetzen keine professionelle, rechtliche oder finanzielle Beratung.",
+chatDescription:"Stellen Sie eine Frage und beginnen Sie ein Gespräch mit Ihrem Geschäftsassistenten.",
+welcome:"Willkommen beim DOCBIZHUB AI Business Assistant. Wie kann ich Ihrem Unternehmen heute helfen?",
+placeholder:"Geben Sie Ihre geschäftliche Frage ein...",
+newChat:"Neues Gespräch",
+send:"Frage senden",
+thinking:"Der Assistent bereitet eine Antwort vor...",
+empty:"Bitte geben Sie eine Frage ein.",
+noHistory:"Noch keine Gespräche gespeichert.",
+copy:"Kopieren",
+copied:"Antwort wurde kopiert.",
+clearConfirm:"Möchten Sie den gesamten Verlauf löschen?",
+topicHelp:"Ausgewählter Bereich",
+introHelp:"Beschreiben Sie Ihr Problem, Ihr Ziel oder Ihre Geschäftsidee. Geben Sie möglichst viele relevante Informationen an.",
+offline:"Dieses Modul läuft derzeit im Demonstrationsmodus. Für echte KI-Antworten muss eine KI-API über einen sicheren Server verbunden werden.",
+error:"Ein Fehler ist aufgetreten."
+}
+
+};
+
+let currentLanguage = "bs";
+let currentTopic = "strategy";
+let conversation = [];
+let history = [];
+
+const topicNames = {
+strategy:"strategy",
+finance:"finance",
+marketing:"marketing",
+market:"market",
+businessplan:"businessplan",
+operations:"operations",
+funding:"funding"
+};
+
+function normalizeLanguage(value) {
+
+    if (!value) return null;
+
+    const lang = String(value).toLowerCase().split(/[-_]/)[0];
+
+    if (["bs","ba","hr","sr"].includes(lang)) return "bs";
+    if (lang === "de") return "de";
+    if (lang === "en") return "en";
+
+    return null;
+}
+
+function changeLanguage(language) {
+
+    const selected = normalizeLanguage(language) || "en";
+
+    localStorage.setItem("docbiz_language", selected);
+
+    applyLanguage(selected);
+
+}
+
+function applyLanguage(language) {
+
+    currentLanguage = normalizeLanguage(language) || "en";
+
+    const dictionary = translations[currentLanguage];
+
+    document.documentElement.lang = currentLanguage;
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+
+        const key = element.getAttribute("data-i18n");
+
+        if (dictionary[key]) {
+            element.textContent = dictionary[key];
+        }
+
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+
+        const key = element.getAttribute("data-i18n-placeholder");
+
+        if (dictionary[key]) {
+            element.placeholder = dictionary[key];
+        }
+
+    });
+
+    document.getElementById("languageSelect").value = currentLanguage;
+
+    renderMessages();
+    renderHistory();
+
+}
+
+function detectUserLanguage() {
+
+    const saved = localStorage.getItem("docbiz_language");
+
+    return saved
+        ? normalizeLanguage(saved) || "en"
+        : normalizeLanguage(navigator.language) || "en";
+
+}
+
+function selectTopic(button, topic) {
+
+    currentTopic = topic;
+
+    document.querySelectorAll(".topic").forEach(item => {
+        item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+}
+
+function addMessage(role, content) {
+
+    conversation.push({
+        role,
+        content
+    });
+
+    renderMessages();
+
+    saveConversation();
+
+}
+
+function renderMessages() {
+
+    const container = document.getElementById("messages");
+
+    container.innerHTML = "";
+
+    conversation.forEach(message => {
+
+        const div = document.createElement("div");
+
+        div.className = "message " + message.role;
+        div.textContent = message.content;
+
+        if (message.role === "assistant") {
+
+            const actions = document.createElement("div");
+
+            actions.className = "message-actions";
+
+            const copyButton = document.createElement("button");
+
+            copyButton.className = "small-btn";
+            copyButton.textContent = translations[currentLanguage].copy;
+
+            copyButton.onclick = () => {
+
+                navigator.clipboard.writeText(message.content);
+
+            };
+
+            actions.appendChild(copyButton);
+
+            div.appendChild(actions);
+
+        }
+
+        container.appendChild(div);
+
+    });
+
+    container.scrollTop = container.scrollHeight;
+
+}
+
+function saveConversation() {
+
+    if (!conversation.length) return;
+
+    const firstUser = conversation.find(m => m.role === "user");
+
+    if (!firstUser) return;
+
+    history = history.filter(item => item.id !== window.currentConversationId);
+
+    if (!window.currentConversationId) {
+        window.currentConversationId = Date.now();
+    }
+
+    history.unshift({
+
+        id:window.currentConversationId,
+        title:firstUser.content.slice(0,50),
+        messages:conversation
+
+    });
+
+    history = history.slice(0,30);
+
+    localStorage.setItem(
+        "docbiz_ai_history",
+        JSON.stringify(history)
+    );
+
+    renderHistory();
+
+}
+
+function loadHistory() {
+
+    try {
+
+        history = JSON.parse(
+            localStorage.getItem("docbiz_ai_history") || "[]"
+        );
+
+    } catch {
+
+        history = [];
+
+    }
+
+    renderHistory();
+
+}
+
+function renderHistory() {
+
+    const container = document.getElementById("historyList");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!history.length) {
+
+        container.textContent = translations[currentLanguage].noHistory;
+        return;
+
+    }
+
+    history.forEach(item => {
+
+        const div = document.createElement("div");
+
+        div.className = "history-item";
+        div.textContent = item.title;
+
+        div.onclick = () => {
+
+            conversation = item.messages;
+            window.currentConversationId = item.id;
+
+            renderMessages();
+
+        };
+
+        container.appendChild(div);
+
+    });
+
+}
+
+function newConversation() {
+
+    conversation = [];
+    window.currentConversationId = null;
+
+    const welcome = translations[currentLanguage].welcome;
+
+    conversation.push({
+        role:"assistant",
+        content:welcome
+    });
+
+    renderMessages();
+
+}
+
+function clearHistory() {
+
+    if (!confirm(translations[currentLanguage].clearConfirm)) return;
+
+    history = [];
+
+    localStorage.removeItem("docbiz_ai_history");
+
+    renderHistory();
+
+}
+
+function createDemoResponse(question) {
+
+    const t = translations[currentLanguage];
+
+    const topic = t[currentTopic];
+
+    return `${t.topicHelp}: ${topic}
+
+${t.introHelp}
+
+${t.offline}
+
+Vaš upit:
+${question}
+
+Prijedlog za naredni korak:
+Pripremite osnovne podatke o kompaniji, ciljevima, budžetu i vremenskom okviru kako biste mogli dobiti kvalitetnu poslovnu analizu.`;
+
+}
+
+function sendMessage() {
+
+    const input = document.getElementById("userInput");
+
+    const question = input.value.trim();
+
+    if (!question) {
+
+        alert(translations[currentLanguage].empty);
+        return;
+
+    }
+
+    const button = document.getElementById("sendButton");
+
+    button.disabled = true;
+
+    addMessage("user", question);
+
+    input.value = "";
+
+    const answer = createDemoResponse(question);
+
+    setTimeout(() => {
+
+        addMessage("assistant", answer);
+
+        button.disabled = false;
+
+    }, 500);
+
+}
+
+document.getElementById("userInput").addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter" && !event.shiftKey) {
+
+        event.preventDefault();
+        sendMessage();
+
+    }
+
+});
+
+loadHistory();
+
+applyLanguage(detectUserLanguage());
+
+</script>
+
+</body>
+</html>
