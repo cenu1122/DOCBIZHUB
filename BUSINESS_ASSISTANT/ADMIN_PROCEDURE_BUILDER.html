@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Admin Procedure Builder</title>
+<style>
+:root {
+  --navy:#102b46;
+  --blue:#2474c6;
+  --blue-light:#eaf3fc;
+  --bg:#f3f6fa;
+  --white:#fff;
+  --text:#26374a;
+  --muted:#718096;
+  --border:#e1e8f0;
+  --green:#16845b;
+  --red:#d64545;
+  --orange:#d88719;
+  --shadow:0 5px 18px rgba(16,43,70,.07);
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif
+}
+header {
+  background:var(--navy);color:white;padding:22px 5%;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap
+}
+.brand {font-size:21px;font-weight:800;letter-spacing:.5px}
+.brand span {color:#63b3ff}
+.header-right {display:flex;align-items:center;gap:12px}
+header a {color:#d8e9fb;text-decoration:none;font-size:13px}
+.language {
+  padding:9px 12px;border-radius:8px;
+  border:1px solid #49627a;background:#183b5d;color:white
+}
+.container {max-width:1250px;margin:30px auto;padding:0 20px}
+.page-heading {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:23px
+}
+h1 {font-size:27px;margin:0 0 7px;color:var(--navy)}
+.subtitle {color:var(--muted);font-size:14px;margin:0}
+.btn {
+  border:0;border-radius:8px;padding:11px 15px;
+  cursor:pointer;font-weight:700;font-size:13px;transition:.2s
+}
+.btn-primary {background:var(--blue);color:white}
+.btn-primary:hover {background:#185da2}
+.btn-light {background:var(--blue-light);color:var(--blue)}
+.btn-danger {background:#fff0f0;color:var(--red)}
+.btn-success {background:#e8f7ef;color:var(--green)}
+.btn-small {padding:7px 10px;font-size:11px}
+.stats {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:15px;margin-bottom:22px
+}
+.stat {
+  background:white;border:1px solid var(--border);
+  padding:18px;border-radius:12px;box-shadow:var(--shadow)
+}
+.stat-label {font-size:13px;color:var(--muted);margin-bottom:8px}
+.stat-value {font-size:27px;font-weight:800;color:var(--navy)}
+.toolbar {
+  background:white;padding:15px;border-radius:12px;
+  border:1px solid var(--border);display:flex;gap:10px;
+  flex-wrap:wrap;margin-bottom:20px
+}
+.toolbar input,.toolbar select {
+  border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;background:white;color:var(--text);
+  min-width:150px;flex:1
+}
+.main-grid {
+  display:grid;grid-template-columns:390px 1fr;
+  gap:20px;align-items:start
+}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:20px;box-shadow:var(--shadow)
+}
+.panel h2 {font-size:17px;color:var(--navy);margin:0 0 18px}
+.field {margin-bottom:14px}
+.field label {
+  display:block;font-size:12px;font-weight:700;
+  margin-bottom:7px;color:#526477
+}
+.field input,.field select,.field textarea {
+  width:100%;border:1px solid var(--border);
+  border-radius:8px;padding:11px 12px;
+  color:var(--text);background:white;outline:none
+}
+.field input:focus,.field select:focus,.field textarea:focus {
+  border-color:var(--blue)
+}
+.field textarea {min-height:85px;resize:vertical}
+.steps-title {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin:20px 0 12px
+}
+.steps-title h3 {font-size:14px;color:var(--navy);margin:0}
+.step-input {
+  display:flex;gap:8px;align-items:center;margin-bottom:8px
+}
+.step-input input {
+  flex:1;min-width:0;border:1px solid var(--border);
+  border-radius:7px;padding:10px
+}
+.step-input button {
+  border:0;background:#fff0f0;color:var(--red);
+  border-radius:7px;padding:9px 11px;cursor:pointer
+}
+.form-actions {display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.list-heading {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin-bottom:15px
+}
+.list-heading h2 {margin:0}
+.procedure-card {
+  border:1px solid var(--border);border-radius:10px;
+  padding:16px;margin-bottom:12px;background:white
+}
+.procedure-top {
+  display:flex;justify-content:space-between;
+  align-items:flex-start;gap:12px
+}
+.procedure-name {
+  font-size:15px;font-weight:700;color:var(--navy);
+  margin-bottom:7px;overflow-wrap:anywhere
+}
+.procedure-description {
+  font-size:13px;color:#58697b;line-height:1.5;
+  margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere
+}
+.procedure-meta {
+  display:flex;gap:7px;flex-wrap:wrap;align-items:center
+}
+.tag {
+  padding:4px 8px;border-radius:20px;font-size:10px;
+  font-weight:700;background:#edf1f5;color:#566779
+}
+.tag.active {background:#e8f7ef;color:#16845b}
+.tag.inactive {background:#fff0f0;color:#c43e3e}
+.procedure-actions {
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:13px
+}
+.procedure-actions button {
+  border:0;border-radius:6px;padding:7px 9px;
+  font-size:11px;cursor:pointer;font-weight:700
+}
+.empty {
+  text-align:center;padding:40px 15px;color:var(--muted);
+  font-size:14px
+}
+.empty-icon {font-size:34px;margin-bottom:12px}
+.detail {
+  margin-top:20px;border-top:1px solid var(--border);
+  padding-top:17px
+}
+.detail h3 {font-size:16px;color:var(--navy);margin:0 0 12px}
+.detail ol {padding-left:23px;margin:0}
+.detail li {padding:7px 0;color:#526477;font-size:13px;line-height:1.5}
+.detail-empty {font-size:13px;color:var(--muted)}
+.footer {
+  text-align:center;color:var(--muted);
+  font-size:12px;padding:30px 15px
+}
+.toast {
+  position:fixed;right:20px;bottom:20px;background:var(--navy);
+  color:white;padding:13px 18px;border-radius:9px;
+  box-shadow:var(--shadow);font-size:13px;
+  display:none;z-index:10
+}
+@media(max-width:900px) {
+  .main-grid {grid-template-columns:1fr}
+}
+@media(max-width:600px) {
+  .stats {grid-template-columns:1fr}
+  .container {padding:0 13px;margin-top:20px}
+  header {padding:18px 5%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DOC<span>BIZ</span>HUB</div>
+  <div class="header-right">
+    <a href="index.html" data-i18n="back">← Glavni portal</a>
+    <select class="language" id="language">
+      <option value="bs">BS</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-heading">
+    <div>
+      <h1 data-i18n="heading">Administrator procedura</h1>
+      <p class="subtitle" data-i18n="subtitle">Kreirajte, uređujte i organizujte poslovne procedure i njihove korake.</p>
+    </div>
+    <button class="btn btn-light" id="newBtn" data-i18n="newProcedure">+ Nova procedura</button>
+  </div>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label" data-i18n="total">Ukupno procedura</div>
+      <div class="stat-value" id="totalCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" data-i18n="active">Aktivne procedure</div>
+      <div class="stat-value" id="activeCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" data-i18n="inactive">Neaktivne procedure</div>
+      <div class="stat-value" id="inactiveCount">0</div>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <input type="search" id="search" data-placeholder="search" placeholder="Pretraži procedure...">
+    <select id="categoryFilter">
+      <option value="all" data-i18n="allCategories">Sve kategorije</option>
+      <option value="administration" data-i18n="administration">Administracija</option>
+      <option value="finance" data-i18n="finance">Finansije</option>
+      <option value="hr" data-i18n="hr">Ljudski resursi</option>
+      <option value="sales" data-i18n="sales">Prodaja</option>
+      <option value="operations" data-i18n="operations">Operacije</option>
+      <option value="legal" data-i18n="legal">Pravne procedure</option>
+      <option value="other" data-i18n="other">Ostalo</option>
+    </select>
+    <select id="statusFilter">
+      <option value="all" data-i18n="allStatuses">Svi statusi</option>
+      <option value="active" data-i18n="active">Aktivne</option>
+      <option value="inactive" data-i18n="inactive">Neaktivne</option>
+    </select>
+  </section>
+
+  <section class="main-grid">
+    <div class="panel" id="editorPanel">
+      <h2 id="formHeading" data-i18n="createHeading">Kreiranje procedure</h2>
+      <form id="procedureForm">
+        <div class="field">
+          <label for="procedureName" data-i18n="nameLabel">Naziv procedure *</label>
+          <input id="procedureName" maxlength="120" required data-placeholder="namePlaceholder" placeholder="Npr. Proces izdavanja fakture">
+        </div>
+
+        <div class="field">
+          <label for="category" data-i18n="categoryLabel">Kategorija</label>
+          <select id="category">
+            <option value="administration" data-i18n="administration">Administracija</option>
+            <option value="finance" data-i18n="finance">Finansije</option>
+            <option value="hr" data-i18n="hr">Ljudski resursi</option>
+            <option value="sales" data-i18n="sales">Prodaja</option>
+            <option value="operations" data-i18n="operations">Operacije</option>
+            <option value="legal" data-i18n="legal">Pravne procedure</option>
+            <option value="other" data-i18n="other">Ostalo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="description" data-i18n="descriptionLabel">Opis procedure</label>
+          <textarea id="description" maxlength="1500" data-placeholder="descriptionPlaceholder" placeholder="Opišite svrhu i primjenu procedure..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="owner" data-i18n="ownerLabel">Odgovorna osoba / odjel</label>
+          <input id="owner" maxlength="100" data-placeholder="ownerPlaceholder" placeholder="Npr. Finansijski odjel">
+        </div>
+
+        <div class="field">
+          <label for="status" data-i18n="statusLabel">Status procedure</label>
+          <select id="status">
+            <option value="active" data-i18n="active">Aktivna</option>
+            <option value="inactive" data-i18n="inactive">Neaktivna</option>
+          </select>
+        </div>
+
+        <div class="steps-title">
+          <h3 data-i18n="stepsHeading">Koraci procedure</h3>
+          <button type="button" class="btn btn-light btn-small" id="addStepBtn" data-i18n="addStep">+ Dodaj korak</button>
+        </div>
+
+        <div id="stepsContainer"></div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="saveBtn" data-i18n="save">Sačuvaj proceduru</button>
+          <button type="button" class="btn btn-light" id="cancelBtn" data-i18n="cancel">Poništi</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="list-heading">
+        <h2 data-i18n="listHeading">Poslovne procedure</h2>
+        <span class="tag" id="visibleCount">0</span>
+      </div>
+      <div id="procedureList"></div>
+      <div id="procedureDetail" class="detail" hidden></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  DOCBIZHUB © 2026 — <span data-i18n="footer">Upravljanje poslovnim procedurama</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const translations = {
+  bs: {
+    back:"← Glavni portal",
+    heading:"Administrator procedura",
+    subtitle:"Kreirajte, uređujte i organizujte poslovne procedure i njihove korake.",
+    newProcedure:"+ Nova procedura",
+    total:"Ukupno procedura",active:"Aktivne",inactive:"Neaktivne",
+    search:"Pretraži procedure...",allCategories:"Sve kategorije",
+    allStatuses:"Svi statusi",administration:"Administracija",
+    finance:"Finansije",hr:"Ljudski resursi",sales:"Prodaja",
+    operations:"Operacije",legal:"Pravne procedure",other:"Ostalo",
+    createHeading:"Kreiranje procedure",editHeading:"Uređivanje procedure",
+    nameLabel:"Naziv procedure *",
+    namePlaceholder:"Npr. Proces izdavanja fakture",
+    categoryLabel:"Kategorija",descriptionLabel:"Opis procedure",
+    descriptionPlaceholder:"Opišite svrhu i primjenu procedure...",
+    ownerLabel:"Odgovorna osoba / odjel",
+    ownerPlaceholder:"Npr. Finansijski odjel",
+    statusLabel:"Status procedure",stepsHeading:"Koraci procedure",
+    addStep:"+ Dodaj korak",stepPlaceholder:"Unesite opis koraka...",
+    save:"Sačuvaj proceduru",update:"Ažuriraj proceduru",
+    cancel:"Poništi",listHeading:"Poslovne procedure",
+    empty:"Nema procedura za prikaz.",
+    noSteps:"Nisu dodani koraci procedure.",
+    view:"Pregled",edit:"Uredi",delete:"Obriši",
+    activate:"Aktiviraj",deactivate:"Deaktiviraj",
+    confirmDelete:"Da li sigurno želite obrisati ovu proceduru?",
+    added:"Procedura je uspješno kreirana.",
+    updated:"Procedura je uspješno ažurirana.",
+    deleted:"Procedura je obrisana.",
+    statusChanged:"Status procedure je promijenjen.",
+    required:"Unesite naziv procedure.",
+    details:"Detalji procedure",owner:"Odgovorna osoba:",
+    created:"Kreirano:",stepCount:"Broj koraka:",
+    noOwner:"Nije navedeno",footer:"Upravljanje poslovnim procedurama"
+  },
+  en: {
+    back:"← Main portal",
+    heading:"Procedure Administrator",
+    subtitle:"Create, edit and organize business procedures and their steps.",
+    newProcedure:"+ New procedure",
+    total:"Total procedures",active:"Active",inactive:"Inactive",
+    search:"Search procedures...",allCategories:"All categories",
+    allStatuses:"All statuses",administration:"Administration",
+    finance:"Finance",hr:"Human resources",sales:"Sales",
+    operations:"Operations",legal:"Legal procedures",other:"Other",
+    createHeading:"Create procedure",editHeading:"Edit procedure",
+    nameLabel:"Procedure name *",
+    namePlaceholder:"E.g. Invoice issuing process",
+    categoryLabel:"Category",descriptionLabel:"Procedure description",
+    descriptionPlaceholder:"Describe the purpose and application of the procedure...",
+    ownerLabel:"Responsible person / department",
+    ownerPlaceholder:"E.g. Finance department",
+    statusLabel:"Procedure status",stepsHeading:"Procedure steps",
+    addStep:"+ Add step",stepPlaceholder:"Enter step description...",
+    save:"Save procedure",update:"Update procedure",
+    cancel:"Cancel",listHeading:"Business procedures",
+    empty:"No procedures to display.",
+    noSteps:"No procedure steps have been added.",
+    view:"View",edit:"Edit",delete:"Delete",
+    activate:"Activate",deactivate:"Deactivate",
+    confirmDelete:"Are you sure you want to delete this procedure?",
+    added:"Procedure successfully created.",
+    updated:"Procedure successfully updated.",
+    deleted:"Procedure deleted.",
+    statusChanged:"Procedure status changed.",
+    required:"Please enter a procedure name.",
+    details:"Procedure details",owner:"Responsible person:",
+    created:"Created:",stepCount:"Number of steps:",
+    noOwner:"Not specified",footer:"Business procedure management"
+  },
+  de: {
+    back:"← Hauptportal",
+    heading:"Prozedurverwaltung",
+    subtitle:"Geschäftsprozesse und deren Schritte erstellen, bearbeiten und organisieren.",
+    newProcedure:"+ Neue Prozedur",
+    total:"Prozeduren gesamt",active:"Aktiv",inactive:"Inaktiv",
+    search:"Prozeduren suchen...",allCategories:"Alle Kategorien",
+    allStatuses:"Alle Status",administration:"Verwaltung",
+    finance:"Finanzen",hr:"Personalwesen",sales:"Vertrieb",
+    operations:"Betrieb",legal:"Rechtliche Verfahren",other:"Sonstiges",
+    createHeading:"Prozedur erstellen",editHeading:"Prozedur bearbeiten",
+    nameLabel:"Prozedurname *",
+    namePlaceholder:"Z. B. Rechnungsstellung",
+    categoryLabel:"Kategorie",descriptionLabel:"Beschreibung der Prozedur",
+    descriptionPlaceholder:"Zweck und Anwendung der Prozedur beschreiben...",
+    ownerLabel:"Verantwortliche Person / Abteilung",
+    ownerPlaceholder:"Z. B. Finanzabteilung",
+    statusLabel:"Prozedurstatus",stepsHeading:"Prozedurschritte",
+    addStep:"+ Schritt hinzufügen",stepPlaceholder:"Schrittbeschreibung eingeben...",
+    save:"Prozedur speichern",update:"Prozedur aktualisieren",
+    cancel:"Abbrechen",listHeading:"Geschäftsprozeduren",
+    empty:"Keine Prozeduren vorhanden.",
+    noSteps:"Es wurden keine Prozedurschritte hinzugefügt.",
+    view:"Ansehen",edit:"Bearbeiten",delete:"Löschen",
+    activate:"Aktivieren",deactivate:"Deaktivieren",
+    confirmDelete:"Möchten Sie diese Prozedur wirklich löschen?",
+    added:"Prozedur erfolgreich erstellt.",
+    updated:"Prozedur erfolgreich aktualisiert.",
+    deleted:"Prozedur gelöscht.",
+    statusChanged:"Prozedurstatus geändert.",
+    required:"Bitte geben Sie einen Prozedurnamen ein.",
+    details:"Prozedurdetails",owner:"Verantwortlich:",
+    created:"Erstellt:",stepCount:"Anzahl der Schritte:",
+    noOwner:"Nicht angegeben",footer:"Verwaltung von Geschäftsprozeduren"
+  }
+};
+
+const STORAGE_KEY = "docbiz_procedures";
+let procedures = loadProcedures();
+let editingId = null;
+let currentLanguage = "bs";
+
+function loadProcedures() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(data) ? data.filter(p =>
+      p && typeof p.id === "string" &&
+      typeof p.name === "string" &&
+      Array.isArray(p.steps)
+    ) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveProcedures() {
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(procedures));
+}
+
+function t(key) {
+  return translations[currentLanguage][key] || translations.bs[key] || key;
+}
+
+function setLanguage(lang) {
+  currentLanguage = translations[lang] ? lang : "bs";
+  document.documentElement.lang = currentLanguage;
+  document.getElementById("language").value = currentLanguage;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+
+  document.querySelectorAll("[data-placeholder]").forEach(el => {
+    el.placeholder = t(el.dataset.placeholder);
+  });
+
+  document.querySelectorAll(".step-text").forEach(el => {
+    el.placeholder = t("stepPlaceholder");
+  });
+
+  document.getElementById("formHeading").textContent =
+    editingId ? t("editHeading") : t("createHeading");
+
+  document.getElementById("saveBtn").textContent =
+    editingId ? t("update") : t("save");
+
+  render();
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.style.display = "none",2600);
+}
+
+function addStep(value = "") {
+  const container = document.getElementById("stepsContainer");
+  const row = document.createElement("div");
+  row.className = "step-input";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "step-text";
+  input.maxLength = 400;
+  input.placeholder = t("stepPlaceholder");
+  input.value = value;
+
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.textContent = "×";
+  remove.title = t("delete");
+  remove.addEventListener("click",() => row.remove());
+
+  row.append(input,remove);
+  container.appendChild(row);
+}
+
+function resetForm() {
+  editingId = null;
+  document.getElementById("procedureForm").reset();
+  document.getElementById("stepsContainer").replaceChildren();
+  document.getElementById("formHeading").textContent = t("createHeading");
+  document.getElementById("saveBtn").textContent = t("save");
+  document.getElementById("status").value = "active";
+  addStep();
+}
+
+function editProcedure(id) {
+  const p = procedures.find(item => item.id === id);
+  if (!p) return;
+
+  editingId = id;
+  document.getElementById("procedureName").value = p.name;
+  document.getElementById("category").value = p.category || "other";
+  document.getElementById("description").value = p.description || "";
+  document.getElementById("owner").value = p.owner || "";
+  document.getElementById("status").value = p.status || "active";
+
+  const steps = document.getElementById("stepsContainer");
+  steps.replaceChildren();
+
+  if (p.steps.length) {
+    p.steps.forEach(step => addStep(step));
+  } else {
+    addStep();
+  }
+
+  document.getElementById("formHeading").textContent = t("editHeading");
+  document.getElementById("saveBtn").textContent = t("update");
+
+  document.getElementById("editorPanel").scrollIntoView({
+    behavior:"smooth",block:"start"
+  });
+}
+
+function saveProcedure(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("procedureName").value.trim();
+  if (!name) {
+    showToast(t("required"));
+    return;
+  }
+
+  const steps = [...document.querySelectorAll(".step-text")]
+    .map(input => input.value.trim())
+    .filter(Boolean);
+
+  const now = new Date().toISOString();
+
+  const data = {
+    name,
+    category:document.getElementById("category").value,
+    description:document.getElementById("description").value.trim(),
+    owner:document.getElementById("owner").value.trim(),
+    status:document.getElementById("status").value,
+    steps,
+    updatedAt:now
+  };
+
+  if (editingId) {
+    procedures = procedures.map(p =>
+      p.id === editingId ? {...p,...data} : p
+    );
+    showToast(t("updated"));
+  } else {
+    procedures.push({
+      id:crypto.randomUUID ? crypto.randomUUID() :
+        Date.now().toString() + Math.random().toString(16).slice(2),
+      ...data,
+      createdAt:now
+    });
+    showToast(t("added"));
+  }
+
+  saveProcedures();
+  resetForm();
+  render();
+}
+
+function deleteProcedure(id) {
+  if (!confirm(t("confirmDelete"))) return;
+
+  procedures = procedures.filter(p => p.id !== id);
+  saveProcedures();
+
+  if (editingId === id) resetForm();
+
+  document.getElementById("procedureDetail").hidden = true;
+  render();
+  showToast(t("deleted"));
+}
+
+function toggleStatus(id) {
+  procedures = procedures.map(p => {
+    if (p.id !== id) return p;
+    return {...p,status:p.status === "active" ? "inactive" : "active"};
+  });
+
+  saveProcedures();
+  render();
+  showToast(t("statusChanged"));
+}
+
+function showDetails(id) {
+  const p = procedures.find(item => item.id === id);
+  if (!p) return;
+
+  const box = document.getElementById("procedureDetail");
+  box.replaceChildren();
+  box.hidden = false;
+
+  const heading = document.createElement("h3");
+  heading.textContent = t("details") + ": " + p.name;
+
+  const owner = document.createElement("p");
+  owner.className = "detail-empty";
+  owner.textContent = t("owner") + " " + (p.owner || t("noOwner"));
+
+  const count = document.createElement("p");
+  count.className = "detail-empty";
+  count.textContent = t("stepCount") + " " + p.steps.length;
+
+  const list = document.createElement("ol");
+
+  if (p.steps.length) {
+    p.steps.forEach(step => {
+      const li = document.createElement("li");
+      li.textContent = step;
+      list.appendChild(li);
+    });
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "detail-empty";
+    empty.textContent = t("noSteps");
+    box.append(heading,owner,count,empty);
+    return;
+  }
+
+  box.append(heading,owner,count,list);
+}
+
+function render() {
+  document.getElementById("totalCount").textContent = procedures.length;
+  document.getElementById("activeCount").textContent =
+    procedures.filter(p => p.status === "active").length;
+  document.getElementById("inactiveCount").textContent =
+    procedures.filter(p => p.status !== "active").length;
+
+  const search = document.getElementById("search").value.trim().toLowerCase();
+  const category = document.getElementById("categoryFilter").value;
+  const status = document.getElementById("statusFilter").value;
+
+  const filtered = procedures.filter(p => {
+    const searchable = [
+      p.name,p.description,p.owner,...p.steps
+    ].join(" ").toLowerCase();
+
+    return (!search || searchable.includes(search)) &&
+      (category === "all" || p.category === category) &&
+      (status === "all" || p.status === status);
+  }).sort((a,b) => new Date(b.updatedAt || b.createdAt) -
+                    new Date(a.updatedAt || a.createdAt));
+
+  const list = document.getElementById("procedureList");
+  list.replaceChildren();
+  document.getElementById("visibleCount").textContent = filtered.length;
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    const icon = document.createElement("div");
+    icon.className = "empty-icon";
+    icon.textContent = "📋";
+    const message = document.createElement("div");
+    message.textContent = t("empty");
+    empty.append(icon,message);
+    list.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "procedure-card";
+
+    const top = document.createElement("div");
+    top.className = "procedure-top";
+
+    const main = document.createElement("div");
+    main.style.flex = "1";
+    main.style.minWidth = "0";
+
+    const name = document.createElement("div");
+    name.className = "procedure-name";
+    name.textContent = p.name;
+
+    const meta = document.createElement("div");
+    meta.className = "procedure-meta";
+
+    const category = document.createElement("span");
+    category.className = "tag";
+    category.textContent = t(p.category || "other");
+
+    const statusTag = document.createElement("span");
+    statusTag.className = "tag " +
+      (p.status === "active" ? "active" : "inactive");
+    statusTag.textContent = t(p.status || "inactive");
+
+    const stepCount = document.createElement("span");
+    stepCount.className = "tag";
+    stepCount.textContent = p.steps.length + " · " + t("stepsHeading");
+
+    meta.append(category,statusTag,stepCount);
+    main.append(name,meta);
+    top.appendChild(main);
+
+    const description = document.createElement("p");
+    description.className = "procedure-description";
+    description.textContent = p.description || "";
+
+    const actions = document.createElement("div");
+    actions.className = "procedure-actions";
+
+    const view = document.createElement("button");
+    view.className = "btn-light";
+    view.textContent = t("view");
+    view.addEventListener("click",() => showDetails(p.id));
+
+    const edit = document.createElement("button");
+    edit.className = "btn-light";
+    edit.textContent = t("edit");
+    edit.addEventListener("click",() => editProcedure(p.id));
+
+    const toggle = document.createElement("button");
+    toggle.className = "btn-success";
+    toggle.textContent = p.status === "active" ?
+      t("deactivate") : t("activate");
+    toggle.addEventListener("click",() => toggleStatus(p.id));
+
+    const remove = document.createElement("button");
+    remove.className = "btn-danger";
+    remove.textContent = t("delete");
+    remove.addEventListener("click",() => deleteProcedure(p.id));
+
+    actions.append(view,edit,toggle,remove);
+    card.append(top,description,actions);
+    list.appendChild(card);
+  });
+}
+
+document.getElementById("procedureForm").addEventListener("submit",saveProcedure);
+document.getElementById("addStepBtn").addEventListener("click",() => addStep());
+document.getElementById("cancelBtn").addEventListener("click",resetForm);
+document.getElementById("newBtn").addEventListener("click",() => {
+  resetForm();
+  document.getElementById("procedureName").focus();
+});
+document.getElementById("language").addEventListener("change",event => {
+  localStorage.setItem("docbiz_language",event.target.value);
+  setLanguage(event.target.value);
+});
+
+["search","categoryFilter","statusFilter"].forEach(id => {
+  document.getElementById(id).addEventListener("input",render);
+  document.getElementById(id).addEventListener("change",render);
+});
+
+addStep();
+
+const savedLanguage = localStorage.getItem("docbiz_language") || "bs";
+setLanguage(savedLanguage);
+</script>
+</body>
+</html>
