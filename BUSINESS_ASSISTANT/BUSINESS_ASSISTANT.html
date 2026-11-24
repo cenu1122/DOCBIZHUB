@@ -1,0 +1,1115 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Business Assistant</title>
+
+<style>
+:root{
+    --navy:#101c35;
+    --blue:#238be5;
+    --bg:#f3f6fb;
+    --white:#fff;
+    --text:#172033;
+    --muted:#718096;
+    --border:#e1e7f0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+header{
+    height:70px;
+    background:var(--navy);
+    color:white;
+    padding:0 25px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+.logo{font-size:23px;font-weight:bold}
+.logo span{color:#35a8ff}
+.header-actions{display:flex;align-items:center;gap:15px}
+.language{
+    background:#1b2b49;
+    color:white;
+    border:1px solid #53637d;
+    border-radius:7px;
+    padding:9px;
+}
+.back-link{
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+}
+.layout{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+.sidebar{
+    width:260px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    padding:22px 14px;
+    flex-shrink:0;
+}
+.sidebar-title{
+    font-size:11px;
+    color:#99a4b5;
+    font-weight:bold;
+    letter-spacing:1px;
+    padding:12px;
+}
+.nav-item{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 12px;
+    margin-bottom:4px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    text-align:left;
+    color:#536178;
+    font-size:14px;
+    cursor:pointer;
+}
+.nav-item:hover,.nav-item.active{
+    background:#eaf4ff;
+    color:#1476cf;
+}
+.nav-item .icon{font-size:18px;width:23px}
+.content{
+    flex:1;
+    min-width:0;
+    padding:35px;
+    max-width:1500px;
+}
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:28px;
+}
+.page-header h1{font-size:28px;margin-bottom:7px}
+.page-header p{color:var(--muted);font-size:14px}
+.primary-btn{
+    border:0;
+    background:var(--blue);
+    color:white;
+    padding:12px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.primary-btn:hover{background:#1476cf}
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:17px;
+    margin-bottom:28px;
+}
+.stat-card,.panel,.module-card,.procedure-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+.stat-card{padding:20px}
+.stat-card .stat-icon{font-size:25px;margin-bottom:12px}
+.stat-card strong{display:block;font-size:25px;margin-bottom:5px}
+.stat-card span{font-size:13px;color:var(--muted)}
+.panel{padding:22px;margin-bottom:22px}
+.panel h2{font-size:18px;margin-bottom:17px}
+.modules-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:16px;
+}
+.module-card{
+    padding:21px;
+    cursor:pointer;
+    transition:.2s;
+}
+.module-card:hover{
+    border-color:var(--blue);
+    transform:translateY(-3px);
+    box-shadow:0 6px 18px rgba(20,50,90,.08);
+}
+.module-card .icon{font-size:27px;margin-bottom:13px}
+.module-card h3{font-size:16px;margin-bottom:8px}
+.module-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.section{display:none}
+.section.active{display:block}
+.procedure-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+}
+.procedure-card{padding:20px}
+.procedure-card h3{font-size:16px;margin-bottom:9px}
+.procedure-card p{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:15px}
+.procedure-card button{
+    background:#eaf4ff;color:#1476cf;border:0;
+    padding:9px 13px;border-radius:7px;cursor:pointer;
+    font-weight:bold;
+}
+.tag{
+    display:inline-block;
+    background:#eaf4ff;
+    color:#1476cf;
+    padding:5px 9px;
+    border-radius:5px;
+    font-size:11px;
+    margin-bottom:12px;
+}
+.checklist{list-style:none}
+.checklist li{
+    padding:13px 0;
+    border-bottom:1px solid var(--border);
+    font-size:14px;
+}
+.checklist input{margin-right:10px}
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:13px;font-weight:bold}
+.field input,.field select,.field textarea{
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:11px;
+    font-family:inherit;
+    width:100%;
+}
+.field textarea{min-height:100px;resize:vertical}
+.full{grid-column:1/-1}
+.document-preview{
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:20px;
+    margin-top:20px;
+    white-space:pre-wrap;
+    line-height:1.6;
+    font-size:13px;
+}
+.notice{
+    padding:14px;
+    border-radius:8px;
+    background:#fff7e6;
+    color:#885d13;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:18px;
+}
+.empty-state{
+    padding:25px;
+    color:var(--muted);
+    text-align:center;
+    background:#f8fafc;
+    border-radius:8px;
+    font-size:14px;
+}
+.task-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
+    font-size:14px;
+}
+.task-row span{color:var(--muted)}
+.mobile-menu{
+    display:none;
+    border:0;
+    background:#1b2b49;
+    color:white;
+    padding:9px 12px;
+    border-radius:7px;
+    cursor:pointer;
+}
+@media(max-width:850px){
+    .sidebar{width:220px}
+    .content{padding:25px 18px}
+}
+@media(max-width:650px){
+    .layout{display:block}
+    .mobile-menu{display:block}
+    .sidebar{
+        display:none;
+        width:100%;
+        border-right:0;
+        border-bottom:1px solid var(--border);
+    }
+    .sidebar.open{display:block}
+    header{padding:0 15px}
+    .back-link{display:none}
+    .content{padding:22px 15px}
+    .form-grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">DOCBIZ<span>HUB</span></div>
+    <div class="header-actions">
+        <a class="back-link" href="index.html" data-i18n="back">← Main Portal</a>
+        <select class="language" id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="bs">Bosanski</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+        </select>
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+    </div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-title" data-i18n="mainMenu">MAIN MENU</div>
+
+    <button class="nav-item active" onclick="showSection('dashboard',this)">
+        <span class="icon">📊</span><span data-i18n="dashboard">Dashboard</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('procedures',this)">
+        <span class="icon">📋</span><span data-i18n="procedures">Business Procedures</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('generator',this)">
+        <span class="icon">📝</span><span data-i18n="generator">Document Generator</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('ai',this)">
+        <span class="icon">🧠</span><span data-i18n="ai">AI Assistant</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('compliance',this)">
+        <span class="icon">⚖️</span><span data-i18n="compliance">Compliance Center</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('documents',this)">
+        <span class="icon">📁</span><span data-i18n="documents">My Documents</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('tasks',this)">
+        <span class="icon">📅</span><span data-i18n="tasks">Tasks & Deadlines</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('experts',this)">
+        <span class="icon">👨‍💼</span><span data-i18n="experts">Expert Support</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('profile',this)">
+        <span class="icon">🏢</span><span data-i18n="profile">Company Profile</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('notifications',this)">
+        <span class="icon">🔔</span><span data-i18n="notifications">Notifications</span>
+    </button>
+
+    <div class="sidebar-title" data-i18n="administration">ADMINISTRATION</div>
+
+    <button class="nav-item" onclick="showSection('admin',this)">
+        <span class="icon">⚙️</span><span data-i18n="admin">Procedure Builder</span>
+    </button>
+</aside>
+
+<main class="content">
+
+<!-- DASHBOARD -->
+<section class="section active" id="dashboard">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="welcome">Business Assistant</h1>
+            <p data-i18n="welcomeDesc">Your central workspace for European business procedures.</p>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <strong>6</strong>
+            <span data-i18n="availableProcedures">Available procedures</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <strong>12</strong>
+            <span data-i18n="documentTemplates">Document templates</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🌍</div>
+            <strong>DE</strong>
+            <span data-i18n="firstMarket">First target market</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🤖</div>
+            <strong>AI</strong>
+            <span data-i18n="assistantSupport">Assistant support</span>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 data-i18n="quickAccess">Quick access</h2>
+        <div class="modules-grid">
+            <div class="module-card" onclick="showSection('procedures')">
+                <div class="icon">📋</div>
+                <h3 data-i18n="procedures">Business Procedures</h3>
+                <p data-i18n="proceduresDesc">Guided procedures for doing business in Germany.</p>
+            </div>
+            <div class="module-card" onclick="showSection('generator')">
+                <div class="icon">📝</div>
+                <h3 data-i18n="generator">Document Generator</h3>
+                <p data-i18n="generatorDesc">Prepare your business documents.</p>
+            </div>
+            <div class="module-card" onclick="showSection('ai')">
+                <div class="icon">🧠</div>
+                <h3 data-i18n="ai">AI Assistant</h3>
+                <p data-i18n="aiDesc">Get help with your business questions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 data-i18n="important">Important information</h2>
+        <div class="notice" data-i18n="legalNotice">
+            This platform provides procedural guidance and document preparation.
+            Legal and tax requirements must be verified against official sources
+            and qualified professionals.
+        </div>
+    </div>
+</section>
+
+<!-- PROCEDURES -->
+<section class="section" id="procedures">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="procedures">Business Procedures</h1>
+            <p data-i18n="proceduresIntro">Select a procedure to see its steps.</p>
+        </div>
+    </div>
+
+    <div class="procedure-list">
+        <div class="procedure-card">
+            <span class="tag">GERMANY</span>
+            <h3 data-i18n="export">Export Goods to Germany</h3>
+            <p data-i18n="exportDesc">Preparation and documentation for exporting goods to Germany.</p>
+            <button onclick="openProcedure('export')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+
+        <div class="procedure-card">
+            <span class="tag">GERMANY</span>
+            <h3 data-i18n="services">Providing Services in Germany</h3>
+            <p data-i18n="servicesDesc">Steps for companies providing services in the German market.</p>
+            <button onclick="openProcedure('services')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+
+        <div class="procedure-card">
+            <span class="tag">GERMANY</span>
+            <h3 data-i18n="employees">Sending Employees to Germany</h3>
+            <p data-i18n="employeesDesc">Preparation for employee posting and related requirements.</p>
+            <button onclick="openProcedure('employees')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+
+        <div class="procedure-card">
+            <span class="tag">EUROPE</span>
+            <h3 data-i18n="cooperation">Business Cooperation</h3>
+            <p data-i18n="cooperationDesc">Establishing commercial cooperation with European partners.</p>
+            <button onclick="openProcedure('cooperation')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+
+        <div class="procedure-card">
+            <span class="tag">GERMANY</span>
+            <h3 data-i18n="formation">Company Formation in Germany</h3>
+            <p data-i18n="formationDesc">Initial guidance for establishing a company in Germany.</p>
+            <button onclick="openProcedure('formation')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+
+        <div class="procedure-card">
+            <span class="tag">EUROPE</span>
+            <h3 data-i18n="product">Product Compliance</h3>
+            <p data-i18n="productDesc">Product requirements, CE marking and market access where applicable.</p>
+            <button onclick="openProcedure('product')" data-i18n="viewProcedure">View procedure →</button>
+        </div>
+    </div>
+
+    <div class="panel" id="procedureDetails" style="margin-top:22px;display:none">
+        <h2 id="procedureTitle"></h2>
+        <p id="procedureDescription" style="color:#718096;font-size:14px;margin-bottom:15px"></p>
+        <ul class="checklist" id="procedureSteps"></ul>
+        <div class="notice" style="margin-top:18px" data-i18n="procedureWarning">
+            Checklist items are preliminary guidance. Applicable requirements depend on the company, transaction and destination.
+        </div>
+    </div>
+</section>
+
+<!-- DOCUMENT GENERATOR -->
+<section class="section" id="generator">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="generator">Document Generator</h1>
+            <p data-i18n="generatorIntro">Prepare business document drafts.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="notice" data-i18n="draftNotice">
+            Generated documents are drafts. Review all details before signing or sending.
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label data-i18n="documentType">Document type</label>
+                <select id="docType">
+                    <option value="Commercial Offer">Commercial Offer</option>
+                    <option value="Commercial Invoice">Commercial Invoice</option>
+                    <option value="Proforma Invoice">Proforma Invoice</option>
+                    <option value="Packing List">Packing List</option>
+                    <option value="Sales Contract">Sales Contract</option>
+                    <option value="Service Agreement">Service Agreement</option>
+                    <option value="NDA">NDA</option>
+                    <option value="Purchase Order">Purchase Order</option>
+                    <option value="Delivery Note">Delivery Note</option>
+                    <option value="Project Proposal">Project Proposal</option>
+                    <option value="Project Completion Report">Project Completion Report</option>
+                    <option value="Company Profile">Company Profile</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label data-i18n="date">Date</label>
+                <input type="date" id="docDate">
+            </div>
+
+            <div class="field">
+                <label data-i18n="companyName">Your company</label>
+                <input id="companyName" placeholder="Company name">
+            </div>
+
+            <div class="field">
+                <label data-i18n="companyAddress">Company address</label>
+                <input id="companyAddress" placeholder="Address">
+            </div>
+
+            <div class="field">
+                <label data-i18n="partnerName">Business partner</label>
+                <input id="partnerName" placeholder="Partner company">
+            </div>
+
+            <div class="field">
+                <label data-i18n="partnerAddress">Partner address</label>
+                <input id="partnerAddress" placeholder="Partner address">
+            </div>
+
+            <div class="field">
+                <label data-i18n="amount">Amount</label>
+                <input id="amount" type="number" min="0" step="0.01" placeholder="0.00">
+            </div>
+
+            <div class="field">
+                <label data-i18n="currency">Currency</label>
+                <select id="currency">
+                    <option>EUR</option>
+                    <option>USD</option>
+                    <option>CHF</option>
+                    <option>BAM</option>
+                </select>
+            </div>
+
+            <div class="field full">
+                <label data-i18n="descriptionLabel">Description / details</label>
+                <textarea id="docDescription" placeholder="Enter details..."></textarea>
+            </div>
+        </div>
+
+        <button class="primary-btn" style="margin-top:18px" onclick="generateDocument()" data-i18n="generate">
+            Generate document draft
+        </button>
+
+        <div id="documentPreview" class="document-preview" style="display:none"></div>
+
+        <button id="copyDocument" class="primary-btn" style="display:none;margin-top:12px" onclick="copyDocument()" data-i18n="copy">
+            Copy document
+        </button>
+    </div>
+</section>
+
+<!-- AI ASSISTANT -->
+<section class="section" id="ai">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="ai">AI Business Assistant</h1>
+            <p data-i18n="aiIntro">Ask questions about business procedures and documentation.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="notice" data-i18n="aiNotice">
+            AI connection is not yet configured. This interface is ready for integration with a secure AI backend.
+        </div>
+
+        <div class="field">
+            <label data-i18n="yourQuestion">Your business question</label>
+            <textarea id="aiQuestion" placeholder="Describe your business question..."></textarea>
+        </div>
+
+        <button class="primary-btn" style="margin-top:15px" onclick="askAI()" data-i18n="ask">
+            Submit question
+        </button>
+
+        <div id="aiAnswer" class="document-preview" style="display:none"></div>
+    </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section class="section" id="compliance">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="compliance">Compliance Center</h1>
+            <p data-i18n="complianceIntro">Key regulatory areas to assess before doing business.</p>
+        </div>
+    </div>
+
+    <div class="modules-grid">
+        <div class="module-card">
+            <div class="icon">🚚</div>
+            <h3 data-i18n="customs">Customs & Import / Export</h3>
+            <p data-i18n="customsDesc">Customs declarations, tariff classification and import requirements.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">🌐</div>
+            <h3 data-i18n="origin">Origin of Goods</h3>
+            <p data-i18n="originDesc">Rules of origin and supporting documentation.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">💶</div>
+            <h3 data-i18n="vat">VAT & Taxation</h3>
+            <p data-i18n="vatDesc">VAT registration, invoicing and tax obligations.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">👷</div>
+            <h3 data-i18n="employment">Employment & Posted Workers</h3>
+            <p data-i18n="employmentDesc">Employment requirements, posting and work permits.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">🏷️</div>
+            <h3 data-i18n="ce">CE & Product Compliance</h3>
+            <p data-i18n="ceDesc">Product safety, standards and CE marking where applicable.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">♻️</div>
+            <h3 data-i18n="packaging">Packaging & LUCID</h3>
+            <p data-i18n="packagingDesc">Packaging registration and applicable obligations in Germany.</p>
+        </div>
+        <div class="module-card">
+            <div class="icon">🔐</div>
+            <h3 data-i18n="gdpr">GDPR & Data Protection</h3>
+            <p data-i18n="gdprDesc">Personal data protection and privacy obligations.</p>
+        </div>
+    </div>
+</section>
+
+<!-- DOCUMENTS -->
+<section class="section" id="documents">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="documents">My Documents</h1>
+            <p data-i18n="documentsIntro">Your generated documents and archive.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="empty-state" data-i18n="documentsEmpty">
+            Your document archive will appear here after database integration.
+        </div>
+    </div>
+</section>
+
+<!-- TASKS -->
+<section class="section" id="tasks">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="tasks">Tasks & Deadlines</h1>
+            <p data-i18n="tasksIntro">Track business obligations and important dates.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="empty-state" data-i18n="tasksEmpty">
+            Your tasks and deadlines will appear here after database integration.
+        </div>
+    </div>
+</section>
+
+<!-- EXPERTS -->
+<section class="section" id="experts">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="experts">Expert Support</h1>
+            <p data-i18n="expertsIntro">Connect with professional advisors.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="empty-state" data-i18n="expertsEmpty">
+            Expert profiles and consultation requests will be available here.
+        </div>
+    </div>
+</section>
+
+<!-- PROFILE -->
+<section class="section" id="profile">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="profile">Company Profile</h1>
+            <p data-i18n="profileIntro">Your company information.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="notice" data-i18n="profileNotice">
+            Company profile integration with your existing DOCBIZHUB account will be added here.
+        </div>
+        <div class="empty-state" data-i18n="profileEmpty">
+            Company information will be loaded from your account after integration.
+        </div>
+    </div>
+</section>
+
+<!-- NOTIFICATIONS -->
+<section class="section" id="notifications">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="notifications">Notifications</h1>
+            <p data-i18n="notificationsIntro">Important updates and reminders.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="empty-state" data-i18n="notificationsEmpty">
+            Notifications will appear here after system integration.
+        </div>
+    </div>
+</section>
+
+<!-- ADMIN -->
+<section class="section" id="admin">
+    <div class="page-header">
+        <div>
+            <h1 data-i18n="admin">Admin Procedure Builder</h1>
+            <p data-i18n="adminIntro">Create and manage business procedures.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="notice" data-i18n="adminNotice">
+            This section is intended for authorized administrators. Role-based access control must be configured before production use.
+        </div>
+        <div class="empty-state" data-i18n="adminEmpty">
+            Procedure management tools will be connected to the administration database.
+        </div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const translations = {
+bs:{
+back:"← Glavni portal",mainMenu:"GLAVNI MENI",dashboard:"Dashboard",
+procedures:"Poslovne procedure",generator:"Generator dokumenata",
+ai:"AI Business Assistant",compliance:"Compliance Center",
+documents:"Moji dokumenti",tasks:"Zadaci i rokovi",
+experts:"Podrška stručnjaka",profile:"Profil kompanije",
+notifications:"Obavještenja",administration:"ADMINISTRACIJA",
+admin:"Procedure Builder",welcome:"Business Assistant",
+welcomeDesc:"Centralno mjesto za vođenje poslovnih procedura u Evropi.",
+availableProcedures:"Dostupne procedure",documentTemplates:"Predlošci dokumenata",
+firstMarket:"Prvo ciljno tržište",assistantSupport:"AI podrška",
+quickAccess:"Brzi pristup",important:"Važna informacija",
+legalNotice:"Platforma pruža proceduralne smjernice i pripremu dokumenata. Pravne i porezne zahtjeve potrebno je provjeriti prema službenim izvorima i uz pomoć kvalifikovanih stručnjaka.",
+proceduresDesc:"Vođene procedure za poslovanje u Njemačkoj.",
+generatorDesc:"Pripremite poslovne dokumente.",
+aiDesc:"Pomoć pri poslovnim pitanjima.",
+proceduresIntro:"Odaberite proceduru da biste vidjeli njene korake.",
+export:"Izvoz robe u Njemačku",exportDesc:"Priprema i dokumentacija za izvoz robe u Njemačku.",
+services:"Pružanje usluga u Njemačkoj",servicesDesc:"Koraci za kompanije koje pružaju usluge na njemačkom tržištu.",
+employees:"Slanje radnika u Njemačku",employeesDesc:"Priprema za upućivanje radnika i povezani zahtjevi.",
+cooperation:"Poslovna saradnja",cooperationDesc:"Uspostavljanje komercijalne saradnje s evropskim partnerima.",
+formation:"Osnivanje kompanije u Njemačkoj",formationDesc:"Početne smjernice za osnivanje kompanije u Njemačkoj.",
+product:"Usklađenost proizvoda",productDesc:"Zahtjevi za proizvode, CE oznaka i pristup tržištu gdje je primjenjivo.",
+viewProcedure:"Pogledaj proceduru →",
+procedureWarning:"Kontrolna lista predstavlja početne smjernice. Primjenjivi zahtjevi zavise od kompanije, transakcije i odredišta.",
+generatorIntro:"Pripremite nacrte poslovnih dokumenata.",
+draftNotice:"Generisani dokumenti su nacrti. Provjerite sve podatke prije potpisivanja ili slanja.",
+documentType:"Vrsta dokumenta",date:"Datum",companyName:"Vaša kompanija",
+companyAddress:"Adresa kompanije",partnerName:"Poslovni partner",
+partnerAddress:"Adresa partnera",amount:"Iznos",currency:"Valuta",
+descriptionLabel:"Opis / detalji",generate:"Generiši nacrt dokumenta",
+copy:"Kopiraj dokument",aiIntro:"Postavite pitanje o poslovnim procedurama i dokumentaciji.",
+aiNotice:"AI veza još nije konfigurisana. Interfejs je spreman za povezivanje sa sigurnim AI backendom.",
+yourQuestion:"Vaše poslovno pitanje",ask:"Pošalji pitanje",
+complianceIntro:"Ključna regulatorna područja koja treba provjeriti prije poslovanja.",
+customs:"Carina i uvoz / izvoz",customsDesc:"Carinske deklaracije, tarifna klasifikacija i zahtjevi uvoza.",
+origin:"Porijeklo robe",originDesc:"Pravila porijekla i prateća dokumentacija.",
+vat:"PDV i porezi",vatDesc:"PDV registracija, fakturisanje i porezne obaveze.",
+employment:"Zapošljavanje i upućeni radnici",employmentDesc:"Radni odnosi, upućivanje i radne dozvole.",
+ce:"CE i usklađenost proizvoda",ceDesc:"Sigurnost proizvoda, standardi i CE oznaka gdje je primjenjivo.",
+packaging:"Ambalaža i LUCID",packagingDesc:"Registracija ambalaže i primjenjive obaveze u Njemačkoj.",
+gdpr:"GDPR i zaštita podataka",gdprDesc:"Zaštita ličnih podataka i obaveze privatnosti.",
+documentsIntro:"Vaši generisani dokumenti i arhiva.",
+documentsEmpty:"Vaša arhiva dokumenata bit će prikazana nakon povezivanja baze podataka.",
+tasksIntro:"Pratite poslovne obaveze i važne datume.",
+tasksEmpty:"Vaši zadaci i rokovi bit će prikazani nakon povezivanja baze podataka.",
+expertsIntro:"Povežite se sa stručnim savjetnicima.",
+expertsEmpty:"Profili stručnjaka i zahtjevi za konsultacije bit će dostupni ovdje.",
+profileIntro:"Podaci o vašoj kompaniji.",
+profileNotice:"Povezivanje profila kompanije sa postojećim DOCBIZHUB računom bit će dodano ovdje.",
+profileEmpty:"Podaci kompanije bit će učitani iz vašeg računa nakon integracije.",
+notificationsIntro:"Važna obavještenja i podsjetnici.",
+notificationsEmpty:"Obavještenja će se prikazivati nakon integracije sistema.",
+adminIntro:"Kreiranje i upravljanje poslovnim procedurama.",
+adminNotice:"Ovaj odjeljak je namijenjen ovlaštenim administratorima. Prije produkcijske upotrebe potrebno je podesiti kontrolu pristupa po ulogama.",
+adminEmpty:"Alati za upravljanje procedurama bit će povezani s administrativnom bazom."
+},
+en:{
+back:"← Main Portal",mainMenu:"MAIN MENU",dashboard:"Dashboard",
+procedures:"Business Procedures",generator:"Document Generator",
+ai:"AI Business Assistant",compliance:"Compliance Center",
+documents:"My Documents",tasks:"Tasks & Deadlines",
+experts:"Expert Support",profile:"Company Profile",
+notifications:"Notifications",administration:"ADMINISTRATION",
+admin:"Procedure Builder",welcome:"Business Assistant",
+welcomeDesc:"Your central workspace for European business procedures.",
+availableProcedures:"Available procedures",documentTemplates:"Document templates",
+firstMarket:"First target market",assistantSupport:"AI support",
+quickAccess:"Quick access",important:"Important information",
+legalNotice:"This platform provides procedural guidance and document preparation. Legal and tax requirements must be verified against official sources and qualified professionals.",
+proceduresDesc:"Guided procedures for doing business in Germany.",
+generatorDesc:"Prepare your business documents.",
+aiDesc:"Get help with your business questions.",
+proceduresIntro:"Select a procedure to see its steps.",
+export:"Export Goods to Germany",exportDesc:"Preparation and documentation for exporting goods to Germany.",
+services:"Providing Services in Germany",servicesDesc:"Steps for companies providing services in the German market.",
+employees:"Sending Employees to Germany",employeesDesc:"Preparation for employee posting and related requirements.",
+cooperation:"Business Cooperation",cooperationDesc:"Establishing commercial cooperation with European partners.",
+formation:"Company Formation in Germany",formationDesc:"Initial guidance for establishing a company in Germany.",
+product:"Product Compliance",productDesc:"Product requirements, CE marking and market access where applicable.",
+viewProcedure:"View procedure →",
+procedureWarning:"Checklist items are preliminary guidance. Applicable requirements depend on the company, transaction and destination.",
+generatorIntro:"Prepare business document drafts.",
+draftNotice:"Generated documents are drafts. Review all details before signing or sending.",
+documentType:"Document type",date:"Date",companyName:"Your company",
+companyAddress:"Company address",partnerName:"Business partner",
+partnerAddress:"Partner address",amount:"Amount",currency:"Currency",
+descriptionLabel:"Description / details",generate:"Generate document draft",
+copy:"Copy document",aiIntro:"Ask questions about business procedures and documentation.",
+aiNotice:"AI connection is not yet configured. This interface is ready for integration with a secure AI backend.",
+yourQuestion:"Your business question",ask:"Submit question",
+complianceIntro:"Key regulatory areas to assess before doing business.",
+customs:"Customs & Import / Export",customsDesc:"Customs declarations, tariff classification and import requirements.",
+origin:"Origin of Goods",originDesc:"Rules of origin and supporting documentation.",
+vat:"VAT & Taxation",vatDesc:"VAT registration, invoicing and tax obligations.",
+employment:"Employment & Posted Workers",employmentDesc:"Employment requirements, posting and work permits.",
+ce:"CE & Product Compliance",ceDesc:"Product safety, standards and CE marking where applicable.",
+packaging:"Packaging & LUCID",packagingDesc:"Packaging registration and applicable obligations in Germany.",
+gdpr:"GDPR & Data Protection",gdprDesc:"Personal data protection and privacy obligations.",
+documentsIntro:"Your generated documents and archive.",
+documentsEmpty:"Your document archive will appear here after database integration.",
+tasksIntro:"Track business obligations and important dates.",
+tasksEmpty:"Your tasks and deadlines will appear here after database integration.",
+expertsIntro:"Connect with professional advisors.",
+expertsEmpty:"Expert profiles and consultation requests will be available here.",
+profileIntro:"Your company information.",
+profileNotice:"Company profile integration with your existing DOCBIZHUB account will be added here.",
+profileEmpty:"Company information will be loaded from your account after integration.",
+notificationsIntro:"Important updates and reminders.",
+notificationsEmpty:"Notifications will appear here after system integration.",
+adminIntro:"Create and manage business procedures.",
+adminNotice:"This section is intended for authorized administrators. Role-based access control must be configured before production use.",
+adminEmpty:"Procedure management tools will be connected to the administration database."
+},
+de:{
+back:"← Hauptportal",mainMenu:"HAUPTMENÜ",dashboard:"Dashboard",
+procedures:"Geschäftsverfahren",generator:"Dokumentengenerator",
+ai:"KI-Business-Assistent",compliance:"Compliance Center",
+documents:"Meine Dokumente",tasks:"Aufgaben und Fristen",
+experts:"Expertenunterstützung",profile:"Unternehmensprofil",
+notifications:"Benachrichtigungen",administration:"VERWALTUNG",
+admin:"Verfahrensverwaltung",welcome:"Business Assistant",
+welcomeDesc:"Ihr zentraler Arbeitsbereich für europäische Geschäftsverfahren.",
+availableProcedures:"Verfügbare Verfahren",documentTemplates:"Dokumentvorlagen",
+firstMarket:"Erster Zielmarkt",assistantSupport:"KI-Unterstützung",
+quickAccess:"Schnellzugriff",important:"Wichtige Information",
+legalNotice:"Diese Plattform bietet Verfahrenshinweise und Dokumentenvorbereitung. Rechtliche und steuerliche Anforderungen müssen anhand offizieller Quellen und durch qualifizierte Fachleute geprüft werden.",
+proceduresDesc:"Geführte Verfahren für Geschäfte in Deutschland.",
+generatorDesc:"Bereiten Sie Ihre Geschäftsdokumente vor.",
+aiDesc:"Hilfe bei geschäftlichen Fragen.",
+proceduresIntro:"Wählen Sie ein Verfahren, um die Schritte anzuzeigen.",
+export:"Waren nach Deutschland exportieren",exportDesc:"Vorbereitung und Dokumentation für den Warenexport nach Deutschland.",
+services:"Dienstleistungen in Deutschland erbringen",servicesDesc:"Schritte für Unternehmen, die Dienstleistungen auf dem deutschen Markt anbieten.",
+employees:"Mitarbeiter nach Deutschland entsenden",employeesDesc:"Vorbereitung der Mitarbeiterentsendung und entsprechende Anforderungen.",
+cooperation:"Geschäftliche Zusammenarbeit",cooperationDesc:"Aufbau einer geschäftlichen Zusammenarbeit mit europäischen Partnern.",
+formation:"Unternehmensgründung in Deutschland",formationDesc:"Erste Hinweise zur Gründung eines Unternehmens in Deutschland.",
+product:"Produktkonformität",productDesc:"Produktanforderungen, CE-Kennzeichnung und Marktzugang, soweit anwendbar.",
+viewProcedure:"Verfahren ansehen →",
+procedureWarning:"Die Checkliste dient als erste Orientierung. Die geltenden Anforderungen hängen vom Unternehmen, der Transaktion und dem Zielland ab.",
+generatorIntro:"Erstellen Sie Entwürfe für Geschäftsdokumente.",
+draftNotice:"Generierte Dokumente sind Entwürfe. Prüfen Sie alle Angaben vor dem Unterzeichnen oder Versenden.",
+documentType:"Dokumenttyp",date:"Datum",companyName:"Ihr Unternehmen",
+companyAddress:"Unternehmensadresse",partnerName:"Geschäftspartner",
+partnerAddress:"Partneradresse",amount:"Betrag",currency:"Währung",
+descriptionLabel:"Beschreibung / Details",generate:"Dokumententwurf erstellen",
+copy:"Dokument kopieren",aiIntro:"Stellen Sie Fragen zu Geschäftsverfahren und Dokumentation.",
+aiNotice:"Die KI-Verbindung ist noch nicht konfiguriert. Diese Oberfläche ist für die Integration mit einem sicheren KI-Backend vorbereitet.",
+yourQuestion:"Ihre geschäftliche Frage",ask:"Frage senden",
+complianceIntro:"Wichtige regulatorische Bereiche, die vor Geschäftsaktivitäten geprüft werden sollten.",
+customs:"Zoll und Import / Export",customsDesc:"Zollanmeldungen, Zolltarifklassifizierung und Einfuhranforderungen.",
+origin:"Warenursprung",originDesc:"Ursprungsregeln und zugehörige Dokumentation.",
+vat:"Mehrwertsteuer und Steuern",vatDesc:"Mehrwertsteuerregistrierung, Rechnungsstellung und Steuerpflichten.",
+employment:"Beschäftigung und entsandte Arbeitnehmer",employmentDesc:"Arbeitsrechtliche Anforderungen, Entsendung und Arbeitserlaubnisse.",
+ce:"CE und Produktkonformität",ceDesc:"Produktsicherheit, Normen und CE-Kennzeichnung, soweit anwendbar.",
+packaging:"Verpackung und LUCID",packagingDesc:"Verpackungsregistrierung und geltende Pflichten in Deutschland.",
+gdpr:"DSGVO und Datenschutz",gdprDesc:"Schutz personenbezogener Daten und Datenschutzpflichten.",
+documentsIntro:"Ihre erstellten Dokumente und Ihr Archiv.",
+documentsEmpty:"Ihr Dokumentenarchiv wird nach der Datenbankintegration hier angezeigt.",
+tasksIntro:"Verfolgen Sie geschäftliche Verpflichtungen und wichtige Termine.",
+tasksEmpty:"Ihre Aufgaben und Fristen werden nach der Datenbankintegration hier angezeigt.",
+expertsIntro:"Kontaktieren Sie professionelle Berater.",
+expertsEmpty:"Expertenprofile und Beratungsanfragen werden hier verfügbar sein.",
+profileIntro:"Ihre Unternehmensinformationen.",
+profileNotice:"Die Integration des Unternehmensprofils mit Ihrem bestehenden DOCBIZHUB-Konto wird hier hinzugefügt.",
+profileEmpty:"Unternehmensdaten werden nach der Integration aus Ihrem Konto geladen.",
+notificationsIntro:"Wichtige Aktualisierungen und Erinnerungen.",
+notificationsEmpty:"Benachrichtigungen werden nach der Systemintegration hier angezeigt.",
+adminIntro:"Geschäftsverfahren erstellen und verwalten.",
+adminNotice:"Dieser Bereich ist autorisierten Administratoren vorbehalten. Vor dem Produktiveinsatz muss eine rollenbasierte Zugriffskontrolle eingerichtet werden.",
+adminEmpty:"Die Werkzeuge zur Verfahrensverwaltung werden mit der Administrationsdatenbank verbunden."
+}
+};
+
+const procedures = {
+export:{
+title:{bs:"Izvoz robe u Njemačku",en:"Export Goods to Germany",de:"Waren nach Deutschland exportieren"},
+description:{bs:"Početna kontrolna lista za pripremu izvoza robe.",en:"Initial checklist for preparing goods exports.",de:"Erste Checkliste zur Vorbereitung des Warenexports."},
+steps:{
+bs:["Identifikovati proizvod i njegovu HS/CN tarifnu oznaku.","Provjeriti pravila porijekla robe i dostupne dokaze.","Provjeriti izvozne i uvozne carinske zahtjeve.","Utvrditi PDV i porezni tretman konkretne transakcije.","Provjeriti produktnu usklađenost i CE obaveze gdje su primjenjive.","Provjeriti zahtjeve za ambalažu i LUCID gdje su primjenjivi.","Pripremiti komercijalnu fakturu, packing list i transportnu dokumentaciju.","Provjeriti ugovor, uslove isporuke i odgovornost za transport."],
+en:["Identify the product and its HS/CN tariff classification.","Check rules of origin and available supporting evidence.","Check export and import customs requirements.","Determine VAT and tax treatment of the specific transaction.","Check product compliance and CE obligations where applicable.","Check packaging and LUCID requirements where applicable.","Prepare commercial invoice, packing list and transport documents.","Review contract, delivery terms and transport responsibilities."],
+de:["Produkt und HS/CN-Zolltarifnummer identifizieren.","Ursprungsregeln und verfügbare Nachweise prüfen.","Ausfuhr- und Einfuhrzollanforderungen prüfen.","Mehrwertsteuerliche und steuerliche Behandlung der konkreten Transaktion bestimmen.","Produktkonformität und CE-Pflichten prüfen, soweit anwendbar.","Verpackungs- und LUCID-Anforderungen prüfen, soweit anwendbar.","Handelsrechnung, Packliste und Transportdokumente vorbereiten.","Vertrag, Lieferbedingungen und Transportverantwortung prüfen."]
+}
+},
+services:{
+title:{bs:"Pružanje usluga u Njemačkoj",en:"Providing Services in Germany",de:"Dienstleistungen in Deutschland erbringen"},
+description:{bs:"Početna kontrolna lista za pružanje usluga na njemačkom tržištu.",en:"Initial checklist for providing services in the German market.",de:"Erste Checkliste für Dienstleistungen auf dem deutschen Markt."},
+steps:{
+bs:["Definisati vrstu usluge, mjesto i trajanje izvršenja.","Provjeriti da li je potrebna registracija ili posebna dozvola.","Provjeriti PDV tretman usluge i mjesto oporezivanja.","Provjeriti da li se angažuju radnici i da li se primjenjuju pravila upućivanja.","Provjeriti stručne kvalifikacije i sektorske zahtjeve.","Pripremiti ponudu i ugovor o pružanju usluga.","Provjeriti osiguranje, odgovornost i uslove plaćanja.","Sačuvati dokumentaciju o izvršenju usluge."],
+en:["Define the service type, location and duration.","Check whether registration or a specific permit is required.","Check VAT treatment and place of taxation.","Check whether employees are involved and posting rules apply.","Check professional qualifications and sector-specific requirements.","Prepare a commercial offer and service agreement.","Review insurance, liability and payment terms.","Keep records of service delivery."],
+de:["Art, Ort und Dauer der Dienstleistung festlegen.","Prüfen, ob eine Registrierung oder besondere Genehmigung erforderlich ist.","Mehrwertsteuerliche Behandlung und Leistungsort prüfen.","Prüfen, ob Arbeitnehmer eingesetzt werden und Entsenderegeln gelten.","Berufliche Qualifikationen und branchenspezifische Anforderungen prüfen.","Angebot und Dienstleistungsvertrag vorbereiten.","Versicherung, Haftung und Zahlungsbedingungen prüfen.","Nachweise über die Leistungserbringung aufbewahren."]
+}
+},
+employees:{
+title:{bs:"Slanje radnika u Njemačku",en:"Sending Employees to Germany",de:"Mitarbeiter nach Deutschland entsenden"},
+description:{bs:"Početna kontrolna lista za upućivanje radnika.",en:"Initial checklist for employee posting.",de:"Erste Checkliste für die Entsendung von Arbeitnehmern."},
+steps:{
+bs:["Utvrditi državljanstvo i status svakog radnika.","Provjeriti da li je potrebna viza, radna dozvola ili druga autorizacija.","Provjeriti pravila upućivanja i obaveze prijave.","Provjeriti primjenjive minimalne uslove rada i naknade.","Provjeriti socijalno osiguranje i odgovarajuće potvrde.","Provjeriti zdravstveno osiguranje i zaštitu na radu.","Pripremiti ugovore, evidencije i dokumentaciju radnika.","Organizovati praćenje rokova i obaveznih prijava."],
+en:["Determine the nationality and status of each employee.","Check whether a visa, work permit or other authorization is required.","Check posting rules and notification obligations.","Check applicable minimum working conditions and remuneration.","Check social security and relevant certificates.","Check health insurance and workplace safety.","Prepare contracts, records and employee documentation.","Arrange monitoring of deadlines and mandatory notifications."],
+de:["Staatsangehörigkeit und Status jedes Arbeitnehmers feststellen.","Prüfen, ob ein Visum, eine Arbeitserlaubnis oder eine andere Genehmigung erforderlich ist.","Entsenderegeln und Meldepflichten prüfen.","Anwendbare Mindestarbeitsbedingungen und Vergütung prüfen.","Sozialversicherung und entsprechende Bescheinigungen prüfen.","Krankenversicherung und Arbeitsschutz prüfen.","Verträge, Nachweise und Mitarbeiterunterlagen vorbereiten.","Fristen und verpflichtende Meldungen überwachen."]
+}
+},
+cooperation:{
+title:{bs:"Poslovna saradnja",en:"Business Cooperation",de:"Geschäftliche Zusammenarbeit"},
+description:{bs:"Početna kontrolna lista za uspostavljanje saradnje s partnerom.",en:"Initial checklist for establishing cooperation with a partner.",de:"Erste Checkliste für die Zusammenarbeit mit einem Partner."},
+steps:{
+bs:["Provjeriti identitet i registraciju poslovnog partnera.","Definisati predmet, obim i ciljeve saradnje.","Dogovoriti cijene, rokove i način plaćanja.","Definisati odgovornost i garancije.","Urediti zaštitu povjerljivih podataka i NDA gdje je potrebno.","Pripremiti odgovarajući ugovor.","Provjeriti porezne i regulatorne aspekte saradnje.","Urediti način rješavanja sporova i raskida ugovora."],
+en:["Verify the identity and registration of the business partner.","Define the subject, scope and objectives of cooperation.","Agree on prices, deadlines and payment terms.","Define liability and warranties.","Address confidential information and NDA requirements where needed.","Prepare an appropriate agreement.","Check tax and regulatory aspects of cooperation.","Define dispute resolution and termination terms."],
+de:["Identität und Registrierung des Geschäftspartners überprüfen.","Gegenstand, Umfang und Ziele der Zusammenarbeit festlegen.","Preise, Fristen und Zahlungsbedingungen vereinbaren.","Haftung und Gewährleistungen festlegen.","Vertrauliche Informationen und NDA-Anforderungen regeln, soweit erforderlich.","Einen geeigneten Vertrag vorbereiten.","Steuerliche und regulatorische Aspekte prüfen.","Streitbeilegung und Vertragsbeendigung regeln."]
+}
+},
+formation:{
+title:{bs:"Osnivanje kompanije u Njemačkoj",en:"Company Formation in Germany",de:"Unternehmensgründung in Deutschland"},
+description:{bs:"Početne smjernice za izbor pravne forme i pripremu osnivanja.",en:"Initial guidance for choosing a legal form and preparing incorporation.",de:"Erste Hinweise zur Wahl der Rechtsform und Gründungsvorbereitung."},
+steps:{
+bs:["Definisati poslovni model i planiranu djelatnost.","Uporediti moguće pravne forme i odgovornost osnivača.","Provjeriti uslove za osnivače i direktore.","Pripremiti naziv, sjedište i osnivačku dokumentaciju.","Provjeriti notarske i registracijske zahtjeve.","Provjeriti kapital i bankarske zahtjeve za odabranu formu.","Provjeriti poreznu registraciju i poslovne dozvole.","Planirati računovodstvo, osiguranje i administrativne obaveze."],
+en:["Define the business model and planned activity.","Compare available legal forms and founder liability.","Check requirements for shareholders and directors.","Prepare the name, registered office and incorporation documents.","Check notarial and registration requirements.","Check capital and banking requirements for the selected form.","Check tax registration and business permits.","Plan accounting, insurance and administrative obligations."],
+de:["Geschäftsmodell und geplante Tätigkeit definieren.","Verfügbare Rechtsformen und Gründerhaftung vergleichen.","Anforderungen an Gesellschafter und Geschäftsführer prüfen.","Name, Sitz und Gründungsunterlagen vorbereiten.","Notarielle und registerrechtliche Anforderungen prüfen.","Kapital- und Bankanforderungen der gewählten Rechtsform prüfen.","Steuerliche Registrierung und Gewerbegenehmigungen prüfen.","Buchhaltung, Versicherung und Verwaltungspflichten planen."]
+}
+},
+product:{
+title:{bs:"Usklađenost proizvoda",en:"Product Compliance",de:"Produktkonformität"},
+description:{bs:"Početna kontrolna lista za plasman proizvoda na tržište.",en:"Initial checklist for placing products on the market.",de:"Erste Checkliste für das Inverkehrbringen von Produkten."},
+steps:{
+bs:["Precizno identifikovati proizvod, namjenu i ciljno tržište.","Utvrditi koji propisi i harmonizovani standardi se primjenjuju.","Provjeriti da li je CE oznaka obavezna za ovu kategoriju proizvoda.","Identifikovati potrebna ispitivanja i ocjenjivanje usklađenosti.","Pripremiti tehničku dokumentaciju gdje je potrebna.","Pripremiti EU izjavu o usklađenosti kada je propisana.","Provjeriti označavanje, uputstva i jezik dokumentacije.","Provjeriti obaveze proizvođača, uvoznika i distributera."],
+en:["Identify the product, intended use and target market.","Determine applicable legislation and harmonised standards.","Check whether CE marking is mandatory for this product category.","Identify required testing and conformity assessment.","Prepare technical documentation where required.","Prepare the EU Declaration of Conformity where required.","Check labelling, instructions and documentation language.","Check manufacturer, importer and distributor obligations."],
+de:["Produkt, Verwendungszweck und Zielmarkt identifizieren.","Anwendbare Rechtsvorschriften und harmonisierte Normen bestimmen.","Prüfen, ob die CE-Kennzeichnung für diese Produktkategorie vorgeschrieben ist.","Erforderliche Prüfungen und Konformitätsbewertung identifizieren.","Technische Dokumentation erstellen, soweit erforderlich.","EU-Konformitätserklärung erstellen, soweit vorgeschrieben.","Kennzeichnung, Anleitungen und Dokumentationssprache prüfen.","Pflichten von Hersteller, Importeur und Händler prüfen."]
+}
+}
+};
+
+function normalizeLanguage(value){
+    if(!value)return null;
+    const lang=String(value).toLowerCase().split(/[-_]/)[0];
+    if(["bs","ba","hr","sr"].includes(lang))return "bs";
+    if(lang==="de")return "de";
+    if(lang==="en")return "en";
+    return null;
+}
+
+function detectLanguage(){
+    return normalizeLanguage(localStorage.getItem("docbiz_language"))
+        || normalizeLanguage(navigator.language)
+        || "en";
+}
+
+let currentLanguage=detectLanguage();
+
+function applyLanguage(language){
+    currentLanguage=normalizeLanguage(language)||"en";
+    localStorage.setItem("docbiz_language",currentLanguage);
+    document.documentElement.lang=currentLanguage;
+
+    const dictionary=translations[currentLanguage];
+
+    document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key=el.getAttribute("data-i18n");
+        if(dictionary[key])el.textContent=dictionary[key];
+    });
+
+    document.getElementById("languageSelect").value=currentLanguage;
+}
+
+function changeLanguage(language){
+    applyLanguage(language);
+}
+
+function showSection(id,button){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+    if(button)button.classList.add("active");
+
+    document.getElementById("sidebar").classList.remove("open");
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleMenu(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+function openProcedure(id){
+    const procedure=procedures[id];
+    const title=procedure.title[currentLanguage];
+    const description=procedure.description[currentLanguage];
+    const steps=procedure.steps[currentLanguage];
+
+    document.getElementById("procedureTitle").textContent=title;
+    document.getElementById("procedureDescription").textContent=description;
+
+    const list=document.getElementById("procedureSteps");
+    list.innerHTML="";
+
+    steps.forEach((step,index)=>{
+        const li=document.createElement("li");
+        const label=document.createElement("label");
+        const checkbox=document.createElement("input");
+        checkbox.type="checkbox";
+        checkbox.addEventListener("change",updateChecklistProgress);
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode((index+1)+". "+step));
+        li.appendChild(label);
+        list.appendChild(li);
+    });
+
+    document.getElementById("procedureDetails").style.display="block";
+    document.getElementById("procedureDetails").scrollIntoView({behavior:"smooth"});
+}
+
+function updateChecklistProgress(){
+    // Checklist je trenutno lokalna i nije trajno sačuvana.
+}
+
+function generateDocument(){
+    const type=document.getElementById("docType").value;
+    const date=document.getElementById("docDate").value;
+    const company=document.getElementById("companyName").value;
+    const address=document.getElementById("companyAddress").value;
+    const partner=document.getElementById("partnerName").value;
+    const partnerAddress=document.getElementById("partnerAddress").value;
+    const amount=document.getElementById("amount").value;
+    const currency=document.getElementById("currency").value;
+    const description=document.getElementById("docDescription").value;
+
+    const labels={
+        bs:["DOKUMENT","Datum","Kompanija","Adresa","Poslovni partner","Adresa partnera","Iznos","Opis"],
+        en:["DOCUMENT","Date","Company","Address","Business partner","Partner address","Amount","Description"],
+        de:["DOKUMENT","Datum","Unternehmen","Adresse","Geschäftspartner","Partneradresse","Betrag","Beschreibung"]
+    }[currentLanguage];
+
+    const output=
+`${type.toUpperCase()}
+
+${labels[1]}: ${date||"-"}
+
+${labels[2]}: ${company||"-"}
+${labels[3]}: ${address||"-"}
+
+${labels[4]}: ${partner||"-"}
+${labels[5]}: ${partnerAddress||"-"}
+
+${labels[6]}: ${amount ? amount+" "+currency : "-"}
+${labels[7]}:
+${description||"-"}
+
+--------------------------------
+DOCBIZHUB - DOCUMENT DRAFT
+--------------------------------
+
+${currentLanguage==="bs"?"Ovaj dokument predstavlja nacrt i zahtijeva provjeru prije upotrebe.":currentLanguage==="de"?"Dieses Dokument ist ein Entwurf und muss vor der Verwendung geprüft werden.":"This document is a draft and must be reviewed before use."}`;
+
+    const preview=document.getElementById("documentPreview");
+    preview.textContent=output;
+    preview.style.display="block";
+    document.getElementById("copyDocument").style.display="inline-block";
+}
+
+async function copyDocument(){
+    const text=document.getElementById("documentPreview").textContent;
+    try{
+        await navigator.clipboard.writeText(text);
+        alert(currentLanguage==="bs"?"Dokument je kopiran.":currentLanguage==="de"?"Dokument wurde kopiert.":"Document copied.");
+    }catch(e){
+        alert(currentLanguage==="bs"?"Kopiranje nije uspjelo.":currentLanguage==="de"?"Kopieren fehlgeschlagen.":"Copy failed.");
+    }
+}
+
+function askAI(){
+    const question=document.getElementById("aiQuestion").value.trim();
+    const answer=document.getElementById("aiAnswer");
+
+    if(!question){
+        alert(currentLanguage==="bs"?"Unesite pitanje.":currentLanguage==="de"?"Bitte geben Sie eine Frage ein.":"Please enter a question.");
+        return;
+    }
+
+    answer.style.display="block";
+    answer.textContent=currentLanguage==="bs"
+        ?"AI servis još nije povezan. Vaše pitanje je spremno za slanje kada se poveže sigurni AI backend:\n\n"+question
+        :currentLanguage==="de"
+        ?"Der KI-Dienst ist noch nicht verbunden. Ihre Frage ist für die Übermittlung vorbereitet:\n\n"+question
+        :"The AI service is not connected yet. Your question is ready for submission when the secure AI backend is connected:\n\n"+question;
+}
+
+document.getElementById("docDate").value=new Date().toISOString().slice(0,10);
+applyLanguage(currentLanguage);
+</script>
+
+</body>
+</html>
