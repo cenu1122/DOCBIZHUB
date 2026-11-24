@@ -339,6 +339,26 @@ grid-template-columns:1fr;
   #exportTradeCenter{display:block!important}
 }
 
+
+/* EXPORT DOCUMENT FORMS */
+.export-forms{margin-top:22px}
+.doc-form{border:1px solid #dfe7f1;border-radius:10px;padding:18px;margin:14px 0;background:#fbfcff}
+.doc-form h3{color:#203451;font-size:16px;margin-bottom:14px}
+.doc-form .form-grid{margin-top:12px}
+.doc-form .form-group{min-width:0}
+.doc-form small{color:#718096;line-height:1.5}
+.doc-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.print-document{display:none}
+@media print{
+  body.printing-doc>*{display:none!important}
+  body.printing-doc .print-document{display:block!important;padding:22px;color:#111;background:#fff}
+  body.printing-doc .print-document h1{font-size:22px;margin-bottom:16px}
+  body.printing-doc .print-document h2{font-size:16px;margin:18px 0 8px}
+  body.printing-doc .print-document table{min-width:0;width:100%;border-collapse:collapse}
+  body.printing-doc .print-document th,body.printing-doc .print-document td{border:1px solid #999;padding:7px;font-size:11px}
+  body.printing-doc .print-document p{margin:7px 0;font-size:12px;line-height:1.5}
+}
+
 </style>
 </head>
 
@@ -511,6 +531,105 @@ Ovaj modul služi za internu evidenciju. Zakonske obaveze i rokove potrebno je p
       <button class="btn btn-secondary" type="button" onclick="resetExportChecklist()" data-i18n="exportReset">Poništi označavanja</button>
     </div>
     <p class="export-meta" data-i18n="exportStorageNote">Napomena: označavanja se čuvaju samo u lokalnom pregledniku i nisu sinhronizovana između uređaja niti predstavljaju zvaničnu potvrdu usklađenosti.</p>
+  </div>
+
+
+  <div class="export-forms">
+    <h2>🧾 Obrasci za pripremu izvozne dokumentacije</h2>
+    <p class="export-meta">Dugme <strong>IZRADI</strong> otvara odgovarajući obrazac iz foldera <strong>OBRASCI</strong>. Nazivi fajlova su unaprijed određeni velikim slovima; potrebno je kreirati te HTML fajlove sa istim nazivima.</p>
+    <div class="export-warning">Ovi obrasci služe za pripremu komercijalnih podataka i radnih nacrta. Nisu službeni carinski obrasci. Izvoznu deklaraciju, EUR.1 i službeni CMR mora izdati/popuniti ovlašteni učesnik ili nadležni sistem prema važećim pravilima.</div>
+
+    <div class="doc-form">
+      <h3>1. Komercijalna faktura / Commercial Invoice</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Broj fakture</label><input id="invNo" placeholder="FA-2026-001"></div>
+        <div class="form-group"><label>Datum fakture</label><input id="invDate" type="date"></div>
+        <div class="form-group"><label>Izvoznik — naziv i adresa</label><textarea id="invSeller"></textarea></div>
+        <div class="form-group"><label>Uvoznik / kupac — naziv i adresa</label><textarea id="invBuyer"></textarea></div>
+        <div class="form-group"><label>PIB / ID broj izvoznika</label><input id="invTax"></div>
+        <div class="form-group"><label>EORI kupca (ako je primjenjivo)</label><input id="invEori"></div>
+        <div class="form-group"><label>Opis robe / materijal</label><input id="invGoods"></div>
+        <div class="form-group"><label>CN/HS tarifni broj (provjeriti)</label><input id="invHs"></div>
+        <div class="form-group"><label>Količina i jedinica mjere</label><input id="invQty" placeholder="npr. 250 kom"></div>
+        <div class="form-group"><label>Neto / bruto težina (kg)</label><input id="invWeight"></div>
+        <div class="form-group"><label>Jedinična cijena</label><input id="invUnit" type="number" step="0.01"></div>
+        <div class="form-group"><label>Ukupna vrijednost</label><input id="invTotal" type="number" step="0.01"></div>
+        <div class="form-group"><label>Valuta</label><input id="invCurrency" value="EUR"></div>
+        <div class="form-group"><label>Incoterms + mjesto (npr. FCA Sarajevo, Incoterms 2020)</label><input id="invTerms"></div>
+        <div class="form-group"><label>Zemlja porijekla robe (samo ako je utvrđena)</label><input id="invOrigin"></div>
+        <div class="form-group"><label>Način plaćanja / rok</label><input id="invPayment"></div>
+      </div>
+      <div class="doc-form-actions"><button class="btn btn-primary" onclick="printPreparedDoc('invoice')">Pregled / štampaj / PDF</button><button class="btn btn-secondary" onclick="clearDocForm('invoice')">Očisti obrazac</button><a class="btn btn-primary" href="OBRASCI/FAKTURA_KOMERCIJALNA.html" target="_blank" rel="noopener">IZRADI</a></div>
+    </div>
+
+    <div class="doc-form">
+      <h3>2. Packing List — lista pakovanja</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Broj dokumenta / fakture</label><input id="plNo"></div>
+        <div class="form-group"><label>Datum</label><input id="plDate" type="date"></div>
+        <div class="form-group"><label>Pošiljalac — naziv i adresa</label><textarea id="plSender"></textarea></div>
+        <div class="form-group"><label>Primalac — naziv i adresa</label><textarea id="plReceiver"></textarea></div>
+        <div class="form-group"><label>Opis robe</label><textarea id="plGoods"></textarea></div>
+        <div class="form-group"><label>Broj paketa / paleta</label><input id="plPackages"></div>
+        <div class="form-group"><label>Oznake paketa</label><input id="plMarks"></div>
+        <div class="form-group"><label>Neto težina (kg)</label><input id="plNet"></div>
+        <div class="form-group"><label>Bruto težina (kg)</label><input id="plGross"></div>
+        <div class="form-group"><label>Dimenzije / zapremina</label><input id="plDimensions"></div>
+      </div>
+      <div class="doc-form-actions"><button class="btn btn-primary" onclick="printPreparedDoc('packing')">Pregled / štampaj / PDF</button><button class="btn btn-secondary" onclick="clearDocForm('packing')">Očisti obrazac</button><a class="btn btn-primary" href="OBRASCI/LISTA_PAKOVANJA.html" target="_blank" rel="noopener">IZRADI</a></div>
+    </div>
+
+    <div class="doc-form">
+      <h3>3. CMR — priprema podataka za međunarodni tovarni list</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Pošiljalac (naziv i adresa)</label><textarea id="cmrSender"></textarea></div>
+        <div class="form-group"><label>Prevoznik (naziv i adresa)</label><textarea id="cmrCarrier"></textarea></div>
+        <div class="form-group"><label>Primalac (naziv i adresa)</label><textarea id="cmrReceiver"></textarea></div>
+        <div class="form-group"><label>Mjesto i datum preuzimanja</label><input id="cmrPickup"></div>
+        <div class="form-group"><label>Mjesto isporuke</label><input id="cmrDelivery"></div>
+        <div class="form-group"><label>Opis robe i način pakovanja</label><textarea id="cmrGoods"></textarea></div>
+        <div class="form-group"><label>Broj paketa</label><input id="cmrPackages"></div>
+        <div class="form-group"><label>Bruto težina (kg)</label><input id="cmrWeight"></div>
+        <div class="form-group"><label>Registarske oznake vozila / prikolice</label><input id="cmrVehicle"></div>
+        <div class="form-group"><label>Posebna uputstva / napomene</label><textarea id="cmrNotes"></textarea></div>
+      </div>
+      <div class="doc-form-actions"><button class="btn btn-primary" onclick="printPreparedDoc('cmr')">Pregled / štampaj / PDF</button><button class="btn btn-secondary" onclick="clearDocForm('cmr')">Očisti obrazac</button><a class="btn btn-primary" href="OBRASCI/CMR_TOVARNI_LIST.html" target="_blank" rel="noopener">IZRADI</a></div>
+    </div>
+
+    <div class="doc-form">
+      <h3>4. Podaci za izvoznu carinsku deklaraciju — za špeditera</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Izvoznik / ID broj</label><textarea id="cusExporter"></textarea></div>
+        <div class="form-group"><label>Primalac / uvoznik</label><textarea id="cusImporter"></textarea></div>
+        <div class="form-group"><label>CN/HS tarifni broj (potvrđuje špediter)</label><input id="cusHs"></div>
+        <div class="form-group"><label>Precizan trgovački opis robe</label><textarea id="cusGoods"></textarea></div>
+        <div class="form-group"><label>Zemlja otpreme / odredišta</label><input id="cusCountries" value="Bosna i Hercegovina / Njemačka"></div>
+        <div class="form-group"><label>Porijeklo robe (dokazati)</label><input id="cusOrigin"></div>
+        <div class="form-group"><label>Količina / jedinica</label><input id="cusQty"></div>
+        <div class="form-group"><label>Neto / bruto masa (kg)</label><input id="cusWeight"></div>
+        <div class="form-group"><label>Vrijednost i valuta</label><input id="cusValue"></div>
+        <div class="form-group"><label>Incoterms i mjesto</label><input id="cusTerms"></div>
+        <div class="form-group"><label>Granični prelaz / ruta (ako je poznato)</label><input id="cusRoute"></div>
+        <div class="form-group"><label>Špediter / kontakt</label><input id="cusBroker"></div>
+      </div>
+      <div class="doc-form-actions"><button class="btn btn-primary" onclick="printPreparedDoc('customs')">Pregled / štampaj / PDF</button><button class="btn btn-secondary" onclick="clearDocForm('customs')">Očisti obrazac</button><a class="btn btn-primary" href="OBRASCI/IZVOZNA_CARINSKA_DEKLARACIJA.html" target="_blank" rel="noopener">IZRADI</a></div>
+    </div>
+
+    <div class="doc-form">
+      <h3>5. Evidencija porijekla robe — priprema za EUR.1 / izjavu o porijeklu</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Proizvođač / izvoznik</label><textarea id="orgCompany"></textarea></div>
+        <div class="form-group"><label>Proizvod i tarifni broj</label><input id="orgProduct"></div>
+        <div class="form-group"><label>Opis proizvodnog procesa u BiH</label><textarea id="orgProcess"></textarea></div>
+        <div class="form-group"><label>Porijeklo glavnih materijala</label><textarea id="orgMaterials"></textarea></div>
+        <div class="form-group"><label>Dobavljači i računi materijala</label><textarea id="orgSuppliers"></textarea></div>
+        <div class="form-group"><label>Dokazi / certifikati / evidencije</label><textarea id="orgEvidence"></textarea></div>
+        <div class="form-group"><label>Broj serije / radnog naloga</label><input id="orgBatch"></div>
+        <div class="form-group"><label>Napomene za špeditera / carinu</label><textarea id="orgNotes"></textarea></div>
+      </div>
+      <div class="doc-form-actions"><button class="btn btn-primary" onclick="printPreparedDoc('origin')">Pregled / štampaj / PDF</button><button class="btn btn-secondary" onclick="clearDocForm('origin')">Očisti obrazac</button><a class="btn btn-primary" href="OBRASCI/DOKAZ_O_PORIJEKLU_ROBE.HTML" target="_blank" rel="noopener">IZRADI</a></div>
+    </div>
+    <p class="export-meta">Uneseni podaci ostaju u ovom obrascu tokom rada u pregledniku. Za arhivu koristite štampanje u PDF i čuvajte kopije faktura, dokaza o porijeklu, certifikata i transportnih dokumenata.</p>
   </div>
 
   <div class="export-card" style="margin-top:18px">
@@ -1334,6 +1453,33 @@ function resetExportChecklist(){
 
 function printExportChecklist(){
   window.print();
+}
+
+
+const preparedDocs={
+ invoice:{title:"KOMERCIJALNA FAKTURA / COMMERCIAL INVOICE",fields:[["Broj fakture","invNo"],["Datum","invDate"],["Izvoznik","invSeller"],["Kupac / uvoznik","invBuyer"],["ID broj izvoznika","invTax"],["EORI kupca","invEori"],["Opis robe","invGoods"],["CN/HS kod","invHs"],["Količina","invQty"],["Neto / bruto težina","invWeight"],["Jedinična cijena","invUnit"],["Ukupna vrijednost","invTotal"],["Valuta","invCurrency"],["Incoterms","invTerms"],["Porijeklo robe","invOrigin"],["Način plaćanja","invPayment"]]},
+ packing:{title:"PACKING LIST — LISTA PAKOVANJA",fields:[["Broj dokumenta / fakture","plNo"],["Datum","plDate"],["Pošiljalac","plSender"],["Primalac","plReceiver"],["Opis robe","plGoods"],["Broj paketa / paleta","plPackages"],["Oznake paketa","plMarks"],["Neto težina","plNet"],["Bruto težina","plGross"],["Dimenzije / zapremina","plDimensions"]]},
+ cmr:{title:"CMR — PRIPREMA PODATAKA ZA TOVARNI LIST",fields:[["Pošiljalac","cmrSender"],["Prevoznik","cmrCarrier"],["Primalac","cmrReceiver"],["Mjesto i datum preuzimanja","cmrPickup"],["Mjesto isporuke","cmrDelivery"],["Opis robe / pakovanje","cmrGoods"],["Broj paketa","cmrPackages"],["Bruto težina","cmrWeight"],["Vozilo / prikolica","cmrVehicle"],["Napomene","cmrNotes"]]},
+ customs:{title:"PODACI ZA IZVOZNU CARINSKU DEKLARACIJU — ZA ŠPEDITERA",fields:[["Izvoznik / ID broj","cusExporter"],["Primalac / uvoznik","cusImporter"],["CN/HS kod","cusHs"],["Opis robe","cusGoods"],["Zemlja otpreme / odredišta","cusCountries"],["Porijeklo robe","cusOrigin"],["Količina","cusQty"],["Neto / bruto masa","cusWeight"],["Vrijednost i valuta","cusValue"],["Incoterms","cusTerms"],["Ruta / granični prelaz","cusRoute"],["Špediter / kontakt","cusBroker"]]},
+ origin:{title:"EVIDENCIJA PORIJEKLA ROBE — RADNI LIST",fields:[["Proizvođač / izvoznik","orgCompany"],["Proizvod i tarifni broj","orgProduct"],["Proizvodni proces u BiH","orgProcess"],["Porijeklo materijala","orgMaterials"],["Dobavljači i računi","orgSuppliers"],["Dokazi / certifikati","orgEvidence"],["Serija / radni nalog","orgBatch"],["Napomene","orgNotes"]]}
+};
+function escapeDocHtml(value){
+ return String(value||"—").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])).replace(/\n/g,"<br>");
+}
+function printPreparedDoc(type){
+ const doc=preparedDocs[type]; if(!doc)return;
+ const rows=doc.fields.map(([label,id])=>`<tr><th>${escapeDocHtml(label)}</th><td>${escapeDocHtml(document.getElementById(id).value)}</td></tr>`).join("");
+ const old=document.getElementById("preparedPrintDocument"); if(old)old.remove();
+ const section=document.createElement("section"); section.id="preparedPrintDocument";section.className="print-document";
+ section.innerHTML=`<h1>${doc.title}</h1><p>DOCBIZHUB — radni dokument za pripremu izvozne pošiljke</p><table>${rows}</table><p style="margin-top:22px">Napomena: Radni nacrt. Provjeriti podatke i prenijeti ih u odgovarajući službeni obrazac/sistem gdje je to propisano.</p><p>Datum pripreme: ${new Date().toLocaleDateString("bs-BA")}</p>`;
+ document.body.appendChild(section);document.body.classList.add("printing-doc");
+ window.print();
+ setTimeout(()=>{document.body.classList.remove("printing-doc");section.remove();},500);
+}
+function clearDocForm(type){
+ const doc=preparedDocs[type];if(!doc)return;
+ if(!confirm("Očistiti sva polja ovog obrasca?"))return;
+ doc.fields.forEach(([,id])=>{const el=document.getElementById(id);if(el)el.value=el.defaultValue||"";});
 }
 
 loadData();
