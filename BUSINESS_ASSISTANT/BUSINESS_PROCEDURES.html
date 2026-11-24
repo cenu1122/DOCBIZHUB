@@ -51,6 +51,23 @@ button.primary:hover{background:#1476cf}
 .notice{padding:14px;background:#fff7e6;color:#885d13;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:18px}
 .detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .secondary{border:1px solid var(--border);background:white;padding:10px 14px;border-radius:7px;cursor:pointer}
+ 
+.create-button {
+  display: inline-block;
+  background: #238be5;
+  color: white;
+  text-decoration: none;
+  padding: 10px 17px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.create-button:hover {
+  background: #1476cf;
+}
+
 .empty{padding:25px;text-align:center;color:var(--muted);background:#f8fafc;border-radius:8px}
 .mobile-menu{display:none;background:#1b2b49;color:white;border:0;padding:9px 12px;border-radius:7px}
 @media(max-width:750px){
@@ -302,7 +319,56 @@ function openProcedure(id){
   row.append(input,label);
   document.getElementById("steps").appendChild(row);
  });
- document.getElementById("relatedDocuments").innerHTML=d.docs.map(doc=>`<div class="step">📄 <span>${doc}</span></div>`).join("");
+ 
+const documentForms = {
+  "Commercial Invoice": "FAKTURA_KOMERCIJALNA.html",
+  "Packing List": "LISTA_PAKOVANJA.html",
+  "Proof of Origin": "DOKAZ_O_PORIJEKLU_ROBE.html",
+  "Transport Document": "CMR_TOVARNI_LIST.html",
+  "Customs Declaration": "IZVOZNA_CARINSKA_DEKLARACIJA.html",
+  "Sales Contract": "UGOVOR_O_PRODAJI.html",
+  "Service Agreement": "UGOVOR_O_PRUZANJU_USLUGA.html",
+  "Commercial Offer": "KOMERCIJALNA_PONUDA.html",
+  "Invoice": "FAKTURA.html",
+  "Project Completion Report": "IZVJESTAJ_O_ZAVRSETKU_PROJEKTA.html",
+  "Company Profile": "PROFIL_KOMPANIJE.html",
+  "NDA": "UGOVOR_O_POVJERLJIVOSTI.html",
+  "Purchase Order": "NARUDZBENICA.html",
+  "Business Plan": "POSLOVNI_PLAN.html",
+  "Company Formation Documents": "DOKUMENTACIJA_OSNIVANJA_KOMPANIJE.html",
+  "Registration Documents": "REGISTRACIJSKA_DOKUMENTACIJA.html",
+  "Technical Documentation": "TEHNICKA_DOKUMENTACIJA.html",
+  "EU Declaration of Conformity": "EU_IZJAVA_O_USKLADJENOSTI.html",
+  "Test Reports": "IZVJESTAJI_O_TESTIRANJU.html",
+  "Product Instructions": "UPUTSTVO_ZA_PROIZVOD.html",
+  "Employment Contract": "UGOVOR_O_RADU.html",
+  "Posting Documentation": "DOKUMENTACIJA_O_UPUCIVANJU_RADNIKA.html",
+  "Social Security Certificate": "POTVRDA_O_SOCIJALNOM_OSIGURANJU.html",
+  "Working Time Records": "EVIDENCIJA_RADNOG_VREMENA.html"
+};
+
+document.getElementById("relatedDocuments").innerHTML =
+  d.docs.map(doc => {
+    const fileName = documentForms[doc] ||
+      doc.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9]+/g, "_")
+        .replace(/^_|_$/g, "")
+        .toUpperCase() + ".html";
+
+    const filePath = "BUSINESS_ASSISTANT/OBRASCI/" + fileName;
+
+    return `
+      <div class="step" style="align-items:center;flex-wrap:wrap">
+        <span style="flex:1">📄 ${doc}</span>
+        <a href="${filePath}"
+           class="create-button">
+           IZRADI →
+        </a>
+      </div>
+    `;
+  }).join("");
+
  updateDetailProgress();
  showPage("detail");
 }
