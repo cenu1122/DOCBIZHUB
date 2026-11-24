@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Business Procedures</title>
+<style>
+:root{--navy:#101c35;--blue:#238be5;--bg:#f3f6fb;--text:#172033;--muted:#718096;--border:#e1e7f0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--navy);color:white;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{font-size:24px;font-weight:bold}.logo span{color:#35a8ff}
+.header-right{display:flex;align-items:center;gap:15px}
+header a{color:white;text-decoration:none;font-size:14px}
+select,input,textarea{font:inherit}
+.language{background:#1b2b49;color:white;border:1px solid #53637d;padding:9px;border-radius:7px}
+.layout{display:flex;min-height:calc(100vh - 68px)}
+.sidebar{width:245px;background:white;border-right:1px solid var(--border);padding:22px 14px;flex-shrink:0}
+.sidebar-title{font-size:11px;color:#99a4b5;font-weight:bold;padding:12px;letter-spacing:1px}
+.nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:13px 12px;margin-bottom:4px;border:0;border-radius:8px;background:transparent;text-align:left;color:#536178;font-size:14px;cursor:pointer}
+.nav-item:hover,.nav-item.active{background:#eaf4ff;color:#1476cf}
+.content{flex:1;min-width:0;max-width:1500px;padding:35px}
+.page-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:25px}
+.page-header h1{font-size:28px;margin-bottom:7px}
+.page-header p{color:var(--muted);font-size:14px}
+.search{width:100%;max-width:350px;padding:12px;border:1px solid var(--border);border-radius:8px;background:white}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}
+.filter{padding:9px 14px;border:1px solid var(--border);background:white;color:#536178;border-radius:20px;cursor:pointer;font-size:13px}
+.filter.active{background:#eaf4ff;color:#1476cf;border-color:#9acbfa}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:17px}
+.card,.panel{background:white;border:1px solid var(--border);border-radius:12px;padding:21px}
+.card{transition:.2s}
+.card:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 6px 18px #14325a12}
+.card-icon{font-size:29px;margin-bottom:14px}
+.tag{display:inline-block;background:#eaf4ff;color:#1476cf;padding:5px 9px;border-radius:5px;font-size:11px;margin-bottom:11px}
+.card h2{font-size:17px;margin-bottom:9px}
+.card p{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:15px}
+button.primary{border:0;background:var(--blue);color:white;padding:11px 16px;border-radius:7px;font-weight:bold;cursor:pointer}
+button.primary:hover{background:#1476cf}
+.section{display:none}.section.active{display:block}
+.panel{margin-bottom:20px}
+.panel h2{font-size:19px;margin-bottom:14px}
+.progress{height:9px;background:#e8edf4;border-radius:10px;overflow:hidden;margin:12px 0}
+.progress-bar{height:100%;background:#238be5;width:0;transition:.2s}
+.step{padding:15px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5}
+.step input{margin-top:3px;width:17px;height:17px;flex-shrink:0;cursor:pointer}
+.step label{cursor:pointer;flex:1}
+.step.done label{text-decoration:line-through;color:#8b98a9}
+.step-meta{font-size:12px;color:var(--muted);margin-top:5px}
+.notice{padding:14px;background:#fff7e6;color:#885d13;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:18px}
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.secondary{border:1px solid var(--border);background:white;padding:10px 14px;border-radius:7px;cursor:pointer}
+.empty{padding:25px;text-align:center;color:var(--muted);background:#f8fafc;border-radius:8px}
+.mobile-menu{display:none;background:#1b2b49;color:white;border:0;padding:9px 12px;border-radius:7px}
+@media(max-width:750px){
+.layout{display:block}.sidebar{display:none;width:100%}.sidebar.open{display:block}
+.mobile-menu{display:block}.content{padding:22px 15px}
+header{padding:17px}.header-right{gap:10px}
+.page-header h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">DOCBIZ<span>HUB</span></div>
+ <div class="header-right">
+  <a href="BUSINESS_ASSISTANT.html" data-i18n="back">← Business Assistant</a>
+  <select class="language" id="language" onchange="changeLanguage(this.value)">
+   <option value="bs">Bosanski</option><option value="en">English</option><option value="de">Deutsch</option>
+  </select>
+  <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+ </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+ <div class="sidebar-title" data-i18n="menu">PROCEDURES MENU</div>
+ <button class="nav-item active" onclick="showPage('all',this)">📋 <span data-i18n="all">All Procedures</span></button>
+ <button class="nav-item" onclick="showPage('germany',this)">🇩🇪 <span data-i18n="germany">Germany</span></button>
+ <button class="nav-item" onclick="showPage('europe',this)">🇪🇺 <span data-i18n="europe">Europe</span></button>
+ <button class="nav-item" onclick="showPage('progress',this)">📊 <span data-i18n="progress">My Progress</span></button>
+</aside>
+
+<main class="content">
+
+<section class="section active" id="all">
+ <div class="page-header">
+  <div><h1 data-i18n="title">Business Procedures</h1><p data-i18n="subtitle">Guided business procedures for entering the German and European markets.</p></div>
+  <input class="search" id="search" placeholder="Search procedures..." oninput="renderCards()">
+ </div>
+ <div class="filters">
+  <button class="filter active" data-filter="all" onclick="setFilter('all',this)" data-i18n="filterAll">All</button>
+  <button class="filter" data-filter="germany" onclick="setFilter('germany',this)">🇩🇪 Germany</button>
+  <button class="filter" data-filter="europe" onclick="setFilter('europe',this)">🇪🇺 Europe</button>
+ </div>
+ <div class="grid" id="procedureGrid"></div>
+</section>
+
+<section class="section" id="germany">
+ <div class="page-header"><div><h1 data-i18n="germanyTitle">Germany Procedures</h1><p data-i18n="germanyDesc">Procedures related to the German market.</p></div></div>
+ <div class="grid" id="germanyGrid"></div>
+</section>
+
+<section class="section" id="europe">
+ <div class="page-header"><div><h1 data-i18n="europeTitle">European Procedures</h1><p data-i18n="europeDesc">Procedures for European business operations.</p></div></div>
+ <div class="grid" id="europeGrid"></div>
+</section>
+
+<section class="section" id="progress">
+ <div class="page-header"><div><h1 data-i18n="progressTitle">My Progress</h1><p data-i18n="progressDesc">Track your completed procedure steps.</p></div></div>
+ <div class="panel">
+  <h2 data-i18n="overall">Overall progress</h2>
+  <strong id="overallText">0%</strong>
+  <div class="progress"><div class="progress-bar" id="overallBar"></div></div>
+  <div id="progressList"></div>
+ </div>
+</section>
+
+<section class="section" id="detail">
+ <div class="page-header">
+  <div><h1 id="detailTitle"></h1><p id="detailDescription"></p></div>
+  <button class="secondary" onclick="showPage('all')" data-i18n="backProcedures">← Procedures</button>
+ </div>
+ <div class="panel">
+  <div class="notice" data-i18n="warning">Requirements depend on the company, product, service, transaction and applicable law. Verify requirements with official sources and qualified experts.</div>
+  <h2 data-i18n="checklist">Procedure checklist</h2>
+  <p id="completionText" style="font-size:13px;color:#718096"></p>
+  <div class="progress"><div class="progress-bar" id="detailBar"></div></div>
+  <div id="steps"></div>
+  <div class="detail-actions">
+   <button class="primary" onclick="saveProgress()" data-i18n="save">Save progress</button>
+   <button class="secondary" onclick="window.print()" data-i18n="print">Print checklist</button>
+  </div>
+ </div>
+ <div class="panel">
+  <h2 data-i18n="documentsTitle">Related documents</h2>
+  <div id="relatedDocuments"></div>
+ </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const data={
+export:{
+icon:"🚚",category:"germany",
+title:{bs:"Izvoz robe u Njemačku",en:"Export Goods to Germany",de:"Waren nach Deutschland exportieren"},
+desc:{bs:"Priprema kompanije za izvoz robe na njemačko tržište.",en:"Prepare your company to export goods to the German market.",de:"Bereiten Sie Ihr Unternehmen auf den Export nach Deutschland vor."},
+steps:{
+bs:["Identifikovati proizvod i utvrditi odgovarajuću HS/CN tarifnu oznaku.","Provjeriti da li postoje ograničenja ili posebne dozvole za izvoz proizvoda.","Provjeriti pravila porijekla robe i raspoložive dokaze o porijeklu.","Utvrditi izvozne carinske procedure u zemlji izvoza.","Provjeriti uvozne carinske zahtjeve u Njemačkoj i odgovornost uvoznika.","Utvrditi PDV tretman transakcije i obaveze stranaka.","Provjeriti produktnu usklađenost, sigurnosne standarde i CE obaveze gdje su primjenjive.","Provjeriti obaveze u vezi s ambalažom i LUCID sistemom gdje su primjenjive.","Pripremiti komercijalnu fakturu, packing list i transportne dokumente.","Ugovoriti Incoterms uslove, osiguranje i odgovornost za isporuku.","Arhivirati carinsku, komercijalnu i transportnu dokumentaciju."],
+en:["Identify the product and determine the appropriate HS/CN tariff classification.","Check whether export restrictions or special permits apply.","Check rules of origin and available proof of origin.","Determine export customs procedures in the exporting country.","Check German import customs requirements and importer responsibilities.","Determine VAT treatment and the obligations of each party.","Check product compliance, safety standards and CE obligations where applicable.","Check packaging and LUCID obligations where applicable.","Prepare the commercial invoice, packing list and transport documents.","Agree on Incoterms, insurance and delivery responsibilities.","Archive customs, commercial and transport documentation."],
+de:["Produkt identifizieren und passende HS/CN-Zolltarifnummer bestimmen.","Prüfen, ob Ausfuhrbeschränkungen oder besondere Genehmigungen gelten.","Ursprungsregeln und verfügbare Ursprungsnachweise prüfen.","Ausfuhrzollverfahren im Exportland bestimmen.","Deutsche Einfuhrzollanforderungen und Importeurspflichten prüfen.","Mehrwertsteuerliche Behandlung und Pflichten der Parteien bestimmen.","Produktkonformität, Sicherheitsstandards und CE-Pflichten prüfen, soweit anwendbar.","Verpackungs- und LUCID-Pflichten prüfen, soweit anwendbar.","Handelsrechnung, Packliste und Transportdokumente vorbereiten.","Incoterms, Versicherung und Lieferverantwortung vereinbaren.","Zoll-, Handels- und Transportdokumentation archivieren."]
+},
+docs:["Commercial Invoice","Packing List","Sales Contract","Proof of Origin","Transport Document"]
+},
+services:{
+icon:"🛠️",category:"germany",
+title:{bs:"Pružanje usluga u Njemačkoj",en:"Providing Services in Germany",de:"Dienstleistungen in Deutschland erbringen"},
+desc:{bs:"Koraci za regionalne kompanije koje pružaju usluge njemačkim klijentima.",en:"Steps for regional companies providing services to German clients.",de:"Schritte für regionale Unternehmen, die Dienstleistungen für deutsche Kunden erbringen."},
+steps:{
+bs:["Definisati vrstu usluge, mjesto i trajanje izvršenja.","Provjeriti da li djelatnost zahtijeva posebnu registraciju, licencu ili dozvolu.","Utvrditi mjesto oporezivanja i PDV tretman usluge.","Provjeriti da li se angažuju radnici i da li se primjenjuju pravila upućivanja.","Provjeriti stručne kvalifikacije i sektorske uslove.","Pripremiti komercijalnu ponudu i ugovor o pružanju usluga.","Definisati cijenu, rokove, način plaćanja i odgovornost.","Provjeriti osiguranje, zaštitu na radu i druge obaveze.","Evidentirati izvršene usluge i sačuvati dokumentaciju."],
+en:["Define the service type, location and duration.","Check whether the activity requires registration, a licence or a permit.","Determine place of taxation and VAT treatment.","Check whether employees are involved and posting rules apply.","Check professional qualifications and sector-specific requirements.","Prepare a commercial offer and service agreement.","Define price, deadlines, payment terms and liability.","Check insurance, workplace safety and other obligations.","Record completed services and retain documentation."],
+de:["Art, Ort und Dauer der Dienstleistung festlegen.","Prüfen, ob die Tätigkeit eine Registrierung, Lizenz oder Genehmigung erfordert.","Leistungsort und Mehrwertsteuerbehandlung bestimmen.","Prüfen, ob Arbeitnehmer eingesetzt werden und Entsenderegeln gelten.","Berufliche Qualifikationen und branchenspezifische Anforderungen prüfen.","Angebot und Dienstleistungsvertrag vorbereiten.","Preis, Fristen, Zahlungsbedingungen und Haftung festlegen.","Versicherung, Arbeitsschutz und weitere Pflichten prüfen.","Erbrachte Leistungen dokumentieren und Unterlagen aufbewahren."]
+},
+docs:["Commercial Offer","Service Agreement","Invoice","Project Completion Report"]
+},
+employees:{
+icon:"👷",category:"germany",
+title:{bs:"Slanje radnika u Njemačku",en:"Sending Employees to Germany",de:"Mitarbeiter nach Deutschland entsenden"},
+desc:{bs:"Provjera uslova za upućivanje zaposlenih na rad u Njemačku.",en:"Check requirements for posting employees to work in Germany.",de:"Anforderungen für die Entsendung von Mitarbeitern nach Deutschland prüfen."},
+steps:{
+bs:["Utvrditi državljanstvo, prebivalište i radni status svakog radnika.","Provjeriti da li je potrebna viza, radna dozvola ili druga autorizacija.","Utvrditi pravni osnov angažovanja i postojanje ugovora.","Provjeriti obaveze prethodne prijave nadležnim organima.","Provjeriti primjenjive minimalne uslove rada i naknade u Njemačkoj.","Provjeriti socijalno osiguranje i odgovarajuće potvrde.","Pripremiti ugovore, evidencije radnog vremena i dokumentaciju radnika.","Provjeriti zdravstveno osiguranje, smještaj i zaštitu na radu.","Uspostaviti praćenje rokova i obaveznih prijava."],
+en:["Determine the nationality, residence and employment status of each worker.","Check whether a visa, work permit or other authorization is required.","Determine the legal basis of engagement and relevant contracts.","Check advance notification obligations to competent authorities.","Check applicable minimum working conditions and remuneration in Germany.","Check social security and relevant certificates.","Prepare contracts, working-time records and employee documentation.","Check health insurance, accommodation and workplace safety.","Monitor deadlines and mandatory notifications."],
+de:["Staatsangehörigkeit, Wohnsitz und Beschäftigungsstatus jedes Arbeitnehmers feststellen.","Prüfen, ob ein Visum, eine Arbeitserlaubnis oder eine andere Genehmigung erforderlich ist.","Rechtsgrundlage der Beschäftigung und relevante Verträge bestimmen.","Vorherige Meldepflichten bei zuständigen Behörden prüfen.","Anwendbare Mindestarbeitsbedingungen und Vergütung in Deutschland prüfen.","Sozialversicherung und entsprechende Bescheinigungen prüfen.","Verträge, Arbeitszeitnachweise und Mitarbeiterunterlagen vorbereiten.","Krankenversicherung, Unterkunft und Arbeitsschutz prüfen.","Fristen und verpflichtende Meldungen überwachen."]
+},
+docs:["Employment Contract","Posting Documentation","Social Security Certificate","Working Time Records"]
+},
+cooperation:{
+icon:"🤝",category:"europe",
+title:{bs:"Poslovna saradnja",en:"Business Cooperation",de:"Geschäftliche Zusammenarbeit"},
+desc:{bs:"Uspostavljanje saradnje s kupcima, dobavljačima i partnerima u Evropi.",en:"Establish cooperation with customers, suppliers and partners in Europe.",de:"Zusammenarbeit mit Kunden, Lieferanten und Partnern in Europa aufbauen."},
+steps:{
+bs:["Identifikovati potencijalnog poslovnog partnera.","Provjeriti registraciju i poslovni identitet partnera.","Definisati predmet, obim i ciljeve saradnje.","Dogovoriti cijene, rokove i način plaćanja.","Provjeriti porezne i regulatorne aspekte saradnje.","Definisati kvalitet, garancije i odgovornost.","Urediti povjerljivost i zaštitu poslovnih podataka.","Pripremiti odgovarajući ugovor i priloge.","Urediti način rješavanja sporova i raskida ugovora."],
+en:["Identify a potential business partner.","Verify the partner's registration and business identity.","Define the subject, scope and objectives of cooperation.","Agree on prices, deadlines and payment terms.","Check tax and regulatory aspects of cooperation.","Define quality, warranties and liability.","Address confidentiality and business data protection.","Prepare an appropriate agreement and annexes.","Define dispute resolution and contract termination."],
+de:["Potentiellen Geschäftspartner identifizieren.","Registrierung und geschäftliche Identität des Partners überprüfen.","Gegenstand, Umfang und Ziele der Zusammenarbeit festlegen.","Preise, Fristen und Zahlungsbedingungen vereinbaren.","Steuerliche und regulatorische Aspekte prüfen.","Qualität, Gewährleistungen und Haftung festlegen.","Vertraulichkeit und Schutz geschäftlicher Daten regeln.","Geeigneten Vertrag und Anlagen vorbereiten.","Streitbeilegung und Vertragsbeendigung festlegen."]
+},
+docs:["Company Profile","Commercial Offer","NDA","Sales Contract","Purchase Order"]
+},
+formation:{
+icon:"🏢",category:"germany",
+title:{bs:"Osnivanje kompanije u Njemačkoj",en:"Company Formation in Germany",de:"Unternehmensgründung in Deutschland"},
+desc:{bs:"Početne smjernice za izbor pravne forme i pripremu osnivanja.",en:"Initial guidance for choosing a legal form and preparing incorporation.",de:"Erste Hinweise zur Wahl der Rechtsform und Gründungsvorbereitung."},
+steps:{
+bs:["Definisati poslovni model i planiranu djelatnost.","Uporediti pravne forme i odgovornost osnivača.","Provjeriti uslove za strane osnivače i direktore.","Odabrati naziv i registrovano sjedište.","Pripremiti osnivačke akte i potrebnu dokumentaciju.","Provjeriti notarske i registracijske zahtjeve.","Provjeriti kapitalne i bankarske zahtjeve odabrane pravne forme.","Provjeriti poreznu registraciju i poslovne dozvole.","Planirati računovodstvo, osiguranje i administrativne obaveze."],
+en:["Define the business model and planned activity.","Compare legal forms and founder liability.","Check requirements for foreign founders and directors.","Choose the company name and registered office.","Prepare incorporation documents and required paperwork.","Check notarial and registration requirements.","Check capital and banking requirements of the chosen legal form.","Check tax registration and business permits.","Plan accounting, insurance and administrative obligations."],
+de:["Geschäftsmodell und geplante Tätigkeit definieren.","Rechtsformen und Gründerhaftung vergleichen.","Anforderungen für ausländische Gründer und Geschäftsführer prüfen.","Firmennamen und eingetragenen Sitz wählen.","Gründungsunterlagen und erforderliche Dokumente vorbereiten.","Notarielle und registerrechtliche Anforderungen prüfen.","Kapital- und Bankanforderungen der gewählten Rechtsform prüfen.","Steuerliche Registrierung und Gewerbegenehmigungen prüfen.","Buchhaltung, Versicherung und Verwaltungspflichten planen."]
+},
+docs:["Business Plan","Company Formation Documents","Company Profile","Registration Documents"]
+},
+product:{
+icon:"🏷️",category:"europe",
+title:{bs:"Usklađenost proizvoda",en:"Product Compliance",de:"Produktkonformität"},
+desc:{bs:"Provjera produktnih zahtjeva prije plasmana na evropsko tržište.",en:"Check product requirements before entering the European market.",de:"Produktanforderungen vor dem Eintritt in den europäischen Markt prüfen."},
+steps:{
+bs:["Identifikovati proizvod, namjenu i ciljno tržište.","Utvrditi primjenjive EU propise i harmonizovane standarde.","Provjeriti da li je CE oznaka obavezna za ovu kategoriju proizvoda.","Identifikovati potrebna ispitivanja i postupak ocjenjivanja usklađenosti.","Pripremiti tehničku dokumentaciju gdje je propisana.","Pripremiti EU izjavu o usklađenosti kada je potrebna.","Provjeriti označavanje, uputstva i jezik dokumentacije.","Utvrditi odgovornosti proizvođača, uvoznika i distributera.","Provjeriti dodatne zahtjeve za ambalažu, hemikalije i sigurnost gdje su primjenjivi."],
+en:["Identify the product, intended use and target market.","Determine applicable EU legislation and harmonised standards.","Check whether CE marking is mandatory for this product category.","Identify required testing and conformity assessment procedures.","Prepare technical documentation where required.","Prepare the EU Declaration of Conformity where required.","Check labelling, instructions and documentation language.","Determine manufacturer, importer and distributor responsibilities.","Check additional packaging, chemical and safety requirements where applicable."],
+de:["Produkt, Verwendungszweck und Zielmarkt identifizieren.","Anwendbare EU-Rechtsvorschriften und harmonisierte Normen bestimmen.","Prüfen, ob die CE-Kennzeichnung für diese Produktkategorie vorgeschrieben ist.","Erforderliche Prüfungen und Konformitätsbewertungsverfahren identifizieren.","Technische Dokumentation erstellen, soweit erforderlich.","EU-Konformitätserklärung erstellen, soweit erforderlich.","Kennzeichnung, Anleitungen und Dokumentationssprache prüfen.","Verantwortlichkeiten von Hersteller, Importeur und Händler bestimmen.","Zusätzliche Verpackungs-, Chemikalien- und Sicherheitsanforderungen prüfen, soweit anwendbar."]
+},
+docs:["Technical Documentation","EU Declaration of Conformity","Test Reports","Product Instructions"]
+}
+}
+};
+
+const labels={
+bs:{start:"Pokreni proceduru",completed:"Završeno",pending:"Preostalo",done:"završeno",steps:"koraka",warning:"Ova kontrolna lista predstavlja informativne početne smjernice. Konkretni zahtjevi zavise od kompanije, proizvoda, usluge, transakcije i važećih propisa. Provjerite službene izvore i konsultujte stručnjake.",checklist:"Kontrolna lista procedure",documents:"Povezana dokumentacija",save:"Sačuvaj napredak",print:"Štampaj kontrolnu listu",noResults:"Nema rezultata pretrage.",overall:"Ukupan napredak",back:"← Business Assistant"},
+en:{start:"Start procedure",completed:"Completed",pending:"Remaining",done:"completed",steps:"steps",warning:"This checklist provides preliminary informational guidance. Specific requirements depend on the company, product, service, transaction and applicable law. Verify official sources and consult qualified experts.",checklist:"Procedure checklist",documents:"Related documents",save:"Save progress",print:"Print checklist",noResults:"No search results.",overall:"Overall progress",back:"← Business Assistant"},
+de:{start:"Verfahren starten",completed:"Abgeschlossen",pending:"Verbleibend",done:"abgeschlossen",steps:"Schritte",warning:"Diese Checkliste bietet erste unverbindliche Orientierung. Die konkreten Anforderungen hängen vom Unternehmen, Produkt, der Dienstleistung, der Transaktion und den geltenden Vorschriften ab. Prüfen Sie offizielle Quellen und konsultieren Sie Fachleute.",checklist:"Verfahrens-Checkliste",documents:"Zugehörige Dokumente",save:"Fortschritt speichern",print:"Checkliste drucken",noResults:"Keine Suchergebnisse.",overall:"Gesamtfortschritt",back:"← Business Assistant"}
+};
+
+let lang=detectLanguage();
+let activeFilter="all";
+let currentId=null;
+let checks={};
+try{checks=JSON.parse(localStorage.getItem("docbiz_procedure_checks")||"{}")}catch(e){checks={}}
+
+function detectLanguage(){
+ const v=localStorage.getItem("docbiz_language");
+ if(v){const x=v.toLowerCase().split(/[-_]/)[0];if(["bs","ba","hr","sr"].includes(x))return"bs";if(x==="de")return"de";if(x==="en")return"en"}
+ const browser=navigator.language.toLowerCase();
+ return browser.startsWith("de")?"de":browser.startsWith("bs")||browser.startsWith("hr")||browser.startsWith("sr")?"bs":"en";
+}
+function changeLanguage(v){lang=v;localStorage.setItem("docbiz_language",v);renderAll()}
+function t(key){return labels[lang][key]||key}
+function getProgress(id){
+ const total=data[id].steps[lang].length;
+ const arr=checks[id]||[];
+ const count=arr.filter(Boolean).length;
+ return {total,count,percent:total?Math.round(count/total*100):0};
+}
+function cardHTML(id){
+ const d=data[id];
+ const p=getProgress(id);
+ return `<article class="card">
+ <div class="card-icon">${d.icon}</div>
+ <span class="tag">${d.category==="germany"?"GERMANY":"EUROPE"}</span>
+ <h2>${d.title[lang]}</h2>
+ <p>${d.desc[lang]}</p>
+ <div style="font-size:12px;color:#718096;margin-bottom:10px">${p.count}/${p.total} ${t("done")} · ${p.percent}%</div>
+ <div class="progress"><div class="progress-bar" style="width:${p.percent}%"></div></div>
+ <button class="primary" onclick="openProcedure('${id}')">${t("start")} →</button>
+ </article>`;
+}
+function renderCards(){
+ const query=(document.getElementById("search")?.value||"").toLowerCase();
+ const ids=Object.keys(data).filter(id=>{
+  const d=data[id];
+  const matchesFilter=activeFilter==="all"||d.category===activeFilter;
+  const searchable=(d.title[lang]+" "+d.desc[lang]).toLowerCase();
+  return matchesFilter&&searchable.includes(query);
+ });
+ document.getElementById("procedureGrid").innerHTML=ids.map(cardHTML).join("")||`<div class="empty">${t("noResults")}</div>`;
+ document.getElementById("germanyGrid").innerHTML=Object.keys(data).filter(id=>data[id].category==="germany").map(cardHTML).join("");
+ document.getElementById("europeGrid").innerHTML=Object.keys(data).filter(id=>data[id].category==="europe").map(cardHTML).join("");
+}
+function setFilter(filter,button){
+ activeFilter=filter;
+ document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ renderCards();
+}
+function showPage(id,button){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+ document.getElementById("sidebar").classList.remove("open");
+ if(id==="progress")renderProgress();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("open")}
+function openProcedure(id){
+ currentId=id;
+ const d=data[id];
+ document.getElementById("detailTitle").textContent=d.title[lang];
+ document.getElementById("detailDescription").textContent=d.desc[lang];
+ document.getElementById("steps").innerHTML="";
+ const arr=checks[id]||[];
+ d.steps[lang].forEach((step,index)=>{
+  const row=document.createElement("div");
+  row.className="step"+(arr[index]?" done":"");
+  const input=document.createElement("input");
+  input.type="checkbox";
+  input.checked=!!arr[index];
+  input.id="step_"+index;
+  input.addEventListener("change",()=>updateStep(index,input.checked));
+  const label=document.createElement("label");
+  label.htmlFor=input.id;
+  label.textContent=(index+1)+". "+step;
+  row.append(input,label);
+  document.getElementById("steps").appendChild(row);
+ });
+ document.getElementById("relatedDocuments").innerHTML=d.docs.map(doc=>`<div class="step">📄 <span>${doc}</span></div>`).join("");
+ updateDetailProgress();
+ showPage("detail");
+}
+function updateStep(index,value){
+ if(!checks[currentId])checks[currentId]=[];
+ checks[currentId][index]=value;
+ document.querySelectorAll("#steps .step")[index].classList.toggle("done",value);
+ updateDetailProgress();
+}
+function updateDetailProgress(){
+ const p=getProgress(currentId);
+ document.getElementById("detailBar").style.width=p.percent+"%";
+ document.getElementById("completionText").textContent=p.count+" / "+p.total+" "+t("done")+" ("+p.percent+"%)";
+}
+function saveProgress(){
+ localStorage.setItem("docbiz_procedure_checks",JSON.stringify(checks));
+ renderCards();
+ alert(lang==="bs"?"Napredak je sačuvan na ovom uređaju.":lang==="de"?"Fortschritt wurde auf diesem Gerät gespeichert.":"Progress saved on this device.");
+}
+function renderProgress(){
+ const ids=Object.keys(data);
+ const total=ids.reduce((sum,id)=>sum+getProgress(id).total,0);
+ const completed=ids.reduce((sum,id)=>sum+getProgress(id).count,0);
+ const percent=total?Math.round(completed/total*100):0;
+ document.getElementById("overallText").textContent=percent+"%";
+ document.getElementById("overallBar").style.width=percent+"%";
+ document.getElementById("progressList").innerHTML=ids.map(id=>{
+  const p=getProgress(id);
+  return `<div style="padding:15px 0;border-bottom:1px solid #e1e7f0">
+   <div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><strong>${data[id].title[lang]}</strong><span>${p.percent}%</span></div>
+   <div class="progress"><div class="progress-bar" style="width:${p.percent}%"></div></div>
+   <button class="secondary" onclick="openProcedure('${id}')">${t("start")} →</button>
+  </div>`;
+ }).join("");
+}
+function renderAll(){
+ document.querySelectorAll("[data-i18n]").forEach(el=>{
+  const key=el.getAttribute("data-i18n");
+  const dictionary={
+   bs:{menu:"MENI PROCEDURA",all:"Sve procedure",germany:"Njemačka",europe:"Evropa",progress:"Moj napredak",title:"Poslovne procedure",subtitle:"Vođene poslovne procedure za ulazak na njemačko i evropsko tržište.",filterAll:"Sve",germanyTitle:"Procedure za Njemačku",germanyDesc:"Procedure povezane s njemačkim tržištem.",europeTitle:"Evropske procedure",europeDesc:"Procedure za poslovanje u Evropi."},
+   en:{menu:"PROCEDURES MENU",all:"All Procedures",germany:"Germany",europe:"Europe",progress:"My Progress",title:"Business Procedures",subtitle:"Guided business procedures for entering the German and European markets.",filterAll:"All",germanyTitle:"Germany Procedures",germanyDesc:"Procedures related to the German market.",europeTitle:"European Procedures",europeDesc:"Procedures for European business operations."},
+   de:{menu:"VERFAHRENSMENÜ",all:"Alle Verfahren",germany:"Deutschland",europe:"Europa",progress:"Mein Fortschritt",title:"Geschäftsverfahren",subtitle:"Geführte Geschäftsverfahren für den Eintritt in den deutschen und europäischen Markt.",filterAll:"Alle",germanyTitle:"Verfahren für Deutschland",germanyDesc:"Verfahren im Zusammenhang mit dem deutschen Markt.",europeTitle:"Europäische Verfahren",europeDesc:"Verfahren für Geschäftstätigkeiten in Europa."}
+  }[lang];
+  if(dictionary[key])el.textContent=dictionary[key];
+ });
+ document.getElementById("language").value=lang;
+ document.getElementById("search").placeholder=lang==="bs"?"Pretraži procedure...":lang==="de"?"Verfahren suchen...":"Search procedures...";
+ renderCards();
+ if(currentId&&document.getElementById("detail").classList.contains("active"))openProcedure(currentId);
+ if(document.getElementById("progress").classList.contains("active"))renderProgress();
+}
+renderAll();
+</script>
+</body>
+</html>
