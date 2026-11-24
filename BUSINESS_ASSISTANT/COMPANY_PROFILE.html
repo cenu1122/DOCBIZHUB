@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Company Profile</title>
+<style>
+:root {
+  --navy:#102b4e;
+  --blue:#1976d2;
+  --light:#f3f6fa;
+  --white:#fff;
+  --text:#243247;
+  --muted:#718096;
+  --border:#e1e7ef;
+  --green:#16845b;
+  --red:#d14343;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--light);
+  color:var(--text);
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:22px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+.brand {font-size:23px;font-weight:800;letter-spacing:.5px}
+.brand span {color:#58a6ff}
+.header-right {display:flex;align-items:center;gap:12px}
+.language {
+  background:white;color:var(--navy);
+  border:0;border-radius:7px;padding:9px 12px;
+}
+main {max-width:1150px;margin:30px auto;padding:0 20px}
+.intro {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;flex-wrap:wrap;
+  margin-bottom:22px;
+}
+h1 {margin:0 0 7px;font-size:27px}
+.subtitle {margin:0;color:var(--muted)}
+.btn {
+  border:0;border-radius:7px;padding:11px 16px;
+  cursor:pointer;font-weight:700;
+}
+.primary {background:var(--blue);color:white}
+.secondary {background:#e8eef6;color:var(--navy)}
+.danger {background:#fff0f0;color:var(--red)}
+.layout {
+  display:grid;grid-template-columns:280px 1fr;
+  gap:20px;align-items:start;
+}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:21px;margin-bottom:18px;
+}
+.company-card {text-align:center}
+.logo {
+  width:85px;height:85px;border-radius:18px;
+  background:#eaf2fc;color:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-size:29px;font-weight:800;
+  overflow:hidden;
+}
+.logo img {width:100%;height:100%;object-fit:contain}
+.company-name {font-size:19px;font-weight:800;overflow-wrap:anywhere}
+.company-type {font-size:13px;color:var(--muted);margin-top:7px}
+.profile-status {
+  display:inline-block;background:#e1f5eb;
+  color:var(--green);padding:6px 11px;
+  border-radius:20px;font-size:11px;font-weight:700;
+  margin-top:14px;
+}
+.progress-title {font-size:13px;font-weight:700;margin:22px 0 9px}
+.progress-track {
+  height:8px;background:#edf1f5;border-radius:20px;overflow:hidden;
+}
+.progress-fill {
+  height:100%;width:0;background:var(--blue);
+  transition:width .2s;
+}
+.progress-label {
+  font-size:12px;color:var(--muted);
+  margin-top:7px;text-align:left;
+}
+.side-info {
+  border-top:1px solid var(--border);
+  margin-top:18px;padding-top:15px;text-align:left;
+  font-size:12px;color:var(--muted);line-height:1.8;
+  overflow-wrap:anywhere;
+}
+.panel h2 {font-size:18px;margin:0 0 17px}
+.section-head {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;flex-wrap:wrap;
+}
+.form-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.form-group {margin-bottom:13px}
+.form-group label {
+  display:block;font-size:13px;font-weight:700;margin-bottom:6px;
+}
+input,select,textarea {
+  width:100%;padding:11px 12px;
+  border:1px solid var(--border);border-radius:7px;
+  font:inherit;background:white;color:var(--text);
+}
+textarea {min-height:95px;resize:vertical}
+input:focus,select:focus,textarea:focus {
+  outline:2px solid #b8d8fa;outline-offset:1px;
+}
+.full {grid-column:1/-1}
+.form-actions {
+  display:flex;justify-content:flex-end;gap:9px;
+  flex-wrap:wrap;margin-top:12px;
+}
+.readonly-note {
+  font-size:12px;color:var(--muted);
+  margin-top:12px;line-height:1.5;
+}
+.logo-upload {font-size:12px}
+.danger-zone {
+  border:1px solid #f0d5d5;
+  background:#fffafa;border-radius:9px;
+  padding:15px;
+}
+footer {
+  text-align:center;padding:25px;
+  color:var(--muted);font-size:12px;
+}
+@media(max-width:800px) {
+  .layout {grid-template-columns:1fr}
+  .company-card {max-width:none}
+}
+@media(max-width:550px) {
+  main {padding:0 12px;margin-top:20px}
+  header {padding:17px 15px}
+  .form-grid {grid-template-columns:1fr}
+  .full {grid-column:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DOC<span>BIZ</span>HUB</div>
+  <div class="header-right">
+    <strong id="headerTitle">Profil kompanije</strong>
+    <select class="language" id="language">
+      <option value="bs">BS</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div>
+      <h1 id="pageTitle">Company Profile</h1>
+      <p class="subtitle" id="subtitle">Upravljajte osnovnim podacima i poslovnim informacijama kompanije.</p>
+    </div>
+    <button class="btn primary" id="saveTop">Sačuvaj profil</button>
+  </section>
+
+  <div class="layout">
+    <aside>
+      <section class="panel company-card">
+        <div class="logo" id="logoPreview">DB</div>
+        <div class="company-name" id="previewName">Naziv kompanije</div>
+        <div class="company-type" id="previewType">Djelatnost kompanije</div>
+        <span class="profile-status" id="profileStatus">Profil u izradi</span>
+
+        <div class="progress-title" id="completionTitle">Popunjenost profila</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">0% popunjeno</div>
+
+        <div class="side-info">
+          <div><strong id="sideCountryLabel">Država:</strong> <span id="sideCountry">—</span></div>
+          <div><strong id="sideCityLabel">Grad:</strong> <span id="sideCity">—</span></div>
+          <div><strong id="sideEmailLabel">E-mail:</strong> <span id="sideEmail">—</span></div>
+          <div><strong id="sidePhoneLabel">Telefon:</strong> <span id="sidePhone">—</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 id="logoTitle">Logo kompanije</h2>
+        <div class="form-group">
+          <label for="logoInput" id="logoLabel">Odaberite sliku logotipa</label>
+          <input class="logo-upload" type="file" id="logoInput" accept="image/png,image/jpeg,image/webp">
+        </div>
+        <button class="btn secondary" style="width:100%" id="removeLogo">Ukloni logo</button>
+        <p class="readonly-note" id="logoNote">Preporučeni formati: PNG, JPG ili WebP.</p>
+      </section>
+    </aside>
+
+    <div>
+      <form id="profileForm">
+        <section class="panel">
+          <h2 id="basicTitle">Osnovni podaci kompanije</h2>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="companyName" id="nameLabel">Naziv kompanije *</label>
+              <input id="companyName" maxlength="150" required>
+            </div>
+            <div class="form-group">
+              <label for="legalForm" id="legalFormLabel">Pravni oblik</label>
+              <select id="legalForm">
+                <option value="">—</option>
+                <option value="sole">Samostalna djelatnost</option>
+                <option value="doo">D.O.O.</option>
+                <option value="ad">D.D. / A.D.</option>
+                <option value="partnership">Partnerstvo</option>
+                <option value="other">Drugo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="industry" id="industryLabel">Djelatnost</label>
+              <input id="industry" maxlength="120">
+            </div>
+            <div class="form-group">
+              <label for="registration" id="registrationLabel">Registracijski broj</label>
+              <input id="registration" maxlength="80">
+            </div>
+            <div class="form-group">
+              <label for="taxNumber" id="taxLabel">Porezni / ID broj</label>
+              <input id="taxNumber" maxlength="80">
+            </div>
+            <div class="form-group">
+              <label for="founded" id="foundedLabel">Godina osnivanja</label>
+              <input id="founded" type="number" min="1800" max="2100">
+            </div>
+            <div class="form-group">
+              <label for="employees" id="employeesLabel">Broj zaposlenih</label>
+              <select id="employees">
+                <option value="">—</option>
+                <option value="1-5">1–5</option>
+                <option value="6-10">6–10</option>
+                <option value="11-50">11–50</option>
+                <option value="51-250">51–250</option>
+                <option value="250+">250+</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 id="contactTitle">Kontakt informacije</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="email" id="emailLabel">Poslovni e-mail</label>
+              <input id="email" type="email" maxlength="150">
+            </div>
+            <div class="form-group">
+              <label for="phone" id="phoneLabel">Telefon</label>
+              <input id="phone" type="tel" maxlength="50">
+            </div>
+            <div class="form-group">
+              <label for="website" id="websiteLabel">Web stranica</label>
+              <input id="website" type="url" maxlength="200" placeholder="https://">
+            </div>
+            <div class="form-group">
+              <label for="contactPerson" id="contactPersonLabel">Kontakt osoba</label>
+              <input id="contactPerson" maxlength="120">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 id="addressTitle">Sjedište i adresa</h2>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="address" id="addressLabel">Ulica i broj</label>
+              <input id="address" maxlength="180">
+            </div>
+            <div class="form-group">
+              <label for="city" id="cityLabel">Grad</label>
+              <input id="city" maxlength="100">
+            </div>
+            <div class="form-group">
+              <label for="postal" id="postalLabel">Poštanski broj</label>
+              <input id="postal" maxlength="20">
+            </div>
+            <div class="form-group">
+              <label for="country" id="countryLabel">Država</label>
+              <input id="country" maxlength="100">
+            </div>
+            <div class="form-group">
+              <label for="currency" id="currencyLabel">Osnovna valuta</label>
+              <select id="currency">
+                <option value="BAM">BAM – Konvertibilna marka</option>
+                <option value="EUR">EUR – Euro</option>
+                <option value="USD">USD – Američki dolar</option>
+                <option value="CHF">CHF – Švicarski franak</option>
+                <option value="GBP">GBP – Britanska funta</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 id="businessTitle">Poslovni profil</h2>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="description" id="descriptionLabel">Opis kompanije</label>
+              <textarea id="description" maxlength="2000"></textarea>
+            </div>
+            <div class="form-group full">
+              <label for="products" id="productsLabel">Proizvodi i usluge</label>
+              <textarea id="products" maxlength="1500"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="market" id="marketLabel">Ciljno tržište</label>
+              <input id="market" maxlength="200">
+            </div>
+            <div class="form-group">
+              <label for="social" id="socialLabel">Društvene mreže / profil</label>
+              <input id="social" maxlength="200">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 id="notesTitle">Dodatne informacije</h2>
+          <div class="form-group">
+            <label for="notes" id="notesLabel">Interna napomena</label>
+            <textarea id="notes" maxlength="2000"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn secondary" id="resetBtn">Poništi izmjene</button>
+            <button type="submit" class="btn primary" id="saveBtn">Sačuvaj profil</button>
+          </div>
+          <p class="readonly-note" id="storageNote">
+            Podaci se čuvaju lokalno u ovom pregledniku.
+          </p>
+        </section>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer>© 2026 DOCBIZHUB | Business Management Platform</footer>
+
+<script>
+const translations = {
+  bs: {
+    header:"Profil kompanije",page:"Company Profile",
+    subtitle:"Upravljajte osnovnim podacima i poslovnim informacijama kompanije.",
+    save:"Sačuvaj profil",basic:"Osnovni podaci kompanije",
+    name:"Naziv kompanije *",legalForm:"Pravni oblik",
+    industry:"Djelatnost",registration:"Registracijski broj",
+    tax:"Porezni / ID broj",founded:"Godina osnivanja",
+    employees:"Broj zaposlenih",contact:"Kontakt informacije",
+    email:"Poslovni e-mail",phone:"Telefon",website:"Web stranica",
+    contactPerson:"Kontakt osoba",addressTitle:"Sjedište i adresa",
+    address:"Ulica i broj",city:"Grad",postal:"Poštanski broj",
+    country:"Država",currency:"Osnovna valuta",
+    business:"Poslovni profil",description:"Opis kompanije",
+    products:"Proizvodi i usluge",market:"Ciljno tržište",
+    social:"Društvene mreže / profil",notesTitle:"Dodatne informacije",
+    notes:"Interna napomena",reset:"Poništi izmjene",
+    logoTitle:"Logo kompanije",logoLabel:"Odaberite sliku logotipa",
+    removeLogo:"Ukloni logo",logoNote:"Preporučeni formati: PNG, JPG ili WebP.",
+    status:"Profil u izradi",complete:"Profil kompletiran",
+    completion:"Popunjenost profila",filled:"popunjeno",
+    countryShort:"Država:",cityShort:"Grad:",
+    emailShort:"E-mail:",phoneShort:"Telefon:",
+    storage:"Podaci se čuvaju lokalno u ovom pregledniku.",
+    required:"Naziv kompanije je obavezno polje.",
+    saved:"Profil je uspješno sačuvan.",
+    saveError:"Nije moguće sačuvati podatke u ovom pregledniku.",
+    resetConfirm:"Poništiti izmjene i vratiti posljednje sačuvane podatke?",
+    logoError:"Odaberite PNG, JPG ili WebP sliku do 1 MB.",
+    legalOptions:{
+      sole:"Samostalna djelatnost",doo:"D.O.O.",ad:"D.D. / A.D.",
+      partnership:"Partnerstvo",other:"Drugo"
+    },
+    employeesOptions:{
+      "1-5":"1–5","6-10":"6–10","11-50":"11–50",
+      "51-250":"51–250","250+":"250+"
+    },
+    currencies:{
+      BAM:"BAM – Konvertibilna marka",EUR:"EUR – Euro",
+      USD:"USD – Američki dolar",CHF:"CHF – Švicarski franak",
+      GBP:"GBP – Britanska funta"
+    }
+  },
+  en: {
+    header:"Company Profile",page:"Company Profile",
+    subtitle:"Manage your company's basic details and business information.",
+    save:"Save profile",basic:"Company details",
+    name:"Company name *",legalForm:"Legal form",
+    industry:"Industry",registration:"Registration number",
+    tax:"Tax / ID number",founded:"Year founded",
+    employees:"Number of employees",contact:"Contact information",
+    email:"Business e-mail",phone:"Phone",website:"Website",
+    contactPerson:"Contact person",addressTitle:"Registered address",
+    address:"Street and number",city:"City",postal:"Postal code",
+    country:"Country",currency:"Primary currency",
+    business:"Business profile",description:"Company description",
+    products:"Products and services",market:"Target market",
+    social:"Social media / profile",notesTitle:"Additional information",
+    notes:"Internal note",reset:"Discard changes",
+    logoTitle:"Company logo",logoLabel:"Choose logo image",
+    removeLogo:"Remove logo",logoNote:"Recommended formats: PNG, JPG or WebP.",
+    status:"Profile in progress",complete:"Profile complete",
+    completion:"Profile completion",filled:"complete",
+    countryShort:"Country:",cityShort:"City:",
+    emailShort:"E-mail:",phoneShort:"Phone:",
+    storage:"Data is stored locally in this browser.",
+    required:"Company name is required.",
+    saved:"Profile saved successfully.",
+    saveError:"Could not save data in this browser.",
+    resetConfirm:"Discard changes and restore the last saved profile?",
+    logoError:"Choose a PNG, JPG or WebP image up to 1 MB.",
+    legalOptions:{
+      sole:"Sole proprietorship",doo:"Limited liability company",
+      ad:"Joint-stock company",partnership:"Partnership",other:"Other"
+    },
+    employeesOptions:{
+      "1-5":"1–5","6-10":"6–10","11-50":"11–50",
+      "51-250":"51–250","250+":"250+"
+    },
+    currencies:{
+      BAM:"BAM – Convertible mark",EUR:"EUR – Euro",
+      USD:"USD – US dollar",CHF:"CHF – Swiss franc",
+      GBP:"GBP – British pound"
+    }
+  },
+  de: {
+    header:"Unternehmensprofil",page:"Company Profile",
+    subtitle:"Verwalten Sie die Stammdaten und Geschäftsinformationen Ihres Unternehmens.",
+    save:"Profil speichern",basic:"Unternehmensdaten",
+    name:"Unternehmensname *",legalForm:"Rechtsform",
+    industry:"Branche",registration:"Registernummer",
+    tax:"Steuer- / ID-Nummer",founded:"Gründungsjahr",
+    employees:"Anzahl der Mitarbeiter",contact:"Kontaktinformationen",
+    email:"Geschäftliche E-Mail",phone:"Telefon",website:"Webseite",
+    contactPerson:"Ansprechpartner",addressTitle:"Firmensitz und Adresse",
+    address:"Straße und Hausnummer",city:"Stadt",postal:"Postleitzahl",
+    country:"Land",currency:"Hauptwährung",
+    business:"Unternehmensprofil",description:"Unternehmensbeschreibung",
+    products:"Produkte und Dienstleistungen",market:"Zielmarkt",
+    social:"Soziale Medien / Profil",notesTitle:"Zusätzliche Informationen",
+    notes:"Interne Notiz",reset:"Änderungen verwerfen",
+    logoTitle:"Unternehmenslogo",logoLabel:"Logobild auswählen",
+    removeLogo:"Logo entfernen",logoNote:"Empfohlene Formate: PNG, JPG oder WebP.",
+    status:"Profil in Bearbeitung",complete:"Profil vollständig",
+    completion:"Profilvollständigkeit",filled:"ausgefüllt",
+    countryShort:"Land:",cityShort:"Stadt:",
+    emailShort:"E-Mail:",phoneShort:"Telefon:",
+    storage:"Die Daten werden lokal in diesem Browser gespeichert.",
+    required:"Der Unternehmensname ist erforderlich.",
+    saved:"Profil erfolgreich gespeichert.",
+    saveError:"Daten konnten in diesem Browser nicht gespeichert werden.",
+    resetConfirm:"Änderungen verwerfen und zuletzt gespeicherte Daten laden?",
+    logoError:"Wählen Sie ein PNG-, JPG- oder WebP-Bild bis 1 MB.",
+    legalOptions:{
+      sole:"Einzelunternehmen",doo:"Gesellschaft mit beschränkter Haftung",
+      ad:"Aktiengesellschaft",partnership:"Partnerschaft",other:"Andere"
+    },
+    employeesOptions:{
+      "1-5":"1–5","6-10":"6–10","11-50":"11–50",
+      "51-250":"51–250","250+":"250+"
+    },
+    currencies:{
+      BAM:"BAM – Konvertible Mark",EUR:"EUR – Euro",
+      USD:"USD – US-Dollar",CHF:"CHF – Schweizer Franken",
+      GBP:"GBP – Britisches Pfund"
+    }
+  }
+};
+
+const STORAGE_KEY = "docbiz_company_profile";
+const fields = [
+  "companyName","legalForm","industry","registration","taxNumber",
+  "founded","employees","email","phone","website","contactPerson",
+  "address","city","postal","country","currency","description",
+  "products","market","social","notes"
+];
+
+let currentLang = "bs";
+let savedProfile = {};
+let logoData = "";
+
+const $ = id => document.getElementById(id);
+const t = key => translations[currentLang][key] || key;
+
+function getFormData() {
+  const data = {};
+  fields.forEach(id => data[id] = $(id).value.trim());
+  data.logo = logoData;
+  return data;
+}
+
+function setFormData(data) {
+  fields.forEach(id => {
+    $(id).value = data && typeof data[id] === "string" ? data[id] : "";
+  });
+  logoData = data && typeof data.logo === "string" ? data.logo : "";
+  updatePreview();
+}
+
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    savedProfile = raw ? JSON.parse(raw) : {};
+    if (!savedProfile || typeof savedProfile !== "object" ||
+        Array.isArray(savedProfile)) savedProfile = {};
+  } catch {
+    savedProfile = {};
+  }
+  setFormData(savedProfile);
+}
+
+function saveProfile(showMessage = true) {
+  const name = $("companyName").value.trim();
+  if (!name) {
+    alert(t("required"));
+    $("companyName").focus();
+    return false;
+  }
+
+  const data = getFormData();
+
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+    savedProfile = data;
+    updatePreview();
+    if (showMessage) alert(t("saved"));
+    return true;
+  } catch {
+    alert(t("saveError"));
+    return false;
+  }
+}
+
+function updatePreview() {
+  const name = $("companyName").value.trim();
+  const industry = $("industry").value.trim();
+  $("previewName").textContent = name || "DOCBIZHUB";
+  $("previewType").textContent = industry || "—";
+
+  const logo = $("logoPreview");
+  logo.replaceChildren();
+
+  if (logoData) {
+    const img = document.createElement("img");
+    img.src = logoData;
+    img.alt = "Company logo";
+    logo.appendChild(img);
+  } else {
+    const initials = name.split(/\s+/).filter(Boolean)
+      .slice(0,2).map(word => word[0].toUpperCase()).join("");
+    logo.textContent = initials || "DB";
+  }
+
+  $("sideCountry").textContent = $("country").value || "—";
+  $("sideCity").textContent = $("city").value || "—";
+  $("sideEmail").textContent = $("email").value || "—";
+  $("sidePhone").textContent = $("phone").value || "—";
+
+  const requiredFields = [
+    "companyName","industry","email","phone","country",
+    "city","address","description"
+  ];
+  const filled = requiredFields.filter(id => $(id).value.trim()).length;
+  const percentage = Math.round(filled / requiredFields.length * 100);
+
+  $("progressFill").style.width = percentage + "%";
+  $("progressLabel").textContent = percentage + "% " + t("filled");
+  $("profileStatus").textContent = percentage === 100 ? t("complete") : t("status");
+}
+
+function applyLanguage(lang) {
+  currentLang = translations[lang] ? lang : "bs";
+  document.documentElement.lang = currentLang;
+  $("language").value = currentLang;
+
+  const mapping = {
+    headerTitle:"header",pageTitle:"page",subtitle:"subtitle",
+    saveTop:"save",basicTitle:"basic",nameLabel:"name",
+    legalFormLabel:"legalForm",industryLabel:"industry",
+    registrationLabel:"registration",taxLabel:"tax",
+    foundedLabel:"founded",employeesLabel:"employees",
+    contactTitle:"contact",emailLabel:"email",phoneLabel:"phone",
+    websiteLabel:"website",contactPersonLabel:"contactPerson",
+    addressTitle:"addressTitle",addressLabel:"address",
+    cityLabel:"city",postalLabel:"postal",countryLabel:"country",
+    currencyLabel:"currency",businessTitle:"business",
+    descriptionLabel:"description",productsLabel:"products",
+    marketLabel:"market",socialLabel:"social",
+    notesTitle:"notesTitle",notesLabel:"notes",
+    resetBtn:"reset",saveBtn:"save",logoTitle:"logoTitle",
+    logoLabel:"logoLabel",removeLogo:"removeLogo",
+    completionTitle:"completion",sideCountryLabel:"countryShort",
+    sideCityLabel:"cityShort",sideEmailLabel:"emailShort",
+    sidePhoneLabel:"phoneShort"
+  };
+
+  Object.entries(mapping).forEach(([id,key]) => {
+    $(id).textContent = t(key);
+  });
+
+  $("logoNote").textContent = t("logoNote");
+  $("storageNote").textContent = t("storage");
+
+  const legal = $("legalForm");
+  [...legal.options].forEach(option => {
+    if (!option.value) option.textContent = "—";
+    else option.textContent = translations[currentLang].legalOptions[option.value];
+  });
+
+  const employees = $("employees");
+  [...employees.options].forEach(option => {
+    if (!option.value) option.textContent = "—";
+    else option.textContent = translations[currentLang].employeesOptions[option.value];
+  });
+
+  const currency = $("currency");
+  [...currency.options].forEach(option => {
+    option.textContent = translations[currentLang].currencies[option.value];
+  });
+
+  updatePreview();
+}
+
+$("profileForm").addEventListener("submit",e => {
+  e.preventDefault();
+  saveProfile(true);
+});
+
+$("saveTop").addEventListener("click",() => saveProfile(true));
+
+$("resetBtn").addEventListener("click",() => {
+  if (!confirm(t("resetConfirm"))) return;
+  setFormData(savedProfile);
+});
+
+fields.forEach(id => {
+  $(id).addEventListener("input",updatePreview);
+  $(id).addEventListener("change",updatePreview);
+});
+
+$("logoInput").addEventListener("change",e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const allowed = ["image/png","image/jpeg","image/webp"];
+  if (!allowed.includes(file.type) || file.size > 1024 * 1024) {
+    alert(t("logoError"));
+    e.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (typeof reader.result !== "string") return;
+    const oldLogo = logoData;
+    logoData = reader.result;
+    updatePreview();
+
+    if (!saveProfile(false)) {
+      logoData = oldLogo;
+      updatePreview();
+    }
+  };
+  reader.onerror = () => alert(t("logoError"));
+  reader.readAsDataURL(file);
+});
+
+$("removeLogo").addEventListener("click",() => {
+  const oldLogo = logoData;
+  logoData = "";
+  if (!saveProfile(false)) logoData = oldLogo;
+  updatePreview();
+  $("logoInput").value = "";
+});
+
+$("language").addEventListener("change",e => {
+  try {
+    localStorage.setItem("docbiz_language",e.target.value);
+  } catch {}
+  applyLanguage(e.target.value);
+});
+
+loadProfile();
+
+let savedLanguage = "bs";
+try {
+  savedLanguage = localStorage.getItem("docbiz_language") || "bs";
+} catch {}
+
+applyLanguage(savedLanguage);
+</script>
+</body>
+</html>
