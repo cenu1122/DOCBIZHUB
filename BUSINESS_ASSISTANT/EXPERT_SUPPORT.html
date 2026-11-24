@@ -1,0 +1,872 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Expert Support</title>
+<style>
+:root {
+  --navy:#102b4e;
+  --blue:#1976d2;
+  --light:#f3f6fa;
+  --white:#fff;
+  --text:#243247;
+  --muted:#718096;
+  --border:#e1e7ef;
+  --green:#16845b;
+  --orange:#d97706;
+  --red:#d14343;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--light);
+  color:var(--text);
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:22px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+.brand {font-size:23px;font-weight:800;letter-spacing:.5px}
+.brand span {color:#58a6ff}
+.header-right {display:flex;align-items:center;gap:12px}
+.language {
+  background:white;color:var(--navy);
+  border:0;border-radius:7px;padding:9px 12px;
+}
+main {max-width:1200px;margin:30px auto;padding:0 20px}
+.intro {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;flex-wrap:wrap;
+  margin-bottom:22px;
+}
+h1 {margin:0 0 7px;font-size:27px}
+.subtitle {margin:0;color:var(--muted)}
+.btn {
+  border:0;border-radius:7px;padding:11px 16px;
+  cursor:pointer;font-weight:700;
+}
+.primary {background:var(--blue);color:white}
+.secondary {background:#e8eef6;color:var(--navy)}
+.danger {background:#fff0f0;color:var(--red)}
+.stats {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:15px;margin-bottom:22px;
+}
+.stat {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.stat-label {font-size:13px;color:var(--muted)}
+.stat-number {font-size:27px;font-weight:800;margin-top:8px}
+.blue {color:var(--blue)}
+.green {color:var(--green)}
+.orange {color:var(--orange)}
+.red {color:var(--red)}
+.grid {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:18px;margin-bottom:20px;
+}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:20px;
+  margin-bottom:20px;
+}
+.panel h2 {font-size:18px;margin:0 0 15px}
+.expert-card {
+  border:1px solid var(--border);border-radius:10px;
+  padding:17px;margin-bottom:12px;
+}
+.expert-card:last-child {margin-bottom:0}
+.expert-name {font-weight:700;font-size:16px}
+.expert-type {color:var(--blue);font-size:12px;margin-top:5px}
+.expert-desc {font-size:13px;color:var(--muted);line-height:1.5;margin:10px 0}
+.tags {display:flex;gap:6px;flex-wrap:wrap}
+.tag {
+  background:#edf3fa;color:#365574;
+  border-radius:20px;padding:5px 9px;font-size:11px;
+}
+.note {font-size:12px;color:var(--muted);line-height:1.5}
+.form-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:13px;
+}
+.form-group {margin-bottom:13px}
+.form-group label {
+  display:block;font-size:13px;font-weight:700;margin-bottom:6px;
+}
+input,select,textarea {
+  width:100%;padding:11px 12px;
+  border:1px solid var(--border);border-radius:7px;
+  font:inherit;background:white;color:var(--text);
+}
+textarea {min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus {
+  outline:2px solid #b8d8fa;outline-offset:1px;
+}
+.full {grid-column:1/-1}
+.form-actions {display:flex;justify-content:flex-end;gap:9px}
+.request-list {display:grid;gap:12px}
+.request {
+  border:1px solid var(--border);border-radius:10px;
+  padding:15px;display:flex;justify-content:space-between;
+  align-items:flex-start;gap:15px;
+}
+.request-title {font-weight:700;margin-bottom:7px}
+.request-meta {
+  color:var(--muted);font-size:12px;
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.request-description {
+  font-size:13px;color:#536276;margin-top:9px;
+  white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.request-status {
+  display:inline-block;border-radius:20px;
+  padding:5px 10px;font-size:11px;font-weight:700;
+  white-space:nowrap;
+}
+.status-new {background:#e7f1ff;color:#175ca5}
+.status-progress {background:#fff2d9;color:#9a5b00}
+.status-closed {background:#e1f5eb;color:#13734c}
+.request-actions {display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.small-btn {
+  border:0;border-radius:6px;padding:7px 10px;
+  cursor:pointer;font-size:12px;font-weight:700;
+}
+.empty {padding:30px;text-align:center;color:var(--muted)}
+.modal {
+  display:none;position:fixed;inset:0;
+  background:rgba(10,25,45,.6);z-index:10;
+  align-items:center;justify-content:center;padding:15px;
+}
+.modal.open {display:flex}
+.modal-box {
+  background:white;border-radius:13px;
+  width:100%;max-width:560px;max-height:90vh;
+  overflow:auto;padding:23px;
+}
+.modal-head {
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:18px;
+}
+.modal-head h2 {margin:0;font-size:20px}
+.close {
+  border:0;background:#edf2f7;
+  border-radius:7px;padding:7px 11px;cursor:pointer;
+}
+footer {
+  text-align:center;padding:25px;
+  color:var(--muted);font-size:12px;
+}
+@media(max-width:800px) {
+  .stats {grid-template-columns:repeat(2,1fr)}
+  .grid {grid-template-columns:1fr}
+}
+@media(max-width:550px) {
+  main {padding:0 12px;margin-top:20px}
+  header {padding:17px 15px}
+  .request {display:block}
+  .request-status {margin-top:12px}
+  .form-grid {grid-template-columns:1fr}
+  .full {grid-column:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DOC<span>BIZ</span>HUB</div>
+  <div class="header-right">
+    <strong id="headerTitle">Stručna podrška</strong>
+    <select class="language" id="language">
+      <option value="bs">BS</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div>
+      <h1 id="pageTitle">Expert Support</h1>
+      <p class="subtitle" id="subtitle">Pronađite stručnu oblast i evidentirajte svoje poslovne upite.</p>
+    </div>
+    <button class="btn primary" id="newRequestBtn">+ Novi upit</button>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label" id="statTotalLabel">Ukupno upita</div>
+      <div class="stat-number blue" id="statTotal">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="statNewLabel">Novi upiti</div>
+      <div class="stat-number orange" id="statNew">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="statProgressLabel">U obradi</div>
+      <div class="stat-number blue" id="statProgress">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="statClosedLabel">Zatvoreni</div>
+      <div class="stat-number green" id="statClosed">0</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2 id="areasTitle">Oblasti stručne podrške</h2>
+      <div id="areas"></div>
+    </div>
+    <div class="panel">
+      <h2 id="howTitle">Kako funkcioniše podrška?</h2>
+      <ol id="howList" style="padding-left:20px;line-height:1.9;font-size:14px">
+        <li>Odaberite oblast koja vas interesuje.</li>
+        <li>Opišite problem ili poslovni cilj.</li>
+        <li>Sačuvajte upit u evidenciji.</li>
+        <li>Pratite status i zabilježite dalji tok konsultacija.</li>
+      </ol>
+      <p class="note" id="notice">
+        Ovaj modul služi za internu evidenciju upita. Slanje upita stručnjacima
+        i zakazivanje konsultacija zahtijevaju povezivanje sa serverom.
+      </p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 id="requestsTitle">Moji upiti</h2>
+    <div class="form-grid" style="margin-bottom:15px">
+      <div class="form-group">
+        <label for="searchInput" id="searchLabel">Pretraga</label>
+        <input type="search" id="searchInput" placeholder="Pretraži upite...">
+      </div>
+      <div class="form-group">
+        <label for="filterStatus" id="filterLabel">Status</label>
+        <select id="filterStatus">
+          <option value="all">Svi statusi</option>
+          <option value="new">Novi</option>
+          <option value="progress">U obradi</option>
+          <option value="closed">Zatvoreni</option>
+        </select>
+      </div>
+    </div>
+    <div class="request-list" id="requestList"></div>
+  </section>
+</main>
+
+<div class="modal" id="requestModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">Novi poslovni upit</h2>
+      <button class="close" id="closeModal">✕</button>
+    </div>
+    <form id="requestForm">
+      <input type="hidden" id="requestId">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="requestTitle" id="titleLabel">Naslov upita *</label>
+          <input id="requestTitle" maxlength="120" required>
+        </div>
+        <div class="form-group">
+          <label for="requestArea" id="areaLabel">Oblast *</label>
+          <select id="requestArea" required>
+            <option value="business">Poslovna strategija</option>
+            <option value="finance">Finansije i računovodstvo</option>
+            <option value="legal">Pravo i regulativa</option>
+            <option value="marketing">Marketing i prodaja</option>
+            <option value="hr">Ljudski resursi</option>
+            <option value="it">IT i digitalizacija</option>
+            <option value="funding">Grantovi i finansiranje</option>
+            <option value="other">Ostalo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="requestUrgency" id="urgencyLabel">Prioritet</label>
+          <select id="requestUrgency">
+            <option value="normal">Normalan</option>
+            <option value="urgent">Hitno</option>
+            <option value="low">Nizak</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="contactName" id="contactLabel">Kontakt osoba</label>
+          <input id="contactName" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="contactEmail" id="emailLabel">E-mail</label>
+          <input id="contactEmail" type="email" maxlength="150">
+        </div>
+        <div class="form-group full">
+          <label for="requestDescription" id="descriptionLabel">Opis upita *</label>
+          <textarea id="requestDescription" required maxlength="3000"></textarea>
+        </div>
+        <div class="form-group full">
+          <label for="requestNotes" id="notesLabel">Interna napomena</label>
+          <textarea id="requestNotes" maxlength="1500" style="min-height:75px"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn secondary" id="cancelBtn">Otkaži</button>
+        <button type="submit" class="btn primary" id="saveBtn">Sačuvaj upit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="statusModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="statusModalTitle">Promjena statusa</h2>
+      <button class="close" id="closeStatusModal">✕</button>
+    </div>
+    <form id="statusForm">
+      <input type="hidden" id="statusRequestId">
+      <div class="form-group">
+        <label for="newStatus" id="newStatusLabel">Novi status</label>
+        <select id="newStatus">
+          <option value="new">Novi</option>
+          <option value="progress">U obradi</option>
+          <option value="closed">Zatvoren</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="statusNote" id="statusNoteLabel">Bilješka o konsultaciji</label>
+        <textarea id="statusNote" maxlength="1500"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn secondary" id="cancelStatusBtn">Otkaži</button>
+        <button type="submit" class="btn primary" id="saveStatusBtn">Sačuvaj</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>© 2026 DOCBIZHUB | Business Management Platform</footer>
+
+<script>
+const translations = {
+  bs: {
+    header:"Stručna podrška",page:"Expert Support",
+    subtitle:"Pronađite stručnu oblast i evidentirajte svoje poslovne upite.",
+    add:"+ Novi upit",total:"Ukupno upita",newCount:"Novi upiti",
+    progressCount:"U obradi",closedCount:"Zatvoreni",
+    areas:"Oblasti stručne podrške",how:"Kako funkcioniše podrška?",
+    steps:[
+      "Odaberite oblast koja vas interesuje.",
+      "Opišite problem ili poslovni cilj.",
+      "Sačuvajte upit u evidenciji.",
+      "Pratite status i zabilježite dalji tok konsultacija."
+    ],
+    notice:"Ovaj modul služi za internu evidenciju upita. Slanje upita stručnjacima i zakazivanje konsultacija zahtijevaju povezivanje sa serverom.",
+    requests:"Moji upiti",searchLabel:"Pretraga",
+    search:"Pretraži upite...",filter:"Status",
+    all:"Svi statusi",new:"Novi",progress:"U obradi",closed:"Zatvoreni",
+    modalNew:"Novi poslovni upit",modalEdit:"Uredi poslovni upit",
+    title:"Naslov upita *",area:"Oblast *",urgency:"Prioritet",
+    contact:"Kontakt osoba",email:"E-mail",description:"Opis upita *",
+    notes:"Interna napomena",cancel:"Otkaži",save:"Sačuvaj upit",
+    update:"Sačuvaj izmjene",normal:"Normalan",urgent:"Hitno",
+    low:"Nizak",business:"Poslovna strategija",
+    finance:"Finansije i računovodstvo",legal:"Pravo i regulativa",
+    marketing:"Marketing i prodaja",hr:"Ljudski resursi",
+    it:"IT i digitalizacija",funding:"Grantovi i finansiranje",
+    other:"Ostalo",statusChange:"Promjena statusa",
+    newStatus:"Novi status",statusNote:"Bilješka o konsultaciji",
+    saveStatus:"Sačuvaj",edit:"Uredi",change:"Promijeni status",
+    delete:"Obriši",confirmDelete:"Obrisati ovaj upit?",
+    empty:"Nema upita za prikaz.",required:"Popunite obavezna polja.",
+    saveError:"Nije moguće sačuvati podatke u ovom pregledniku.",
+    priority:"Prioritet",created:"Kreirano",contactInfo:"Kontakt",
+    noContact:"Nije navedeno",notesLabel:"Napomena",
+    statusNew:"Novi",statusProgress:"U obradi",statusClosed:"Zatvoren",
+    urgentTag:"Hitno",normalTag:"Normalan",lowTag:"Nizak"
+  },
+  en: {
+    header:"Expert Support",page:"Expert Support",
+    subtitle:"Choose an area of expertise and record your business enquiries.",
+    add:"+ New enquiry",total:"Total enquiries",newCount:"New enquiries",
+    progressCount:"In progress",closedCount:"Closed",
+    areas:"Expertise areas",how:"How does support work?",
+    steps:[
+      "Choose the area you need help with.",
+      "Describe your issue or business goal.",
+      "Save your enquiry in the register.",
+      "Track its status and record consultation updates."
+    ],
+    notice:"This module is an internal enquiry register. Sending enquiries to experts and booking consultations require a server connection.",
+    requests:"My enquiries",searchLabel:"Search",
+    search:"Search enquiries...",filter:"Status",
+    all:"All statuses",new:"New",progress:"In progress",closed:"Closed",
+    modalNew:"New business enquiry",modalEdit:"Edit business enquiry",
+    title:"Enquiry title *",area:"Area *",urgency:"Priority",
+    contact:"Contact person",email:"E-mail",description:"Enquiry description *",
+    notes:"Internal note",cancel:"Cancel",save:"Save enquiry",
+    update:"Save changes",normal:"Normal",urgent:"Urgent",
+    low:"Low",business:"Business strategy",
+    finance:"Finance and accounting",legal:"Law and regulations",
+    marketing:"Marketing and sales",hr:"Human resources",
+    it:"IT and digitalization",funding:"Grants and funding",
+    other:"Other",statusChange:"Change status",
+    newStatus:"New status",statusNote:"Consultation note",
+    saveStatus:"Save",edit:"Edit",change:"Change status",
+    delete:"Delete",confirmDelete:"Delete this enquiry?",
+    empty:"No enquiries to display.",required:"Please fill in all required fields.",
+    saveError:"Could not save data in this browser.",
+    priority:"Priority",created:"Created",contactInfo:"Contact",
+    noContact:"Not provided",notesLabel:"Note",
+    statusNew:"New",statusProgress:"In progress",statusClosed:"Closed",
+    urgentTag:"Urgent",normalTag:"Normal",lowTag:"Low"
+  },
+  de: {
+    header:"Expertenunterstützung",page:"Expert Support",
+    subtitle:"Wählen Sie einen Fachbereich und erfassen Sie Ihre geschäftlichen Anfragen.",
+    add:"+ Neue Anfrage",total:"Anfragen gesamt",newCount:"Neue Anfragen",
+    progressCount:"In Bearbeitung",closedCount:"Geschlossen",
+    areas:"Fachbereiche",how:"Wie funktioniert die Unterstützung?",
+    steps:[
+      "Wählen Sie den gewünschten Fachbereich.",
+      "Beschreiben Sie Ihr Problem oder Geschäftsziel.",
+      "Speichern Sie die Anfrage im Register.",
+      "Verfolgen Sie den Status und dokumentieren Sie Beratungen."
+    ],
+    notice:"Dieses Modul dient der internen Erfassung von Anfragen. Der Versand an Experten und die Terminvereinbarung benötigen eine Serveranbindung.",
+    requests:"Meine Anfragen",searchLabel:"Suche",
+    search:"Anfragen suchen...",filter:"Status",
+    all:"Alle Status",new:"Neu",progress:"In Bearbeitung",closed:"Geschlossen",
+    modalNew:"Neue Geschäftsanfrage",modalEdit:"Anfrage bearbeiten",
+    title:"Anfragetitel *",area:"Bereich *",urgency:"Priorität",
+    contact:"Kontaktperson",email:"E-Mail",description:"Beschreibung *",
+    notes:"Interne Notiz",cancel:"Abbrechen",save:"Anfrage speichern",
+    update:"Änderungen speichern",normal:"Normal",urgent:"Dringend",
+    low:"Niedrig",business:"Geschäftsstrategie",
+    finance:"Finanzen und Buchhaltung",legal:"Recht und Vorschriften",
+    marketing:"Marketing und Vertrieb",hr:"Personalwesen",
+    it:"IT und Digitalisierung",funding:"Fördermittel und Finanzierung",
+    other:"Sonstiges",statusChange:"Status ändern",
+    newStatus:"Neuer Status",statusNote:"Beratungsnotiz",
+    saveStatus:"Speichern",edit:"Bearbeiten",change:"Status ändern",
+    delete:"Löschen",confirmDelete:"Diese Anfrage löschen?",
+    empty:"Keine Anfragen vorhanden.",required:"Bitte alle Pflichtfelder ausfüllen.",
+    saveError:"Daten konnten in diesem Browser nicht gespeichert werden.",
+    priority:"Priorität",created:"Erstellt",contactInfo:"Kontakt",
+    noContact:"Nicht angegeben",notesLabel:"Notiz",
+    statusNew:"Neu",statusProgress:"In Bearbeitung",statusClosed:"Geschlossen",
+    urgentTag:"Dringend",normalTag:"Normal",lowTag:"Niedrig"
+  }
+};
+
+const expertise = [
+  {key:"business",tags:["Strategija","Planiranje","Razvoj"]},
+  {key:"finance",tags:["Budžet","Računovodstvo","Finansije"]},
+  {key:"legal",tags:["Ugovori","Propisi","Usklađenost"]},
+  {key:"marketing",tags:["Prodaja","Digitalni marketing","Brend"]},
+  {key:"hr",tags:["Zapošljavanje","Organizacija","Tim"]},
+  {key:"it",tags:["Softver","Automatizacija","Digitalizacija"]},
+  {key:"funding",tags:["Grantovi","Investicije","Projekti"]},
+  {key:"other",tags:["Ostalo","Konsultacije"]}
+];
+
+const STORAGE_KEY = "docbiz_expert_support";
+let requests = [];
+let currentLang = "bs";
+
+const $ = id => document.getElementById(id);
+const t = key => translations[currentLang][key] || key;
+
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    requests = Array.isArray(data) ? data.filter(x =>
+      x && typeof x.id === "string" &&
+      typeof x.title === "string"
+    ) : [];
+  } catch {
+    requests = [];
+  }
+}
+
+function saveData() {
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(requests));
+    return true;
+  } catch {
+    alert(t("saveError"));
+    return false;
+  }
+}
+
+function statusText(status) {
+  if (status === "new") return t("statusNew");
+  if (status === "progress") return t("statusProgress");
+  return t("statusClosed");
+}
+
+function applyLanguage(lang) {
+  currentLang = translations[lang] ? lang : "bs";
+  document.documentElement.lang = currentLang;
+  $("language").value = currentLang;
+
+  const mapping = {
+    headerTitle:"header",pageTitle:"page",subtitle:"subtitle",
+    newRequestBtn:"add",statTotalLabel:"total",
+    statNewLabel:"newCount",statProgressLabel:"progressCount",
+    statClosedLabel:"closedCount",areasTitle:"areas",
+    howTitle:"how",requestsTitle:"requests",
+    searchLabel:"searchLabel",filterLabel:"filter",
+    modalTitle:"modalNew",titleLabel:"title",
+    areaLabel:"area",urgencyLabel:"urgency",
+    contactLabel:"contact",emailLabel:"email",
+    descriptionLabel:"description",notesLabel:"notes",
+    cancelBtn:"cancel",statusModalTitle:"statusChange",
+    newStatusLabel:"newStatus",statusNoteLabel:"statusNote",
+    cancelStatusBtn:"cancel",saveStatusBtn:"saveStatus"
+  };
+
+  Object.entries(mapping).forEach(([id,key]) => {
+    $(id).textContent = t(key);
+  });
+
+  const steps = $("howList");
+  steps.replaceChildren();
+  translations[currentLang].steps.forEach(text => {
+    const li = document.createElement("li");
+    li.textContent = text;
+    steps.appendChild(li);
+  });
+
+  $("notice").textContent = t("notice");
+  $("searchInput").placeholder = t("search");
+
+  const filter = $("filterStatus");
+  [["all","all"],["new","new"],["progress","progress"],["closed","closed"]]
+    .forEach(([value,key],i) => filter.options[i].textContent = t(key));
+
+  const areaSelect = $("requestArea");
+  expertise.forEach((item,i) => {
+    areaSelect.options[i].textContent = t(item.key);
+  });
+
+  const urgency = $("requestUrgency");
+  urgency.options[0].textContent = t("normal");
+  urgency.options[1].textContent = t("urgent");
+  urgency.options[2].textContent = t("low");
+
+  const status = $("newStatus");
+  status.options[0].textContent = t("statusNew");
+  status.options[1].textContent = t("statusProgress");
+  status.options[2].textContent = t("statusClosed");
+
+  renderAreas();
+  renderRequests();
+}
+
+function renderAreas() {
+  const container = $("areas");
+  container.replaceChildren();
+
+  expertise.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "expert-card";
+
+    const name = document.createElement("div");
+    name.className = "expert-name";
+    name.textContent = t(item.key);
+
+    const desc = document.createElement("p");
+    desc.className = "expert-desc";
+    desc.textContent = ({
+      business:"Poslovno planiranje, razvoj kompanije i strateške odluke.",
+      finance:"Planiranje budžeta, novčani tokovi i finansijsko upravljanje.",
+      legal:"Ugovori, poslovna dokumentacija i regulatorne obaveze.",
+      marketing:"Razvoj tržišta, prodajna strategija i promocija.",
+      hr:"Organizacija tima, zapošljavanje i razvoj zaposlenih.",
+      it:"Digitalni alati, automatizacija i tehnološka rješenja.",
+      funding:"Priprema projekata, grantovi i izvori finansiranja.",
+      other:"Ostala pitanja i specifične poslovne potrebe."
+    })[item.key];
+
+    const tags = document.createElement("div");
+    tags.className = "tags";
+    item.tags.forEach(tagText => {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = tagText;
+      tags.appendChild(tag);
+    });
+
+    card.append(name,desc,tags);
+    container.appendChild(card);
+  });
+}
+
+function renderRequests() {
+  const total = requests.length;
+  $("statTotal").textContent = total;
+  $("statNew").textContent = requests.filter(x => x.status === "new").length;
+  $("statProgress").textContent = requests.filter(x => x.status === "progress").length;
+  $("statClosed").textContent = requests.filter(x => x.status === "closed").length;
+
+  const query = $("searchInput").value.trim().toLowerCase();
+  const filter = $("filterStatus").value;
+
+  const filtered = requests.filter(item => {
+    const text = [
+      item.title,item.description,item.area,
+      item.contact,item.email,item.notes
+    ].join(" ").toLowerCase();
+
+    return text.includes(query) &&
+      (filter === "all" || item.status === filter);
+  }).sort((a,b) => (b.created || "").localeCompare(a.created || ""));
+
+  const container = $("requestList");
+  container.replaceChildren();
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = t("empty");
+    container.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "request";
+
+    const content = document.createElement("div");
+    content.style.flex = "1";
+    const title = document.createElement("div");
+    title.className = "request-title";
+    title.textContent = item.title;
+
+    const meta = document.createElement("div");
+    meta.className = "request-meta";
+
+    const area = document.createElement("span");
+    area.textContent = t(item.area);
+    const date = document.createElement("span");
+    date.textContent = t("created") + ": " + new Date(item.created).toLocaleDateString(
+      currentLang === "bs" ? "bs-BA" : currentLang === "de" ? "de-DE" : "en-GB"
+    );
+    const priority = document.createElement("span");
+    priority.textContent = t("priority") + ": " + t(item.urgency || "normal");
+
+    meta.append(area,date,priority);
+
+    const description = document.createElement("p");
+    description.className = "request-description";
+    description.textContent = item.description;
+
+    content.append(title,meta,description);
+
+    if (item.contact || item.email) {
+      const contact = document.createElement("p");
+      contact.className = "note";
+      contact.textContent = t("contactInfo") + ": " +
+        [item.contact,item.email].filter(Boolean).join(" · ");
+      content.appendChild(contact);
+    }
+
+    if (item.notes) {
+      const note = document.createElement("p");
+      note.className = "note";
+      note.textContent = t("notesLabel") + ": " + item.notes;
+      content.appendChild(note);
+    }
+
+    const side = document.createElement("div");
+    const status = document.createElement("span");
+    status.className = "request-status status-" + item.status;
+    status.textContent = statusText(item.status);
+
+    const actions = document.createElement("div");
+    actions.className = "request-actions";
+
+    const edit = document.createElement("button");
+    edit.className = "small-btn secondary";
+    edit.textContent = t("edit");
+    edit.addEventListener("click",() => openRequestModal(item));
+
+    const change = document.createElement("button");
+    change.className = "small-btn secondary";
+    change.textContent = t("change");
+    change.addEventListener("click",() => openStatusModal(item));
+
+    const remove = document.createElement("button");
+    remove.className = "small-btn danger";
+    remove.textContent = t("delete");
+    remove.addEventListener("click",() => {
+      if (!confirm(t("confirmDelete"))) return;
+      const previous = requests;
+      requests = requests.filter(x => x.id !== item.id);
+      if (!saveData()) requests = previous;
+      renderRequests();
+    });
+
+    actions.append(edit,change,remove);
+    side.append(status,actions);
+    card.append(content,side);
+    container.appendChild(card);
+  });
+}
+
+function openRequestModal(item = null) {
+  $("requestForm").reset();
+  $("requestId").value = item ? item.id : "";
+  $("modalTitle").textContent = item ? t("modalEdit") : t("modalNew");
+
+  if (item) {
+    $("requestTitle").value = item.title || "";
+    $("requestArea").value = item.area || "business";
+    $("requestUrgency").value = item.urgency || "normal";
+    $("contactName").value = item.contact || "";
+    $("contactEmail").value = item.email || "";
+    $("requestDescription").value = item.description || "";
+    $("requestNotes").value = item.notes || "";
+  }
+
+  $("requestModal").classList.add("open");
+  $("requestTitle").focus();
+}
+
+function closeRequestModal() {
+  $("requestModal").classList.remove("open");
+}
+
+function openStatusModal(item) {
+  $("statusForm").reset();
+  $("statusRequestId").value = item.id;
+  $("newStatus").value = item.status;
+  $("statusNote").value = "";
+  $("statusModal").classList.add("open");
+}
+
+function closeStatusModal() {
+  $("statusModal").classList.remove("open");
+}
+
+$("newRequestBtn").addEventListener("click",() => openRequestModal());
+$("closeModal").addEventListener("click",closeRequestModal);
+$("cancelBtn").addEventListener("click",closeRequestModal);
+$("closeStatusModal").addEventListener("click",closeStatusModal);
+$("cancelStatusBtn").addEventListener("click",closeStatusModal);
+
+$("requestModal").addEventListener("click",e => {
+  if (e.target === $("requestModal")) closeRequestModal();
+});
+$("statusModal").addEventListener("click",e => {
+  if (e.target === $("statusModal")) closeStatusModal();
+});
+document.addEventListener("keydown",e => {
+  if (e.key === "Escape") {
+    closeRequestModal();
+    closeStatusModal();
+  }
+});
+
+$("requestForm").addEventListener("submit",e => {
+  e.preventDefault();
+
+  const title = $("requestTitle").value.trim();
+  const description = $("requestDescription").value.trim();
+  const email = $("contactEmail").value.trim();
+
+  if (!title || !description) {
+    alert(t("required"));
+    return;
+  }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    $("contactEmail").focus();
+    return;
+  }
+
+  const id = $("requestId").value;
+  const existing = requests.find(x => x.id === id);
+
+  const record = {
+    id: id || (crypto.randomUUID ? crypto.randomUUID() :
+      String(Date.now()) + Math.random().toString(16).slice(2)),
+    title,
+    area:$("requestArea").value,
+    urgency:$("requestUrgency").value,
+    contact:$("contactName").value.trim(),
+    email,
+    description,
+    notes:$("requestNotes").value.trim(),
+    status:existing ? existing.status : "new",
+    created:existing ? existing.created : new Date().toISOString(),
+    updated:new Date().toISOString()
+  };
+
+  const previous = requests.slice();
+  if (existing) {
+    requests = requests.map(x => x.id === id ? record : x);
+  } else {
+    requests.push(record);
+  }
+
+  if (!saveData()) {
+    requests = previous;
+    return;
+  }
+
+  closeRequestModal();
+  renderRequests();
+});
+
+$("statusForm").addEventListener("submit",e => {
+  e.preventDefault();
+
+  const id = $("statusRequestId").value;
+  const item = requests.find(x => x.id === id);
+  if (!item) return;
+
+  const previous = requests.slice();
+  const note = $("statusNote").value.trim();
+
+  requests = requests.map(x => x.id === id ? {
+    ...x,
+    status:$("newStatus").value,
+    notes:note ? [x.notes,note].filter(Boolean).join("\n\n") : x.notes,
+    updated:new Date().toISOString()
+  } : x);
+
+  if (!saveData()) {
+    requests = previous;
+    return;
+  }
+
+  closeStatusModal();
+  renderRequests();
+});
+
+$("searchInput").addEventListener("input",renderRequests);
+$("filterStatus").addEventListener("change",renderRequests);
+
+$("language").addEventListener("change",e => {
+  try {
+    localStorage.setItem("docbiz_language",e.target.value);
+  } catch {}
+  applyLanguage(e.target.value);
+});
+
+loadData();
+let savedLanguage = "bs";
+try {
+  savedLanguage = localStorage.getItem("docbiz_language") || "bs";
+} catch {}
+applyLanguage(savedLanguage);
+</script>
+</body>
+</html>
