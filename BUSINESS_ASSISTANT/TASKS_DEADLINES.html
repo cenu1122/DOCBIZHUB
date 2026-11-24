@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Tasks & Deadlines</title>
+<style>
+:root {
+  --navy:#102b4e;
+  --blue:#1976d2;
+  --light:#f3f6fa;
+  --white:#fff;
+  --text:#243247;
+  --muted:#718096;
+  --border:#e1e7ef;
+  --green:#16845b;
+  --orange:#d97706;
+  --red:#d14343;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--light);
+  color:var(--text);
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:22px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.brand {font-size:23px;font-weight:800;letter-spacing:.5px}
+.brand span {color:#58a6ff}
+.header-right {display:flex;align-items:center;gap:12px}
+select,button,input,textarea {font:inherit}
+.language {
+  background:#fff;color:var(--navy);
+  border:0;border-radius:7px;padding:9px 12px;
+}
+main {max-width:1250px;margin:30px auto;padding:0 20px}
+.intro {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;flex-wrap:wrap;
+  margin-bottom:22px;
+}
+h1 {margin:0 0 7px;font-size:27px}
+.subtitle {color:var(--muted);margin:0}
+.btn {
+  border:0;border-radius:7px;padding:11px 16px;
+  cursor:pointer;font-weight:700;
+}
+.primary {background:var(--blue);color:white}
+.secondary {background:#e8eef6;color:var(--navy)}
+.danger {background:#fff0f0;color:var(--red)}
+.stats {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:15px;margin-bottom:22px;
+}
+.stat {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.stat-label {color:var(--muted);font-size:13px}
+.stat-number {font-size:27px;font-weight:800;margin-top:8px}
+.stat-number.blue {color:var(--blue)}
+.stat-number.green {color:var(--green)}
+.stat-number.orange {color:var(--orange)}
+.stat-number.red {color:var(--red)}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:20px;margin-bottom:20px;
+}
+.panel h2 {font-size:18px;margin:0 0 16px}
+.toolbar {
+  display:grid;grid-template-columns:2fr 1fr 1fr;
+  gap:12px;margin-bottom:16px;
+}
+input,textarea,.field-select {
+  width:100%;padding:11px 12px;
+  border:1px solid var(--border);border-radius:7px;
+  background:white;color:var(--text);
+}
+textarea {min-height:85px;resize:vertical}
+input:focus,textarea:focus,select:focus {
+  outline:2px solid #b8d8fa;outline-offset:1px;
+}
+.task-list {display:grid;gap:12px}
+.task {
+  border:1px solid var(--border);border-radius:10px;
+  padding:15px;display:grid;
+  grid-template-columns:1fr auto;gap:12px;
+}
+.task.done {opacity:.65;background:#f8fafc}
+.task.done .task-title {text-decoration:line-through}
+.task-title {font-weight:700;font-size:16px;margin-bottom:7px}
+.task-meta {
+  display:flex;gap:9px;flex-wrap:wrap;
+  color:var(--muted);font-size:12px;
+}
+.task-description {font-size:13px;color:#536276;margin:8px 0 0}
+.task-actions {display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.small-btn {
+  border:0;border-radius:6px;padding:8px 10px;
+  cursor:pointer;font-size:12px;font-weight:700;
+}
+.priority,.status {
+  display:inline-block;border-radius:20px;
+  padding:4px 9px;font-size:11px;font-weight:700;
+}
+.priority.high {background:#ffe8e8;color:#b42323}
+.priority.medium {background:#fff2d9;color:#9a5b00}
+.priority.low {background:#e5f5ed;color:#13734c}
+.status.pending {background:#edf2f7;color:#536276}
+.status.done {background:#e1f5eb;color:#13734c}
+.status.overdue {background:#ffe8e8;color:#b42323}
+.empty {
+  text-align:center;padding:35px 15px;color:var(--muted);
+}
+.modal {
+  display:none;position:fixed;inset:0;
+  background:rgba(10,25,45,.6);
+  z-index:10;align-items:center;justify-content:center;
+  padding:15px;
+}
+.modal.open {display:flex}
+.modal-box {
+  background:white;border-radius:13px;
+  width:100%;max-width:570px;max-height:90vh;
+  overflow:auto;padding:24px;
+}
+.modal-head {
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:18px;
+}
+.modal-head h2 {margin:0;font-size:20px}
+.close {
+  background:#edf2f7;border:0;border-radius:7px;
+  padding:7px 11px;cursor:pointer;
+}
+.form-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:13px;
+}
+.form-group {margin-bottom:13px}
+.form-group label {
+  display:block;font-size:13px;font-weight:700;margin-bottom:6px;
+}
+.full {grid-column:1/-1}
+.form-actions {
+  display:flex;justify-content:flex-end;gap:9px;margin-top:15px;
+}
+footer {
+  text-align:center;padding:25px;color:var(--muted);font-size:12px;
+}
+@media(max-width:800px) {
+  .stats {grid-template-columns:repeat(2,1fr)}
+  .toolbar {grid-template-columns:1fr}
+}
+@media(max-width:550px) {
+  main {padding:0 12px;margin-top:20px}
+  .stats {gap:9px}
+  .stat {padding:13px}
+  .stat-number {font-size:23px}
+  .task {grid-template-columns:1fr}
+  .task-actions {justify-content:flex-start}
+  .form-grid {grid-template-columns:1fr}
+  .full {grid-column:auto}
+  header {padding:17px 15px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DOC<span>BIZ</span>HUB</div>
+  <div class="header-right">
+    <strong id="headerTitle">Zadaci i rokovi</strong>
+    <select class="language" id="language">
+      <option value="bs">BS</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div>
+      <h1 id="pageTitle">Upravljanje zadacima</h1>
+      <p class="subtitle" id="pageSubtitle">Organizujte obaveze, pratite prioritete i ne propustite rokove.</p>
+    </div>
+    <button class="btn primary" id="addTaskBtn">+ Novi zadatak</button>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label" id="labelTotal">Ukupno zadataka</div>
+      <div class="stat-number blue" id="totalCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="labelPending">U toku</div>
+      <div class="stat-number orange" id="pendingCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="labelDone">Završeno</div>
+      <div class="stat-number green" id="doneCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label" id="labelOverdue">Istekli rokovi</div>
+      <div class="stat-number red" id="overdueCount">0</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 id="listTitle">Moji zadaci</h2>
+    <div class="toolbar">
+      <input id="searchInput" type="search" placeholder="Pretraži zadatke...">
+      <select id="statusFilter" class="field-select">
+        <option value="all">Svi statusi</option>
+        <option value="pending">U toku</option>
+        <option value="done">Završeno</option>
+        <option value="overdue">Istekao rok</option>
+      </select>
+      <select id="priorityFilter" class="field-select">
+        <option value="all">Svi prioriteti</option>
+        <option value="high">Visok prioritet</option>
+        <option value="medium">Srednji prioritet</option>
+        <option value="low">Nizak prioritet</option>
+      </select>
+    </div>
+    <div class="task-list" id="taskList"></div>
+  </section>
+</main>
+
+<div class="modal" id="taskModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">Novi zadatak</h2>
+      <button class="close" id="closeModal">✕</button>
+    </div>
+    <form id="taskForm">
+      <input type="hidden" id="taskId">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="taskName" id="nameLabel">Naziv zadatka *</label>
+          <input id="taskName" required maxlength="120">
+        </div>
+        <div class="form-group">
+          <label for="taskCategory" id="categoryLabel">Kategorija</label>
+          <select id="taskCategory" class="field-select">
+            <option value="general">Opšte</option>
+            <option value="finance">Finansije</option>
+            <option value="sales">Prodaja</option>
+            <option value="marketing">Marketing</option>
+            <option value="administration">Administracija</option>
+            <option value="legal">Pravne obaveze</option>
+            <option value="other">Ostalo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="taskPriority" id="priorityLabel">Prioritet</label>
+          <select id="taskPriority" class="field-select">
+            <option value="high">Visok</option>
+            <option value="medium" selected>Srednji</option>
+            <option value="low">Nizak</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="taskDate" id="dateLabel">Rok izvršenja *</label>
+          <input type="date" id="taskDate" required>
+        </div>
+        <div class="form-group">
+          <label for="taskAssignee" id="assigneeLabel">Odgovorna osoba</label>
+          <input id="taskAssignee" maxlength="80">
+        </div>
+        <div class="form-group full">
+          <label for="taskDescription" id="descriptionLabel">Opis zadatka</label>
+          <textarea id="taskDescription" maxlength="1000"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn secondary" id="cancelBtn">Otkaži</button>
+        <button type="submit" class="btn primary" id="saveBtn">Sačuvaj zadatak</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>© 2026 DOCBIZHUB | Business Management Platform</footer>
+
+<script>
+const translations = {
+  bs: {
+    header:"Zadaci i rokovi",page:"Upravljanje zadacima",
+    subtitle:"Organizujte obaveze, pratite prioritete i ne propustite rokove.",
+    add:"+ Novi zadatak",total:"Ukupno zadataka",pending:"U toku",
+    done:"Završeno",overdue:"Istekli rokovi",list:"Moji zadaci",
+    search:"Pretraži zadatke...",allStatus:"Svi statusi",
+    allPriority:"Svi prioriteti",statusPending:"U toku",
+    statusDone:"Završeno",statusOverdue:"Istekao rok",
+    high:"Visok",medium:"Srednji",low:"Nizak",
+    modalNew:"Novi zadatak",modalEdit:"Uredi zadatak",
+    name:"Naziv zadatka *",category:"Kategorija",priority:"Prioritet",
+    date:"Rok izvršenja *",assignee:"Odgovorna osoba",
+    description:"Opis zadatka",cancel:"Otkaži",save:"Sačuvaj zadatak",
+    update:"Sačuvaj izmjene",general:"Opšte",finance:"Finansije",
+    sales:"Prodaja",marketing:"Marketing",administration:"Administracija",
+    legal:"Pravne obaveze",other:"Ostalo",delete:"Obriši",
+    edit:"Uredi",complete:"Završi",reopen:"Vrati u tok",
+    noTasks:"Nema zadataka za prikaz.",confirmDelete:"Obrisati ovaj zadatak?",
+    overdueTag:"Istekao rok",due:"Rok",assigneeText:"Odgovorna osoba",
+    noAssignee:"Nije dodijeljeno",required:"Unesite naziv i rok zadatka.",
+    saveError:"Zadatak nije moguće sačuvati u ovom pregledniku.",
+    today:"Danas",created:"Kreirano"
+  },
+  en: {
+    header:"Tasks & Deadlines",page:"Task Management",
+    subtitle:"Organize your work, track priorities and never miss a deadline.",
+    add:"+ New task",total:"Total tasks",pending:"In progress",
+    done:"Completed",overdue:"Overdue",list:"My Tasks",
+    search:"Search tasks...",allStatus:"All statuses",
+    allPriority:"All priorities",statusPending:"In progress",
+    statusDone:"Completed",statusOverdue:"Overdue",
+    high:"High",medium:"Medium",low:"Low",
+    modalNew:"New task",modalEdit:"Edit task",
+    name:"Task name *",category:"Category",priority:"Priority",
+    date:"Due date *",assignee:"Assigned to",
+    description:"Task description",cancel:"Cancel",save:"Save task",
+    update:"Save changes",general:"General",finance:"Finance",
+    sales:"Sales",marketing:"Marketing",administration:"Administration",
+    legal:"Legal obligations",other:"Other",delete:"Delete",
+    edit:"Edit",complete:"Complete",reopen:"Reopen",
+    noTasks:"No tasks to display.",confirmDelete:"Delete this task?",
+    overdueTag:"Overdue",due:"Due date",assigneeText:"Assigned to",
+    noAssignee:"Unassigned",required:"Enter a task name and due date.",
+    saveError:"This browser could not save the task.",
+    today:"Today",created:"Created"
+  },
+  de: {
+    header:"Aufgaben & Fristen",page:"Aufgabenverwaltung",
+    subtitle:"Organisieren Sie Ihre Arbeit und behalten Sie alle Fristen im Blick.",
+    add:"+ Neue Aufgabe",total:"Aufgaben gesamt",pending:"In Bearbeitung",
+    done:"Erledigt",overdue:"Überfällig",list:"Meine Aufgaben",
+    search:"Aufgaben suchen...",allStatus:"Alle Status",
+    allPriority:"Alle Prioritäten",statusPending:"In Bearbeitung",
+    statusDone:"Erledigt",statusOverdue:"Überfällig",
+    high:"Hoch",medium:"Mittel",low:"Niedrig",
+    modalNew:"Neue Aufgabe",modalEdit:"Aufgabe bearbeiten",
+    name:"Aufgabenname *",category:"Kategorie",priority:"Priorität",
+    date:"Fälligkeitsdatum *",assignee:"Verantwortliche Person",
+    description:"Aufgabenbeschreibung",cancel:"Abbrechen",save:"Aufgabe speichern",
+    update:"Änderungen speichern",general:"Allgemein",finance:"Finanzen",
+    sales:"Vertrieb",marketing:"Marketing",administration:"Verwaltung",
+    legal:"Rechtliche Pflichten",other:"Sonstiges",delete:"Löschen",
+    edit:"Bearbeiten",complete:"Erledigen",reopen:"Wieder öffnen",
+    noTasks:"Keine Aufgaben vorhanden.",confirmDelete:"Diese Aufgabe löschen?",
+    overdueTag:"Überfällig",due:"Frist",assigneeText:"Verantwortlich",
+    noAssignee:"Nicht zugewiesen",required:"Aufgabenname und Frist eingeben.",
+    saveError:"Die Aufgabe konnte nicht gespeichert werden.",
+    today:"Heute",created:"Erstellt"
+  }
+};
+
+const STORAGE_KEY = "docbiz_tasks";
+let tasks = [];
+let currentLang = "bs";
+
+const $ = id => document.getElementById(id);
+const t = key => translations[currentLang][key] || key;
+
+function loadTasks() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : [];
+    tasks = Array.isArray(parsed) ? parsed.filter(x =>
+      x && typeof x.id === "string" &&
+      typeof x.name === "string"
+    ) : [];
+  } catch {
+    tasks = [];
+  }
+}
+
+function saveTasks() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    return true;
+  } catch {
+    alert(t("saveError"));
+    return false;
+  }
+}
+
+function applyLanguage(lang) {
+  currentLang = translations[lang] ? lang : "bs";
+  document.documentElement.lang = currentLang;
+  $("language").value = currentLang;
+
+  const fields = {
+    headerTitle:"header",pageTitle:"page",
+    pageSubtitle:"subtitle",addTaskBtn:"add",
+    labelTotal:"total",labelPending:"pending",
+    labelDone:"done",labelOverdue:"overdue",
+    listTitle:"list",nameLabel:"name",
+    categoryLabel:"category",priorityLabel:"priority",
+    dateLabel:"date",assigneeLabel:"assignee",
+    descriptionLabel:"description",cancelBtn:"cancel"
+  };
+
+  Object.entries(fields).forEach(([id,key]) => {
+    $(id).textContent = t(key);
+  });
+
+  $("searchInput").placeholder = t("search");
+  $("statusFilter").options[0].textContent = t("allStatus");
+  $("statusFilter").options[1].textContent = t("statusPending");
+  $("statusFilter").options[2].textContent = t("statusDone");
+  $("statusFilter").options[3].textContent = t("statusOverdue");
+  $("priorityFilter").options[0].textContent = t("allPriority");
+  $("priorityFilter").options[1].textContent = t("high");
+  $("priorityFilter").options[2].textContent = t("medium");
+  $("priorityFilter").options[3].textContent = t("low");
+
+  const categoryOptions = ["general","finance","sales","marketing","administration","legal","other"];
+  categoryOptions.forEach((key,i) => {
+    $("taskCategory").options[i].textContent = t(key);
+  });
+
+  ["high","medium","low"].forEach((key,i) => {
+    $("taskPriority").options[i].textContent = t(key);
+  });
+
+  $("saveBtn").textContent = $("taskId").value ? t("update") : t("save");
+  renderTasks();
+}
+
+function getStatus(task) {
+  if (task.done) return "done";
+  if (task.date && task.date < localDate()) return "overdue";
+  return "pending";
+}
+
+function localDate() {
+  const d = new Date();
+  const offset = d.getTimezoneOffset();
+  return new Date(d.getTime() - offset * 60000).toISOString().slice(0,10);
+}
+
+function formatDate(date) {
+  if (!date) return "—";
+  const [y,m,d] = date.split("-");
+  return `${d}.${m}.${y}.`;
+}
+
+function renderTasks() {
+  const total = tasks.length;
+  const done = tasks.filter(x => getStatus(x) === "done").length;
+  const overdue = tasks.filter(x => getStatus(x) === "overdue").length;
+  $("totalCount").textContent = total;
+  $("doneCount").textContent = done;
+  $("overdueCount").textContent = overdue;
+  $("pendingCount").textContent = total - done;
+
+  const query = $("searchInput").value.trim().toLowerCase();
+  const status = $("statusFilter").value;
+  const priority = $("priorityFilter").value;
+
+  const filtered = tasks.filter(task => {
+    const matchesText = [task.name,task.description,task.assignee]
+      .some(value => String(value || "").toLowerCase().includes(query));
+    const matchesStatus = status === "all" || getStatus(task) === status;
+    const matchesPriority = priority === "all" || task.priority === priority;
+    return matchesText && matchesStatus && matchesPriority;
+  }).sort((a,b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return (a.date || "").localeCompare(b.date || "");
+  });
+
+  const list = $("taskList");
+  list.replaceChildren();
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = t("noTasks");
+    list.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(task => {
+    const statusValue = getStatus(task);
+    const card = document.createElement("article");
+    card.className = "task" + (task.done ? " done" : "");
+
+    const content = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "task-title";
+    title.textContent = task.name;
+    content.appendChild(title);
+
+    const meta = document.createElement("div");
+    meta.className = "task-meta";
+
+    const priorityTag = document.createElement("span");
+    priorityTag.className = "priority " + (task.priority || "medium");
+    priorityTag.textContent = t(task.priority || "medium");
+    meta.appendChild(priorityTag);
+
+    const statusTag = document.createElement("span");
+    statusTag.className = "status " + statusValue;
+    statusTag.textContent = t(statusValue === "pending" ? "statusPending" :
+      statusValue === "done" ? "statusDone" : "overdueTag");
+    meta.appendChild(statusTag);
+
+    const due = document.createElement("span");
+    due.textContent = t("due") + ": " + formatDate(task.date);
+    meta.appendChild(due);
+
+    const assignee = document.createElement("span");
+    assignee.textContent = t("assigneeText") + ": " + (task.assignee || t("noAssignee"));
+    meta.appendChild(assignee);
+
+    content.appendChild(meta);
+
+    if (task.description) {
+      const desc = document.createElement("p");
+      desc.className = "task-description";
+      desc.textContent = task.description;
+      content.appendChild(desc);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "task-actions";
+
+    const toggle = document.createElement("button");
+    toggle.className = "small-btn " + (task.done ? "secondary" : "primary");
+    toggle.textContent = task.done ? t("reopen") : t("complete");
+    toggle.addEventListener("click", () => {
+      const old = task.done;
+      task.done = !task.done;
+      if (!saveTasks()) task.done = old;
+      renderTasks();
+    });
+
+    const edit = document.createElement("button");
+    edit.className = "small-btn secondary";
+    edit.textContent = t("edit");
+    edit.addEventListener("click", () => openModal(task));
+
+    const remove = document.createElement("button");
+    remove.className = "small-btn danger";
+    remove.textContent = t("delete");
+    remove.addEventListener("click", () => {
+      if (!confirm(t("confirmDelete"))) return;
+      const previous = tasks;
+      tasks = tasks.filter(x => x.id !== task.id);
+      if (!saveTasks()) tasks = previous;
+      renderTasks();
+    });
+
+    actions.append(toggle,edit,remove);
+    card.append(content,actions);
+    list.appendChild(card);
+  });
+}
+
+function openModal(task = null) {
+  $("taskForm").reset();
+  $("taskId").value = task ? task.id : "";
+  $("modalTitle").textContent = task ? t("modalEdit") : t("modalNew");
+  $("saveBtn").textContent = task ? t("update") : t("save");
+
+  if (task) {
+    $("taskName").value = task.name || "";
+    $("taskCategory").value = task.category || "general";
+    $("taskPriority").value = task.priority || "medium";
+    $("taskDate").value = task.date || "";
+    $("taskAssignee").value = task.assignee || "";
+    $("taskDescription").value = task.description || "";
+  }
+
+  $("taskModal").classList.add("open");
+  $("taskName").focus();
+}
+
+function closeModal() {
+  $("taskModal").classList.remove("open");
+}
+
+$("addTaskBtn").addEventListener("click", () => openModal());
+$("closeModal").addEventListener("click", closeModal);
+$("cancelBtn").addEventListener("click", closeModal);
+
+$("taskModal").addEventListener("click", e => {
+  if (e.target === $("taskModal")) closeModal();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+});
+
+$("taskForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const name = $("taskName").value.trim();
+  const date = $("taskDate").value;
+  if (!name || !date) {
+    alert(t("required"));
+    return;
+  }
+
+  const id = $("taskId").value;
+  const existing = tasks.find(x => x.id === id);
+
+  const record = {
+    id: id || (crypto.randomUUID ? crypto.randomUUID() :
+      String(Date.now()) + Math.random().toString(16).slice(2)),
+    name,
+    category:$("taskCategory").value,
+    priority:$("taskPriority").value,
+    date,
+    assignee:$("taskAssignee").value.trim(),
+    description:$("taskDescription").value.trim(),
+    done:existing ? existing.done : false,
+    created:existing ? existing.created : new Date().toISOString()
+  };
+
+  const previous = tasks.slice();
+  if (existing) {
+    tasks = tasks.map(x => x.id === id ? record : x);
+  } else {
+    tasks.push(record);
+  }
+
+  if (!saveTasks()) {
+    tasks = previous;
+    return;
+  }
+
+  closeModal();
+  renderTasks();
+});
+
+$("searchInput").addEventListener("input",renderTasks);
+$("statusFilter").addEventListener("change",renderTasks);
+$("priorityFilter").addEventListener("change",renderTasks);
+
+$("language").addEventListener("change",e => {
+  const lang = e.target.value;
+  try { localStorage.setItem("docbiz_language",lang); } catch {}
+  applyLanguage(lang);
+});
+
+loadTasks();
+let savedLanguage = "bs";
+try {
+  savedLanguage = localStorage.getItem("docbiz_language") || "bs";
+} catch {}
+applyLanguage(savedLanguage);
+</script>
+</body>
+</html>
