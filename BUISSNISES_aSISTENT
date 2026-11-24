@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOCBIZHUB | Business Portal</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #172033;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #101c35;
+      color: white;
+      padding: 25px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: #35a8ff;
+    }
+
+    header p {
+      color: #c5d3e8;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 55px auto;
+      padding: 0 20px;
+    }
+
+    .intro {
+      margin-bottom: 35px;
+    }
+
+    .intro h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .intro p {
+      color: #68758a;
+      font-size: 16px;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .link-card {
+      background: white;
+      border: 1px solid #e1e7f0;
+      border-radius: 13px;
+      padding: 25px;
+      text-decoration: none;
+      color: #172033;
+      transition: 0.2s;
+      display: block;
+    }
+
+    .link-card:hover {
+      transform: translateY(-4px);
+      border-color: #238be5;
+      box-shadow: 0 8px 25px rgba(20, 50, 90, 0.10);
+    }
+
+    .link-icon {
+      font-size: 30px;
+      margin-bottom: 17px;
+    }
+
+    .link-card h2 {
+      font-size: 19px;
+      margin-bottom: 9px;
+    }
+
+    .link-card p {
+      color: #718096;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      color: #8290a5;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">DOCBIZ<span>HUB</span></div>
+    <p>European Business Ecosystem</p>
+  </header>
+
+  <main>
+
+    <div class="intro">
+      <h1>Business Portal</h1>
+      <p>Odaberite modul kojem želite pristupiti.</p>
+    </div>
+
+    <div class="links-grid">
+
+      <!-- NOVI LINKOVI SE DODAJU OVDJE -->
+
+      <a class="link-card"
+         href="business-assistant.html"
+         target="_blank"
+         rel="noopener noreferrer">
+        <div class="link-icon">🤖</div>
+        <h2>Business Assistant</h2>
+        <p>Poslovne procedure, dokumentacija i AI podrška.</p>
+      </a>
+
+      <a class="link-card"
+         href="business-network.html"
+         target="_blank"
+         rel="noopener noreferrer">
+        <div class="link-icon">🌍</div>
+        <h2>Business Network</h2>
+        <p>Kompanije, dobavljači, kupci i poslovni partneri.</p>
+      </a>
+
+      <a class="link-card"
+         href="business-opportunities.html"
+         target="_blank"
+         rel="noopener noreferrer">
+        <div class="link-icon">📈</div>
+        <h2>Business Opportunities</h2>
+        <p>Grantovi, tenderi i poslovne prilike.</p>
+      </a>
+
+      <a class="link-card"
+         href="documents.html"
+         target="_blank"
+         rel="noopener noreferrer">
+        <div class="link-icon">📄</div>
+        <h2>Document Center</h2>
+        <p>Poslovni obrasci, ugovori i dokumentacija.</p>
+      </a>
+
+      <!-- KRAJ LINKOVA -->
+
+    </div>
+
+  </main>
+
+  <footer>
+    © 2026 DOCBIZHUB — European Business Ecosystem
+  </footer>
+
+</body>
+</html>
