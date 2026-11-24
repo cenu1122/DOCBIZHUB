@@ -300,6 +300,45 @@ grid-template-columns:1fr;
 .form-group.full{grid-column:auto}
 .panel{padding:18px}
 }
+
+/* EXPORT & TRADE CENTER */
+.export-hero{
+  background:linear-gradient(135deg,#10213e,#174c78);
+  color:#fff;border-radius:13px;padding:24px;margin-bottom:18px;
+}
+.export-hero h2{color:#fff;margin-bottom:8px}
+.export-hero p{color:#d7e7f8;line-height:1.6;font-size:14px}
+.export-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.export-card{border:1px solid #e1e7f0;border-radius:10px;padding:17px;background:#fff}
+.export-card h3{font-size:15px;margin-bottom:9px;color:#203451}
+.export-card p,.export-card li{font-size:13px;color:#65758b;line-height:1.55}
+.export-card ul{padding-left:18px;margin-top:8px}
+.export-checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.export-check{
+  display:flex;gap:10px;align-items:flex-start;padding:12px;
+  border:1px solid #e1e7f0;border-radius:8px;background:#fbfcfe;
+  font-size:13px;color:#354761;line-height:1.45
+}
+.export-check input{width:auto;margin-top:2px;flex:0 0 auto}
+.export-warning{
+  background:#fff8e8;border:1px solid #f1dfb5;color:#76551b;
+  border-radius:9px;padding:14px;font-size:13px;line-height:1.6;margin-top:15px
+}
+.export-meta{font-size:12px;color:#718096;margin-top:10px;line-height:1.5}
+.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.export-progress{height:8px;background:#e8edf4;border-radius:20px;overflow:hidden;margin:10px 0 14px}
+.export-progress span{display:block;height:100%;background:#16845b;width:0;transition:width .2s}
+@media(max-width:700px){.export-grid,.export-checklist{grid-template-columns:1fr}}
+
+
+@media print{
+  header,.intro,.stats,#exportTradeCenter .export-actions,footer{display:none!important}
+  body{background:#fff}
+  main{max-width:none;margin:0;padding:0}
+  .panel{border:0;box-shadow:none;break-inside:avoid}
+  #exportTradeCenter{display:block!important}
+}
+
 </style>
 </head>
 
@@ -397,6 +436,95 @@ Ovaj modul služi za internu evidenciju. Zakonske obaveze i rokove potrebno je p
 
 </section>
 
+
+<section class="panel" id="exportTradeCenter">
+  <div class="export-hero">
+    <h2 data-i18n="exportTitle">🌍 Export & Trade Center — BiH → Njemačka / EU</h2>
+    <p data-i18n="exportIntro">Praktična kontrolna lista za pripremu izvoza metalnih proizvoda iz Bosne i Hercegovine. Zahtjevi se potvrđuju prema tarifnom broju, porijeklu, vrsti proizvoda i važećim propisima.</p>
+  </div>
+
+  <h2 data-i18n="exportRulesTitle">Pravila i dokumentacija za izvoz metalnih proizvoda</h2>
+  <div class="export-grid">
+    <div class="export-card">
+      <h3 data-i18n="exportDocsTitle">📄 Osnovni izvozni dokumenti</h3>
+      <ul>
+        <li data-i18n="exportDoc1">Komercijalna faktura sa tačnim opisom, količinom, cijenom, valutom, porijeklom i Incoterms uslovom.</li>
+        <li data-i18n="exportDoc2">Packing List: broj paketa, sadržaj, neto/bruto težina i dimenzije.</li>
+        <li data-i18n="exportDoc3">Izvozna carinska deklaracija — podnosi je izvoznik ili carinski zastupnik/špediter.</li>
+        <li data-i18n="exportDoc4">CMR za međunarodni drumski prevoz.</li>
+        <li data-i18n="exportDoc5">Narudžbenica ili ugovor, prema poslovnom dogovoru.</li>
+      </ul>
+    </div>
+    <div class="export-card">
+      <h3 data-i18n="exportOriginTitle">🌐 Porijeklo robe i preferencijalni tretman</h3>
+      <ul>
+        <li data-i18n="exportOrigin1">EUR.1 ili izjava o porijeklu samo kada su ispunjena pravila porijekla i odgovarajući uslovi postupka.</li>
+        <li data-i18n="exportOrigin2">Samo slanje robe iz BiH ili preprodaja robe kupljene u BiH ne daje automatski porijeklo BiH.</li>
+        <li data-i18n="exportOrigin3">Sačuvati dokaze o materijalima, proizvodnji i obradi radi dokazivanja porijekla.</li>
+      </ul>
+    </div>
+    <div class="export-card">
+      <h3 data-i18n="exportTransportTitle">🚚 Transport i carinjenje</h3>
+      <ul>
+        <li data-i18n="exportTransport1">Dogovoriti ko podnosi izvoznu deklaraciju i ko organizuje uvozno carinjenje u Njemačkoj.</li>
+        <li data-i18n="exportTransport2">Provjeriti da li je za konkretnu rutu i postupak potreban tranzitni dokument NCTS/T1.</li>
+        <li data-i18n="exportTransport3">Prevoznik ili njegov zastupnik provjerava obavezu podnošenja ulazne sigurnosne deklaracije (ENS).</li>
+        <li data-i18n="exportTransport4">Njemački uvoznik ili njegov zastupnik provjerava EORI i podnosi uvoznu deklaraciju.</li>
+      </ul>
+    </div>
+    <div class="export-card">
+      <h3 data-i18n="exportMetalTitle">🏭 Posebni zahtjevi za metal</h3>
+      <ul>
+        <li data-i18n="exportMetal1">Provjeriti CN/HS tarifni broj i da li proizvod potpada pod CBAM.</li>
+        <li data-i18n="exportMetal2">Ako je CBAM primjenjiv, njemački uvoznik provjerava status ovlaštenog CBAM deklaranta, pragove i obaveze za konkretnu robu.</li>
+        <li data-i18n="exportMetal3">Kupac može tražiti certifikat materijala EN 10204 3.1, izvještaj o ispitivanju, tehnički crtež ili specifikaciju.</li>
+        <li data-i18n="exportMetal4">CE oznaka i izjava o usklađenosti potrebne su samo ako gotov proizvod potpada pod odgovarajući EU propis.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="export-warning" data-i18n="exportWarning">
+    VAŽNO: Ovo je informativna kontrolna lista, a ne pravno ili carinsko mišljenje. Tačni zahtjevi zavise od CN/HS koda, vrste i namjene proizvoda, porijekla, vrijednosti, količine, rute i Incoterms uslova. Prije otpreme potvrditi zahtjeve sa špediterom, UINO BiH i njemačkim uvoznikom. CBAM se ne primjenjuje automatski na svaki metalni proizvod.
+  </div>
+
+  <div class="export-card" style="margin-top:18px">
+    <h3 data-i18n="exportChecklistTitle">☑ Kontrolna lista izvozne pošiljke</h3>
+    <p data-i18n="exportChecklistIntro">Označite dokumente i provjere koje ste završili. Status se čuva lokalno u ovom pregledniku.</p>
+    <div class="export-progress"><span id="exportProgressBar"></span></div>
+    <p class="export-meta" id="exportProgressText">0 / 12 završeno</p>
+    <div class="export-checklist" id="exportChecklist">
+      <label class="export-check"><input type="checkbox" data-export-check="invoice"> <span data-i18n="checkInvoice">Komercijalna faktura pripremljena</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="packing"> <span data-i18n="checkPacking">Packing List pripremljen</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="classification"> <span data-i18n="checkClassification">CN/HS tarifni broj provjeren</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="origin"> <span data-i18n="checkOrigin">Porijeklo robe i dokaz provjereni</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="eur1"> <span data-i18n="checkEur1">Potreba za EUR.1/izjavom provjerena</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="cbam"> <span data-i18n="checkCbam">CBAM primjenjivost provjerena</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="cert"> <span data-i18n="checkCert">Potrebni certifikati materijala provjereni</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="customs"> <span data-i18n="checkCustoms">Izvozno carinjenje dogovoreno sa špediterom</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="cmr"> <span data-i18n="checkCmr">CMR i prevoz dogovoreni</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="ens"> <span data-i18n="checkEns">ENS/tranzitne formalnosti provjerene</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="importer"> <span data-i18n="checkImporter">Njemački uvoznik potvrdio uvoznu proceduru</span></label>
+      <label class="export-check"><input type="checkbox" data-export-check="delivery"> <span data-i18n="checkDelivery">Incoterms i mjesto isporuke potvrđeni</span></label>
+    </div>
+    <div class="export-actions">
+      <button class="btn btn-primary" type="button" onclick="printExportChecklist()" data-i18n="exportPrint">Štampaj / sačuvaj PDF</button>
+      <button class="btn btn-secondary" type="button" onclick="resetExportChecklist()" data-i18n="exportReset">Poništi označavanja</button>
+    </div>
+    <p class="export-meta" data-i18n="exportStorageNote">Napomena: označavanja se čuvaju samo u lokalnom pregledniku i nisu sinhronizovana između uređaja niti predstavljaju zvaničnu potvrdu usklađenosti.</p>
+  </div>
+
+  <div class="export-card" style="margin-top:18px">
+    <h3 data-i18n="exportLinksTitle">🔗 Službeni izvori za provjeru</h3>
+    <ul>
+      <li><a href="https://www.uino.gov.ba/portal/bs/carine/carinski-postupci/" target="_blank" rel="noopener">UINO BiH — carinski postupci</a></li>
+      <li><a href="https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en" target="_blank" rel="noopener">Evropska komisija — CBAM</a></li>
+      <li><a href="https://taxation-customs.ec.europa.eu/customs-4/customs-procedures-import-and-export_en" target="_blank" rel="noopener">Evropska komisija — uvoz i izvoz</a></li>
+      <li><a href="https://www.zoll.de/EN/Home/home_node.html" target="_blank" rel="noopener">Njemačka carina — Zoll</a></li>
+    </ul>
+  </div>
+</section>
+
+
 <section class="panel">
 
 <h2 data-i18n="addTitle">Dodavanje regulatorne obaveze</h2>
@@ -417,6 +545,7 @@ Ovaj modul služi za internu evidenciju. Zakonske obaveze i rokove potrebno je p
 <option value="Corporate">Korporativna usklađenost</option>
 <option value="Environment">Zaštita okoliša</option>
 <option value="Security">Sigurnost poslovanja</option>
+<option value="Export">Izvoz i međunarodna trgovina</option>
 <option value="Other">Ostalo</option>
 </select>
 </div>
@@ -571,7 +700,52 @@ laborCat:"Radno pravo",
 corporateCat:"Korporativna usklađenost",
 environmentCat:"Zaštita okoliša",
 securityCat:"Sigurnost poslovanja",
-otherCat:"Ostalo"
+otherCat:"Ostalo",
+
+exportTitle:"🌍 Export & Trade Center — BiH → Njemačka / EU",
+exportIntro:"Praktična kontrolna lista za pripremu izvoza metalnih proizvoda iz Bosne i Hercegovine. Zahtjevi se potvrđuju prema tarifnom broju, porijeklu, vrsti proizvoda i važećim propisima.",
+exportRulesTitle:"Pravila i dokumentacija za izvoz metalnih proizvoda",
+exportDocsTitle:"📄 Osnovni izvozni dokumenti",
+exportDoc1:"Komercijalna faktura sa tačnim opisom, količinom, cijenom, valutom, porijeklom i Incoterms uslovom.",
+exportDoc2:"Packing List: broj paketa, sadržaj, neto/bruto težina i dimenzije.",
+exportDoc3:"Izvozna carinska deklaracija — podnosi je izvoznik ili carinski zastupnik/špediter.",
+exportDoc4:"CMR za međunarodni drumski prevoz.",
+exportDoc5:"Narudžbenica ili ugovor, prema poslovnom dogovoru.",
+exportOriginTitle:"🌐 Porijeklo robe i preferencijalni tretman",
+exportOrigin1:"EUR.1 ili izjava o porijeklu samo kada su ispunjena pravila porijekla i odgovarajući uslovi postupka.",
+exportOrigin2:"Samo slanje robe iz BiH ili preprodaja robe kupljene u BiH ne daje automatski porijeklo BiH.",
+exportOrigin3:"Sačuvati dokaze o materijalima, proizvodnji i obradi radi dokazivanja porijekla.",
+exportTransportTitle:"🚚 Transport i carinjenje",
+exportTransport1:"Dogovoriti ko podnosi izvoznu deklaraciju i ko organizuje uvozno carinjenje u Njemačkoj.",
+exportTransport2:"Provjeriti da li je za konkretnu rutu i postupak potreban tranzitni dokument NCTS/T1.",
+exportTransport3:"Prevoznik ili njegov zastupnik provjerava obavezu podnošenja ulazne sigurnosne deklaracije (ENS).",
+exportTransport4:"Njemački uvoznik ili njegov zastupnik provjerava EORI i podnosi uvoznu deklaraciju.",
+exportMetalTitle:"🏭 Posebni zahtjevi za metal",
+exportMetal1:"Provjeriti CN/HS tarifni broj i da li proizvod potpada pod CBAM.",
+exportMetal2:"Ako je CBAM primjenjiv, njemački uvoznik provjerava status ovlaštenog CBAM deklaranta, pragove i obaveze za konkretnu robu.",
+exportMetal3:"Kupac može tražiti certifikat materijala EN 10204 3.1, izvještaj o ispitivanju, tehnički crtež ili specifikaciju.",
+exportMetal4:"CE oznaka i izjava o usklađenosti potrebne su samo ako gotov proizvod potpada pod odgovarajući EU propis.",
+exportWarning:"VAŽNO: Ovo je informativna kontrolna lista, a ne pravno ili carinsko mišljenje. Tačni zahtjevi zavise od CN/HS koda, vrste i namjene proizvoda, porijekla, vrijednosti, količine, rute i Incoterms uslova. Prije otpreme potvrditi zahtjeve sa špediterom, UINO BiH i njemačkim uvoznikom. CBAM se ne primjenjuje automatski na svaki metalni proizvod.",
+exportChecklistTitle:"☑ Kontrolna lista izvozne pošiljke",
+exportChecklistIntro:"Označite dokumente i provjere koje ste završili. Status se čuva lokalno u ovom pregledniku.",
+checkInvoice:"Komercijalna faktura pripremljena",
+checkPacking:"Packing List pripremljen",
+checkClassification:"CN/HS tarifni broj provjeren",
+checkOrigin:"Porijeklo robe i dokaz provjereni",
+checkEur1:"Potreba za EUR.1/izjavom provjerena",
+checkCbam:"CBAM primjenjivost provjerena",
+checkCert:"Potrebni certifikati materijala provjereni",
+checkCustoms:"Izvozno carinjenje dogovoreno sa špediterom",
+checkCmr:"CMR i prevoz dogovoreni",
+checkEns:"ENS/tranzitne formalnosti provjerene",
+checkImporter:"Njemački uvoznik potvrdio uvoznu proceduru",
+checkDelivery:"Incoterms i mjesto isporuke potvrđeni",
+exportPrint:"Štampaj / sačuvaj PDF",
+exportReset:"Poništi označavanja",
+exportStorageNote:"Napomena: označavanja se čuvaju samo u lokalnom pregledniku i nisu sinhronizovana između uređaja niti predstavljaju zvaničnu potvrdu usklađenosti.",
+exportLinksTitle:"🔗 Službeni izvori za provjeru",
+exportCat:"Izvoz i međunarodna trgovina"
+
 },
 
 en:{
@@ -628,7 +802,52 @@ laborCat:"Employment Law",
 corporateCat:"Corporate Compliance",
 environmentCat:"Environmental Protection",
 securityCat:"Business Security",
-otherCat:"Other"
+otherCat:"Other",
+
+exportTitle:"🌍 Export & Trade Center — BiH → Germany / EU",
+exportIntro:"Practical checklist for exporting metal products from Bosnia and Herzegovina. Requirements must be confirmed using the tariff code, origin, product type and applicable rules.",
+exportRulesTitle:"Rules and documents for exporting metal products",
+exportDocsTitle:"📄 Core export documents",
+exportDoc1:"Commercial invoice with accurate description, quantity, price, currency, origin and Incoterms rule.",
+exportDoc2:"Packing List: number of packages, contents, net/gross weight and dimensions.",
+exportDoc3:"Export customs declaration — filed by the exporter or its customs representative/broker.",
+exportDoc4:"CMR for international road transport.",
+exportDoc5:"Purchase order or contract, as applicable.",
+exportOriginTitle:"🌐 Origin of goods and preferential treatment",
+exportOrigin1:"EUR.1 or an origin declaration only where the origin rules and procedural conditions are met.",
+exportOrigin2:"Dispatching goods from BiH or reselling goods bought in BiH does not automatically make them BiH-originating.",
+exportOrigin3:"Keep evidence of materials, manufacturing and processing to support origin claims.",
+exportTransportTitle:"🚚 Transport and customs clearance",
+exportTransport1:"Agree who files the export declaration and who arranges import clearance in Germany.",
+exportTransport2:"Check whether NCTS/T1 transit is required for the specific route and procedure.",
+exportTransport3:"The carrier or its representative checks the obligation to lodge an Entry Summary Declaration (ENS).",
+exportTransport4:"The German importer or its representative checks EORI and files the import declaration.",
+exportMetalTitle:"🏭 Metal-specific requirements",
+exportMetal1:"Confirm the CN/HS tariff code and whether the product falls within CBAM scope.",
+exportMetal2:"If CBAM applies, the German importer checks authorised CBAM declarant status, thresholds and obligations for the goods.",
+exportMetal3:"The buyer may request EN 10204 3.1 material certificates, test reports, technical drawings or specifications.",
+exportMetal4:"CE marking and a declaration of conformity are required only if the finished product is covered by the relevant EU legislation.",
+exportWarning:"IMPORTANT: This is an informational checklist, not legal or customs advice. Exact requirements depend on the CN/HS code, product type and use, origin, value, quantity, route and Incoterms. Confirm requirements with the customs broker, BiH Indirect Taxation Authority and German importer before dispatch. CBAM does not automatically apply to every metal product.",
+exportChecklistTitle:"☑ Export shipment checklist",
+exportChecklistIntro:"Tick off documents and checks as you complete them. Status is stored locally in this browser.",
+checkInvoice:"Commercial invoice prepared",
+checkPacking:"Packing List prepared",
+checkClassification:"CN/HS tariff code checked",
+checkOrigin:"Goods origin and evidence checked",
+checkEur1:"EUR.1/origin declaration requirement checked",
+checkCbam:"CBAM applicability checked",
+checkCert:"Required material certificates checked",
+checkCustoms:"Export clearance agreed with customs broker",
+checkCmr:"CMR and transport arranged",
+checkEns:"ENS/transit formalities checked",
+checkImporter:"German importer confirmed import procedure",
+checkDelivery:"Incoterms and delivery place confirmed",
+exportPrint:"Print / save as PDF",
+exportReset:"Reset checklist",
+exportStorageNote:"Note: ticks are stored only in this browser, are not synced between devices and are not official proof of compliance.",
+exportLinksTitle:"🔗 Official sources for verification",
+exportCat:"Export and International Trade"
+
 },
 
 de:{
@@ -685,7 +904,52 @@ laborCat:"Arbeitsrecht",
 corporateCat:"Unternehmens-Compliance",
 environmentCat:"Umweltschutz",
 securityCat:"Unternehmenssicherheit",
-otherCat:"Sonstiges"
+otherCat:"Sonstiges",
+
+exportTitle:"🌍 Export & Trade Center — BiH → Deutschland / EU",
+exportIntro:"Praktische Checkliste für den Export von Metallprodukten aus Bosnien und Herzegowina. Die Anforderungen sind anhand der Zolltarifnummer, des Ursprungs, der Produktart und der geltenden Vorschriften zu prüfen.",
+exportRulesTitle:"Regeln und Dokumente für den Export von Metallprodukten",
+exportDocsTitle:"📄 Wesentliche Ausfuhrdokumente",
+exportDoc1:"Handelsrechnung mit genauer Beschreibung, Menge, Preis, Währung, Ursprung und Incoterms-Klausel.",
+exportDoc2:"Packliste: Anzahl der Packstücke, Inhalt, Netto-/Bruttogewicht und Abmessungen.",
+exportDoc3:"Ausfuhrzollanmeldung — eingereicht durch den Ausführer oder seinen Zollvertreter/Spediteur.",
+exportDoc4:"CMR-Frachtbrief für den internationalen Straßentransport.",
+exportDoc5:"Bestellung oder Vertrag, soweit zutreffend.",
+exportOriginTitle:"🌐 Warenursprung und Präferenzbehandlung",
+exportOrigin1:"EUR.1 oder Ursprungserklärung nur, wenn die Ursprungsregeln und Verfahrensbedingungen erfüllt sind.",
+exportOrigin2:"Der Versand aus BiH oder der Weiterverkauf in BiH gekaufter Ware verleiht nicht automatisch den Ursprung BiH.",
+exportOrigin3:"Nachweise über Materialien, Herstellung und Verarbeitung zur Begründung des Ursprungs aufbewahren.",
+exportTransportTitle:"🚚 Transport und Zollabfertigung",
+exportTransport1:"Vereinbaren, wer die Ausfuhranmeldung abgibt und wer die Einfuhrabfertigung in Deutschland organisiert.",
+exportTransport2:"Prüfen, ob für die konkrete Route und das Verfahren ein NCTS-/T1-Versandverfahren erforderlich ist.",
+exportTransport3:"Der Beförderer oder sein Vertreter prüft die Pflicht zur Abgabe einer summarischen Eingangsanmeldung (ENS).",
+exportTransport4:"Der deutsche Einführer oder sein Vertreter prüft die EORI-Nummer und gibt die Einfuhranmeldung ab.",
+exportMetalTitle:"🏭 Besondere Anforderungen für Metall",
+exportMetal1:"CN-/HS-Zolltarifnummer und eine mögliche CBAM-Erfassung prüfen.",
+exportMetal2:"Falls CBAM gilt, prüft der deutsche Einführer den Status als zugelassener CBAM-Anmelder, Schwellenwerte und Pflichten für die Ware.",
+exportMetal3:"Der Käufer kann EN-10204-3.1-Werkszeugnisse, Prüfberichte, technische Zeichnungen oder Spezifikationen verlangen.",
+exportMetal4:"CE-Kennzeichnung und Konformitätserklärung sind nur erforderlich, wenn das Fertigprodukt unter die einschlägigen EU-Vorschriften fällt.",
+exportWarning:"WICHTIG: Dies ist eine Informations-Checkliste und keine Rechts- oder Zollberatung. Die genauen Anforderungen hängen von CN-/HS-Code, Produktart und Verwendungszweck, Ursprung, Wert, Menge, Route und Incoterms ab. Vor dem Versand Anforderungen mit Spediteur, Zollbehörde von BiH und deutschem Einführer bestätigen. CBAM gilt nicht automatisch für jedes Metallprodukt.",
+exportChecklistTitle:"☑ Checkliste für die Ausfuhrsendung",
+exportChecklistIntro:"Abgeschlossene Dokumente und Prüfungen markieren. Der Status wird lokal in diesem Browser gespeichert.",
+checkInvoice:"Handelsrechnung vorbereitet",
+checkPacking:"Packliste vorbereitet",
+checkClassification:"CN-/HS-Zolltarifnummer geprüft",
+checkOrigin:"Warenursprung und Nachweise geprüft",
+checkEur1:"Erfordernis von EUR.1/Ursprungserklärung geprüft",
+checkCbam:"CBAM-Anwendbarkeit geprüft",
+checkCert:"Erforderliche Materialzeugnisse geprüft",
+checkCustoms:"Ausfuhrabfertigung mit Spediteur vereinbart",
+checkCmr:"CMR und Transport vereinbart",
+checkEns:"ENS-/Versandformalitäten geprüft",
+checkImporter:"Deutscher Einführer hat Einfuhrverfahren bestätigt",
+checkDelivery:"Incoterms und Lieferort bestätigt",
+exportPrint:"Drucken / als PDF speichern",
+exportReset:"Markierungen zurücksetzen",
+exportStorageNote:"Hinweis: Markierungen werden nur lokal in diesem Browser gespeichert, nicht zwischen Geräten synchronisiert und sind kein offizieller Konformitätsnachweis.",
+exportLinksTitle:"🔗 Offizielle Quellen zur Prüfung",
+exportCat:"Export und internationaler Handel"
+
 }
 
 };
@@ -860,6 +1124,7 @@ Labor:"laborCat",
 Corporate:"corporateCat",
 Environment:"environmentCat",
 Security:"securityCat",
+Export:"exportCat",
 Other:"otherCat"
 
 };
@@ -1030,7 +1295,49 @@ document.getElementById("overdueCount").textContent=overdue;
 
 }
 
+
+const exportChecklistKey="docbiz_export_checklist_v1";
+
+function loadExportChecklist(){
+  let saved={};
+  try{saved=JSON.parse(localStorage.getItem(exportChecklistKey)||"{}")||{};}catch(e){saved={};}
+  document.querySelectorAll("[data-export-check]").forEach(box=>{
+    box.checked=Boolean(saved[box.dataset.exportCheck]);
+    box.addEventListener("change",saveExportChecklist);
+  });
+  updateExportProgress();
+}
+
+function saveExportChecklist(){
+  const saved={};
+  document.querySelectorAll("[data-export-check]").forEach(box=>{
+    saved[box.dataset.exportCheck]=box.checked;
+  });
+  localStorage.setItem(exportChecklistKey,JSON.stringify(saved));
+  updateExportProgress();
+}
+
+function updateExportProgress(){
+  const boxes=[...document.querySelectorAll("[data-export-check]")];
+  const done=boxes.filter(box=>box.checked).length;
+  const bar=document.getElementById("exportProgressBar");
+  const text=document.getElementById("exportProgressText");
+  if(bar)bar.style.width=(boxes.length?done/boxes.length*100:0)+"%";
+  if(text)text.textContent=done+" / "+boxes.length+" završeno";
+}
+
+function resetExportChecklist(){
+  if(!confirm("Da li želite poništiti sva označavanja izvozne kontrolne liste?"))return;
+  document.querySelectorAll("[data-export-check]").forEach(box=>box.checked=false);
+  saveExportChecklist();
+}
+
+function printExportChecklist(){
+  window.print();
+}
+
 loadData();
+loadExportChecklist();
 applyLanguage(detectLanguage());
 
 </script>
