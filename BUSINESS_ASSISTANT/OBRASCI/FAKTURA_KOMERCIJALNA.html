@@ -614,243 +614,403 @@ function calculate(){
   document.getElementById("total").textContent = money(totals.total);
 }
 
+
 /* -------------------------------------------------------
-   5. AUTOMATSKI PORESKI MODUL
+   5. AUTOMATSKI IZBOR FAKTURE I VAT_TAX_RULES
 ------------------------------------------------------- */
 
-const TAX_COUNTRIES = {
-  "Bosna i Hercegovina":{rate:17,group:"BA"},
-  "Srbija":{rate:20,group:"RS"},
-  "Hrvatska":{rate:25,group:"EU"},
-  "Crna Gora":{rate:21,group:"ME"},
-  "Sjeverna Makedonija":{rate:18,group:"MK"},
+// Prepoznavanje države i pretvaranje u ISO oznaku.
+function getCountryCode(country){
+  const value = String(country || "").trim().toLowerCase();
 
-  "Austrija":{rate:20,group:"EU"},
-  "Belgija":{rate:21,group:"EU"},
-  "Bugarska":{rate:20,group:"EU"},
-  "Kipar":{rate:19,group:"EU"},
-  "Češka":{rate:21,group:"EU"},
-  "Danska":{rate:25,group:"EU"},
-  "Estonija":{rate:24,group:"EU"},
-  "Finska":{rate:25.5,group:"EU"},
-  "Francuska":{rate:20,group:"EU"},
-  "Njemačka":{rate:19,group:"EU"},
-  "Grčka":{rate:24,group:"EU"},
-  "Mađarska":{rate:27,group:"EU"},
-  "Irska":{rate:23,group:"EU"},
-  "Italija":{rate:22,group:"EU"},
-  "Latvija":{rate:21,group:"EU"},
-  "Litvanija":{rate:21,group:"EU"},
-  "Luksemburg":{rate:17,group:"EU"},
-  "Malta":{rate:18,group:"EU"},
-  "Nizozemska":{rate:21,group:"EU"},
-  "Poljska":{rate:23,group:"EU"},
-  "Portugal":{rate:23,group:"EU"},
-  "Rumunija":{rate:21,group:"EU"},
-  "Slovačka":{rate:23,group:"EU"},
-  "Slovenija":{rate:22,group:"EU"},
-  "Španija":{rate:21,group:"EU"},
-  "Švedska":{rate:25,group:"EU"}
-};
+  const countries = {
+    "bosna i hercegovina":"BA",
+    "bih":"BA",
+    "bosnia and herzegovina":"BA",
+    "bosnia":"BA",
 
-function normalizeCountry(value){
-  const raw = String(value || "").trim().toLowerCase();
+    "srbija":"RS",
+    "serbia":"RS",
 
-  const aliases = {
-    "bih":"Bosna i Hercegovina",
-    "bosnia and herzegovina":"Bosna i Hercegovina",
-    "bosna i hercegovina":"Bosna i Hercegovina",
-    "serbia":"Srbija",
-    "croatia":"Hrvatska",
-    "montenegro":"Crna Gora",
-    "north macedonia":"Sjeverna Makedonija",
-    "macedonia":"Sjeverna Makedonija",
-    "germany":"Njemačka",
-    "deutschland":"Njemačka",
-    "austria":"Austrija",
-    "slovenia":"Slovenija",
-    "italy":"Italija",
-    "france":"Francuska",
-    "netherlands":"Nizozemska",
-    "the netherlands":"Nizozemska",
-    "spain":"Španija",
-    "poland":"Poljska",
-    "switzerland":"Švicarska"
+    "hrvatska":"HR",
+    "croatia":"HR",
+
+    "crna gora":"ME",
+    "montenegro":"ME",
+
+    "sjeverna makedonija":"MK",
+    "north macedonia":"MK",
+    "makedonija":"MK",
+
+    "njemačka":"DE",
+    "nemacka":"DE",
+    "germany":"DE",
+    "deutschland":"DE",
+
+    "austrija":"AT",
+    "austria":"AT",
+
+    "slovenija":"SI",
+    "slovenia":"SI",
+
+    "italija":"IT",
+    "italy":"IT",
+
+    "francuska":"FR",
+    "france":"FR",
+
+    "španija":"ES",
+    "spanija":"ES",
+    "spain":"ES",
+
+    "nizozemska":"NL",
+    "netherlands":"NL",
+    "the netherlands":"NL",
+
+    "belgija":"BE",
+    "belgium":"BE",
+
+    "švicarska":"CH",
+    "svicarska":"CH",
+    "switzerland":"CH",
+
+    "poljska":"PL",
+    "poland":"PL",
+
+    "češka":"CZ",
+    "czech republic":"CZ",
+
+    "slovačka":"SK",
+    "slovakia":"SK",
+
+    "mađarska":"HU",
+    "madjarska":"HU",
+    "hungary":"HU",
+
+    "rumunija":"RO",
+    "romania":"RO",
+
+    "bugarska":"BG",
+    "bulgaria":"BG",
+
+    "grčka":"GR",
+    "greece":"GR",
+
+    "portugal":"PT",
+
+    "irska":"IE",
+    "ireland":"IE",
+
+    "ujedinjeno kraljevstvo":"GB",
+    "united kingdom":"GB",
+    "uk":"GB",
+
+    "norveška":"NO",
+    "norway":"NO",
+
+    "švedska":"SE",
+    "sweden":"SE",
+
+    "dansка":"DK",
+    "danska":"DK",
+    "denmark":"DK",
+
+    "finska":"FI",
+    "finland":"FI",
+
+    "albanija":"AL",
+    "albania":"AL",
+
+    "kosovo":"XK",
+
+    "turska":"TR",
+    "turkey":"TR",
+
+    "sjedinjene američke države":"US",
+    "united states":"US",
+    "usa":"US",
+
+    "kanada":"CA",
+    "canada":"CA",
+
+    "kina":"CN",
+    "china":"CN",
+
+    "japan":"JP",
+    "australija":"AU",
+    "australia":"AU"
   };
 
-  return aliases[raw] || value;
+  return countries[value] || null;
 }
 
-function getCountryInfo(country){
-  return TAX_COUNTRIES[normalizeCountry(country)] || null;
-}
 
-function determineTaxTreatment(){
-  const sellerCountry = normalizeCountry(
+// Automatsko prepoznavanje domaće ili inozemne fakture.
+function classifyInvoice(){
+  const sellerCode = getCountryCode(
     document.getElementById("sellerCountry").value
   );
 
-  const buyerCountry = normalizeCountry(
+  const buyerCode = getCountryCode(
     document.getElementById("buyerCountry").value
   );
 
-  const transaction = document.getElementById("transactionType").value;
-  const buyerType = document.getElementById("buyerType").value;
-  const registered = document.getElementById("sellerVatRegistered").value;
-  const evidence = document.getElementById("goodsEvidence").value;
-  const buyerVatId = document.getElementById("buyerVatId").value.trim();
+  if(!sellerCode || !buyerCode){
+    return {
+      type:null,
+      sellerCode,
+      buyerCode,
+      error:"Unesite prepoznatljive države prodavca i kupca."
+    };
+  }
 
-  const seller = getCountryInfo(sellerCountry);
-  const buyer = getCountryInfo(buyerCountry);
-
-  const result = {
-    rate:null,
-    label:"",
-    warning:"",
-    legalBasis:"",
-    needsReview:false,
-    transactionType:transaction,
-    sellerCountry,
-    buyerCountry
+  return {
+    type:sellerCode === buyerCode ? "domestic" : "export",
+    sellerCode,
+    buyerCode
   };
-
-  if(!seller || !buyer){
-    result.needsReview = true;
-    result.warning = "Država prodavca ili kupca nije prepoznata. Potrebna je ručna provjera.";
-    return result;
-  }
-
-  if(registered === "UNKNOWN"){
-    result.needsReview = true;
-    result.warning = "Potvrdite da li je prodavac registrovan za PDV.";
-    return result;
-  }
-
-  if(registered === "NO"){
-    result.rate = 0;
-    result.label = "Prodavac nije registrovan za PDV";
-    result.warning = "Ovo nije automatsko oslobađanje od PDV-a. Provjerite status prodavca i obavezu registracije prema lokalnom zakonu.";
-    result.legalBasis = "Status PDV registracije prodavca – potrebna lokalna provjera.";
-    result.transactionType = transaction;
-    return result;
-  }
-
-  let type = transaction;
-
-  if(type === "AUTO"){
-    if(sellerCountry === buyerCountry){
-      type = "DOMESTIC";
-    }else if(seller.group === "EU" && buyer.group === "EU" && buyerType === "BUSINESS"){
-      type = "EU_B2B";
-    }else if(buyerType === "PRIVATE"){
-      type = "FOREIGN_B2C";
-    }else{
-      type = "EXPORT";
-    }
-  }
-
-  result.transactionType = type;
-
-  if(type === "DOMESTIC"){
-    if(sellerCountry !== buyerCountry){
-      result.needsReview = true;
-      result.warning = "Domaća prodaja je izabrana, ali države prodavca i kupca nisu iste.";
-      return result;
-    }
-
-    result.rate = seller.rate;
-    result.label = "Domaća prodaja robe – standardna stopa";
-    result.warning = "Provjerite da li roba pripada kategoriji sa sniženom stopom ili posebnim poreskim režimom.";
-    result.legalBasis = "Standardna stopa države prodavca.";
-    return result;
-  }
-
-  if(type === "EXPORT"){
-    if(seller.group === "EU" && buyer.group === "EU"){
-      result.needsReview = true;
-      result.warning = "Obje države su članice EU. Provjerite da li se radi o isporuci unutar EU, a ne o izvozu iz EU.";
-      return result;
-    }
-
-    if(evidence !== "YES"){
-      result.needsReview = true;
-      result.warning = "Nije potvrđen dokaz o izvozu ili transportu. Nije odobrena primjena 0% PDV-a.";
-      return result;
-    }
-
-    result.rate = 0;
-    result.label = "Mogući izvoz robe – 0% / oslobađanje";
-    result.warning = "Primijeniti samo ako su ispunjeni svi zakonski uslovi i postoji odgovarajući carinski dokaz o izvozu.";
-    result.legalBasis = "Izvoz robe – provjeriti odgovarajuću odredbu zakona države prodavca.";
-    return result;
-  }
-
-  if(type === "EU_B2B"){
-    if(seller.group !== "EU" || buyer.group !== "EU"){
-      result.needsReview = true;
-      result.warning = "Ovaj tretman se odnosi na isporuke između država članica EU.";
-      return result;
-    }
-
-    if(buyerType !== "BUSINESS" || !buyerVatId){
-      result.needsReview = true;
-      result.warning = "Potrebni su poslovni status kupca i njegov PDV broj.";
-      return result;
-    }
-
-    if(evidence !== "YES"){
-      result.needsReview = true;
-      result.warning = "Potrebna je potvrda transporta robe u drugu državu članicu EU.";
-      return result;
-    }
-
-    result.rate = 0;
-    result.label = "Moguća oslobođena isporuka unutar EU – B2B";
-    result.warning = "PDV broj kupca mora biti provjeren u VIES-u. Sam unos broja nije potvrda njegove validnosti.";
-    result.legalBasis = "EU pravila o isporuci dobara unutar EU – provjeriti sve uslove.";
-    return result;
-  }
-
-  if(type === "FOREIGN_B2B" || type === "FOREIGN_B2C"){
-    result.needsReview = true;
-    result.warning = "Prekogranična prodaja zahtijeva provjeru mjesta oporezivanja, transporta, carinskog postupka i eventualne registracije prodavca u drugoj državi.";
-    return result;
-  }
-
-  result.needsReview = true;
-  result.warning = "Poseban poreski tretman zahtijeva ručnu provjeru.";
-  return result;
 }
 
-function applyTaxToInvoice(){
-  const result = determineTaxTreatment();
-  const output = document.getElementById("taxResult");
 
-  currentTaxTreatment = result;
+// Čitanje poreskog pravila iz Supabase tabele.
+async function findTaxRule({
+  sellerCode,
+  buyerCode,
+  buyerType,
+  sellerVatRegistered,
+  transactionType,
+  invoiceDate
+}){
+  const date = invoiceDate ||
+    new Date().toISOString().slice(0,10);
 
-  if(result.needsReview){
-    output.className = "tax-result warning";
-    output.textContent = "POTREBNA PROVJERA: " + result.warning;
-    return;
+  let query = _supabase
+    .from("VAT_TAX_RULES")
+    .select("*")
+    .eq("user_id",currentUserId)
+    .eq("active",true)
+    .eq("seller_country_code",sellerCode)
+    .eq("buyer_country_code",buyerCode)
+    .eq("buyer_type",buyerType)
+    .eq("seller_vat_registered",sellerVatRegistered)
+    .eq("transaction_type",transactionType)
+    .or(`valid_from.is.null,valid_from.lte.${date}`)
+    .or(`valid_until.is.null,valid_until.gte.${date}`)
+    .limit(2);
+
+  const {data,error} = await query;
+
+  if(error){
+    throw new Error(
+      "Greška pri čitanju VAT_TAX_RULES: " + error.message
+    );
   }
 
-  output.className = "tax-result success";
-  output.innerHTML = `
-    <strong>${escapeHTML(result.label)}</strong><br>
-    Predložena stopa PDV-a: <strong>${result.rate}%</strong><br>
-    ${escapeHTML(result.warning)}<br>
-    <small>${escapeHTML(result.legalBasis)}</small>
-    <br><strong>Napomena:</strong> Prije izdavanja provjerite poreski tretman.
-  `;
+  if(!data || data.length === 0){
+    return {
+      rule:null,
+      error:"Nije pronađeno aktivno poresko pravilo za ovu transakciju."
+    };
+  }
 
-  document.querySelectorAll("#items .item-vat").forEach(input=>{
-    input.value = result.rate;
+  if(data.length > 1){
+    return {
+      rule:null,
+      error:"Pronađeno je više poreskih pravila. Potrebna je provjera."
+    };
+  }
+
+  return {
+    rule:data[0],
+    error:null
+  };
+}
+
+
+// Glavna funkcija za određivanje poreskog tretmana.
+async function determineTaxTreatment(){
+  await ensureUser();
+
+  const classification = classifyInvoice();
+
+  if(classification.error){
+    return {
+      needsReview:true,
+      warning:classification.error
+    };
+  }
+
+  const selectedType =
+    document.getElementById("transactionType").value;
+
+  // AUTO automatski određuje domaću ili izvoznu transakciju.
+  const transactionType =
+    selectedType === "AUTO"
+      ? classification.type
+      : selectedType === "DOMESTIC"
+        ? "domestic"
+        : selectedType === "EXPORT"
+          ? "export"
+          : null;
+
+  if(!transactionType){
+    return {
+      needsReview:true,
+      warning:
+        "Izabrana vrsta transakcije nije podržana postojećim pravilima. Potrebna je poreska provjera."
+    };
+  }
+
+  if(
+    transactionType === "domestic" &&
+    classification.sellerCode !== classification.buyerCode
+  ){
+    return {
+      needsReview:true,
+      warning:
+        "Domaća faktura nije moguća kada se države prodavca i kupca razlikuju."
+    };
+  }
+
+  if(
+    transactionType === "export" &&
+    classification.sellerCode === classification.buyerCode
+  ){
+    return {
+      needsReview:true,
+      warning:
+        "Izvozna faktura nije moguća kada su države prodavca i kupca iste."
+    };
+  }
+
+  const buyerType =
+    document.getElementById("buyerType").value === "PRIVATE"
+      ? "person"
+      : "company";
+
+  const registeredValue =
+    document.getElementById("sellerVatRegistered").value;
+
+  if(registeredValue === "UNKNOWN"){
+    return {
+      needsReview:true,
+      warning:"Potvrdite da li je prodavac registrovan za PDV."
+    };
+  }
+
+  const sellerVatRegistered = registeredValue === "YES";
+
+  // Kod izvoza dokaz mora biti potvrđen prije primjene pravila.
+  if(transactionType === "export"){
+    const evidence =
+      document.getElementById("goodsEvidence").value;
+
+    if(evidence !== "YES"){
+      return {
+        needsReview:true,
+        warning:
+          "Nije potvrđen dokaz o izvozu ili transportu. Nije odobrena automatska primjena nulte stope PDV-a.",
+        transactionType,
+        sellerCode:classification.sellerCode,
+        buyerCode:classification.buyerCode
+      };
+    }
+  }
+
+  const found = await findTaxRule({
+    sellerCode:classification.sellerCode,
+    buyerCode:classification.buyerCode,
+    buyerType,
+    sellerVatRegistered,
+    transactionType,
+    invoiceDate:document.getElementById("invoiceDate").value
   });
 
-  calculate();
+  if(found.error){
+    return {
+      needsReview:true,
+      warning:found.error,
+      transactionType,
+      sellerCode:classification.sellerCode,
+      buyerCode:classification.buyerCode
+    };
+  }
+
+  const rule = found.rule;
+
+  return {
+    needsReview:false,
+    rate:Number(rule.tax_rate),
+    label:rule.tax_treatment,
+    warning:rule.conditions || "",
+    legalBasis:rule.legal_basis || "",
+    transactionType,
+    sellerCode:classification.sellerCode,
+    buyerCode:classification.buyerCode,
+    buyerType,
+    sellerVatRegistered,
+    ruleId:rule.id,
+    proofRequired:rule.proof_of_export_required
+  };
 }
 
-document.getElementById("calculateTax").addEventListener("click",applyTaxToInvoice);
+
+// Prikaz rezultata i primjena stope na stavke.
+async function applyTaxToInvoice(){
+  const output = document.getElementById("taxResult");
+
+  output.className = "tax-result";
+  output.textContent = "Provjeravam poreska pravila…";
+
+  try{
+    const result = await determineTaxTreatment();
+
+    currentTaxTreatment = result;
+
+    if(result.needsReview){
+      output.className = "tax-result warning";
+      output.textContent =
+        "POTREBNA PROVJERA: " + result.warning;
+      return;
+    }
+
+    const invoiceType =
+      result.transactionType === "domestic"
+        ? "DOMAĆA FAKTURA"
+        : "INOZEMNA FAKTURA";
+
+    output.className = "tax-result success";
+
+    output.innerHTML = `
+      <strong>${invoiceType}</strong><br>
+      <strong>${escapeHTML(result.label)}</strong><br>
+      Predložena stopa PDV-a:
+      <strong>${result.rate}%</strong><br>
+      Država prodavca: ${escapeHTML(result.sellerCode)}<br>
+      Država kupca: ${escapeHTML(result.buyerCode)}<br>
+      Pravilo: ${escapeHTML(result.ruleId)}<br>
+      ${escapeHTML(result.warning)}<br>
+      <small>${escapeHTML(result.legalBasis)}</small>
+      <br><strong>Napomena:</strong>
+      Provjerite zakonske uslove prije izdavanja fakture.
+    `;
+
+    document.querySelectorAll("#items .item-vat").forEach(input=>{
+      input.value = result.rate;
+    });
+
+    calculate();
+
+  }catch(error){
+    currentTaxTreatment = null;
+    output.className = "tax-result warning";
+    output.textContent = "Greška: " + error.message;
+    console.error(error);
+  }
+}
+
+document.getElementById("calculateTax")
+  .addEventListener("click",applyTaxToInvoice);
 
 /* -------------------------------------------------------
    6. PODACI O FAKTURI
@@ -898,7 +1058,7 @@ function buildInvoiceDescription(data){
     `Kupac kontakt: ${data.buyerContact || ""}`,
     `Drzava kupca: ${data.buyerCountry || ""}`,
     `Izdao: ${data.issuer || ""}`,
-    `Vrsta fakture: ${data.transactionType || "AUTO"}`,
+  `Vrsta fakture: ${tax.transactionType || data.transactionType || "AUTO"}`,
     `Vrsta kupca: ${data.buyerType || "BUSINESS"}`,
     `Prodavac PDV registrovan: ${data.sellerVatRegistered || "UNKNOWN"}`,
     `Dokaz transporta: ${data.goodsEvidence || "UNKNOWN"}`,
@@ -1457,6 +1617,24 @@ document.getElementById("transactionType").addEventListener(
   }
 );
 
+document.getElementById("sellerCountry").addEventListener(
+  "change",()=>{
+    currentTaxTreatment = null;
+    document.getElementById("taxResult").className = "tax-result warning";
+    document.getElementById("taxResult").textContent =
+      "Promijenjena je država prodavca. Ponovo odredite poreski tretman.";
+  }
+);
+
+document.getElementById("buyerCountry").addEventListener(
+  "change",()=>{
+    currentTaxTreatment = null;
+    document.getElementById("taxResult").className = "tax-result warning";
+    document.getElementById("taxResult").textContent =
+      "Promijenjena je država kupca. Ponovo odredite poreski tretman.";
+  }
+);
+ 
 /* -------------------------------------------------------
    15. POKRETANJE APLIKACIJE
 ------------------------------------------------------- */
