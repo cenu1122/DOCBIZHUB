@@ -254,6 +254,10 @@ button:disabled{opacity:.5;cursor:not-allowed}
     prije izdavanja fakture.
   </p>
 
+  <div id="invoiceClassification" class="tax-result">
+    Unesite državu prodavca i kupca kako bi sistem prepoznao vrstu fakture.
+  </div>
+
   <button type="button" id="calculateTax" class="no-print">
     Odredi poreski tretman
   </button>
@@ -621,7 +625,10 @@ function calculate(){
 
 // Prepoznavanje države i pretvaranje u ISO oznaku.
 function getCountryCode(country){
-  const value = String(country || "").trim().toLowerCase();
+  const value = String(country || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFC");
 
   const countries = {
     "bosna i hercegovina":"BA",
@@ -643,6 +650,7 @@ function getCountryCode(country){
     "makedonija":"MK",
 
     "njemačka":"DE",
+    "njemacka":"DE",
     "nemacka":"DE",
     "germany":"DE",
     "deutschland":"DE",
@@ -678,9 +686,11 @@ function getCountryCode(country){
     "poland":"PL",
 
     "češka":"CZ",
+    "ceska":"CZ",
     "czech republic":"CZ",
 
     "slovačka":"SK",
+    "slovacka":"SK",
     "slovakia":"SK",
 
     "mađarska":"HU",
@@ -694,6 +704,7 @@ function getCountryCode(country){
     "bulgaria":"BG",
 
     "grčka":"GR",
+    "grcka":"GR",
     "greece":"GR",
 
     "portugal":"PT",
@@ -706,12 +717,13 @@ function getCountryCode(country){
     "uk":"GB",
 
     "norveška":"NO",
+    "norveska":"NO",
     "norway":"NO",
 
     "švedska":"SE",
+    "svedska":"SE",
     "sweden":"SE",
 
-    "dansка":"DK",
     "danska":"DK",
     "denmark":"DK",
 
@@ -727,6 +739,7 @@ function getCountryCode(country){
     "turkey":"TR",
 
     "sjedinjene američke države":"US",
+    "sjedinjene americke drzave":"US",
     "united states":"US",
     "usa":"US",
 
@@ -737,6 +750,7 @@ function getCountryCode(country){
     "china":"CN",
 
     "japan":"JP",
+
     "australija":"AU",
     "australia":"AU"
   };
@@ -770,13 +784,17 @@ function classifyInvoice(){
     buyerCode
   };
 }
+
+
+// Prikaz automatske klasifikacije fakture.
 function updateInvoiceClassification(){
   const result = classifyInvoice();
   const output = document.getElementById("invoiceClassification");
 
-  if(result.error){
+  if(!result || result.error){
     output.className = "tax-result warning";
-    output.textContent = result.error;
+    output.textContent = result?.error ||
+      "Unesite državu prodavca i kupca.";
     return;
   }
 
@@ -785,12 +803,26 @@ function updateInvoiceClassification(){
   output.className = "tax-result success";
   output.innerHTML = `
     <strong>${domestic ? "DOMAĆA FAKTURA" : "INOZEMNA FAKTURA"}</strong><br>
-    Prodavac: ${escapeHTML(result.sellerCode)}<br>
-    Kupac: ${escapeHTML(result.buyerCode)}<br>
-    <small>Vrsta je automatski određena prema državama prodavca i kupca.</small>
+    Država prodavca: ${escapeHTML(result.sellerCode)}<br>
+    Država kupca: ${escapeHTML(result.buyerCode)}<br>
+    <small>Vrsta je prepoznata prema državama prodavca i kupca.
+    Poreski tretman se mora posebno provjeriti.</small>
   `;
 }
- 
+
+
+// Poništavanje ranije potvrđenog tretmana nakon izmjene podataka.
+function invalidateTaxTreatment(message){
+  currentTaxTreatment = null;
+
+  const output = document.getElementById("taxResult");
+  if(output){
+    output.className = "tax-result warning";
+    output.textContent = message ||
+      "Podaci transakcije su promijenjeni. Ponovo odredite poreski tretman.";
+  }
+}
+
 
 // Čitanje poreskog pravila iz Supabase tabele.
 async function findTaxRule({
@@ -958,6 +990,24 @@ async function determineTaxTreatment(){
 
   const rule = found.rule;
 
+  // Dodatna provjera dokaza prema samom poreskom pravilu.
+  if(rule.proof_of_export_required === true){
+    const evidence =
+      document.getElementById("goodsEvidence").value;
+
+    if(evidence !== "YES"){
+      return {
+        needsReview:true,
+        warning:
+          "Pronađeno poresko pravilo zahtijeva dokaz o izvozu. Nije potvrđeno da dokaz postoji.",
+        transactionType,
+        sellerCode:classification.sellerCode,
+        buyerCode:classification.buyerCode,
+        ruleId:rule.id
+      };
+    }
+  }
+
   return {
     needsReview:false,
     rate:Number(rule.tax_rate),
@@ -1032,13 +1082,6 @@ async function applyTaxToInvoice(){
 document.getElementById("calculateTax")
   .addEventListener("click",applyTaxToInvoice);
 
- document.getElementById("sellerCountry").addEventListener(
-  "input", updateInvoiceClassification
-);
-
-document.getElementById("buyerCountry").addEventListener(
-  "input", updateInvoiceClassification
-);
 /* -------------------------------------------------------
    6. PODACI O FAKTURI
 ------------------------------------------------------- */
@@ -1085,7 +1128,7 @@ function buildInvoiceDescription(data){
     `Kupac kontakt: ${data.buyerContact || ""}`,
     `Drzava kupca: ${data.buyerCountry || ""}`,
     `Izdao: ${data.issuer || ""}`,
-  `Vrsta fakture: ${tax.transactionType || data.transactionType || "AUTO"}`,
+    `Vrsta fakture: ${data.transactionType || "AUTO"}`,
     `Vrsta kupca: ${data.buyerType || "BUSINESS"}`,
     `Prodavac PDV registrovan: ${data.sellerVatRegistered || "UNKNOWN"}`,
     `Dokaz transporta: ${data.goodsEvidence || "UNKNOWN"}`,
@@ -1190,6 +1233,8 @@ async function loadCompanyProfile(){
 
   changeLanguage();
   profileLoaded = true;
+
+  updateInvoiceClassification();
 }
 
 /* -------------------------------------------------------
@@ -1276,12 +1321,62 @@ async function saveInvoice(){
       return;
     }
 
-    const data = getFormData();
+    let data = getFormData();
 
     if(!data.buyerName?.trim() || !data.invoiceNumber?.trim()){
       alert("Unesite naziv kupca i broj fakture.");
       return;
     }
+
+    if(!data.sellerCountry?.trim() || !data.buyerCountry?.trim()){
+      alert("Unesite državu prodavca i državu kupca.");
+      return;
+    }
+
+    /*
+      Poreski tretman se provjerava ponovo neposredno prije čuvanja.
+      Time se sprečava korištenje ranijeg rezultata nakon izmjene
+      države, statusa kupca, PDV registracije ili dokaza o izvozu.
+    */
+
+    const freshTax = await determineTaxTreatment();
+
+    if(
+      freshTax.needsReview ||
+      !freshTax.ruleId ||
+      !Number.isFinite(Number(freshTax.rate))
+    ){
+      currentTaxTreatment = freshTax;
+
+      const taxOutput = document.getElementById("taxResult");
+      taxOutput.className = "tax-result warning";
+      taxOutput.textContent =
+        "Faktura nije sačuvana. Potrebna je poreska provjera: " +
+        (freshTax.warning || "Poreski tretman nije potvrđen.");
+
+      alert(
+        "Faktura nije sačuvana.\n\n" +
+        (freshTax.warning || "Poreski tretman nije potvrđen.")
+      );
+
+      return;
+    }
+
+    currentTaxTreatment = freshTax;
+
+    /*
+      Sve stavke dobijaju stopu iz upravo provjerenog pravila.
+      Ovo je važno i ako je nova stavka dodana nakon obračuna.
+    */
+
+    document.querySelectorAll("#items .item-vat").forEach(input=>{
+      input.value = freshTax.rate;
+    });
+
+    calculate();
+
+    // Podaci se ponovo čitaju nakon primjene poreske stope.
+    data = getFormData();
 
     const totals = getTotals();
 
@@ -1496,6 +1591,7 @@ async function loadInvoice(id=document.getElementById("invoiceList").value,
     if(!lines?.length) addItem();
 
     calculate();
+    updateInvoiceClassification();
     applyInvoiceMode();
 
     if(!silent) alert("Faktura je učitana.");
@@ -1539,6 +1635,10 @@ function newInvoice(){
   document.getElementById("taxResult").className = "tax-result";
   document.getElementById("taxResult").textContent =
     "Izaberite podatke transakcije i kliknite „Odredi poreski tretman“.";
+
+  document.getElementById("invoiceClassification").className = "tax-result";
+  document.getElementById("invoiceClassification").textContent =
+    "Unesite državu prodavca i kupca kako bi sistem prepoznao vrstu fakture.";
 
   addItem();
   calculate();
@@ -1611,6 +1711,8 @@ document.getElementById("language").addEventListener("change",()=>{
   changeLanguage();
 });
 
+
+// Automatski izbor valute na osnovu države kupca.
 document.getElementById("buyerCountry").addEventListener("change",()=>{
   const code = getCountryCode(
     document.getElementById("buyerCountry").value
@@ -1635,33 +1737,54 @@ document.getElementById("buyerCountry").addEventListener("change",()=>{
   }
 });
 
+
+// Promjena vrste transakcije poništava prethodni poreski rezultat.
 document.getElementById("transactionType").addEventListener(
   "change",()=>{
-    currentTaxTreatment = null;
-    document.getElementById("taxResult").className = "tax-result warning";
-    document.getElementById("taxResult").textContent =
-      "Promijenjena je vrsta transakcije. Ponovo odredite poreski tretman.";
+    invalidateTaxTreatment(
+      "Promijenjena je vrsta transakcije. Ponovo odredite poreski tretman."
+    );
   }
 );
 
+
+// Promjena države prodavca.
 document.getElementById("sellerCountry").addEventListener(
-  "change",()=>{
-    currentTaxTreatment = null;
-    document.getElementById("taxResult").className = "tax-result warning";
-    document.getElementById("taxResult").textContent =
-      "Promijenjena je država prodavca. Ponovo odredite poreski tretman.";
+  "input",()=>{
+    updateInvoiceClassification();
+    invalidateTaxTreatment(
+      "Promijenjena je država prodavca. Ponovo odredite poreski tretman."
+    );
   }
 );
 
+
+// Promjena države kupca.
 document.getElementById("buyerCountry").addEventListener(
-  "change",()=>{
-    currentTaxTreatment = null;
-    document.getElementById("taxResult").className = "tax-result warning";
-    document.getElementById("taxResult").textContent =
-      "Promijenjena je država kupca. Ponovo odredite poreski tretman.";
+  "input",()=>{
+    updateInvoiceClassification();
+    invalidateTaxTreatment(
+      "Promijenjena je država kupca. Ponovo odredite poreski tretman."
+    );
   }
 );
- 
+
+
+// Promjena statusa kupca, PDV registracije ili dokaza.
+[
+  "buyerType",
+  "sellerVatRegistered",
+  "goodsEvidence",
+  "invoiceDate"
+].forEach(id=>{
+  document.getElementById(id).addEventListener("change",()=>{
+    invalidateTaxTreatment(
+      "Promijenjeni su poreski podaci. Ponovo odredite poreski tretman."
+    );
+  });
+});
+
+
 /* -------------------------------------------------------
    15. POKRETANJE APLIKACIJE
 ------------------------------------------------------- */
@@ -1678,6 +1801,7 @@ document.getElementById("buyerCountry").addEventListener(
 
   changeLanguage();
   addItem();
+  updateInvoiceClassification();
 
   try{
     await ensureUser();
@@ -1701,6 +1825,7 @@ document.getElementById("buyerCountry").addEventListener(
       activeInvoiceId = null;
       invoiceReadOnly = false;
       applyInvoiceMode();
+      updateInvoiceClassification();
     }
 
   }catch(error){
