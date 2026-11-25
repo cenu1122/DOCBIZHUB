@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Dokaz o porijeklu robe</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:25px;font-family:Arial,Helvetica,sans-serif;
+ background:linear-gradient(135deg,#eef4ff,#f8fbff);color:#24344d
+}
+.container{max-width:1150px;margin:auto}
+.header{
+ background:linear-gradient(135deg,#1261d6,#0b3f91);
+ color:white;padding:25px;border-radius:20px;margin-bottom:22px;
+ box-shadow:0 8px 25px #123d7a25
+}
+.header h1{margin:0 0 8px;font-size:25px}
+.header p{margin:0;opacity:.9}
+.card{
+ background:white;padding:25px;border-radius:18px;margin-bottom:20px;
+ box-shadow:0 5px 20px #123d7a12;border:1px solid #e1eaff
+}
+h2{color:#123d7a;font-size:19px;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{display:flex;flex-direction:column;gap:7px}
+.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;color:#345071}
+input,select,textarea{
+ width:100%;padding:12px;border:1px solid #cbd9ed;
+ border-radius:9px;font-size:14px;background:#fbfdff;color:#24344d
+}
+input:focus,select:focus,textarea:focus{
+ outline:none;border-color:#1261d6;box-shadow:0 0 0 3px #1261d61a
+}
+textarea{min-height:90px;resize:vertical}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}
+button{
+ border:0;border-radius:9px;padding:12px 18px;
+ font-weight:bold;cursor:pointer;font-size:14px
+}
+.primary{background:linear-gradient(135deg,#1261d6,#0b3f91);color:white}
+.secondary{background:#eaf1ff;color:#164b98}
+.danger{background:#fff0f0;color:#b42318}
+.status{padding:12px;border-radius:9px;margin-bottom:15px;display:none}
+.status.ok{display:block;background:#e9f8ef;color:#176b38}
+.status.error{display:block;background:#fff0f0;color:#a32121}
+.small{font-size:12px;color:#718096}
+.document{
+ padding:13px;border:1px solid #dce7f7;border-radius:10px;
+ margin:10px 0;display:flex;justify-content:space-between;
+ align-items:center;gap:10px;flex-wrap:wrap
+}
+.document strong{color:#123d7a}
+.notice{
+ background:#fff8e8;border:1px solid #f2dfad;
+ padding:14px;border-radius:10px;color:#765515;
+ font-size:13px;line-height:1.5
+}
+@media(max-width:700px){
+ body{padding:12px}.grid{grid-template-columns:1fr}
+ .full{grid-column:auto}.card{padding:17px}
+}
+@media print{
+ body{background:white;padding:0}
+ .no-print,#savedDocuments,#status{display:none!important}
+ .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+ .header{background:white;color:#123d7a;border:1px solid #ccc;box-shadow:none}
+ input,textarea,select{border:0;border-bottom:1px solid #aaa;padding:5px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+ <h1>DOCBIZHUB BUSINESS PORTAL</h1>
+ <p>DOKAZ O PORIJEKLU ROBE – EVIDENCIJA I PRIPREMA PODATAKA</p>
+</div>
+
+<div id="status" class="status"></div>
+
+<div class="card">
+ <h2>1. Vrsta dokumenta</h2>
+ <div class="grid">
+  <div class="field">
+   <label>Vrsta dokaza o porijeklu</label>
+   <select id="document_type">
+    <option value="">Odaberi vrstu</option>
+    <option value="EUR.1">EUR.1 – Uvjerenje o kretanju robe</option>
+    <option value="Izjava o porijeklu">Izjava o porijeklu</option>
+    <option value="Izjava ovlaštenog izvoznika">Izjava ovlaštenog izvoznika</option>
+    <option value="Drugi dokaz">Drugi dokaz</option>
+   </select>
+  </div>
+  <div class="field">
+   <label>Broj dokumenta</label>
+   <input id="document_number" placeholder="Broj dokumenta">
+  </div>
+  <div class="field">
+   <label>Broj komercijalne fakture</label>
+   <input id="invoice_number" placeholder="Broj fakture">
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>2. Podaci o izvozniku</h2>
+ <div class="grid">
+  <div class="field full">
+   <label>Naziv izvoznika</label>
+   <input id="exporter_name" placeholder="Naziv firme izvoznika">
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>3. Podaci o uvozniku</h2>
+ <div class="grid">
+  <div class="field full">
+   <label>Naziv uvoznika / primaoca</label>
+   <input id="importer_name" placeholder="Naziv firme kupca">
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>4. Podaci o robi i porijeklu</h2>
+ <div class="grid">
+  <div class="field">
+   <label>CN / HS tarifna oznaka</label>
+   <input id="cn_code" placeholder="Tarifni broj robe">
+  </div>
+  <div class="field">
+   <label>Država porijekla robe</label>
+   <input id="country_of_origin" placeholder="Npr. Bosna i Hercegovina">
+  </div>
+  <div class="field full">
+   <label>Opis robe</label>
+   <textarea id="goods_description" placeholder="Naziv, materijal, količina i karakteristike robe"></textarea>
+  </div>
+  <div class="field full">
+   <label>Kriterij porijekla</label>
+   <select id="origin_criteria">
+    <option value="">Odaberi kriterij</option>
+    <option value="Potpuno dobijena roba">Potpuno dobijena roba</option>
+    <option value="Dovoljno obrađena ili prerađena roba">Dovoljno obrađena ili prerađena roba</option>
+    <option value="Kumulacija porijekla">Kumulacija porijekla</option>
+    <option value="Drugi kriterij – provjeriti">Drugi kriterij – provjeriti</option>
+    <option value="Nije utvrđeno">Nije utvrđeno</option>
+   </select>
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>5. Napomene i dokumentacija</h2>
+ <div class="field">
+  <label>Napomene</label>
+  <textarea id="notes" placeholder="Npr. podaci o dobavljaču, materijalu, proizvodnji, dokazima o porijeklu..."></textarea>
+ </div>
+</div>
+
+<div class="card notice">
+ <strong>Važno:</strong> Ovaj obrazac služi za pripremu i evidenciju podataka
+ o porijeklu robe. Sam unos podataka ne potvrđuje preferencijalno porijeklo
+ robe i ne predstavlja službeni EUR.1 ili drugi zvanični dokaz. Prije izdavanja
+ dokumenta potrebno je provjeriti pravila porijekla, odgovarajuću dokumentaciju
+ i uslove nadležnog carinskog organa.
+</div>
+
+<div class="card no-print">
+ <h2>6. Upravljanje dokumentom</h2>
+ <div class="buttons">
+  <button class="primary" onclick="saveDocument()">SAČUVAJ U SUPABASE</button>
+  <button class="secondary" onclick="newDocument()">NOVI UNOS</button>
+  <button class="secondary" onclick="window.print()">ŠTAMPAJ / PDF</button>
+ </div>
+</div>
+
+<div class="card no-print" id="savedDocuments">
+ <h2>7. Moji sačuvani dokumenti</h2>
+ <button class="secondary" onclick="loadDocuments()">OSVJEŽI LISTU</button>
+ <div id="documentsList" style="margin-top:15px">Učitavanje...</div>
+</div>
+
+</div>
+
+<script>
+const SUPABASE_URL="https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+/* Unesi isti anon ključ iz postojeće LOGIN.html stranice.
+   Nikada ne koristi service_role ili secret ključ. */
+const SUPABASE_ANON_KEY="OVDJE_UNESI_ISTI_ANON_KLJUC_IZ_LOGIN_HTML";
+
+const db=window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_ANON_KEY
+);
+
+let currentUser=null;
+let editingId=null;
+
+const fields=[
+ "document_type",
+ "document_number",
+ "invoice_number",
+ "exporter_name",
+ "importer_name",
+ "goods_description",
+ "cn_code",
+ "country_of_origin",
+ "origin_criteria",
+ "notes"
+];
+
+function showStatus(message,type="ok"){
+ const box=document.getElementById("status");
+ box.textContent=message;
+ box.className="status "+type;
+}
+
+async function checkSession(){
+ const {data,error}=await db.auth.getSession();
+
+ if(error || !data.session){
+  showStatus("Niste prijavljeni. Koristite postojeću LOGIN stranicu.","error");
+  document.getElementById("documentsList").textContent=
+   "Prijava je potrebna za pregled dokumenata.";
+  return;
+ }
+
+ currentUser=data.session.user;
+ await loadDocuments();
+}
+
+function getFormData(){
+ const result={};
+
+ fields.forEach(id=>{
+  const value=document.getElementById(id).value.trim();
+  result[id]=value===""?null:value;
+ });
+
+ return result;
+}
+
+async function saveDocument(){
+ if(!currentUser){
+  showStatus("Nema aktivne korisničke sesije.","error");
+  return;
+ }
+
+ const payload={
+  ...getFormData(),
+  user_id:currentUser.id
+ };
+
+ if(editingId){
+  const {error}=await db
+   .from("export_origin_documents")
+   .update(payload)
+   .eq("id",editingId)
+   .eq("user_id",currentUser.id);
+
+  if(error){
+   showStatus("Greška pri izmjeni: "+error.message,"error");
+   return;
+  }
+
+  showStatus("Dokument je uspješno izmijenjen.");
+ }else{
+  const {data,error}=await db
+   .from("export_origin_documents")
+   .insert(payload)
+   .select()
+   .single();
+
+  if(error){
+   showStatus("Greška pri čuvanju: "+error.message,"error");
+   return;
+  }
+
+  editingId=data.id;
+  showStatus("Dokument je uspješno sačuvan.");
+ }
+
+ await loadDocuments();
+}
+
+async function loadDocuments(){
+ if(!currentUser)return;
+
+ const list=document.getElementById("documentsList");
+ list.textContent="Učitavanje...";
+
+ const {data,error}=await db
+  .from("export_origin_documents")
+  .select("*")
+  .eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error){
+  list.textContent="Greška pri učitavanju: "+error.message;
+  return;
+ }
+
+ if(!data || data.length===0){
+  list.textContent="Još nema sačuvanih dokumenata.";
+  return;
+ }
+
+ list.innerHTML="";
+
+ data.forEach(doc=>{
+  const item=document.createElement("div");
+  item.className="document";
+
+  const info=document.createElement("div");
+  const title=document.createElement("strong");
+  title.textContent=doc.document_type || "Dokaz o porijeklu";
+
+  const detail=document.createElement("div");
+  detail.className="small";
+  detail.textContent=
+   (doc.document_number || "Bez broja")+" • "+
+   (doc.exporter_name || "Bez izvoznika");
+
+  info.append(title,detail);
+
+  const actions=document.createElement("div");
+  actions.className="buttons";
+
+  const edit=document.createElement("button");
+  edit.className="secondary";
+  edit.textContent="OTVORI";
+  edit.onclick=()=>editDocument(doc);
+
+  const remove=document.createElement("button");
+  remove.className="danger";
+  remove.textContent="OBRIŠI";
+  remove.onclick=()=>deleteDocument(doc.id);
+
+  actions.append(edit,remove);
+  item.append(info,actions);
+  list.append(item);
+ });
+}
+
+function editDocument(doc){
+ fields.forEach(id=>{
+  document.getElementById(id).value=doc[id] ?? "";
+ });
+
+ editingId=doc.id;
+ showStatus("Uređujete postojeći dokument.");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteDocument(id){
+ if(!confirm("Da li sigurno želite obrisati ovaj dokument?"))return;
+
+ const {error}=await db
+  .from("export_origin_documents")
+  .delete()
+  .eq("id",id)
+  .eq("user_id",currentUser.id);
+
+ if(error){
+  showStatus("Greška pri brisanju: "+error.message,"error");
+  return;
+ }
+
+ if(editingId===id)newDocument();
+
+ showStatus("Dokument je obrisan.");
+ await loadDocuments();
+}
+
+function newDocument(){
+ fields.forEach(id=>document.getElementById(id).value="");
+ editingId=null;
+ showStatus("Spreman je novi unos.");
+}
+
+checkSession();
+</script>
+</body>
+</html>
