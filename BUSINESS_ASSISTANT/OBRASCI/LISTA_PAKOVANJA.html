@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | LISTA PAKOVANJA</title>
+<style>
+:root{--navy:#13243a;--blue:#2463a6;--line:#d9e1ea;--bg:#f3f6fa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#1e293b;font:15px Arial,sans-serif;line-height:1.5}
+header{background:var(--navy);color:white;padding:22px max(20px,calc((100% - 1100px)/2))}
+.brand{font-size:21px;font-weight:800;letter-spacing:2px}
+.sub{font-size:11px;color:#cbd5e1;letter-spacing:2px}
+main{max-width:1100px;margin:28px auto;padding:0 18px}
+h1{color:var(--navy);font-size:27px;margin-bottom:5px}
+.intro{color:#64748b;margin-bottom:22px}
+.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;margin:16px 0}
+h2{font-size:17px;color:var(--navy);border-bottom:1px solid var(--line);padding-bottom:10px;margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;color:#334155}
+input,textarea,select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;font:inherit}
+textarea{min-height:70px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;font-size:13px}
+th{background:#f1f5f9}
+td input{min-width:75px;padding:8px}
+button{border:0;border-radius:7px;padding:11px 15px;font-weight:bold;cursor:pointer}
+.primary{background:var(--blue);color:white}
+.dark{background:var(--navy);color:white}
+.secondary{background:#e2e8f0;color:#1e293b}
+.danger{background:#fee2e2;color:#991b1b}
+.remove{background:#fee2e2;color:#991b1b;padding:7px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.totals{max-width:380px;margin:18px 0 0 auto}
+.totalrow{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--line)}
+.grand{font-size:18px;font-weight:bold;color:var(--navy)}
+.note{font-size:12px;color:#64748b;margin-top:12px}
+footer{text-align:center;color:#64748b;padding:24px;font-size:12px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.panel{padding:14px}table{display:block;overflow-x:auto}}
+@media print{
+body{background:white;font-size:12px}
+header{background:white;color:#111;border-bottom:2px solid #13243a}
+.sub{color:#444}
+main{margin:10px auto;padding:0}
+.panel{border:0;box-shadow:none;padding:10px 0;break-inside:avoid}
+.actions,.no-print{display:none!important}
+input,textarea,select{border:0;padding:3px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="brand">DOCBIZHUB</div>
+<div class="sub">EUROPEAN BUSINESS ECOSYSTEM</div>
+</header>
+
+<main>
+
+<h1>LISTA PAKOVANJA</h1>
+<div class="intro">
+PACKING LIST · Izvozna dokumentacija · BiH → Njemačka / EU
+</div>
+
+<section class="panel">
+<h2>1. PODACI O DOKUMENTU</h2>
+<div class="grid">
+<div class="field">
+<label>Broj dokumenta</label>
+<input id="docNo" placeholder="npr. PL-2026-001">
+</div>
+<div class="field">
+<label>Datum</label>
+<input id="date" type="date">
+</div>
+<div class="field">
+<label>Broj povezane fakture</label>
+<input id="invoice" placeholder="Broj komercijalne fakture">
+</div>
+<div class="field">
+<label>Broj narudžbe</label>
+<input id="order" placeholder="Broj narudžbe kupca">
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>2. POŠILJALAC</h2>
+<div class="grid">
+<div class="field">
+<label>Naziv firme</label>
+<input id="sender">
+</div>
+<div class="field">
+<label>ID / PDV broj</label>
+<input id="senderId">
+</div>
+<div class="field full">
+<label>Adresa</label>
+<textarea id="senderAddress" placeholder="Ulica, broj, poštanski broj, grad, BiH"></textarea>
+</div>
+<div class="field">
+<label>Kontakt osoba</label>
+<input id="senderContact">
+</div>
+<div class="field">
+<label>Telefon / E-mail</label>
+<input id="senderPhone">
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>3. PRIMALAC / KUPAC</h2>
+<div class="grid">
+<div class="field">
+<label>Naziv firme</label>
+<input id="receiver">
+</div>
+<div class="field">
+<label>EORI broj (ako je primjenjivo)</label>
+<input id="eori">
+</div>
+<div class="field full">
+<label>Adresa isporuke</label>
+<textarea id="receiverAddress" placeholder="Ulica, broj, poštanski broj, grad, Njemačka"></textarea>
+</div>
+<div class="field">
+<label>Kontakt osoba</label>
+<input id="receiverContact">
+</div>
+<div class="field">
+<label>Telefon / E-mail</label>
+<input id="receiverPhone">
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>4. PODACI O TRANSPORTU</h2>
+<div class="grid">
+<div class="field">
+<label>Mjesto utovara</label>
+<input id="loading">
+</div>
+<div class="field">
+<label>Mjesto istovara</label>
+<input id="unloading">
+</div>
+<div class="field">
+<label>Način transporta</label>
+<select id="transport">
+<option>Drumski prevoz</option>
+<option>Željeznički prevoz</option>
+<option>Pomorski prevoz</option>
+<option>Avionski prevoz</option>
+<option>Drugo</option>
+</select>
+</div>
+<div class="field">
+<label>Registarske oznake vozila</label>
+<input id="vehicle">
+</div>
+<div class="field">
+<label>Incoterms + mjesto</label>
+<input id="incoterms" placeholder="npr. FCA Sarajevo, Incoterms 2020">
+</div>
+<div class="field">
+<label>Datum otpreme</label>
+<input id="dispatchDate" type="date">
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>5. DETALJNA LISTA PAKOVANJA</h2>
+<p class="note">Unesite svaki paket, paletu ili grupu robe. Težine se automatski sabiraju.</p>
+
+<table>
+<thead>
+<tr>
+<th>Red.</th>
+<th>Opis robe / metalni dijelovi</th>
+<th>Oznaka paketa</th>
+<th>Vrsta pakovanja</th>
+<th>Broj komada</th>
+<th>Neto kg</th>
+<th>Bruto kg</th>
+<th class="no-print">Akcija</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="actions no-print">
+<button class="secondary" type="button" onclick="addRow()">+ DODAJ PAKET</button>
+</div>
+
+<div class="totals">
+<div class="totalrow">
+<span>Ukupan broj paketa</span>
+<strong id="packageTotal">0</strong>
+</div>
+<div class="totalrow">
+<span>Ukupan broj komada</span>
+<strong id="pieceTotal">0</strong>
+</div>
+<div class="totalrow">
+<span>Ukupna neto težina</span>
+<strong id="netTotal">0.000 kg</strong>
+</div>
+<div class="totalrow grand">
+<span>Ukupna bruto težina</span>
+<strong id="grossTotal">0.000 kg</strong>
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>6. DIMENZIJE I DODATNE INFORMACIJE</h2>
+<div class="grid">
+<div class="field">
+<label>Ukupna zapremina (m³)</label>
+<input id="volume" type="number" min="0" step="0.001">
+</div>
+<div class="field">
+<label>Ukupne dimenzije / način slaganja</label>
+<input id="dimensions" placeholder="npr. 120 × 80 × 100 cm">
+</div>
+<div class="field full">
+<label>Oznake i posebna uputstva za rukovanje</label>
+<textarea id="handling" placeholder="npr. Čuvati od vlage, ne slagati jedan na drugi..."></textarea>
+</div>
+<div class="field full">
+<label>Napomene</label>
+<textarea id="notes"></textarea>
+</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>7. POTVRDA</h2>
+<div class="grid">
+<div class="field">
+<label>Dokument pripremio</label>
+<input id="preparedBy">
+</div>
+<div class="field">
+<label>Mjesto i datum</label>
+<input id="placeDate">
+</div>
+<div class="field full">
+<label>Napomena o odgovornosti</label>
+<p class="note">
+Ova lista pakovanja predstavlja prateći komercijalni dokument.
+Podaci moraju odgovarati stvarnom stanju robe i povezanoj fakturi.
+Ne zamjenjuje CMR, carinsku deklaraciju niti druge službene dokumente.
+</p>
+</div>
+</div>
+</section>
+
+<div class="actions no-print">
+<button class="primary" onclick="window.print()">ŠTAMPAJ / SAČUVAJ PDF</button>
+<button class="dark" onclick="saveData()">SAČUVAJ UNOS</button>
+<button class="secondary" onclick="loadData()">UČITAJ UNOS</button>
+<button class="danger" onclick="clearForm()">OČISTI OBRAZAC</button>
+</div>
+
+</main>
+
+<footer>
+© 2026 DOCBIZHUB — EUROPEAN BUSINESS ECOSYSTEM
+</footer>
+
+<script>
+const fieldIds=[
+'docNo','date','invoice','order',
+'sender','senderId','senderAddress','senderContact','senderPhone',
+'receiver','eori','receiverAddress','receiverContact','receiverPhone',
+'loading','unloading','transport','vehicle','incoterms','dispatchDate',
+'volume','dimensions','handling','notes','preparedBy','placeDate'
+];
+
+function addRow(data={}){
+const tr=document.createElement('tr');
+tr.innerHTML=`
+<td class="rowNo"></td>
+<td><input class="description" placeholder="Opis robe"></td>
+<td><input class="mark" placeholder="Oznaka"></td>
+<td><input class="packing" placeholder="Paleta, kutija..."></td>
+<td><input class="pieces" type="number" min="0" value="0"></td>
+<td><input class="net" type="number" min="0" step="0.001" value="0"></td>
+<td><input class="gross" type="number" min="0" step="0.001" value="0"></td>
+<td class="no-print"><button class="remove" type="button" onclick="this.closest('tr').remove();calculate()">Ukloni</button></td>`;
+document.getElementById('rows').appendChild(tr);
+
+if(data.description!==undefined){
+tr.querySelector('.description').value=data.description;
+tr.querySelector('.mark').value=data.mark||'';
+tr.querySelector('.packing').value=data.packing||'';
+tr.querySelector('.pieces').value=data.pieces||0;
+tr.querySelector('.net').value=data.net||0;
+tr.querySelector('.gross').value=data.gross||0;
+}
+
+tr.querySelectorAll('input').forEach(input=>{
+input.addEventListener('input',calculate);
+});
+calculate();
+}
+
+function calculate(){
+let packages=0,pieces=0,net=0,gross=0;
+document.querySelectorAll('#rows tr').forEach((tr,index)=>{
+tr.querySelector('.rowNo').textContent=index+1;
+packages++;
+pieces+=Number(tr.querySelector('.pieces').value)||0;
+net+=Number(tr.querySelector('.net').value)||0;
+gross+=Number(tr.querySelector('.gross').value)||0;
+});
+document.getElementById('packageTotal').textContent=packages;
+document.getElementById('pieceTotal').textContent=pieces;
+document.getElementById('netTotal').textContent=net.toFixed(3)+' kg';
+document.getElementById('grossTotal').textContent=gross.toFixed(3)+' kg';
+}
+
+function collectRows(){
+return [...document.querySelectorAll('#rows tr')].map(tr=>({
+description:tr.querySelector('.description').value,
+mark:tr.querySelector('.mark').value,
+packing:tr.querySelector('.packing').value,
+pieces:tr.querySelector('.pieces').value,
+net:tr.querySelector('.net').value,
+gross:tr.querySelector('.gross').value
+}));
+}
+
+function saveData(){
+const data={};
+fieldIds.forEach(id=>data[id]=document.getElementById(id).value);
+data.rows=collectRows();
+localStorage.setItem('docbizhub_packing_list',JSON.stringify(data));
+alert('Podaci su sačuvani u ovom pregledniku.');
+}
+
+function loadData(){
+const saved=localStorage.getItem('docbizhub_packing_list');
+if(!saved){alert('Nema sačuvanih podataka.');return;}
+const data=JSON.parse(saved);
+fieldIds.forEach(id=>{
+if(data[id]!==undefined)document.getElementById(id).value=data[id];
+});
+document.getElementById('rows').innerHTML='';
+(data.rows||[]).forEach(addRow);
+calculate();
+alert('Podaci su učitani.');
+}
+
+function clearForm(){
+if(!confirm('Želite li zaista očistiti sva polja?'))return;
+fieldIds.forEach(id=>document.getElementById(id).value='');
+document.getElementById('rows').innerHTML='';
+addRow();
+calculate();
+}
+
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+addRow();
+</script>
+</body>
+</html>
