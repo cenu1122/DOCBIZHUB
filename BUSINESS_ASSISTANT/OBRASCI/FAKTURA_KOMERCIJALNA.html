@@ -1,0 +1,1509 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocBizHub — Komercijalna faktura</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#f2f6fc;color:#183153;font-family:Arial,sans-serif}
+.container{max-width:1150px;margin:auto;background:#fff;padding:24px;border-radius:14px;box-shadow:0 5px 25px #17345b12}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-bottom:2px solid #1769e8;padding-bottom:15px}
+h1{margin:0;color:#1769e8}
+h2{font-size:17px;margin-top:24px;border-bottom:1px solid #ddd;padding-bottom:8px}
+h3{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+label{display:block;margin:10px 0 5px;font-size:13px;font-weight:bold}
+input,select,textarea{width:100%;padding:10px;border:1px solid #ccd8e8;border-radius:6px;font:inherit;background:#fff;color:#183153}
+table{width:100%;border-collapse:collapse;margin-top:12px;min-width:760px}
+th,td{padding:8px;border:1px solid #dce5f0;text-align:left}
+th{background:#edf4ff}
+td input{min-width:65px}
+button{padding:10px 14px;margin:5px 3px 5px 0;border:0;border-radius:6px;background:#1769e8;color:white;cursor:pointer}
+button:hover{opacity:.9}
+button:disabled{opacity:.5;cursor:not-allowed}
+.delete{background:#d93025}
+.totals{max-width:440px;margin:20px 0 0 auto}
+.totals div{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid #ddd}
+.grand{background:#1769e8;color:white;font-size:18px;font-weight:bold}
+.invoice-tools{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(180px,1fr) minmax(150px,.8fr);gap:12px;align-items:end;margin:18px 0;padding:14px;background:#f7faff;border:1px solid #dce5f0;border-radius:10px}
+.invoice-tools label{margin-top:0}
+.hint{grid-column:1/-1;color:#52657e;font-size:12px}
+.tax-engine{margin-top:24px;padding:18px;background:#f7faff;border:1px solid #dce5f0;border-radius:10px}
+.tax-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tax-result{margin-top:14px;padding:13px;background:#fff;border:1px solid #dce5f0;border-radius:8px;line-height:1.6}
+.tax-result.warning{border-color:#e5a000;background:#fffaf0}
+.tax-result.success{border-color:#2d9b61;background:#f2fff7}
+.small{font-size:12px;color:#52657e}
+.status-note{font-size:12px;color:#52657e;margin-top:6px}
+.table-wrap{overflow-x:auto}
+@media(max-width:750px){
+ body{padding:8px}
+ .container{padding:14px}
+ .grid,.tax-grid,.invoice-tools{grid-template-columns:1fr}
+ .hint{grid-column:auto}
+}
+@media print{
+ body{background:white;padding:0}
+ .container{box-shadow:none;padding:0}
+ .no-print{display:none!important}
+ input,select,textarea{border:none;padding:2px}
+ .table-wrap{overflow:visible}
+ table{min-width:0}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <h1 data-i18n="title">FAKTURA</h1>
+    <p>DocBizHub</p>
+  </div>
+  <div>
+    <label for="language" data-i18n="language">Jezik</label>
+    <select id="language">
+      <option value="bs">🇧🇦 Bosanski</option>
+      <option value="hr">🇭🇷 Hrvatski</option>
+      <option value="sr">🇷🇸 Srpski</option>
+      <option value="me">🇲🇪 Crnogorski</option>
+      <option value="sl">🇸🇮 Slovenski</option>
+      <option value="mk">🇲🇰 Makedonski</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="it">🇮🇹 Italiano</option>
+    </select>
+  </div>
+</header>
+
+<div class="grid">
+  <section>
+    <h2 data-i18n="seller">Podaci o prodavcu</h2>
+
+    <label>Firma</label>
+    <input id="sellerName">
+
+    <label>Adresa</label>
+    <input id="sellerAddress">
+
+    <label>JIB / ID broj</label>
+    <input id="sellerTax">
+
+    <label>PDV broj</label>
+    <input id="sellerVat">
+
+    <label>Telefon / e-mail</label>
+    <input id="sellerContact">
+
+    <label>Banka</label>
+    <input id="sellerBank">
+
+    <label>Transakcijski račun</label>
+    <input id="sellerAccount">
+
+    <label>Država prodavca</label>
+    <input id="sellerCountry" list="countryOptions"
+      placeholder="Država prodavca">
+  </section>
+
+  <section>
+    <h2 data-i18n="buyer">Podaci o kupcu</h2>
+
+    <label>Firma / ime kupca</label>
+    <input id="buyerName">
+
+    <label>Adresa</label>
+    <input id="buyerAddress">
+
+    <label>JIB / ID broj</label>
+    <input id="buyerTax">
+
+    <label>PDV broj</label>
+    <input id="buyerVat">
+
+    <label>Telefon / e-mail</label>
+    <input id="buyerContact">
+
+    <label>Država kupca</label>
+    <input id="buyerCountry" list="countryOptions"
+      placeholder="Izaberite ili upišite državu">
+  </section>
+
+  <section>
+    <h2 data-i18n="details">Podaci o fakturi</h2>
+
+    <label>Broj fakture</label>
+    <input id="invoiceNumber" value="">
+
+    <label>Datum izdavanja</label>
+    <input id="invoiceDate" type="date">
+
+    <label>Datum dospijeća</label>
+    <input id="dueDate" type="date">
+
+    <label>Valuta</label>
+    <select id="currency">
+      <option value="BAM">BAM / KM</option>
+      <option value="EUR">EUR / €</option>
+      <option value="RSD">RSD</option>
+      <option value="MKD">MKD</option>
+      <option value="USD">USD</option>
+      <option value="CHF">CHF</option>
+      <option value="GBP">GBP</option>
+      <option value="CAD">CAD</option>
+      <option value="AUD">AUD</option>
+      <option value="PLN">PLN</option>
+      <option value="CZK">CZK</option>
+      <option value="HUF">HUF</option>
+      <option value="RON">RON</option>
+      <option value="BGN">BGN</option>
+      <option value="TRY">TRY</option>
+      <option value="SEK">SEK</option>
+      <option value="NOK">NOK</option>
+      <option value="DKK">DKK</option>
+      <option value="JPY">JPY</option>
+      <option value="CNY">CNY</option>
+    </select>
+  </section>
+</div>
+
+<section class="tax-engine">
+  <h2>Međunarodni podaci i isporuka</h2>
+
+  <div class="tax-grid">
+    <div>
+      <label for="transactionType">Vrsta fakture</label>
+      <select id="transactionType">
+        <option value="AUTO">Automatski odabir</option>
+        <option value="DOMESTIC">Domaća faktura</option>
+        <option value="EXPORT">Izvoz robe izvan države prodavca</option>
+        <option value="EU_B2B">Prodaja firmi u drugoj državi EU</option>
+        <option value="FOREIGN_B2B">Prodaja stranoj firmi izvan EU</option>
+        <option value="FOREIGN_B2C">Prodaja stranom fizičkom licu</option>
+        <option value="REVIEW">Poseban poreski tretman – provjera</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="buyerType">Kupac je</label>
+      <select id="buyerType">
+        <option value="BUSINESS">Firma / pravno lice</option>
+        <option value="PRIVATE">Fizičko lice</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="sellerVatRegistered">Prodavac registrovan za PDV?</label>
+      <select id="sellerVatRegistered">
+        <option value="UNKNOWN">Nije potvrđeno</option>
+        <option value="YES">Da</option>
+        <option value="NO">Ne</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="goodsEvidence">Dokaz o transportu / izvozu</label>
+      <select id="goodsEvidence">
+        <option value="UNKNOWN">Nije potvrđeno</option>
+        <option value="YES">Da, postoji</option>
+        <option value="NO">Ne postoji</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="buyerVatId">PDV broj kupca za provjeru</label>
+      <input id="buyerVatId" placeholder="Unesite PDV broj">
+    </div>
+
+    <div>
+      <label for="incoterms">Incoterms</label>
+      <select id="incoterms">
+        <option value="">— Izaberite —</option>
+        <option value="EXW">EXW</option>
+        <option value="FCA">FCA</option>
+        <option value="CPT">CPT</option>
+        <option value="CIP">CIP</option>
+        <option value="DAP">DAP</option>
+        <option value="DPU">DPU</option>
+        <option value="DDP">DDP</option>
+        <option value="FAS">FAS</option>
+        <option value="FOB">FOB</option>
+        <option value="CFR">CFR</option>
+        <option value="CIF">CIF</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="deliveryPlace">Mjesto isporuke</label>
+      <input id="deliveryPlace">
+    </div>
+
+    <div>
+      <label for="hsCode">HS / CN tarifna oznaka robe</label>
+      <input id="hsCode" placeholder="Tarifna oznaka">
+    </div>
+  </div>
+
+  <p class="small">
+    Poreski tretman zavisi od države, vrste robe, statusa prodavca,
+    statusa kupca i dokaza o transportu. Prijedlog sistema provjerite
+    prije izdavanja fakture.
+  </p>
+
+  <button type="button" id="calculateTax" class="no-print">
+    Odredi poreski tretman
+  </button>
+
+  <div id="taxResult" class="tax-result" aria-live="polite">
+    Izaberite podatke transakcije i kliknite „Odredi poreski tretman“.
+  </div>
+</section>
+
+<h2>Stavke fakture</h2>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Opis</th>
+      <th>Količina</th>
+      <th>Cijena</th>
+      <th>Rabat %</th>
+      <th>PDV %</th>
+      <th>Iznos</th>
+      <th class="no-print">×</th>
+    </tr>
+  </thead>
+  <tbody id="items"></tbody>
+</table>
+</div>
+
+<button class="no-print" type="button" onclick="addItem()">
+  + Dodaj stavku
+</button>
+
+<div class="grid">
+  <section>
+    <h2>Napomena</h2>
+    <textarea id="notes" rows="4"></textarea>
+  </section>
+
+  <section>
+    <h2>Plaćanje</h2>
+
+    <label>Način plaćanja</label>
+    <select id="payment">
+      <option value="transfer">Bankovni transfer</option>
+      <option value="cash">Gotovina</option>
+      <option value="card">Kartica</option>
+    </select>
+
+    <label>Fakturu izdao/la</label>
+    <input id="issuer">
+  </section>
+</div>
+
+<datalist id="countryOptions">
+  <option value="Bosna i Hercegovina">
+  <option value="Srbija">
+  <option value="Hrvatska">
+  <option value="Crna Gora">
+  <option value="Sjeverna Makedonija">
+  <option value="Slovenija">
+  <option value="Njemačka">
+  <option value="Austrija">
+  <option value="Italija">
+  <option value="Francuska">
+  <option value="Španija">
+  <option value="Portugal">
+  <option value="Mađarska">
+  <option value="Rumunija">
+  <option value="Bugarska">
+  <option value="Grčka">
+  <option value="Poljska">
+  <option value="Češka">
+  <option value="Slovačka">
+  <option value="Nizozemska">
+  <option value="Belgija">
+  <option value="Švicarska">
+  <option value="Ujedinjeno Kraljevstvo">
+  <option value="Turska">
+  <option value="Sjedinjene Američke Države">
+  <option value="Kanada">
+  <option value="Kina">
+  <option value="Japan">
+  <option value="Australija">
+  <option value="Norveška">
+  <option value="Švedska">
+  <option value="Danska">
+  <option value="Finska">
+  <option value="Irska">
+  <option value="Albanija">
+  <option value="Kosovo">
+</datalist>
+
+<div class="totals">
+  <div><span>Osnovica</span><strong id="subtotal">0,00</strong></div>
+  <div><span>Rabat</span><strong id="discountTotal">0,00</strong></div>
+  <div><span>PDV</span><strong id="vatTotal">0,00</strong></div>
+  <div class="grand"><span>UKUPNO</span><strong id="total">0,00</strong></div>
+</div>
+
+<div class="no-print invoice-tools">
+  <div>
+    <label for="invoiceList">Lista faktura</label>
+    <select id="invoiceList">
+      <option value="">— Izaberi fakturu —</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="invoiceSearch">Pretraga faktura</label>
+    <input id="invoiceSearch" type="search"
+      placeholder="Broj fakture ili kupac">
+  </div>
+
+  <div>
+    <label for="invoiceStatusFilter">Filter statusa</label>
+    <select id="invoiceStatusFilter">
+      <option value="all">Svi statusi</option>
+      <option value="NEPLACENA">Neplaćene</option>
+      <option value="PLACENA">Plaćene</option>
+      <option value="DJELOMICNO_PLACENA">Djelimično plaćene</option>
+    </select>
+  </div>
+
+  <div class="hint" id="invoiceListHint">
+    Fakture se učitavaju iz vašeg Supabase naloga.
+  </div>
+</div>
+
+<div class="no-print" style="margin-top:12px">
+  <button type="button" onclick="saveInvoice()">Sačuvaj fakturu</button>
+  <button type="button" onclick="refreshInvoiceList()">Osvježi listu</button>
+  <button type="button" onclick="window.print()">Štampaj / PDF</button>
+  <button type="button" onclick="newInvoice()">Nova faktura</button>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+"use strict";
+
+/* -------------------------------------------------------
+   1. JEZICI
+------------------------------------------------------- */
+
+const translations = {
+  bs: {
+    title:"FAKTURA",language:"Jezik",seller:"Podaci o prodavcu",
+    buyer:"Podaci o kupcu",details:"Podaci o fakturi"
+  },
+  hr: {
+    title:"RAČUN",language:"Jezik",seller:"Podaci o izdavatelju",
+    buyer:"Podaci o kupcu",details:"Podaci o računu"
+  },
+  sr: {
+    title:"ФАКТУРА",language:"Језик",seller:"Подаци о продавцу",
+    buyer:"Подаци о купцу",details:"Подаци о фактури"
+  },
+  me: {
+    title:"FAKTURA",language:"Jezik",seller:"Podaci o prodavcu",
+    buyer:"Podaci o kupcu",details:"Podaci o fakturi"
+  },
+  sl: {
+    title:"RAČUN",language:"Jezik",seller:"Podatki izdajatelja",
+    buyer:"Podatki kupca",details:"Podatki računa"
+  },
+  mk: {
+    title:"ФАКТУРА",language:"Јазик",seller:"Податоци за продавачот",
+    buyer:"Податоци за купувачот",details:"Податоци за фактурата"
+  },
+  en: {
+    title:"INVOICE",language:"Language",seller:"Seller details",
+    buyer:"Customer details",details:"Invoice details"
+  },
+  de: {
+    title:"RECHNUNG",language:"Sprache",seller:"Verkäuferdaten",
+    buyer:"Kundendaten",details:"Rechnungsdaten"
+  },
+  it: {
+    title:"FATTURA",language:"Lingua",seller:"Dati del venditore",
+    buyer:"Dati cliente",details:"Dati fattura"
+  }
+};
+
+function currentLang(){
+  return document.getElementById("language").value || "bs";
+}
+
+function changeLanguage(){
+  const lang = currentLang();
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    const value = translations[lang]?.[key];
+    if(value) el.textContent = value;
+  });
+
+  renderInvoiceList();
+  applyInvoiceMode();
+}
+
+/* -------------------------------------------------------
+   2. SUPABASE KONFIGURACIJA
+------------------------------------------------------- */
+
+const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+/*
+  Ovdje koristi javni publishable/anon ključ iz svog
+  postojećeg LOGIN sistema.
+
+  Nikada ne stavljaj service_role ili secret key u HTML.
+*/
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_IfX6dxz-ILfYK_3VgelcMw_tYOX0y45";
+
+const _supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+let currentUserId = null;
+let invoiceCache = [];
+let activeInvoiceId = null;
+let profileLoaded = false;
+let currentTaxTreatment = null;
+
+const invoiceParams = new URLSearchParams(location.search);
+const requestedInvoiceId = invoiceParams.get("id");
+let invoiceReadOnly = invoiceParams.get("mode") === "view";
+
+/* -------------------------------------------------------
+   3. POMOĆNE FUNKCIJE
+------------------------------------------------------- */
+
+function tr(key){
+  const language = translations[currentLang()] || translations.bs;
+  return language[key] || translations.bs[key] || key;
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function numberValue(value){
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function money(value){
+  const currency = document.getElementById("currency").value || "BAM";
+  const locales = {
+    bs:"bs-BA",hr:"hr-HR",sr:"sr-RS",me:"sr-ME",
+    sl:"sl-SI",mk:"mk-MK",en:"en-GB",de:"de-DE",it:"it-IT"
+  };
+
+  try{
+    return new Intl.NumberFormat(locales[currentLang()] || "bs-BA",{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }).format(value) + " " + currency;
+  }catch{
+    return Number(value).toFixed(2) + " " + currency;
+  }
+}
+
+function renumber(){
+  document.querySelectorAll("#items tr").forEach((row,index)=>{
+    row.querySelector(".index").textContent = index + 1;
+  });
+}
+
+/* -------------------------------------------------------
+   4. STAVKE FAKTURE I OBRAČUN
+------------------------------------------------------- */
+
+function addItem(desc="",qty=1,price=0,discount=0,vat=0){
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td class="index"></td>
+    <td><input class="desc" value="${escapeHTML(desc)}"></td>
+    <td><input class="qty" type="number" min="0" step="any" value="${numberValue(qty)}"></td>
+    <td><input class="price" type="number" min="0" step="any" value="${numberValue(price)}"></td>
+    <td><input class="discount" type="number" min="0" max="100" step="any" value="${numberValue(discount)}"></td>
+    <td><input class="vat item-vat" type="number" min="0" max="100" step="any" value="${numberValue(vat)}"></td>
+    <td class="amount">0,00</td>
+    <td class="no-print"><button class="delete" type="button">×</button></td>
+  `;
+
+  document.getElementById("items").appendChild(row);
+
+  row.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("input",calculate);
+  });
+
+  row.querySelector(".delete").addEventListener("click",()=>{
+    row.remove();
+    renumber();
+    calculate();
+  });
+
+  renumber();
+  calculate();
+  applyInvoiceMode();
+}
+
+function getTotals(){
+  let subtotal=0;
+  let discounts=0;
+  let vatTotal=0;
+  let total=0;
+
+  const items = [...document.querySelectorAll("#items tr")].map(row=>{
+    const qty = Math.max(0,numberValue(row.querySelector(".qty").value));
+    const price = Math.max(0,numberValue(row.querySelector(".price").value));
+    const discount = Math.min(100,Math.max(0,
+      numberValue(row.querySelector(".discount").value)));
+    const vat = Math.max(0,numberValue(row.querySelector(".vat").value));
+
+    const gross = qty * price;
+    const discountAmount = gross * discount / 100;
+    const base = gross - discountAmount;
+    const tax = base * vat / 100;
+    const lineTotal = base + tax;
+
+    subtotal += gross;
+    discounts += discountAmount;
+    vatTotal += tax;
+    total += lineTotal;
+
+    return {row,qty,price,discount,vat,base,tax,lineTotal};
+  });
+
+  return {subtotal,discounts,vatTotal,total,items};
+}
+
+function calculate(){
+  const totals = getTotals();
+
+  totals.items.forEach(item=>{
+    item.row.querySelector(".amount").textContent = money(item.lineTotal);
+  });
+
+  document.getElementById("subtotal").textContent = money(totals.subtotal);
+  document.getElementById("discountTotal").textContent = money(totals.discounts);
+  document.getElementById("vatTotal").textContent = money(totals.vatTotal);
+  document.getElementById("total").textContent = money(totals.total);
+}
+
+/* -------------------------------------------------------
+   5. AUTOMATSKI PORESKI MODUL
+------------------------------------------------------- */
+
+const TAX_COUNTRIES = {
+  "Bosna i Hercegovina":{rate:17,group:"BA"},
+  "Srbija":{rate:20,group:"RS"},
+  "Hrvatska":{rate:25,group:"EU"},
+  "Crna Gora":{rate:21,group:"ME"},
+  "Sjeverna Makedonija":{rate:18,group:"MK"},
+
+  "Austrija":{rate:20,group:"EU"},
+  "Belgija":{rate:21,group:"EU"},
+  "Bugarska":{rate:20,group:"EU"},
+  "Kipar":{rate:19,group:"EU"},
+  "Češka":{rate:21,group:"EU"},
+  "Danska":{rate:25,group:"EU"},
+  "Estonija":{rate:24,group:"EU"},
+  "Finska":{rate:25.5,group:"EU"},
+  "Francuska":{rate:20,group:"EU"},
+  "Njemačka":{rate:19,group:"EU"},
+  "Grčka":{rate:24,group:"EU"},
+  "Mađarska":{rate:27,group:"EU"},
+  "Irska":{rate:23,group:"EU"},
+  "Italija":{rate:22,group:"EU"},
+  "Latvija":{rate:21,group:"EU"},
+  "Litvanija":{rate:21,group:"EU"},
+  "Luksemburg":{rate:17,group:"EU"},
+  "Malta":{rate:18,group:"EU"},
+  "Nizozemska":{rate:21,group:"EU"},
+  "Poljska":{rate:23,group:"EU"},
+  "Portugal":{rate:23,group:"EU"},
+  "Rumunija":{rate:21,group:"EU"},
+  "Slovačka":{rate:23,group:"EU"},
+  "Slovenija":{rate:22,group:"EU"},
+  "Španija":{rate:21,group:"EU"},
+  "Švedska":{rate:25,group:"EU"}
+};
+
+function normalizeCountry(value){
+  const raw = String(value || "").trim().toLowerCase();
+
+  const aliases = {
+    "bih":"Bosna i Hercegovina",
+    "bosnia and herzegovina":"Bosna i Hercegovina",
+    "bosna i hercegovina":"Bosna i Hercegovina",
+    "serbia":"Srbija",
+    "croatia":"Hrvatska",
+    "montenegro":"Crna Gora",
+    "north macedonia":"Sjeverna Makedonija",
+    "macedonia":"Sjeverna Makedonija",
+    "germany":"Njemačka",
+    "deutschland":"Njemačka",
+    "austria":"Austrija",
+    "slovenia":"Slovenija",
+    "italy":"Italija",
+    "france":"Francuska",
+    "netherlands":"Nizozemska",
+    "the netherlands":"Nizozemska",
+    "spain":"Španija",
+    "poland":"Poljska",
+    "switzerland":"Švicarska"
+  };
+
+  return aliases[raw] || value;
+}
+
+function getCountryInfo(country){
+  return TAX_COUNTRIES[normalizeCountry(country)] || null;
+}
+
+function determineTaxTreatment(){
+  const sellerCountry = normalizeCountry(
+    document.getElementById("sellerCountry").value
+  );
+
+  const buyerCountry = normalizeCountry(
+    document.getElementById("buyerCountry").value
+  );
+
+  const transaction = document.getElementById("transactionType").value;
+  const buyerType = document.getElementById("buyerType").value;
+  const registered = document.getElementById("sellerVatRegistered").value;
+  const evidence = document.getElementById("goodsEvidence").value;
+  const buyerVatId = document.getElementById("buyerVatId").value.trim();
+
+  const seller = getCountryInfo(sellerCountry);
+  const buyer = getCountryInfo(buyerCountry);
+
+  const result = {
+    rate:null,
+    label:"",
+    warning:"",
+    legalBasis:"",
+    needsReview:false,
+    transactionType:transaction,
+    sellerCountry,
+    buyerCountry
+  };
+
+  if(!seller || !buyer){
+    result.needsReview = true;
+    result.warning = "Država prodavca ili kupca nije prepoznata. Potrebna je ručna provjera.";
+    return result;
+  }
+
+  if(registered === "UNKNOWN"){
+    result.needsReview = true;
+    result.warning = "Potvrdite da li je prodavac registrovan za PDV.";
+    return result;
+  }
+
+  if(registered === "NO"){
+    result.rate = 0;
+    result.label = "Prodavac nije registrovan za PDV";
+    result.warning = "Ovo nije automatsko oslobađanje od PDV-a. Provjerite status prodavca i obavezu registracije prema lokalnom zakonu.";
+    result.legalBasis = "Status PDV registracije prodavca – potrebna lokalna provjera.";
+    result.transactionType = transaction;
+    return result;
+  }
+
+  let type = transaction;
+
+  if(type === "AUTO"){
+    if(sellerCountry === buyerCountry){
+      type = "DOMESTIC";
+    }else if(seller.group === "EU" && buyer.group === "EU" && buyerType === "BUSINESS"){
+      type = "EU_B2B";
+    }else if(buyerType === "PRIVATE"){
+      type = "FOREIGN_B2C";
+    }else{
+      type = "EXPORT";
+    }
+  }
+
+  result.transactionType = type;
+
+  if(type === "DOMESTIC"){
+    if(sellerCountry !== buyerCountry){
+      result.needsReview = true;
+      result.warning = "Domaća prodaja je izabrana, ali države prodavca i kupca nisu iste.";
+      return result;
+    }
+
+    result.rate = seller.rate;
+    result.label = "Domaća prodaja robe – standardna stopa";
+    result.warning = "Provjerite da li roba pripada kategoriji sa sniženom stopom ili posebnim poreskim režimom.";
+    result.legalBasis = "Standardna stopa države prodavca.";
+    return result;
+  }
+
+  if(type === "EXPORT"){
+    if(seller.group === "EU" && buyer.group === "EU"){
+      result.needsReview = true;
+      result.warning = "Obje države su članice EU. Provjerite da li se radi o isporuci unutar EU, a ne o izvozu iz EU.";
+      return result;
+    }
+
+    if(evidence !== "YES"){
+      result.needsReview = true;
+      result.warning = "Nije potvrđen dokaz o izvozu ili transportu. Nije odobrena primjena 0% PDV-a.";
+      return result;
+    }
+
+    result.rate = 0;
+    result.label = "Mogući izvoz robe – 0% / oslobađanje";
+    result.warning = "Primijeniti samo ako su ispunjeni svi zakonski uslovi i postoji odgovarajući carinski dokaz o izvozu.";
+    result.legalBasis = "Izvoz robe – provjeriti odgovarajuću odredbu zakona države prodavca.";
+    return result;
+  }
+
+  if(type === "EU_B2B"){
+    if(seller.group !== "EU" || buyer.group !== "EU"){
+      result.needsReview = true;
+      result.warning = "Ovaj tretman se odnosi na isporuke između država članica EU.";
+      return result;
+    }
+
+    if(buyerType !== "BUSINESS" || !buyerVatId){
+      result.needsReview = true;
+      result.warning = "Potrebni su poslovni status kupca i njegov PDV broj.";
+      return result;
+    }
+
+    if(evidence !== "YES"){
+      result.needsReview = true;
+      result.warning = "Potrebna je potvrda transporta robe u drugu državu članicu EU.";
+      return result;
+    }
+
+    result.rate = 0;
+    result.label = "Moguća oslobođena isporuka unutar EU – B2B";
+    result.warning = "PDV broj kupca mora biti provjeren u VIES-u. Sam unos broja nije potvrda njegove validnosti.";
+    result.legalBasis = "EU pravila o isporuci dobara unutar EU – provjeriti sve uslove.";
+    return result;
+  }
+
+  if(type === "FOREIGN_B2B" || type === "FOREIGN_B2C"){
+    result.needsReview = true;
+    result.warning = "Prekogranična prodaja zahtijeva provjeru mjesta oporezivanja, transporta, carinskog postupka i eventualne registracije prodavca u drugoj državi.";
+    return result;
+  }
+
+  result.needsReview = true;
+  result.warning = "Poseban poreski tretman zahtijeva ručnu provjeru.";
+  return result;
+}
+
+function applyTaxToInvoice(){
+  const result = determineTaxTreatment();
+  const output = document.getElementById("taxResult");
+
+  currentTaxTreatment = result;
+
+  if(result.needsReview){
+    output.className = "tax-result warning";
+    output.textContent = "POTREBNA PROVJERA: " + result.warning;
+    return;
+  }
+
+  output.className = "tax-result success";
+  output.innerHTML = `
+    <strong>${escapeHTML(result.label)}</strong><br>
+    Predložena stopa PDV-a: <strong>${result.rate}%</strong><br>
+    ${escapeHTML(result.warning)}<br>
+    <small>${escapeHTML(result.legalBasis)}</small>
+    <br><strong>Napomena:</strong> Prije izdavanja provjerite poreski tretman.
+  `;
+
+  document.querySelectorAll("#items .item-vat").forEach(input=>{
+    input.value = result.rate;
+  });
+
+  calculate();
+}
+
+document.getElementById("calculateTax").addEventListener("click",applyTaxToInvoice);
+
+/* -------------------------------------------------------
+   6. PODACI O FAKTURI
+------------------------------------------------------- */
+
+function getFormData(){
+  const data = {};
+
+  document.querySelectorAll("input[id],textarea[id],select[id]").forEach(el=>{
+    if(el.id !== "language" && el.id !== "invoiceList" &&
+       el.id !== "invoiceSearch" && el.id !== "invoiceStatusFilter"){
+      data[el.id] = el.value;
+    }
+  });
+
+  data.items = [...document.querySelectorAll("#items tr")].map(row=>({
+    desc:row.querySelector(".desc").value,
+    qty:row.querySelector(".qty").value,
+    price:row.querySelector(".price").value,
+    discount:row.querySelector(".discount").value,
+    vat:row.querySelector(".vat").value
+  }));
+
+  return data;
+}
+
+function buildInvoiceDescription(data){
+  const tax = currentTaxTreatment || {};
+
+  return [
+    `Napomena: ${data.notes || ""}`,
+    `Plaćanje: ${data.payment || "transfer"}`,
+    `Valuta: ${data.currency || "BAM"}`,
+    `Prodavac: ${data.sellerName || ""}`,
+    `Adresa prodavca: ${data.sellerAddress || ""}`,
+    `ID prodavca: ${data.sellerTax || ""}`,
+    `PDV prodavca: ${data.sellerVat || ""}`,
+    `Kontakt prodavca: ${data.sellerContact || ""}`,
+    `Banka: ${data.sellerBank || ""}`,
+    `Račun: ${data.sellerAccount || ""}`,
+    `Drzava prodavca: ${data.sellerCountry || ""}`,
+    `Kupac adresa: ${data.buyerAddress || ""}`,
+    `Kupac ID: ${data.buyerTax || ""}`,
+    `Kupac PDV: ${data.buyerVat || ""}`,
+    `Kupac kontakt: ${data.buyerContact || ""}`,
+    `Drzava kupca: ${data.buyerCountry || ""}`,
+    `Izdao: ${data.issuer || ""}`,
+    `Vrsta fakture: ${data.transactionType || "AUTO"}`,
+    `Vrsta kupca: ${data.buyerType || "BUSINESS"}`,
+    `Prodavac PDV registrovan: ${data.sellerVatRegistered || "UNKNOWN"}`,
+    `Dokaz transporta: ${data.goodsEvidence || "UNKNOWN"}`,
+    `PDV broj kupca za provjeru: ${data.buyerVatId || ""}`,
+    `Incoterms: ${data.incoterms || ""}`,
+    `Mjesto isporuke: ${data.deliveryPlace || ""}`,
+    `HS kod: ${data.hsCode || ""}`,
+    `PORESKI_TRETMAN: ${JSON.stringify(tax)}`
+  ].join("\n");
+}
+
+function readMeta(description,label){
+  const line = String(description || "").split("\n")
+    .find(item=>item.startsWith(label));
+
+  return line ? line.slice(label.length).trim() : "";
+}
+
+/* -------------------------------------------------------
+   7. PRIJAVA I SUPABASE KORISNIK
+------------------------------------------------------- */
+
+async function ensureUser(){
+  const {data,error} = await _supabase.auth.getUser();
+
+  if(error) throw new Error("Greška pri provjeri prijave: " + error.message);
+
+  if(!data?.user){
+    throw new Error("Niste prijavljeni. Prijavite se preko postojećeg LOGIN sistema.");
+  }
+
+  currentUserId = data.user.id;
+  return data.user;
+}
+
+/* -------------------------------------------------------
+   8. PROFIL FIRME
+------------------------------------------------------- */
+
+function languageFromCountry(country){
+  const c = String(country || "").toLowerCase();
+
+  if(/bosnia|herzegovina|bosna|bih/.test(c)) return "bs";
+  if(/croatia|hrvatska/.test(c)) return "hr";
+  if(/serbia|srbija/.test(c)) return "sr";
+  if(/montenegro|crna gora/.test(c)) return "me";
+  if(/slovenia|slovenija/.test(c)) return "sl";
+  if(/macedonia/.test(c)) return "mk";
+  if(/germany|deutschland|austria|österreich/.test(c)) return "de";
+  if(/italy|italia/.test(c)) return "it";
+  if(/united kingdom|ireland|united states|canada|australia/.test(c)) return "en";
+
+  return "bs";
+}
+
+async function loadCompanyProfile(){
+  if(profileLoaded) return;
+
+  const {data,error} = await _supabase
+    .from("POSAO_KORISNICI")
+    .select("*")
+    .eq("USER",currentUserId)
+    .maybeSingle();
+
+  if(error){
+    console.warn("Profil firme nije učitan:",error.message);
+    return;
+  }
+
+  if(!data) return;
+
+  const set = (id,value)=>{
+    const el = document.getElementById(id);
+    if(el && value != null && !el.value) el.value = value;
+  };
+
+  set("sellerName",data.NAZIV_FIRME);
+  set("sellerCountry",data.DRZAVA_FIRME);
+
+  set("sellerAddress",[
+    data.ADRESA_FIRME,
+    data.POSTANSKI_BROJ,
+    data.GRAD_FIRME,
+    data.DRZAVA_FIRME
+  ].filter(Boolean).join(", "));
+
+  set("sellerTax",data.ID_BROJ_FIRME);
+  set("sellerVat",data.PDV_BROJ);
+
+  set("sellerContact",[
+    data.TELEFON_FIRME,
+    data.EMAIL_FIRME
+  ].filter(Boolean).join(" / "));
+
+  set("sellerBank",data.BANKA);
+  set("sellerAccount",data.IBAN);
+
+  const savedLanguage = localStorage.getItem("docbizhub_language");
+  document.getElementById("language").value =
+    translations[savedLanguage] ? savedLanguage :
+    languageFromCountry(data.DRZAVA_FIRME);
+
+  changeLanguage();
+  profileLoaded = true;
+}
+
+/* -------------------------------------------------------
+   9. LISTA FAKTURA
+------------------------------------------------------- */
+
+function renderInvoiceList(){
+  const list = document.getElementById("invoiceList");
+  if(!list) return;
+
+  const search = (document.getElementById("invoiceSearch").value || "")
+    .toLocaleLowerCase();
+
+  const status = document.getElementById("invoiceStatusFilter").value;
+  const selected = list.value;
+
+  list.innerHTML = "";
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = "— Izaberi fakturu —";
+  list.appendChild(first);
+
+  const filtered = invoiceCache.filter(inv=>{
+    const hay = `${inv.BROJ_FAKTURE || ""} ${inv.KUPAC || ""}`.toLocaleLowerCase();
+
+    return (!search || hay.includes(search)) &&
+      (status === "all" || inv.STATUS_FAKTURE === status);
+  });
+
+  filtered.forEach(inv=>{
+    const option = document.createElement("option");
+    option.value = inv.ID;
+    option.textContent =
+      `${inv.BROJ_FAKTURE} — ${inv.KUPAC} — ${Number(inv.IZNOS_FAKTURE || 0).toFixed(2)}`;
+    list.appendChild(option);
+  });
+
+  if(filtered.some(inv=>String(inv.ID) === String(selected))){
+    list.value = selected;
+  }
+
+  document.getElementById("invoiceListHint").textContent =
+    filtered.length
+      ? `${filtered.length} faktura u listi.`
+      : "Nema faktura za izabrani filter.";
+}
+
+async function refreshInvoiceList(){
+  try{
+    await ensureUser();
+
+    document.getElementById("invoiceListHint").textContent =
+      "Učitavam fakture…";
+
+    const {data,error} = await _supabase
+      .from("FAKTURE")
+      .select("ID,USER_ID,BROJ_FAKTURE,KUPAC,DATUM_FAKTURE,ROK_PLACANJA,IZNOS_FAKTURE,STATUS_FAKTURE,OPIS_FAKTURE,KREIRANO")
+      .eq("USER_ID",currentUserId)
+      .order("KREIRANO",{ascending:false});
+
+    if(error) throw error;
+
+    invoiceCache = data || [];
+    renderInvoiceList();
+
+  }catch(error){
+    console.error(error);
+    document.getElementById("invoiceListHint").textContent =
+      "Greška pri učitavanju: " + error.message;
+  }
+}
+
+/* -------------------------------------------------------
+   10. ČUVANJE FAKTURE
+------------------------------------------------------- */
+
+async function saveInvoice(){
+  try{
+    await ensureUser();
+
+    if(invoiceReadOnly){
+      alert("Faktura je otvorena samo za pregled.");
+      return;
+    }
+
+    const data = getFormData();
+
+    if(!data.buyerName?.trim() || !data.invoiceNumber?.trim()){
+      alert("Unesite naziv kupca i broj fakture.");
+      return;
+    }
+
+    const totals = getTotals();
+
+    const invoicePayload = {
+      USER_ID:currentUserId,
+      BROJ_FAKTURE:data.invoiceNumber.trim(),
+      KUPAC:data.buyerName.trim(),
+      DATUM_FAKTURE:data.invoiceDate ||
+        new Date().toISOString().slice(0,10),
+      ROK_PLACANJA:data.dueDate || null,
+      IZNOS_FAKTURE:Number(totals.total.toFixed(2)),
+      OPIS_FAKTURE:buildInvoiceDescription(data)
+    };
+
+    let invoice;
+
+    if(activeInvoiceId){
+      const {data:updated,error:updateError} = await _supabase
+        .from("FAKTURE")
+        .update(invoicePayload)
+        .eq("ID",activeInvoiceId)
+        .eq("USER_ID",currentUserId)
+        .select("ID")
+        .single();
+
+      if(updateError) throw updateError;
+      invoice = updated;
+
+      const {error:deleteError} = await _supabase
+        .from("STAVKE_FAKTURA")
+        .delete()
+        .eq("FAKTURA_ID",invoice.ID)
+        .eq("USER_ID",currentUserId);
+
+      if(deleteError) throw deleteError;
+
+    }else{
+      const {data:created,error:insertError} = await _supabase
+        .from("FAKTURE")
+        .insert({
+          ...invoicePayload,
+          STATUS_FAKTURE:"NEPLACENA"
+        })
+        .select("ID")
+        .single();
+
+      if(insertError) throw insertError;
+      invoice = created;
+    }
+
+    const lineRows = totals.items
+      .filter(item=>item.row.querySelector(".desc").value.trim())
+      .map(item=>({
+        FAKTURA_ID:invoice.ID,
+        USER_ID:currentUserId,
+        NAZIV_STAVKE:item.row.querySelector(".desc").value.trim(),
+        OPIS:null,
+        KOLICINA:item.qty,
+        JEDINICA_MJERE:"kom",
+        CIJENA:item.price,
+        POPUST:item.discount,
+        PDV_STOPA:item.vat,
+        UKUPNO:Number(item.lineTotal.toFixed(2))
+      }));
+
+    if(lineRows.length){
+      const {error:lineError} = await _supabase
+        .from("STAVKE_FAKTURA")
+        .insert(lineRows);
+
+      if(lineError){
+        console.error(lineError);
+        throw new Error(
+          "Faktura je sačuvana, ali stavke nisu: " + lineError.message
+        );
+      }
+    }
+
+    activeInvoiceId = invoice.ID;
+
+    await refreshInvoiceList();
+    document.getElementById("invoiceList").value = invoice.ID;
+
+    alert("Faktura je uspješno sačuvana u Supabase.");
+
+  }catch(error){
+    console.error(error);
+    alert("Greška pri čuvanju fakture: " + error.message);
+  }
+}
+
+/* -------------------------------------------------------
+   11. UČITAVANJE FAKTURE
+------------------------------------------------------- */
+
+async function loadInvoice(id=document.getElementById("invoiceList").value,
+                           options={}){
+  const silent = options.silent === true;
+
+  if(!id){
+    if(!silent) alert("Izaberite fakturu.");
+    return;
+  }
+
+  try{
+    await ensureUser();
+
+    const {data:inv,error} = await _supabase
+      .from("FAKTURE")
+      .select("*")
+      .eq("ID",id)
+      .eq("USER_ID",currentUserId)
+      .single();
+
+    if(error) throw error;
+
+    const {data:lines,error:lineError} = await _supabase
+      .from("STAVKE_FAKTURA")
+      .select("*")
+      .eq("FAKTURA_ID",id)
+      .eq("USER_ID",currentUserId)
+      .order("KREIRANO",{ascending:true});
+
+    if(lineError) throw lineError;
+
+    activeInvoiceId = inv.ID;
+
+    const description = inv.OPIS_FAKTURE || "";
+
+    const values = {
+      invoiceNumber:inv.BROJ_FAKTURE || "",
+      buyerName:inv.KUPAC || "",
+      invoiceDate:inv.DATUM_FAKTURE || "",
+      dueDate:inv.ROK_PLACANJA || "",
+
+      notes:readMeta(description,"Napomena:"),
+      payment:readMeta(description,"Plaćanje:") || "transfer",
+      currency:readMeta(description,"Valuta:") || "BAM",
+
+      sellerName:readMeta(description,"Prodavac:"),
+      sellerAddress:readMeta(description,"Adresa prodavca:"),
+      sellerTax:readMeta(description,"ID prodavca:"),
+      sellerVat:readMeta(description,"PDV prodavca:"),
+      sellerContact:readMeta(description,"Kontakt prodavca:"),
+      sellerBank:readMeta(description,"Banka:"),
+      sellerAccount:readMeta(description,"Račun:"),
+      sellerCountry:readMeta(description,"Drzava prodavca:"),
+
+      buyerAddress:readMeta(description,"Kupac adresa:"),
+      buyerTax:readMeta(description,"Kupac ID:"),
+      buyerVat:readMeta(description,"Kupac PDV:"),
+      buyerContact:readMeta(description,"Kupac kontakt:"),
+      buyerCountry:readMeta(description,"Drzava kupca:"),
+
+      issuer:readMeta(description,"Izdao:"),
+      transactionType:readMeta(description,"Vrsta fakture:") || "AUTO",
+      buyerType:readMeta(description,"Vrsta kupca:") || "BUSINESS",
+      sellerVatRegistered:readMeta(description,"Prodavac PDV registrovan:") || "UNKNOWN",
+      goodsEvidence:readMeta(description,"Dokaz transporta:") || "UNKNOWN",
+      buyerVatId:readMeta(description,"PDV broj kupca za provjeru:"),
+      incoterms:readMeta(description,"Incoterms:"),
+      deliveryPlace:readMeta(description,"Mjesto isporuke:"),
+      hsCode:readMeta(description,"HS kod:")
+    };
+
+    Object.entries(values).forEach(([key,value])=>{
+      const el = document.getElementById(key);
+      if(el) el.value = value;
+    });
+
+    const savedTax = readMeta(description,"PORESKI_TRETMAN:");
+
+    currentTaxTreatment = null;
+
+    if(savedTax){
+      try{
+        currentTaxTreatment = JSON.parse(savedTax);
+
+        const output = document.getElementById("taxResult");
+
+        if(currentTaxTreatment.needsReview){
+          output.className = "tax-result warning";
+          output.textContent =
+            "Sačuvani poreski tretman zahtijeva provjeru: " +
+            (currentTaxTreatment.warning || "");
+        }else{
+          output.className = "tax-result success";
+          output.textContent =
+            "Sačuvani poreski tretman: " +
+            (currentTaxTreatment.label || "") +
+            ". Predložena stopa: " +
+            currentTaxTreatment.rate + "%.";
+        }
+      }catch(parseError){
+        console.warn("Poreski podaci nisu mogli biti učitani.",parseError);
+      }
+    }
+
+    const tbody = document.getElementById("items");
+    tbody.innerHTML = "";
+
+    (lines || []).forEach(line=>{
+      addItem(
+        line.NAZIV_STAVKE || "",
+        line.KOLICINA,
+        line.CIJENA,
+        line.POPOUST ?? line.POPUST ?? 0,
+        line.PDV_STOPA ?? 0
+      );
+    });
+
+    if(!lines?.length) addItem();
+
+    calculate();
+    applyInvoiceMode();
+
+    if(!silent) alert("Faktura je učitana.");
+
+  }catch(error){
+    console.error(error);
+    alert("Greška pri učitavanju: " + error.message);
+  }
+}
+
+/* -------------------------------------------------------
+   12. NOVA FAKTURA
+------------------------------------------------------- */
+
+function newInvoice(){
+  if(!confirm("Započeti novu fakturu?")) return;
+
+  activeInvoiceId = null;
+  currentTaxTreatment = null;
+
+  document.querySelectorAll(
+    "input[id],textarea[id]"
+  ).forEach(el=>{
+    if(el.id !== "invoiceSearch") el.value = "";
+  });
+
+  document.getElementById("invoiceNumber").value = "";
+  document.getElementById("invoiceDate").value =
+    new Date().toISOString().slice(0,10);
+
+  document.getElementById("currency").value = "BAM";
+  document.getElementById("transactionType").value = "AUTO";
+  document.getElementById("buyerType").value = "BUSINESS";
+  document.getElementById("sellerVatRegistered").value = "UNKNOWN";
+  document.getElementById("goodsEvidence").value = "UNKNOWN";
+  document.getElementById("payment").value = "transfer";
+
+  document.getElementById("invoiceList").value = "";
+  document.getElementById("items").innerHTML = "";
+
+  document.getElementById("taxResult").className = "tax-result";
+  document.getElementById("taxResult").textContent =
+    "Izaberite podatke transakcije i kliknite „Odredi poreski tretman“.";
+
+  addItem();
+  calculate();
+  applyInvoiceMode();
+}
+
+/* -------------------------------------------------------
+   13. REŽIM PREGLEDA / IZMJENE
+------------------------------------------------------- */
+
+function applyInvoiceMode(){
+  const readOnly = invoiceReadOnly;
+
+  const editableIds = [
+    "sellerName","sellerAddress","sellerTax","sellerVat",
+    "sellerContact","sellerBank","sellerAccount","sellerCountry",
+    "buyerName","buyerAddress","buyerTax","buyerVat","buyerContact",
+    "buyerCountry","invoiceNumber","invoiceDate","dueDate","currency",
+    "notes","payment","issuer","transactionType","buyerType",
+    "sellerVatRegistered","goodsEvidence","buyerVatId","incoterms",
+    "deliveryPlace","hsCode"
+  ];
+
+  editableIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.disabled = readOnly;
+  });
+
+  document.querySelectorAll("#items input").forEach(el=>{
+    el.disabled = readOnly;
+  });
+
+  document.querySelectorAll("#items .delete").forEach(el=>{
+    el.hidden = readOnly;
+  });
+
+  document.querySelectorAll(
+    "button[onclick='saveInvoice()'],button[onclick='addItem()'],#calculateTax"
+  ).forEach(el=>{
+    el.hidden = readOnly;
+  });
+
+  const title = document.querySelector("h1");
+  if(title){
+    title.textContent = readOnly ? "FAKTURA — PREGLED" : tr("title");
+  }
+}
+
+/* -------------------------------------------------------
+   14. POVEZIVANJE DOGAĐAJA
+------------------------------------------------------- */
+
+document.getElementById("currency").addEventListener("change",calculate);
+
+document.getElementById("invoiceSearch").addEventListener(
+  "input",renderInvoiceList
+);
+
+document.getElementById("invoiceStatusFilter").addEventListener(
+  "change",renderInvoiceList
+);
+
+document.getElementById("invoiceList").addEventListener("change",()=>{
+  const id = document.getElementById("invoiceList").value;
+  if(id) loadInvoice(id);
+});
+
+document.getElementById("language").addEventListener("change",()=>{
+  localStorage.setItem("docbizhub_language",currentLang());
+  changeLanguage();
+});
+
+document.getElementById("buyerCountry").addEventListener("change",()=>{
+  const country = normalizeCountry(
+    document.getElementById("buyerCountry").value
+  );
+
+  const suggested = {
+    "Bosna i Hercegovina":"BAM",
+    "Srbija":"RSD",
+    "Hrvatska":"EUR",
+    "Crna Gora":"EUR",
+    "Sjeverna Makedonija":"MKD",
+    "Slovenija":"EUR",
+    "Njemačka":"EUR",
+    "Austrija":"EUR",
+    "Italija":"EUR",
+    "Švicarska":"CHF"
+  }[country];
+
+  if(suggested){
+    document.getElementById("currency").value = suggested;
+    calculate();
+  }
+});
+
+document.getElementById("transactionType").addEventListener(
+  "change",()=>{
+    currentTaxTreatment = null;
+    document.getElementById("taxResult").className = "tax-result warning";
+    document.getElementById("taxResult").textContent =
+      "Promijenjena je vrsta transakcije. Ponovo odredite poreski tretman.";
+  }
+);
+
+/* -------------------------------------------------------
+   15. POKRETANJE APLIKACIJE
+------------------------------------------------------- */
+
+(async function initInvoiceApp(){
+  document.getElementById("invoiceDate").value =
+    new Date().toISOString().slice(0,10);
+
+  const savedLanguage = localStorage.getItem("docbizhub_language");
+
+  if(translations[savedLanguage]){
+    document.getElementById("language").value = savedLanguage;
+  }
+
+  changeLanguage();
+  addItem();
+
+  try{
+    await ensureUser();
+    await loadCompanyProfile();
+    await refreshInvoiceList();
+
+    if(requestedInvoiceId){
+      const exists = invoiceCache.some(
+        inv=>String(inv.ID) === String(requestedInvoiceId)
+      );
+
+      if(!exists){
+        throw new Error(
+          "Faktura nije pronađena ili nemate pravo pristupa."
+        );
+      }
+
+      document.getElementById("invoiceList").value = requestedInvoiceId;
+      await loadInvoice(requestedInvoiceId,{silent:true});
+    }else{
+      activeInvoiceId = null;
+      invoiceReadOnly = false;
+      applyInvoiceMode();
+    }
+
+  }catch(error){
+    console.error(error);
+    document.getElementById("invoiceListHint").textContent =
+      error.message || String(error);
+  }
+})();
+</script>
+</body>
+</html>
