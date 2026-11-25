@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | CMR Tovarni list</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:25px;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#eef4ff,#f8fbff);color:#24344d}
+.container{max-width:1200px;margin:auto}
+.header{background:linear-gradient(135deg,#1261d6,#0b3f91);color:white;padding:25px;border-radius:20px;margin-bottom:22px;box-shadow:0 8px 25px #123d7a25}
+.header h1{margin:0 0 8px;font-size:25px}
+.header p{margin:0;opacity:.9}
+.card{background:white;padding:25px;border-radius:18px;margin-bottom:20px;box-shadow:0 5px 20px #123d7a12;border:1px solid #e1eaff}
+h2{color:#123d7a;font-size:19px;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{display:flex;flex-direction:column;gap:7px}
+.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;color:#345071}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd9ed;border-radius:9px;font-size:14px;background:#fbfdff;color:#24344d}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1261d6;box-shadow:0 0 0 3px #1261d61a}
+textarea{min-height:75px;resize:vertical}
+button{border:0;border-radius:9px;padding:11px 16px;font-weight:bold;cursor:pointer;font-size:13px}
+.primary{background:linear-gradient(135deg,#1261d6,#0b3f91);color:white}
+.secondary{background:#eaf1ff;color:#164b98}
+.danger{background:#fff0f0;color:#b42318}
+.buttons{display:flex;gap:9px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:9px;border-bottom:1px solid #e5edf8;text-align:left;font-size:13px}
+th{background:#f0f5ff;color:#123d7a}
+td input{min-width:85px;padding:9px}
+.status{padding:12px;border-radius:9px;margin-bottom:15px;display:none}
+.status.ok{display:block;background:#e9f8ef;color:#176b38}
+.status.error{display:block;background:#fff0f0;color:#a32121}
+.document{padding:13px;border:1px solid #dce7f7;border-radius:10px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.document strong{color:#123d7a}
+.small{font-size:12px;color:#718096}
+.notice{padding:14px;border-radius:10px;background:#fff8e8;border:1px solid #f2dfad;color:#765515;font-size:13px;line-height:1.5}
+@media(max-width:700px){body{padding:12px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.card{padding:17px}}
+@media print{body{background:white;padding:0}.no-print,#savedDocuments,#status{display:none!important}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}.header{background:white;color:#123d7a;border:1px solid #ccc;box-shadow:none}input,textarea,select{border:0;border-bottom:1px solid #aaa;padding:5px}table{min-width:0}td input{border:0;padding:3px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+<h1>DOCBIZHUB BUSINESS PORTAL</h1>
+<p>CMR – MEĐUNARODNI TOVARNI LIST</p>
+</div>
+
+<div id="status" class="status"></div>
+
+<div class="card">
+<h2>1. Podaci o CMR dokumentu</h2>
+<div class="grid">
+<div class="field"><label>CMR broj</label><input id="cmr_number" placeholder="CMR-2026-001"></div>
+<div class="field"><label>Broj fakture</label><input id="invoice_number" placeholder="Broj komercijalne fakture"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Pošiljalac</h2>
+<div class="grid">
+<div class="field full"><label>Naziv i adresa pošiljaoca</label><textarea id="sender_name" placeholder="Naziv firme, adresa, grad, država"></textarea></div>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Prevoznik</h2>
+<div class="grid">
+<div class="field full"><label>Naziv i adresa prevoznika</label><textarea id="carrier_name" placeholder="Naziv prevozničke firme, adresa"></textarea></div>
+</div>
+</div>
+
+<div class="card">
+<h2>4. Primalac</h2>
+<div class="grid">
+<div class="field full"><label>Naziv i adresa primaoca</label><textarea id="receiver_name" placeholder="Naziv firme, adresa, grad, država"></textarea></div>
+</div>
+</div>
+
+<div class="card">
+<h2>5. Mjesto utovara i istovara</h2>
+<div class="grid">
+<div class="field"><label>Mjesto utovara</label><input id="loading_place" placeholder="Adresa i mjesto utovara"></div>
+<div class="field"><label>Mjesto isporuke</label><input id="delivery_place" placeholder="Adresa i mjesto isporuke"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>6. Podaci o robi</h2>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Opis robe</th>
+<th>Broj paketa</th>
+<th>Bruto kg</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="itemsBody"></tbody>
+</table>
+</div>
+<div class="buttons no-print" style="margin-top:15px">
+<button class="secondary" onclick="addItem()">+ DODAJ ROBU</button>
+</div>
+</div>
+
+<div class="card">
+<h2>7. Ukupna količina i težina</h2>
+<div class="grid">
+<div class="field"><label>Ukupno paketa</label><input id="package_count" readonly></div>
+<div class="field"><label>Ukupna bruto težina (kg)</label><input id="gross_weight" readonly></div>
+</div>
+</div>
+
+<div class="card">
+<h2>8. Uputstva i napomene</h2>
+<div class="grid">
+<div class="field full"><label>Posebna uputstva za prevoz</label><textarea id="goods_description" placeholder="Opis robe, način rukovanja, uslovi prevoza..."></textarea></div>
+<div class="field full"><label>Napomene</label><textarea id="notes" placeholder="Dodatne napomene, rezervacije, oštećenja..."></textarea></div>
+</div>
+</div>
+
+<div class="card">
+<h2>9. Potpisi i potvrde – evidencija</h2>
+<div class="grid">
+<div class="field"><label>Mjesto i datum preuzimanja</label><input id="pickup_date" placeholder="Mjesto, datum"></div>
+<div class="field"><label>Mjesto i datum isporuke</label><input id="delivery_date" placeholder="Mjesto, datum"></div>
+<div class="field full"><label>Napomena o stanju pošiljke pri preuzimanju</label><textarea id="condition_notes" placeholder="Stanje robe, ambalaže i eventualne primjedbe"></textarea></div>
+</div>
+</div>
+
+<div class="card no-print">
+<h2>10. Upravljanje CMR dokumentom</h2>
+<div class="buttons">
+<button class="primary" onclick="saveDocument()">SAČUVAJ U SUPABASE</button>
+<button class="secondary" onclick="newDocument()">NOVI CMR</button>
+<button class="secondary" onclick="window.print()">ŠTAMPAJ / PDF</button>
+</div>
+</div>
+
+<div class="card no-print" id="savedDocuments">
+<h2>11. Moji sačuvani CMR dokumenti</h2>
+<button class="secondary" onclick="loadDocuments()">OSVJEŽI LISTU</button>
+<div id="documentsList" style="margin-top:15px">Učitavanje...</div>
+</div>
+
+<div class="card">
+<div class="notice">
+<strong>Važna napomena:</strong> Ovo je elektronski obrazac za pripremu i
+evidenciju podataka. Ne zamjenjuje propisani CMR tovarni list, potrebne
+primjerke dokumenta, potpise pošiljaoca i prevoznika niti druge zakonske
+obaveze u međunarodnom transportu.
+</div>
+</div>
+
+</div>
+
+<script>
+const SUPABASE_URL="https://uduwpvdjmanrgpumdrfh.supabase.co";
+const SUPABASE_ANON_KEY="OVDJE_UNESI_ISTI_ANON_KLJUC_IZ_LOGIN_HTML";
+
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+let currentUser=null;
+let editingId=null;
+let items=[];
+
+function showStatus(message,type="ok"){
+ const el=document.getElementById("status");
+ el.textContent=message;
+ el.className="status "+type;
+}
+
+function num(value){
+ const n=Number(value);
+ return Number.isFinite(n)?n:0;
+}
+
+function addItem(data={}){
+ items.push({
+  description:data.description||"",
+  packages:num(data.packages),
+  gross_weight:num(data.gross_weight)
+ });
+ renderItems();
+}
+
+function renderItems(){
+ const body=document.getElementById("itemsBody");
+ body.innerHTML="";
+
+ items.forEach((item,index)=>{
+  const tr=document.createElement("tr");
+
+  [
+   ["description","text"],
+   ["packages","number"],
+   ["gross_weight","number"]
+  ].forEach(([key,type])=>{
+   const td=document.createElement("td");
+   const input=document.createElement("input");
+   input.type=type;
+   input.value=item[key];
+
+   if(type==="number"){
+    input.min="0";
+    input.step="0.01";
+   }
+
+   input.addEventListener("input",()=>{
+    item[key]=type==="number"?num(input.value):input.value;
+    calculateTotals();
+   });
+
+   td.appendChild(input);
+   tr.appendChild(td);
+  });
+
+  const action=document.createElement("td");
+  const remove=document.createElement("button");
+  remove.className="danger";
+  remove.textContent="X";
+  remove.onclick=()=>{
+   items.splice(index,1);
+   renderItems();
+  };
+
+  action.appendChild(remove);
+  tr.appendChild(action);
+  body.appendChild(tr);
+ });
+
+ calculateTotals();
+}
+
+function calculateTotals(){
+ const packages=items.reduce((s,i)=>s+num(i.packages),0);
+ const weight=items.reduce((s,i)=>s+num(i.gross_weight),0);
+
+ document.getElementById("package_count").value=packages;
+ document.getElementById("gross_weight").value=weight.toFixed(2);
+}
+
+function getFormData(){
+ return {
+  cmr_number:document.getElementById("cmr_number").value.trim()||null,
+  invoice_number:document.getElementById("invoice_number").value.trim()||null,
+  sender_name:document.getElementById("sender_name").value.trim()||null,
+  carrier_name:document.getElementById("carrier_name").value.trim()||null,
+  receiver_name:document.getElementById("receiver_name").value.trim()||null,
+  loading_place:document.getElementById("loading_place").value.trim()||null,
+  delivery_place:document.getElementById("delivery_place").value.trim()||null,
+  goods_description:document.getElementById("goods_description").value.trim()||null,
+  package_count:num(document.getElementById("package_count").value),
+  gross_weight:num(document.getElementById("gross_weight").value),
+  notes:document.getElementById("notes").value.trim()||null
+ };
+}
+
+async function checkSession(){
+ const {data,error}=await db.auth.getSession();
+
+ if(error||!data.session){
+  showStatus("Niste prijavljeni. Koristite postojeću LOGIN stranicu.","error");
+  document.getElementById("documentsList").textContent="Prijava je potrebna.";
+  return;
+ }
+
+ currentUser=data.session.user;
+ await loadDocuments();
+}
+
+async function saveDocument(){
+ if(!currentUser){
+  showStatus("Nema aktivne korisničke sesije.","error");
+  return;
+ }
+
+ const payload={
+  ...getFormData(),
+  user_id:currentUser.id
+ };
+
+ let documentId=editingId;
+
+ if(editingId){
+  const {error}=await db.from("export_cmr_documents")
+   .update(payload)
+   .eq("id",editingId)
+   .eq("user_id",currentUser.id);
+
+  if(error){
+   showStatus("Greška pri izmjeni: "+error.message,"error");
+   return;
+  }
+ }else{
+  const {data,error}=await db.from("export_cmr_documents")
+   .insert(payload).select().single();
+
+  if(error){
+   showStatus("Greška pri čuvanju: "+error.message,"error");
+   return;
+  }
+
+  documentId=data.id;
+  editingId=documentId;
+ }
+
+ const itemRows=items.map((item,index)=>({
+  user_id:currentUser.id,
+  document_type:"cmr",
+  document_id:documentId,
+  item_number:index+1,
+  description:item.description||null,
+  quantity:item.packages,
+  unit:"paket",
+  gross_weight:item.gross_weight
+ }));
+
+ const {error:deleteError}=await db.from("export_document_items")
+  .delete()
+  .eq("document_id",documentId)
+  .eq("document_type","cmr")
+  .eq("user_id",currentUser.id);
+
+ if(deleteError){
+  showStatus("CMR je sačuvan, ali stavke nisu ažurirane: "+deleteError.message,"error");
+  await loadDocuments();
+  return;
+ }
+
+ if(itemRows.length){
+  const {error:itemError}=await db.from("export_document_items").insert(itemRows);
+
+  if(itemError){
+   showStatus("CMR je sačuvan, ali stavke nisu: "+itemError.message,"error");
+   await loadDocuments();
+   return;
+  }
+ }
+
+ showStatus("CMR dokument i stavke uspješno su sačuvani.");
+ await loadDocuments();
+}
+
+async function loadDocuments(){
+ if(!currentUser)return;
+
+ const list=document.getElementById("documentsList");
+ list.textContent="Učitavanje...";
+
+ const {data,error}=await db.from("export_cmr_documents")
+  .select("*")
+  .eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error){
+  list.textContent="Greška: "+error.message;
+  return;
+ }
+
+ if(!data||!data.length){
+  list.textContent="Još nema sačuvanih CMR dokumenata.";
+  return;
+ }
+
+ list.innerHTML="";
+
+ data.forEach(doc=>{
+  const row=document.createElement("div");
+  row.className="document";
+
+  const info=document.createElement("div");
+  const title=document.createElement("strong");
+  title.textContent=doc.cmr_number||"CMR bez broja";
+
+  const detail=document.createElement("div");
+  detail.className="small";
+  detail.textContent=(doc.sender_name||"Bez pošiljaoca")+" → "+(doc.receiver_name||"Bez primaoca");
+
+  info.append(title,detail);
+
+  const actions=document.createElement("div");
+  actions.className="buttons";
+
+  const open=document.createElement("button");
+  open.className="secondary";
+  open.textContent="OTVORI";
+  open.onclick=()=>editDocument(doc);
+
+  const del=document.createElement("button");
+  del.className="danger";
+  del.textContent="OBRIŠI";
+  del.onclick=()=>deleteDocument(doc.id);
+
+  actions.append(open,del);
+  row.append(info,actions);
+  list.appendChild(row);
+ });
+}
+
+async function editDocument(doc){
+ const {data,error}=await db.from("export_document_items")
+  .select("*")
+  .eq("document_id",doc.id)
+  .eq("document_type","cmr")
+  .eq("user_id",currentUser.id)
+  .order("item_number",{ascending:true});
+
+ if(error){
+  showStatus("Greška pri učitavanju stavki: "+error.message,"error");
+  return;
+ }
+
+ document.getElementById("cmr_number").value=doc.cmr_number||"";
+ document.getElementById("invoice_number").value=doc.invoice_number||"";
+ document.getElementById("sender_name").value=doc.sender_name||"";
+ document.getElementById("carrier_name").value=doc.carrier_name||"";
+ document.getElementById("receiver_name").value=doc.receiver_name||"";
+ document.getElementById("loading_place").value=doc.loading_place||"";
+ document.getElementById("delivery_place").value=doc.delivery_place||"";
+ document.getElementById("goods_description").value=doc.goods_description||"";
+ document.getElementById("notes").value=doc.notes||"";
+
+ items=(data||[]).map(row=>({
+  description:row.description||"",
+  packages:num(row.quantity),
+  gross_weight:num(row.gross_weight)
+ }));
+
+ renderItems();
+ editingId=doc.id;
+ showStatus("Uređujete postojeći CMR.");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteDocument(id){
+ if(!confirm("Obrisati ovaj CMR i njegove stavke?"))return;
+
+ const {error:itemError}=await db.from("export_document_items")
+  .delete()
+  .eq("document_id",id)
+  .eq("document_type","cmr")
+  .eq("user_id",currentUser.id);
+
+ if(itemError){
+  showStatus("Greška pri brisanju stavki: "+itemError.message,"error");
+  return;
+ }
+
+ const {error}=await db.from("export_cmr_documents")
+  .delete()
+  .eq("id",id)
+  .eq("user_id",currentUser.id);
+
+ if(error){
+  showStatus("Greška pri brisanju CMR-a: "+error.message,"error");
+  return;
+ }
+
+ if(editingId===id)newDocument();
+
+ showStatus("CMR dokument je obrisan.");
+ await loadDocuments();
+}
+
+function newDocument(){
+ editingId=null;
+ items=[];
+
+ [
+ "cmr_number","invoice_number","sender_name","carrier_name",
+ "receiver_name","loading_place","delivery_place",
+ "goods_description","notes","pickup_date","delivery_date","condition_notes"
+ ].forEach(id=>document.getElementById(id).value="");
+
+ addItem();
+ showStatus("Spreman je novi CMR dokument.");
+}
+
+addItem();
+checkSession();
+</script>
+</body>
+</html>
