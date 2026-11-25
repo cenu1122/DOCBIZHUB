@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOCBIZHUB | Izvozna carinska deklaracija</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:25px;
+ font-family:Arial,Helvetica,sans-serif;
+ background:linear-gradient(135deg,#eef4ff,#f8fbff);
+ color:#24344d
+}
+.container{max-width:1150px;margin:auto}
+.header{
+ background:linear-gradient(135deg,#1261d6,#0b3f91);
+ color:white;padding:25px;border-radius:20px;
+ box-shadow:0 8px 25px #123d7a25;
+ margin-bottom:22px
+}
+.header h1{margin:0 0 8px;font-size:25px}
+.header p{margin:0;opacity:.9}
+.card{
+ background:white;padding:25px;border-radius:18px;
+ margin-bottom:20px;
+ box-shadow:0 5px 20px #123d7a12;
+ border:1px solid #e1eaff
+}
+h2{color:#123d7a;font-size:19px;margin:0 0 18px}
+.grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;color:#345071}
+input,select,textarea{
+ width:100%;padding:12px;border:1px solid #cbd9ed;
+ border-radius:9px;font-size:14px;background:#fbfdff;
+ color:#24344d
+}
+input:focus,select:focus,textarea:focus{
+ outline:none;border-color:#1261d6;
+ box-shadow:0 0 0 3px #1261d61a
+}
+textarea{min-height:85px;resize:vertical}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}
+button{
+ border:0;border-radius:9px;padding:12px 18px;
+ font-weight:bold;cursor:pointer;font-size:14px
+}
+.primary{background:linear-gradient(135deg,#1261d6,#0b3f91);color:white}
+.secondary{background:#eaf1ff;color:#164b98}
+.danger{background:#fff0f0;color:#b42318}
+.status{padding:12px;border-radius:9px;margin-bottom:15px;display:none}
+.status.ok{display:block;background:#e9f8ef;color:#176b38}
+.status.error{display:block;background:#fff0f0;color:#a32121}
+.small{font-size:12px;color:#718096}
+.document{
+ padding:13px;border:1px solid #dce7f7;border-radius:10px;
+ margin:10px 0;display:flex;justify-content:space-between;
+ align-items:center;gap:10px;flex-wrap:wrap
+}
+.document strong{color:#123d7a}
+hr{border:0;border-top:1px solid #e6edf7;margin:20px 0}
+@media(max-width:700px){
+ body{padding:12px}
+ .grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .card{padding:17px}
+}
+@media print{
+ body{background:white;padding:0}
+ .no-print,#savedDocuments,#status{display:none!important}
+ .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+ .header{background:#fff;color:#123d7a;border:1px solid #ccc;box-shadow:none}
+ input,textarea,select{border:0;border-bottom:1px solid #aaa;padding:5px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+ <h1>DOCBIZHUB BUSINESS PORTAL</h1>
+ <p>IZVOZNA CARINSKA DEKLARACIJA – PODACI ZA IZVOZ</p>
+</div>
+
+<div id="status" class="status"></div>
+
+<div class="card">
+ <h2>1. Podaci o deklaraciji</h2>
+ <div class="grid">
+  <div class="field">
+   <label>Referentni broj deklaracije</label>
+   <input id="declaration_reference" placeholder="Npr. EXP-2026-001">
+  </div>
+  <div class="field">
+   <label>Broj komercijalne fakture</label>
+   <input id="invoice_number" placeholder="Broj fakture">
+  </div>
+  <div class="field">
+   <label>Carinska ispostava</label>
+   <input id="customs_office" placeholder="Naziv carinske ispostave">
+  </div>
+  <div class="field">
+   <label>Datum pripreme</label>
+   <input id="document_date" type="date">
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>2. Izvoznik</h2>
+ <div class="grid">
+  <div class="field full">
+   <label>Naziv izvoznika</label>
+   <input id="exporter_name" placeholder="Naziv firme">
+  </div>
+  <div class="field full">
+   <label>Adresa izvoznika</label>
+   <textarea id="exporter_address" placeholder="Ulica, broj, grad, država"></textarea>
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>3. Uvoznik / primalac</h2>
+ <div class="grid">
+  <div class="field">
+   <label>Naziv uvoznika</label>
+   <input id="importer_name" placeholder="Naziv kupca">
+  </div>
+  <div class="field">
+   <label>Država uvoznika</label>
+   <input id="importer_country" placeholder="Npr. Njemačka">
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>4. Podaci o robi</h2>
+ <div class="grid">
+  <div class="field">
+   <label>CN / HS tarifna oznaka</label>
+   <input id="cn_code" placeholder="Tarifna oznaka robe">
+  </div>
+  <div class="field">
+   <label>Porijeklo robe</label>
+   <input id="goods_origin" placeholder="Npr. Bosna i Hercegovina">
+  </div>
+  <div class="field full">
+   <label>Opis robe</label>
+   <textarea id="goods_description" placeholder="Detaljan opis robe, materijal, karakteristike..."></textarea>
+  </div>
+  <div class="field">
+   <label>Vrijednost robe</label>
+   <input id="goods_value" type="number" min="0" step="0.01" placeholder="0.00">
+  </div>
+  <div class="field">
+   <label>Valuta</label>
+   <select id="currency">
+    <option value="EUR">EUR – Euro</option>
+    <option value="BAM">BAM – Konvertibilna marka</option>
+    <option value="USD">USD – Američki dolar</option>
+    <option value="CHF">CHF – Švicarski franak</option>
+   </select>
+  </div>
+  <div class="field">
+   <label>Vrsta transporta</label>
+   <select id="transport_method">
+    <option value="">Odaberi transport</option>
+    <option value="Drumski">Drumski</option>
+    <option value="Željeznički">Željeznički</option>
+    <option value="Pomorski">Pomorski</option>
+    <option value="Zračni">Zračni</option>
+    <option value="Kombinovani">Kombinovani</option>
+   </select>
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>5. Napomene i dodatne informacije</h2>
+ <div class="field">
+  <label>Napomene</label>
+  <textarea id="notes" placeholder="Dodatne informacije za špeditera ili carinskog zastupnika..."></textarea>
+ </div>
+</div>
+
+<div class="card no-print">
+ <h2>6. Upravljanje dokumentom</h2>
+ <div class="buttons">
+  <button class="primary" onclick="saveDocument()">SAČUVAJ U SUPABASE</button>
+  <button class="secondary" onclick="newDocument()">NOVI UNOS</button>
+  <button class="secondary" onclick="window.print()">ŠTAMPAJ / PDF</button>
+ </div>
+ <p class="small">Dokument se čuva na tvom korisničkom Supabase nalogu.</p>
+</div>
+
+<div class="card no-print" id="savedDocuments">
+ <h2>7. Moje sačuvane deklaracije</h2>
+ <button class="secondary" onclick="loadDocuments()">OSVJEŽI LISTU</button>
+ <div id="documentsList" style="margin-top:15px">
+  Učitavanje dokumenata...
+ </div>
+</div>
+
+<p class="small">
+Napomena: Ovo je obrazac za pripremu i evidenciju podataka za izvoz.
+Ne predstavlja službenu carinsku deklaraciju niti zamjenjuje postupak
+podnošenja deklaracije nadležnoj carinskoj službi ili putem špeditera.
+</p>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://uduwpvdjmanrgpumdrfh.supabase.co";
+
+/*
+ Koristi isti anon/publishable ključ koji je već u tvojoj LOGIN.html
+ stranici. Nemoj ovdje stavljati service_role ili secret ključ.
+*/
+const SUPABASE_ANON_KEY = "OVDJE_UNESI_ISTI_ANON_KLJUC_IZ_LOGIN_HTML";
+
+const db = window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_ANON_KEY
+);
+
+let currentUser = null;
+let editingId = null;
+
+const fields = [
+ "declaration_reference",
+ "invoice_number",
+ "exporter_name",
+ "exporter_address",
+ "importer_name",
+ "importer_country",
+ "customs_office",
+ "cn_code",
+ "goods_description",
+ "goods_origin",
+ "goods_value",
+ "currency",
+ "transport_method",
+ "notes"
+];
+
+function showStatus(message,type="ok"){
+ const box=document.getElementById("status");
+ box.textContent=message;
+ box.className="status "+type;
+}
+
+async function checkSession(){
+ const {data,error}=await db.auth.getSession();
+
+ if(error || !data.session){
+  showStatus("Niste prijavljeni. Prijavite se preko postojeće LOGIN stranice.","error");
+  document.getElementById("documentsList").textContent=
+   "Prijava je potrebna za pregled dokumenata.";
+  return;
+ }
+
+ currentUser=data.session.user;
+ await loadDocuments();
+}
+
+function getFormData(){
+ const result={};
+
+ fields.forEach(id=>{
+  const element=document.getElementById(id);
+  let value=element.value.trim();
+
+  if(id==="goods_value"){
+   value=value===""?null:Number(value);
+  }
+
+  result[id]=value===""?null:value;
+ });
+
+ return result;
+}
+
+async function saveDocument(){
+ if(!currentUser){
+  showStatus("Nema aktivne korisničke sesije.","error");
+  return;
+ }
+
+ const payload={
+  ...getFormData(),
+  user_id:currentUser.id
+ };
+
+ if(editingId){
+  const {error}=await db
+   .from("export_customs_declarations")
+   .update(payload)
+   .eq("id",editingId)
+   .eq("user_id",currentUser.id);
+
+  if(error){
+   showStatus("Greška pri izmjeni: "+error.message,"error");
+   return;
+  }
+
+  showStatus("Deklaracija je uspješno izmijenjena.");
+ }else{
+  const {data,error}=await db
+   .from("export_customs_declarations")
+   .insert(payload)
+   .select()
+   .single();
+
+  if(error){
+   showStatus("Greška pri čuvanju: "+error.message,"error");
+   return;
+  }
+
+  editingId=data.id;
+  showStatus("Deklaracija je uspješno sačuvana.");
+ }
+
+ await loadDocuments();
+}
+
+async function loadDocuments(){
+ if(!currentUser)return;
+
+ const list=document.getElementById("documentsList");
+ list.textContent="Učitavanje...";
+
+ const {data,error}=await db
+  .from("export_customs_declarations")
+  .select("*")
+  .eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error){
+  list.textContent="Greška pri učitavanju: "+error.message;
+  return;
+ }
+
+ if(!data || data.length===0){
+  list.textContent="Još nema sačuvanih deklaracija.";
+  return;
+ }
+
+ list.innerHTML="";
+
+ data.forEach(doc=>{
+  const item=document.createElement("div");
+  item.className="document";
+
+  const info=document.createElement("div");
+  const title=document.createElement("strong");
+  title.textContent=doc.declaration_reference || "Deklaracija bez broja";
+
+  const detail=document.createElement("div");
+  detail.className="small";
+  detail.textContent=
+   (doc.exporter_name || "Bez izvoznika")+" • "+
+   (doc.invoice_number || "Bez fakture");
+
+  info.append(title,detail);
+
+  const actions=document.createElement("div");
+  actions.className="buttons";
+
+  const edit=document.createElement("button");
+  edit.className="secondary";
+  edit.textContent="OTVORI";
+  edit.onclick=()=>editDocument(doc);
+
+  const remove=document.createElement("button");
+  remove.className="danger";
+  remove.textContent="OBRIŠI";
+  remove.onclick=()=>deleteDocument(doc.id);
+
+  actions.append(edit,remove);
+  item.append(info,actions);
+  list.append(item);
+ });
+}
+
+function editDocument(doc){
+ fields.forEach(id=>{
+  document.getElementById(id).value=doc[id] ?? "";
+ });
+
+ editingId=doc.id;
+ showStatus("Uređujete postojeću deklaraciju.");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteDocument(id){
+ if(!confirm("Da li sigurno želite obrisati ovu deklaraciju?"))return;
+
+ const {error}=await db
+  .from("export_customs_declarations")
+  .delete()
+  .eq("id",id)
+  .eq("user_id",currentUser.id);
+
+ if(error){
+  showStatus("Greška pri brisanju: "+error.message,"error");
+  return;
+ }
+
+ if(editingId===id)newDocument();
+
+ showStatus("Deklaracija je obrisana.");
+ await loadDocuments();
+}
+
+function newDocument(){
+ fields.forEach(id=>document.getElementById(id).value="");
+ editingId=null;
+ showStatus("Spreman je novi unos.");
+}
+
+document.getElementById("document_date").value=
+ new Date().toISOString().slice(0,10);
+
+checkSession();
+</script>
+</body>
+</html>
