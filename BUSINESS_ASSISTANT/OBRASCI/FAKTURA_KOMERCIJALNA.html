@@ -770,7 +770,27 @@ function classifyInvoice(){
     buyerCode
   };
 }
+function updateInvoiceClassification(){
+  const result = classifyInvoice();
+  const output = document.getElementById("invoiceClassification");
 
+  if(result.error){
+    output.className = "tax-result warning";
+    output.textContent = result.error;
+    return;
+  }
+
+  const domestic = result.type === "domestic";
+
+  output.className = "tax-result success";
+  output.innerHTML = `
+    <strong>${domestic ? "DOMAĆA FAKTURA" : "INOZEMNA FAKTURA"}</strong><br>
+    Prodavac: ${escapeHTML(result.sellerCode)}<br>
+    Kupac: ${escapeHTML(result.buyerCode)}<br>
+    <small>Vrsta je automatski određena prema državama prodavca i kupca.</small>
+  `;
+}
+ 
 
 // Čitanje poreskog pravila iz Supabase tabele.
 async function findTaxRule({
@@ -1012,6 +1032,13 @@ async function applyTaxToInvoice(){
 document.getElementById("calculateTax")
   .addEventListener("click",applyTaxToInvoice);
 
+ document.getElementById("sellerCountry").addEventListener(
+  "input", updateInvoiceClassification
+);
+
+document.getElementById("buyerCountry").addEventListener(
+  "input", updateInvoiceClassification
+);
 /* -------------------------------------------------------
    6. PODACI O FAKTURI
 ------------------------------------------------------- */
@@ -1585,25 +1612,25 @@ document.getElementById("language").addEventListener("change",()=>{
 });
 
 document.getElementById("buyerCountry").addEventListener("change",()=>{
-  const country = normalizeCountry(
+  const code = getCountryCode(
     document.getElementById("buyerCountry").value
   );
 
-  const suggested = {
-    "Bosna i Hercegovina":"BAM",
-    "Srbija":"RSD",
-    "Hrvatska":"EUR",
-    "Crna Gora":"EUR",
-    "Sjeverna Makedonija":"MKD",
-    "Slovenija":"EUR",
-    "Njemačka":"EUR",
-    "Austrija":"EUR",
-    "Italija":"EUR",
-    "Švicarska":"CHF"
-  }[country];
+  const currencies = {
+    BA:"BAM",
+    RS:"RSD",
+    HR:"EUR",
+    ME:"EUR",
+    MK:"MKD",
+    SI:"EUR",
+    DE:"EUR",
+    AT:"EUR",
+    IT:"EUR",
+    CH:"CHF"
+  };
 
-  if(suggested){
-    document.getElementById("currency").value = suggested;
+  if(currencies[code]){
+    document.getElementById("currency").value = currencies[code];
     calculate();
   }
 });
