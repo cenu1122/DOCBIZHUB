@@ -576,18 +576,19 @@ function addItem(desc="",qty=1,price=0,discount=0,vat=0){
   applyInvoiceMode();
 }
 
-function getTotals(){
-  let subtotal=0;
-  let discounts=0;
-  let vatTotal=0;
-  let total=0;
 
-  const items = [...document.querySelectorAll("#items tr")].map(row=>{
-    const qty = Math.max(0,numberValue(row.querySelector(".qty").value));
-    const price = Math.max(0,numberValue(row.querySelector(".price").value));
-    const discount = Math.min(100,Math.max(0,
-      numberValue(row.querySelector(".discount").value)));
-    const vat = Math.max(0,numberValue(row.querySelector(".vat").value));
+
+function getTotals(){
+  let subtotal = 0;
+  let discounts = 0;
+  let vatTotal = 0;
+  let total = 0;
+
+  const items = [...document.querySelectorAll("#items tr")].map(row => {
+    const qty = Number(row.querySelector(".qty").value);
+    const price = Number(row.querySelector(".price").value);
+    const discount = Number(row.querySelector(".discount").value);
+    const vat = Number(row.querySelector(".vat").value);
 
     const gross = qty * price;
     const discountAmount = gross * discount / 100;
@@ -600,24 +601,27 @@ function getTotals(){
     vatTotal += tax;
     total += lineTotal;
 
-    return {row,qty,price,discount,vat,base,tax,lineTotal};
+    return {row, qty, price, discount, vat, base, tax, lineTotal};
   });
 
-  return {subtotal,discounts,vatTotal,total,items};
+  return {subtotal, discounts, vatTotal, total, items};
 }
 
 function calculate(){
   const totals = getTotals();
 
-  totals.items.forEach(item=>{
-    item.row.querySelector(".amount").textContent = money(item.lineTotal);
-  });
-
   document.getElementById("subtotal").textContent = money(totals.subtotal);
   document.getElementById("discountTotal").textContent = money(totals.discounts);
   document.getElementById("vatTotal").textContent = money(totals.vatTotal);
   document.getElementById("total").textContent = money(totals.total);
+
+  totals.items.forEach(item => {
+    item.row.querySelector(".amount").textContent = money(item.lineTotal);
+  });
+
+  return totals;
 }
+
 
 
 /* -------------------------------------------------------
@@ -1604,9 +1608,111 @@ async function refreshInvoiceList(){
   }
 }
 
+
+function validateInvoiceData(data){
+
+  const requiredFields = [
+    ["sellerName", "Unesite naziv firme prodavca."],
+    ["sellerAddress", "Unesite adresu prodavca."],
+    ["sellerCountry", "Unesite državu prodavca."],
+    ["buyerName", "Unesite naziv ili ime kupca."],
+    ["buyerAddress", "Unesite adresu kupca."],
+    ["buyerCountry", "Unesite državu kupca."],
+    ["invoiceNumber", "Unesite broj fakture."],
+    ["invoiceDate", "Unesite datum izdavanja fakture."]
+  ];
+
+  for(const [field, message] of requiredFields){
+    if(!String(data[field] || "").trim()){
+      alert(message);
+      document.getElementById(field)?.focus();
+      return false;
+    }
+  }
+
+  if(data.dueDate && data.invoiceDate &&
+     data.dueDate < data.invoiceDate){
+    alert("Datum dospijeća ne može biti prije datuma izdavanja.");
+    document.getElementById("dueDate").focus();
+    return false;
+  }
+
+  const rows = [...document.querySelectorAll("#items tr")];
+
+  if(rows.length === 0){
+    alert("Dodajte najmanje jednu stavku fakture.");
+    return false;
+  }
+
+  for(let i = 0; i < rows.length; i++){
+
+    const row = rows[i];
+
+    const desc = row.querySelector(".desc").value.trim();
+    const qtyRaw = row.querySelector(".qty").value.trim();
+    const priceRaw = row.querySelector(".price").value.trim();
+    const discountRaw = row.querySelector(".discount").value.trim();
+    const vatRaw = row.querySelector(".vat").value.trim();
+
+    const qty = Number(qtyRaw);
+    const price = Number(priceRaw);
+    const discount = Number(discountRaw);
+    const vat = Number(vatRaw);
+
+    const line = i + 1;
+
+    if(!desc){
+      alert(`Unesite opis stavke broj ${line}.`);
+      row.querySelector(".desc").focus();
+      return false;
+    }
+
+    if(!qtyRaw || !Number.isFinite(qty) || qty <= 0){
+      alert(`Količina stavke ${line} mora biti veća od nule.`);
+      row.querySelector(".qty").focus();
+      return false;
+    }
+
+    if(!priceRaw || !Number.isFinite(price) || price < 0){
+      alert(`Cijena stavke ${line} nije ispravna.`);
+      row.querySelector(".price").focus();
+      return false;
+    }
+
+    if(!discountRaw || !Number.isFinite(discount) ||
+       discount < 0 || discount > 100){
+      alert(`Rabat stavke ${line} mora biti između 0 i 100%.`);
+      row.querySelector(".discount").focus();
+      return false;
+    }
+
+    if(!vatRaw || !Number.isFinite(vat) || vat < 0 || vat > 100){
+      alert(`PDV stavke ${line} mora biti između 0 i 100%.`);
+      row.querySelector(".vat").focus();
+      return false;
+    }
+
+    const gross = qty * price;
+    const discountAmount = gross * discount / 100;
+
+    if(!Number.isFinite(gross) ||
+       !Number.isFinite(discountAmount) ||
+       discountAmount > gross){
+      alert(`Obračun stavke ${line} nije ispravan.`);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+ 
 /* -------------------------------------------------------
    10. ČUVANJE FAKTURE
 ------------------------------------------------------- */
+
 
 async function saveInvoice(){
   try{
@@ -1619,21 +1725,18 @@ async function saveInvoice(){
 
     let data = getFormData();
 
-    if(!data.buyerName?.trim() || !data.invoiceNumber?.trim()){
-      alert("Unesite naziv kupca i broj fakture.");
+    if(!validateInvoiceData(data)) return;
+
+    const duplicate = await invoiceNumberExists(
+      data.invoiceNumber.trim(),
+      activeInvoiceId
+    );
+
+    if(duplicate){
+      alert("Broj fakture već postoji. Unesite drugi broj.");
+      document.getElementById("invoiceNumber").focus();
       return;
     }
-
-    if(!data.sellerCountry?.trim() || !data.buyerCountry?.trim()){
-      alert("Unesite državu prodavca i državu kupca.");
-      return;
-    }
-
-    /*
-      Poreski tretman se provjerava ponovo neposredno prije čuvanja.
-      Time se sprečava korištenje ranijeg rezultata nakon izmjene
-      države, statusa kupca, PDV registracije ili dokaza o izvozu.
-    */
 
     const freshTax = await determineTaxTreatment();
 
@@ -1643,74 +1746,61 @@ async function saveInvoice(){
       !Number.isFinite(Number(freshTax.rate))
     ){
       currentTaxTreatment = freshTax;
-
-      const taxOutput = document.getElementById("taxResult");
-      taxOutput.className = "tax-result warning";
-      taxOutput.textContent =
-        "Faktura nije sačuvana. Potrebna je poreska provjera: " +
-        (freshTax.warning || "Poreski tretman nije potvrđen.");
-
-      alert(
-        "Faktura nije sačuvana.\n\n" +
-        (freshTax.warning || "Poreski tretman nije potvrđen.")
-      );
-
+      alert("Faktura nije sačuvana: " + freshTax.warning);
       return;
     }
 
     currentTaxTreatment = freshTax;
 
-    /*
-      Sve stavke dobijaju stopu iz upravo provjerenog pravila.
-      Ovo je važno i ako je nova stavka dodana nakon obračuna.
-    */
-
     document.querySelectorAll("#items .item-vat").forEach(input=>{
       input.value = freshTax.rate;
     });
 
-    calculate();
-
-    // Podaci se ponovo čitaju nakon primjene poreske stope.
     data = getFormData();
 
+    if(!validateInvoiceData(data)) return;
+
     const totals = getTotals();
+
+    if(
+      !Number.isFinite(totals.total) ||
+      !Number.isFinite(totals.subtotal) ||
+      !Number.isFinite(totals.vatTotal) ||
+      !Number.isFinite(totals.discounts)
+    ){
+      alert("Ukupan obračun fakture nije ispravan.");
+      return;
+    }
 
     const invoicePayload = {
       USER_ID:currentUserId,
       BROJ_FAKTURE:data.invoiceNumber.trim(),
       KUPAC:data.buyerName.trim(),
-      DATUM_FAKTURE:data.invoiceDate ||
-        new Date().toISOString().slice(0,10),
+      DATUM_FAKTURE:data.invoiceDate,
       ROK_PLACANJA:data.dueDate || null,
       IZNOS_FAKTURE:Number(totals.total.toFixed(2)),
       OPIS_FAKTURE:buildInvoiceDescription(data)
     };
 
-    let invoice;
+    const lineRows = totals.items.map(item=>({
+      FAKTURA_ID:activeInvoiceId,
+      USER_ID:currentUserId,
+      NAZIV_STAVKE:item.row.querySelector(".desc").value.trim(),
+      OPIS:null,
+      KOLICINA:item.qty,
+      JEDINICA_MJERE:"kom",
+      CIJENA:item.price,
+      POPUST:item.discount,
+      PDV_STOPA:item.vat,
+      UKUPNO:Number(item.lineTotal.toFixed(2))
+    }));
 
-    if(activeInvoiceId){
-      const {data:updated,error:updateError} = await _supabase
-        .from("FAKTURE")
-        .update(invoicePayload)
-        .eq("ID",activeInvoiceId)
-        .eq("USER_ID",currentUserId)
-        .select("ID")
-        .single();
+    let invoiceId = activeInvoiceId;
+    let isNewInvoice = !invoiceId;
 
-      if(updateError) throw updateError;
-      invoice = updated;
+    if(isNewInvoice){
 
-      const {error:deleteError} = await _supabase
-        .from("STAVKE_FAKTURA")
-        .delete()
-        .eq("FAKTURA_ID",invoice.ID)
-        .eq("USER_ID",currentUserId);
-
-      if(deleteError) throw deleteError;
-
-    }else{
-      const {data:created,error:insertError} = await _supabase
+      const {data:created,error} = await _supabase
         .from("FAKTURE")
         .insert({
           ...invoicePayload,
@@ -1719,44 +1809,87 @@ async function saveInvoice(){
         .select("ID")
         .single();
 
-      if(insertError) throw insertError;
-      invoice = created;
+      if(error) throw error;
+
+      invoiceId = created.ID;
+
+    }else{
+
+      const {data:existing,error:checkError} = await _supabase
+        .from("FAKTURE")
+        .select("ID")
+        .eq("ID",invoiceId)
+        .eq("USER_ID",currentUserId)
+        .single();
+
+      if(checkError || !existing){
+        throw new Error("Faktura nije pronađena.");
+      }
     }
 
-    const lineRows = totals.items
-      .filter(item=>item.row.querySelector(".desc").value.trim())
-      .map(item=>({
-        FAKTURA_ID:invoice.ID,
-        USER_ID:currentUserId,
-        NAZIV_STAVKE:item.row.querySelector(".desc").value.trim(),
-        OPIS:null,
-        KOLICINA:item.qty,
-        JEDINICA_MJERE:"kom",
-        CIJENA:item.price,
-        POPUST:item.discount,
-        PDV_STOPA:item.vat,
-        UKUPNO:Number(item.lineTotal.toFixed(2))
-      }));
+    // Nove stavke prvo se unose bez brisanja starih.
+    const preparedLines = lineRows.map(line=>({
+      ...line,
+      FAKTURA_ID:invoiceId
+    }));
 
-    if(lineRows.length){
-      const {error:lineError} = await _supabase
+    const {data:newLines,error:lineError} = await _supabase
+      .from("STAVKE_FAKTURA")
+      .insert(preparedLines)
+      .select("ID");
+
+    if(lineError) throw lineError;
+
+    // Tek nakon uspješnog unosa novih stavki ažurira se zaglavlje.
+    const {error:updateError} = await _supabase
+      .from("FAKTURE")
+      .update(invoicePayload)
+      .eq("ID",invoiceId)
+      .eq("USER_ID",currentUserId);
+
+    if(updateError){
+
+      // Pokušaj uklanjanja upravo dodanih stavki.
+      const newIds = (newLines || []).map(line=>line.ID);
+
+      if(newIds.length){
+        await _supabase
+          .from("STAVKE_FAKTURA")
+          .delete()
+          .in("ID",newIds)
+          .eq("USER_ID",currentUserId);
+      }
+
+      throw updateError;
+    }
+
+    // Stare stavke brišu se tek kada su nove uspješno unesene.
+    if(!isNewInvoice){
+
+      const newIds = (newLines || []).map(line=>line.ID);
+
+      const {error:deleteError} = await _supabase
         .from("STAVKE_FAKTURA")
-        .insert(lineRows);
+        .delete()
+        .eq("FAKTURA_ID",invoiceId)
+        .eq("USER_ID",currentUserId)
+        .not("ID","in",`(${newIds.join(",")})`);
 
-      if(lineError){
-        console.error(lineError);
+      if(deleteError){
         throw new Error(
-          "Faktura je sačuvana, ali stavke nisu: " + lineError.message
+          "Nove stavke su sačuvane, ali stare nisu uklonjene: " +
+          deleteError.message
         );
       }
     }
 
-    activeInvoiceId = invoice.ID;
+    activeInvoiceId = invoiceId;
 
     await refreshInvoiceList();
-    document.getElementById("invoiceList").value = invoice.ID;
 
-    alert("Faktura je uspješno sačuvana u Supabase.");
+    document.getElementById("invoiceList").value = invoiceId;
+
+    alert("Faktura i stavke su uspješno sačuvane.");
 
   }catch(error){
     console.error(error);
@@ -1764,6 +1897,8 @@ async function saveInvoice(){
   }
 }
 
+
+    
 /* -------------------------------------------------------
    11. UČITAVANJE FAKTURE
 ------------------------------------------------------- */
@@ -1880,8 +2015,8 @@ async function loadInvoice(id=document.getElementById("invoiceList").value,
         line.NAZIV_STAVKE || "",
         line.KOLICINA,
         line.CIJENA,
-       line.POPUST ?? line.POPOUST ?? 0,
-        line.PDV_STOPA ?? 0
+      line.POPUST ?? 0,
+line.PDV_STOPA ?? 0
       );
     });
 
@@ -2232,6 +2367,23 @@ populateCountryOptions();
       error.message || String(error);
   }
 })();
+
+
+async function invoiceNumberExists(invoiceNumber, currentInvoiceId = null) {
+  const {data,error} = await _supabase
+    .from("FAKTURE")
+    .select("ID")
+    .eq("USER_ID",currentUserId)
+    .eq("BROJ_FAKTURE",invoiceNumber);
+
+  if(error) throw error;
+
+  return (data || []).some(invoice =>
+    String(invoice.ID) !== String(currentInvoiceId)
+  );
+}
+
+ 
 </script>
 </body>
 </html>
