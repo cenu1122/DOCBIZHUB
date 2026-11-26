@@ -38,6 +38,18 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .tax-result.success{border-color:#2d9b61;background:#f2fff7}
 .small{font-size:12px;color:#52657e}
 .status-note{font-size:12px;color:#52657e;margin-top:6px}
+.tax-audit{margin-top:16px;padding:16px;background:#fff;border:1px solid #dce5f0;border-radius:10px}
+.tax-audit h3{margin:0 0 8px;color:#183153}
+.tax-audit-summary{margin:8px 0 12px;color:#52657e;font-size:13px}
+.tax-audit-list{display:grid;gap:8px}
+.tax-audit-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:9px 10px;border:1px solid #e5ebf3;border-radius:7px;background:#fff}
+.tax-audit-row strong{font-size:13px}
+.tax-audit-row small{display:block;color:#52657e;margin-top:3px;line-height:1.4}
+.tax-audit-status{flex-shrink:0;font-size:11px;font-weight:bold;padding:4px 8px;border-radius:20px;background:#eef2f7;color:#52657e}
+.tax-audit-status.ok{background:#e9f8ef;color:#187642}
+.tax-audit-status.warn{background:#fff4d8;color:#875900}
+.tax-audit-status.bad{background:#fdebea;color:#b42318}
+.tax-audit-next{margin-top:12px;padding:12px;background:#f7faff;border-radius:8px;font-size:13px;line-height:1.55}
 .table-wrap{overflow-x:auto}
 @media(max-width:750px){
  body{padding:8px}
@@ -265,6 +277,31 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <div id="taxResult" class="tax-result" aria-live="polite">
     Izaberite podatke transakcije i kliknite „Odredi poreski tretman“.
   </div>
+
+  <!-- NOVI MODUL: PORESKI KONTROLOR -->
+  <section class="tax-audit" id="taxAudit" aria-live="polite">
+    <h3>PORESKI KONTROLOR</h3>
+    <p class="small">Kontrolna lista pokazuje šta je uneseno, šta nedostaje i šta još nije provjereno. Ova kontrola ne zamjenjuje poresko mišljenje niti sama potvrđuje zakonski tretman.</p>
+
+    <div class="tax-grid" style="margin-top:12px">
+      <div>
+        <label for="supplyType">Predmet transakcije</label>
+        <select id="supplyType">
+          <option value="UNKNOWN">Nije odabrano</option>
+          <option value="GOODS">Roba</option>
+          <option value="SERVICES">Usluge</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="taxAuditSummary" class="tax-audit-summary">
+      Unesite podatke transakcije da biste vidjeli kontrolnu listu.
+    </div>
+    <div id="taxAuditList" class="tax-audit-list"></div>
+    <div id="taxAuditNext" class="tax-audit-next">
+      Sljedeći koraci će se prikazati nakon provjere podataka.
+    </div>
+  </section>
 </section>
 
 <h2>Stavke fakture</h2>
@@ -821,6 +858,134 @@ function invalidateTaxTreatment(message){
     output.textContent = message ||
       "Podaci transakcije su promijenjeni. Ponovo odredite poreski tretman.";
   }
+  runTaxDiagnostics(null);
+}
+
+
+// PORESKI KONTROLOR: prikazuje nedostajuće i neprovjerene podatke.
+// Status "nije provjereno" nije isto što i "ne postoji".
+function runTaxDiagnostics(taxResult = currentTaxTreatment){
+  const list = document.getElementById("taxAuditList");
+  const summary = document.getElementById("taxAuditSummary");
+  const next = document.getElementById("taxAuditNext");
+  if(!list || !summary || !next) return;
+
+  const sellerCountry = document.getElementById("sellerCountry").value.trim();
+  const buyerCountry = document.getElementById("buyerCountry").value.trim();
+  const sellerCode = getCountryCode(sellerCountry);
+  const buyerCode = getCountryCode(buyerCountry);
+  const isCrossBorder = !!sellerCode && !!buyerCode && sellerCode !== buyerCode;
+  const buyerType = document.getElementById("buyerType").value;
+  const sellerVat = document.getElementById("sellerVatRegistered").value;
+  const evidence = document.getElementById("goodsEvidence").value;
+  const supplyType = document.getElementById("supplyType").value;
+  const buyerVatId = document.getElementById("buyerVatId").value.trim();
+  const deliveryPlace = document.getElementById("deliveryPlace").value.trim();
+  const incoterms = document.getElementById("incoterms").value;
+
+  const checks = [];
+  const add = (title, status, detail, level="warn") =>
+    checks.push({title,status,detail,level});
+
+  add("Država prodavca",
+    sellerCode ? "U redu" : "Nedostaje / neprepoznata",
+    sellerCode ? `Prepoznata oznaka: ${sellerCode}.` : "Unesite državu koju sistem može prepoznati.",
+    sellerCode ? "ok" : "bad");
+
+  add("Država kupca",
+    buyerCode ? "U redu" : "Nedostaje / neprepoznata",
+    buyerCode ? `Prepoznata oznaka: ${buyerCode}.` : "Unesite državu koju sistem može prepoznati.",
+    buyerCode ? "ok" : "bad");
+
+  add("Vrsta kupca",
+    buyerType ? "Odabrano" : "Nije odabrano",
+    buyerType === "BUSINESS" ? "Kupac je označen kao firma / pravno lice." : "Kupac je označen kao fizičko lice.",
+    buyerType ? "ok" : "bad");
+
+  add("PDV status prodavca",
+    sellerVat === "UNKNOWN" ? "Nije potvrđeno" : "Potvrđeno",
+    sellerVat === "UNKNOWN" ? "Odaberite da li je prodavac registrovan za PDV." : `Odabrano: ${sellerVat === "YES" ? "Da" : "Ne"}.`,
+    sellerVat === "UNKNOWN" ? "bad" : "ok");
+
+  add("Predmet transakcije",
+    supplyType === "UNKNOWN" ? "Nije odabrano" : "Odabrano",
+    supplyType === "UNKNOWN" ? "Nije navedeno da li se fakturiše roba ili usluga. Ovaj podatak je važan za dalju poresku procjenu." : `Odabrano: ${supplyType === "GOODS" ? "roba" : "usluge"}. Napomena: postojeća pretraga VAT_TAX_RULES još ne koristi ovaj podatak kao kriterij.`,
+    supplyType === "UNKNOWN" ? "bad" : "warn");
+
+  if(isCrossBorder && supplyType === "GOODS"){
+    add("Dokaz o transportu / izvozu",
+      evidence === "YES" ? "Potvrđen" : evidence === "NO" ? "Nedostaje" : "Nije potvrđen",
+      evidence === "YES" ? "Korisnik je potvrdio da dokaz postoji; dokument i njegovu valjanost treba provjeriti." : "Za ovu vrstu slučaja dokaz može biti relevantan. Potvrdite njegovo postojanje i provjerite dokumentaciju.",
+      evidence === "YES" ? "ok" : "warn");
+  }else{
+    add("Dokaz o transportu / izvozu",
+      supplyType === "SERVICES" ? "Nije automatski primjenjivo" : "Čeka klasifikaciju",
+      supplyType === "SERVICES" ? "Polje za dokaz transporta robe nije automatski tretirano kao uslov za usluge." : "Prvo odaberite da li je predmet transakcije roba ili usluga.",
+      "warn");
+  }
+
+  add("PDV broj kupca",
+    buyerVatId ? "Unesen – nije validiran" : "Nije unesen",
+    buyerVatId ? "Broj je samo unesen u obrazac. Ovaj kod ne poziva VIES niti drugi servis za provjeru valjanosti." : "Ako je PDV broj potreban za konkretan poreski tretman, unesite ga i zasebno provjerite njegovu valjanost.",
+    "warn");
+
+  add("Mjesto isporuke / Incoterms",
+    deliveryPlace || incoterms ? "Djelimično uneseno" : "Nije uneseno",
+    "Ovi podaci mogu pomoći u procjeni isporuke, ali nisu univerzalno obavezni za svaku transakciju.",
+    "warn");
+
+  let ruleStatus = "Nije provjereno";
+  let ruleDetail = "Kliknite „Odredi poreski tretman“ da bi aplikacija pokušala pronaći aktivno pravilo u VAT_TAX_RULES.";
+  let ruleLevel = "warn";
+
+  if(taxResult && taxResult.needsReview){
+    if(String(taxResult.warning || "").includes("Nije pronađeno aktivno poresko pravilo")){
+      ruleStatus = "Pravilo nije pronađeno";
+      ruleDetail = "U VAT_TAX_RULES nije pronađeno aktivno pravilo koje odgovara svim kriterijima pretrage za ovu transakciju.";
+      ruleLevel = "bad";
+    }else if(String(taxResult.warning || "").includes("više poreskih pravila")){
+      ruleStatus = "Više mogućih pravila";
+      ruleDetail = "Pronađeno je više pravila. Potrebno je razriješiti duplikate ili preklapanje pravila.";
+      ruleLevel = "bad";
+    }else{
+      ruleStatus = "Provjera nije završena";
+      ruleDetail = taxResult.warning || "Poreski tretman zahtijeva dodatnu provjeru.";
+      ruleLevel = "warn";
+    }
+  }else if(taxResult && taxResult.ruleId){
+    ruleStatus = "Pravilo pronađeno";
+    ruleDetail = `Pronađeno pravilo ID: ${taxResult.ruleId}. Provjerite da li su ispunjeni svi zakonski uslovi i dokumentacija.`;
+    ruleLevel = "ok";
+  }
+
+  add("Aktivno poresko pravilo", ruleStatus, ruleDetail, ruleLevel);
+
+  list.innerHTML = checks.map(item => `
+    <div class="tax-audit-row">
+      <div>
+        <strong>${escapeHTML(item.title)}</strong>
+        <small>${escapeHTML(item.detail)}</small>
+      </div>
+      <span class="tax-audit-status ${item.level}">${escapeHTML(item.status)}</span>
+    </div>
+  `).join("");
+
+  const okCount = checks.filter(x=>x.level === "ok").length;
+  const issueCount = checks.length - okCount;
+  summary.textContent = `${okCount} od ${checks.length} stavki je označeno kao uredno. ${issueCount} stavki traži dopunu ili dodatnu provjeru.`;
+
+  const actions = [];
+  if(!sellerCode) actions.push("Unesite prepoznatljivu državu prodavca.");
+  if(!buyerCode) actions.push("Unesite prepoznatljivu državu kupca.");
+  if(sellerVat === "UNKNOWN") actions.push("Potvrdite PDV status prodavca.");
+  if(supplyType === "UNKNOWN") actions.push("Odaberite da li fakturišete robu ili uslugu.");
+  if(isCrossBorder && supplyType === "GOODS" && evidence !== "YES") actions.push("Provjerite i potvrdite dokumentaciju o transportu / izvozu.");
+  if(!buyerVatId && buyerType === "BUSINESS" && isCrossBorder) actions.push("Provjerite da li je PDV broj kupca potreban za ovaj slučaj; ako jeste, unesite ga i validirajte.");
+  if(ruleStatus === "Pravilo nije pronađeno") actions.push("Provjerite VAT_TAX_RULES: državu prodavca i kupca, tip kupca, PDV registraciju, vrstu transakcije, aktivnost pravila, korisnički ID i period važenja.");
+  else if(ruleStatus === "Nije provjereno") actions.push("Kliknite „Odredi poreski tretman“ da se provjeri postojanje odgovarajućeg pravila.");
+  else if(ruleStatus === "Pravilo pronađeno") actions.push("Pregledajte pravni osnov, uslove pravila i prateću dokumentaciju prije izdavanja fakture.");
+
+  next.innerHTML = `<strong>Šta dalje?</strong><br>${actions.length ? actions.map((x,i)=>`${i+1}. ${escapeHTML(x)}`).join("<br>") : "Nema otvorenih tehničkih koraka u ovoj kontrolnoj listi. I dalje provjerite zakonske uslove i dokumentaciju."}`;
 }
 
 
@@ -1041,6 +1206,7 @@ async function applyTaxToInvoice(){
       output.className = "tax-result warning";
       output.textContent =
         "POTREBNA PROVJERA: " + result.warning;
+      runTaxDiagnostics(result);
       return;
     }
 
@@ -1069,6 +1235,7 @@ async function applyTaxToInvoice(){
       input.value = result.rate;
     });
 
+    runTaxDiagnostics(result);
     calculate();
 
   }catch(error){
@@ -1129,6 +1296,7 @@ function buildInvoiceDescription(data){
     `Drzava kupca: ${data.buyerCountry || ""}`,
     `Izdao: ${data.issuer || ""}`,
     `Vrsta fakture: ${data.transactionType || "AUTO"}`,
+    `Predmet transakcije: ${data.supplyType || "UNKNOWN"}`,
     `Vrsta kupca: ${data.buyerType || "BUSINESS"}`,
     `Prodavac PDV registrovan: ${data.sellerVatRegistered || "UNKNOWN"}`,
     `Dokaz transporta: ${data.goodsEvidence || "UNKNOWN"}`,
@@ -1235,6 +1403,7 @@ async function loadCompanyProfile(){
   profileLoaded = true;
 
   updateInvoiceClassification();
+  runTaxDiagnostics(null);
 }
 
 /* -------------------------------------------------------
@@ -1533,6 +1702,7 @@ async function loadInvoice(id=document.getElementById("invoiceList").value,
 
       issuer:readMeta(description,"Izdao:"),
       transactionType:readMeta(description,"Vrsta fakture:") || "AUTO",
+      supplyType:readMeta(description,"Predmet transakcije:") || "UNKNOWN",
       buyerType:readMeta(description,"Vrsta kupca:") || "BUSINESS",
       sellerVatRegistered:readMeta(description,"Prodavac PDV registrovan:") || "UNKNOWN",
       goodsEvidence:readMeta(description,"Dokaz transporta:") || "UNKNOWN",
@@ -1592,6 +1762,7 @@ async function loadInvoice(id=document.getElementById("invoiceList").value,
 
     calculate();
     updateInvoiceClassification();
+    runTaxDiagnostics(currentTaxTreatment);
     applyInvoiceMode();
 
     if(!silent) alert("Faktura je učitana.");
@@ -1624,6 +1795,7 @@ function newInvoice(){
 
   document.getElementById("currency").value = "BAM";
   document.getElementById("transactionType").value = "AUTO";
+  document.getElementById("supplyType").value = "UNKNOWN";
   document.getElementById("buyerType").value = "BUSINESS";
   document.getElementById("sellerVatRegistered").value = "UNKNOWN";
   document.getElementById("goodsEvidence").value = "UNKNOWN";
@@ -1642,6 +1814,7 @@ function newInvoice(){
 
   addItem();
   calculate();
+  runTaxDiagnostics(null);
   applyInvoiceMode();
 }
 
@@ -1657,7 +1830,7 @@ function applyInvoiceMode(){
     "sellerContact","sellerBank","sellerAccount","sellerCountry",
     "buyerName","buyerAddress","buyerTax","buyerVat","buyerContact",
     "buyerCountry","invoiceNumber","invoiceDate","dueDate","currency",
-    "notes","payment","issuer","transactionType","buyerType",
+    "notes","payment","issuer","transactionType","supplyType","buyerType",
     "sellerVatRegistered","goodsEvidence","buyerVatId","incoterms",
     "deliveryPlace","hsCode"
   ];
@@ -1775,12 +1948,17 @@ document.getElementById("buyerCountry").addEventListener(
   "buyerType",
   "sellerVatRegistered",
   "goodsEvidence",
-  "invoiceDate"
+  "invoiceDate",
+  "supplyType",
+  "buyerVatId",
+  "incoterms",
+  "deliveryPlace"
 ].forEach(id=>{
   document.getElementById(id).addEventListener("change",()=>{
     invalidateTaxTreatment(
       "Promijenjeni su poreski podaci. Ponovo odredite poreski tretman."
     );
+    runTaxDiagnostics(null);
   });
 });
 
@@ -1802,6 +1980,7 @@ document.getElementById("buyerCountry").addEventListener(
   changeLanguage();
   addItem();
   updateInvoiceClassification();
+  runTaxDiagnostics(null);
 
   try{
     await ensureUser();
