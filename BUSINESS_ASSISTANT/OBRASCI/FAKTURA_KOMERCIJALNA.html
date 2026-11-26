@@ -349,46 +349,8 @@ button:disabled{opacity:.5;cursor:not-allowed}
   </section>
 </div>
 
-<datalist id="countryOptions">
-  <option value="Bosna i Hercegovina">
-  <option value="Srbija">
-  <option value="Hrvatska">
-  <option value="Crna Gora">
-  <option value="Sjeverna Makedonija">
-  <option value="Slovenija">
- <option value="Njemačka">
-<option value="Germany">
-<option value="Deutschland">
-  <option value="Austrija">
-  <option value="Italija">
-  <option value="Francuska">
-  <option value="Španija">
-  <option value="Portugal">
-  <option value="Mađarska">
-  <option value="Rumunija">
-  <option value="Bugarska">
-  <option value="Grčka">
-  <option value="Poljska">
-  <option value="Češka">
-  <option value="Slovačka">
-  <option value="Nizozemska">
-  <option value="Belgija">
-  <option value="Švicarska">
-  <option value="Ujedinjeno Kraljevstvo">
-  <option value="Turska">
-  <option value="Sjedinjene Američke Države">
-  <option value="Kanada">
-  <option value="Kina">
-  <option value="Japan">
-  <option value="Australija">
-  <option value="Norveška">
-  <option value="Švedska">
-  <option value="Danska">
-  <option value="Finska">
-  <option value="Irska">
-  <option value="Albanija">
-  <option value="Kosovo">
-</datalist>
+ <datalist id="countryOptions"></datalist>
+
 
 <div class="totals">
   <div><span>Osnovica</span><strong id="subtotal">0,00</strong></div>
@@ -663,139 +625,9 @@ function calculate(){
 ------------------------------------------------------- */
 
 // Prepoznavanje države i pretvaranje u ISO oznaku.
-function getCountryCode(country){
-  const value = String(country || "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFC");
 
-  const countries = {
-    "bosna i hercegovina":"BA",
-    "bih":"BA",
-    "bosnia and herzegovina":"BA",
-    "bosnia":"BA",
 
-    "srbija":"RS",
-    "serbia":"RS",
-
-    "hrvatska":"HR",
-    "croatia":"HR",
-
-    "crna gora":"ME",
-    "montenegro":"ME",
-
-    "sjeverna makedonija":"MK",
-    "north macedonia":"MK",
-    "makedonija":"MK",
-
-    "njemačka":"DE",
-    "njemacka":"DE",
-    "nemacka":"DE",
-    "germany":"DE",
-    "deutschland":"DE",
-
-    "austrija":"AT",
-    "austria":"AT",
-
-    "slovenija":"SI",
-    "slovenia":"SI",
-
-    "italija":"IT",
-    "italy":"IT",
-
-    "francuska":"FR",
-    "france":"FR",
-
-    "španija":"ES",
-    "spanija":"ES",
-    "spain":"ES",
-
-    "nizozemska":"NL",
-    "netherlands":"NL",
-    "the netherlands":"NL",
-
-    "belgija":"BE",
-    "belgium":"BE",
-
-    "švicarska":"CH",
-    "svicarska":"CH",
-    "switzerland":"CH",
-
-    "poljska":"PL",
-    "poland":"PL",
-
-    "češka":"CZ",
-    "ceska":"CZ",
-    "czech republic":"CZ",
-
-    "slovačka":"SK",
-    "slovacka":"SK",
-    "slovakia":"SK",
-
-    "mađarska":"HU",
-    "madjarska":"HU",
-    "hungary":"HU",
-
-    "rumunija":"RO",
-    "romania":"RO",
-
-    "bugarska":"BG",
-    "bulgaria":"BG",
-
-    "grčka":"GR",
-    "grcka":"GR",
-    "greece":"GR",
-
-    "portugal":"PT",
-
-    "irska":"IE",
-    "ireland":"IE",
-
-    "ujedinjeno kraljevstvo":"GB",
-    "united kingdom":"GB",
-    "uk":"GB",
-
-    "norveška":"NO",
-    "norveska":"NO",
-    "norway":"NO",
-
-    "švedska":"SE",
-    "svedska":"SE",
-    "sweden":"SE",
-
-    "danska":"DK",
-    "denmark":"DK",
-
-    "finska":"FI",
-    "finland":"FI",
-
-    "albanija":"AL",
-    "albania":"AL",
-
-    "kosovo":"XK",
-
-    "turska":"TR",
-    "turkey":"TR",
-
-    "sjedinjene američke države":"US",
-    "sjedinjene americke drzave":"US",
-    "united states":"US",
-    "usa":"US",
-
-    "kanada":"CA",
-    "canada":"CA",
-
-    "kina":"CN",
-    "china":"CN",
-
-    "japan":"JP",
-
-    "australija":"AU",
-    "australia":"AU"
-  };
-
-  return countries[value] || null;
-}function getCountryCode(country){
+ function getCountryCode(country){
   const value = String(country || "")
     .trim()
     .toLowerCase()
@@ -995,6 +827,12 @@ function classifyInvoice(){
 
   const domestic = sellerCode === buyerCode;
 
+const EU_COUNTRY_CODES = new Set([
+  "AT","BE","BG","HR","CY","CZ","DK","EE","FI",
+  "FR","DE","GR","HU","IE","IT","LV","LT","LU",
+  "MT","NL","PL","PT","RO","SK","SI","ES","SE"
+]);
+ 
   const bothEU =
     EU_COUNTRY_CODES.has(sellerCode) &&
     EU_COUNTRY_CODES.has(buyerCode);
@@ -1452,62 +1290,7 @@ async function determineTaxTreatment(){
   };
 }
 
-  const found = await findTaxRule({
-    sellerCode:classification.sellerCode,
-    buyerCode:classification.buyerCode,
-    buyerType,
-    sellerVatRegistered,
-    transactionType,
-    invoiceDate:document.getElementById("invoiceDate").value
-  });
-
-  if(found.error){
-    return {
-      needsReview:true,
-      warning:found.error,
-      transactionType,
-      sellerCode:classification.sellerCode,
-      buyerCode:classification.buyerCode
-    };
-  }
-
-  const rule = found.rule;
-
-  // Dodatna provjera dokaza prema samom poreskom pravilu.
-  if(rule.proof_of_export_required === true){
-    const evidence =
-      document.getElementById("goodsEvidence").value;
-
-    if(evidence !== "YES"){
-      return {
-        needsReview:true,
-        warning:
-          "Pronađeno poresko pravilo zahtijeva dokaz o izvozu. Nije potvrđeno da dokaz postoji.",
-        transactionType,
-        sellerCode:classification.sellerCode,
-        buyerCode:classification.buyerCode,
-        ruleId:rule.id
-      };
-    }
-  }
-
-  return {
-    needsReview:false,
-    rate:Number(rule.tax_rate),
-    label:rule.tax_treatment,
-    warning:rule.conditions || "",
-    legalBasis:rule.legal_basis || "",
-    transactionType,
-    sellerCode:classification.sellerCode,
-    buyerCode:classification.buyerCode,
-    buyerType,
-    sellerVatRegistered,
-    ruleId:rule.id,
-    proofRequired:rule.proof_of_export_required
-  };
-}
-
-
+  
 // Prikaz rezultata i primjena stope na stavke.
 async function applyTaxToInvoice(){
   const output = document.getElementById("taxResult");
@@ -2320,6 +2103,89 @@ document.getElementById("buyerCountry")
    15. POKRETANJE APLIKACIJE
 ------------------------------------------------------- */
 
+// Automatsko učitavanje svih država svijeta
+const WORLD_COUNTRIES = [
+  ["Afghanistan","AF"],["Albanija","AL"],["Alžir","DZ"],
+  ["Andora","AD"],["Angola","AO"],["Antigva i Barbuda","AG"],
+  ["Argentina","AR"],["Armenija","AM"],["Australija","AU"],
+  ["Austrija","AT"],["Azerbejdžan","AZ"],["Bahami","BS"],
+  ["Bahrein","BH"],["Bangladeš","BD"],["Barbados","BB"],
+  ["Belgija","BE"],["Belize","BZ"],["Benin","BJ"],
+  ["Bjelorusija","BY"],["Bosna i Hercegovina","BA"],
+  ["Bocvana","BW"],["Brazil","BR"],["Brunej","BN"],
+  ["Bugarska","BG"],["Burkina Faso","BF"],["Burundi","BI"],
+  ["Butan","BT"],["Cipar","CY"],["Crna Gora","ME"],
+  ["Češka","CZ"],["Čile","CL"],["Danska","DK"],
+  ["Dominika","DM"],["Dominikanska Republika","DO"],
+  ["Džibuti","DJ"],["Egipat","EG"],["Ekvador","EC"],
+  ["Ekvatorijalna Gvineja","GQ"],["El Salvador","SV"],
+  ["Estonija","EE"],["Etiopija","ET"],["Fidži","FJ"],
+  ["Filipini","PH"],["Finska","FI"],["Francuska","FR"],
+  ["Gabon","GA"],["Gambija","GM"],["Gana","GH"],
+  ["Gruzija","GE"],["Grčka","GR"],["Grenada","GD"],
+  ["Gvatemala","GT"],["Gvajana","GY"],["Haiti","HT"],
+  ["Honduras","HN"],["Hrvatska","HR"],["Indija","IN"],
+  ["Indonezija","ID"],["Irak","IQ"],["Iran","IR"],
+  ["Irska","IE"],["Island","IS"],["Italija","IT"],
+  ["Izrael","IL"],["Jamajka","JM"],["Japan","JP"],
+  ["Jemen","YE"],["Jordan","JO"],["Južna Afrika","ZA"],
+  ["Južna Koreja","KR"],["Kambodža","KH"],["Kamerun","CM"],
+  ["Kanada","CA"],["Katar","QA"],["Kazahstan","KZ"],
+  ["Kenija","KE"],["Kina","CN"],["Kirgistan","KG"],
+  ["Kiribati","KI"],["Kolumbija","CO"],["Komori","KM"],
+  ["Kongo","CG"],["Kostarika","CR"],["Kuba","CU"],
+  ["Kuvajt","KW"],["Laos","LA"],["Latvija","LV"],
+  ["Liban","LB"],["Liberija","LR"],["Libija","LY"],
+  ["Lihtenštajn","LI"],["Litvanija","LT"],["Luksemburg","LU"],
+  ["Madagaskar","MG"],["Mađarska","HU"],["Malavi","MW"],
+  ["Maldivi","MV"],["Malezija","MY"],["Mali","ML"],
+  ["Malta","MT"],["Maroko","MA"],["Mauricijus","MU"],
+  ["Mauritanija","MR"],["Meksiko","MX"],["Mikronezija","FM"],
+  ["Moldavija","MD"],["Monako","MC"],["Mongolija","MN"],
+  ["Mozambik","MZ"],["Namibija","NA"],["Nepal","NP"],
+  ["Niger","NE"],["Nigerija","NG"],["Nikaragva","NI"],
+  ["Nizozemska","NL"],["Norveška","NO"],["Novi Zeland","NZ"],
+  ["Njemačka","DE"],["Obala Slonovače","CI"],["Oman","OM"],
+  ["Pakistan","PK"],["Palau","PW"],["Panama","PA"],
+  ["Papua Nova Gvineja","PG"],["Paragvaj","PY"],
+  ["Peru","PE"],["Poljska","PL"],["Portugal","PT"],
+  ["Rumunija","RO"],["Ruanda","RW"],["Rusija","RU"],
+  ["SAD","US"],["Salvador","SV"],["Samoa","WS"],
+  ["San Marino","SM"],["Saudijska Arabija","SA"],
+  ["Senegal","SN"],["Sijera Leone","SL"],["Singapur","SG"],
+  ["Sirija","SY"],["Sjeverna Koreja","KP"],
+  ["Sjeverna Makedonija","MK"],["Slovačka","SK"],
+  ["Slovenija","SI"],["Somalija","SO"],["Srbija","RS"],
+  ["Sudan","SD"],["Surinam","SR"],["Španija","ES"],
+  ["Šri Lanka","LK"],["Švedska","SE"],["Švicarska","CH"],
+  ["Tadžikistan","TJ"],["Tajland","TH"],["Tanzanija","TZ"],
+  ["Togo","TG"],["Tonga","TO"],["Trinidad i Tobago","TT"],
+  ["Tunis","TN"],["Turska","TR"],["Turkmenistan","TM"],
+  ["Uganda","UG"],["Ujedinjeni Arapski Emirati","AE"],
+  ["Ujedinjeno Kraljevstvo","GB"],["Ukrajina","UA"],
+  ["Urugvaj","UY"],["Uzbekistan","UZ"],["Vanuatu","VU"],
+  ["Vatikan","VA"],["Venecuela","VE"],["Vijetnam","VN"],
+  ["Zambija","ZM"],["Zimbabve","ZW"]
+];
+
+function populateCountryOptions(){
+  const datalist = document.getElementById("countryOptions");
+  if(!datalist) return;
+
+  datalist.innerHTML = "";
+
+  WORLD_COUNTRIES
+    .sort((a,b)=>a[0].localeCompare(b[0],"bs"))
+    .forEach(([name,code])=>{
+      const option = document.createElement("option");
+      option.value = name;
+      option.dataset.code = code;
+      datalist.appendChild(option);
+    });
+}
+
+populateCountryOptions();
+ 
 (async function initInvoiceApp(){
   document.getElementById("invoiceDate").value =
     new Date().toISOString().slice(0,10);
